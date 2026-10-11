@@ -1,0 +1,23 @@
+{
+ "generated": "2026-10-11T12:06:06.794Z",
+ "default": "zanatomy",
+ "atlases": [
+  {
+   "id": "zanatomy",
+   "title": "Z-Anatomy",
+   "summary": "BodyParts3D completed by the Z-Anatomy project: both sides, ligaments, lymphatics, brain nuclei, Latin names and definitions. Non-commercial use only, because of the inner ear and kidney models (a commercial-safe build leaves those out).",
+   "license": "CC BY-SA 4.0",
+   "attribution": "Z-Anatomy (CC BY-SA 4.0), based on BodyParts3D © The Database Center for Life Science",
+   "name": "Z-Anatomy",
+   "version": "8ca3b74",
+   "counts": {
+    "elements": 2821,
+    "concepts": 3698,
+    "triangles": 10364730,
+    "vertices": 5490621,
+    "mirrored": 0
+   },
+   "size": "213 MB"
+  }
+ ]
+}
