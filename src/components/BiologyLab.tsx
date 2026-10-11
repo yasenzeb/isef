@@ -3,7 +3,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three-stdlib';
 import { useLanguage } from '../context/LanguageContext';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
-import { Dna, Award, Check, Eye, EyeOff, Layers, Scissors, ShieldAlert } from 'lucide-react';
+import { Dna, Award, Check, Eye, EyeOff, Layers, Scissors, ShieldAlert, Sparkles, Maximize2 } from 'lucide-react';
+import { SKETCHFAB_ANATOMY_COLLECTION, AnatomyAtlasModel } from '../data/sketchfabAnatomyData';
+import { SketchfabViewerModal } from './SketchfabViewerModal';
 
 interface OrganelleData {
   id: string;
@@ -107,10 +109,11 @@ const ORGANELLES_3D: OrganelleData[] = [
 
 export const BiologyLab: React.FC = () => {
   const { t, language } = useLanguage();
-  const [activeTab, setActiveTab] = useState<'cell_3d' | 'dna'>('cell_3d');
+  const [activeTab, setActiveTab] = useState<'cell_3d' | 'dna' | 'sketchfab_cell'>('cell_3d');
   const [cellType, setCellType] = useState<'plant' | 'animal'>('plant');
   const [selectedOrganelle, setSelectedOrganelle] = useState<OrganelleData>(ORGANELLES_3D[0]);
   const [isCrossSection, setIsCrossSection] = useState(true);
+  const [selectedSketchfabModel, setSelectedSketchfabModel] = useState<AnatomyAtlasModel | null>(null);
 
   // DNA Interactive Base-Pairing State
   const [selectedBase, setSelectedBase] = useState<'A' | 'T' | 'C' | 'G'>('A');
@@ -534,6 +537,15 @@ export const BiologyLab: React.FC = () => {
             {language === 'ar' ? 'مجسم الخلية ثلاثي الأبعاد' : '3D Cell Ultrastructure'}
           </button>
           <button
+            onClick={() => setActiveTab('sketchfab_cell')}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
+              activeTab === 'sketchfab_cell' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+            <span>{language === 'ar' ? 'مجسم الخلية الحقيقي الكامل (3D تفاعلي)' : 'Realistic 3D Animal Cell Specimen'}</span>
+          </button>
+          <button
             onClick={() => setActiveTab('dna')}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
               activeTab === 'dna' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
@@ -700,6 +712,81 @@ export const BiologyLab: React.FC = () => {
             )}
           </div>
         </div>
+      )}
+
+      {/* VIEW 3: FULL REALISTIC 3D ANIMAL CELL SPECIMEN (SKETCHFAB) */}
+      {activeTab === 'sketchfab_cell' && (
+        <div className="space-y-6">
+          <div className="sci-card overflow-hidden h-[620px] flex flex-col border border-sky-500/25">
+            <div className="bg-slate-950/90 px-5 py-3 border-b border-sky-500/15 flex flex-wrap items-center justify-between gap-3 z-10">
+              <div className="flex items-center space-x-2">
+                <span className="sci-badge flex items-center space-x-1">
+                  <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+                  <span>{language === 'ar' ? 'مجسم الخلية الحيوانية الحقيقي 3D' : 'Authentic 3D Animal Cell Specimen'}</span>
+                </span>
+                <span className="text-xs text-slate-400">
+                  {language === 'ar' ? 'نموذج كامل بتشريح وتفاصيل العضيات' : 'Interactive Cell Dissection & Organelles'}
+                </span>
+              </div>
+              <span className="text-xs text-slate-500 font-mono">Gaia Tech • Sketchfab Anatomy</span>
+            </div>
+
+            <div className="flex-1 bg-black relative">
+              <iframe
+                title="Animal Cell 3D"
+                className="w-full h-full border-0"
+                src="https://sketchfab.com/models/3a90e22871004d92a020c54e8964938c/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0&ui_help=0&ui_settings=0&ui_inspector=1&ui_stop=0"
+                allow="autoplay; fullscreen; xr-spatial-tracking"
+                allowFullScreen
+              />
+            </div>
+          </div>
+
+          {/* Cell & Molecular Specimens Grid */}
+          <div className="sci-card p-5 space-y-4">
+            <h3 className="text-sm font-bold text-white flex items-center space-x-2">
+              <Layers className="w-4 h-4 text-sky-400" />
+              <span>{language === 'ar' ? 'نماذج خلوية وجزيئية إضافية عالية الدقة' : 'Additional High-Detail Cytology & Molecular 3D Models'}</span>
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {SKETCHFAB_ANATOMY_COLLECTION.filter(m => m.category === 'cell' || m.id === 'muscle-tissue').map((item) => (
+                <div
+                  key={item.id}
+                  onClick={() => setSelectedSketchfabModel(item)}
+                  className="group sci-surface p-3 rounded-xl border border-sky-500/15 hover:border-sky-400/50 hover:bg-slate-800 transition-all cursor-pointer flex flex-col justify-between"
+                >
+                  <div className="relative aspect-video rounded-lg overflow-hidden mb-2 bg-slate-950">
+                    <img src={item.thumbnail} alt={item.titleEn} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                    <div className="absolute inset-0 bg-sky-500/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <span className="bg-sky-600/90 text-white text-xs font-bold px-2.5 py-1 rounded shadow flex items-center space-x-1">
+                        <Maximize2 className="w-3 h-3" />
+                        <span>{language === 'ar' ? 'عرض 3D' : 'Open 3D'}</span>
+                      </span>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-white group-hover:text-sky-300 transition-colors">
+                      {language === 'ar' ? item.titleAr : item.titleEn}
+                    </h4>
+                    <p className="text-[11px] text-slate-400 line-clamp-2 mt-1">
+                      {language === 'ar' ? item.descriptionAr : item.descriptionEn}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sketchfab Modal */}
+      {selectedSketchfabModel && (
+        <SketchfabViewerModal
+          model={selectedSketchfabModel}
+          onClose={() => setSelectedSketchfabModel(null)}
+          language={language}
+        />
       )}
 
     </div>

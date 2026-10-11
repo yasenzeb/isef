@@ -20,8 +20,11 @@ import {
   Sparkles,
   Sliders,
   CheckCircle2,
-  RefreshCw
+  RefreshCw,
+  Maximize2
 } from 'lucide-react';
+import { SKETCHFAB_ANATOMY_COLLECTION, AnatomyAtlasModel } from '../data/sketchfabAnatomyData';
+import { SketchfabViewerModal } from './SketchfabViewerModal';
 
 interface AnatomyViewerProps {
   isPresentationMode?: boolean;
@@ -274,6 +277,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
   });
 
   const [isIsolated, setIsIsolated] = useState(false);
+  const [activeSketchfabModel, setActiveSketchfabModel] = useState<AnatomyAtlasModel | null>(null);
   const vesalius = REAL_SCIENTISTS.find(s => s.id === 'vesalius');
 
   // Load a specific anatomical system layer
@@ -678,6 +682,28 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
                 <span className="font-mono text-white text-[11px]">{selectedStructure?.region}</span>
               </div>
             </div>
+
+            {/* Launch Detailed 3D Organ Dissection Button */}
+            {(() => {
+              const matchedModel = SKETCHFAB_ANATOMY_COLLECTION.find(m => 
+                m.keywords.some(k => selectedStructure?.nameEn.toLowerCase().includes(k.toLowerCase()) || 
+                                     selectedStructure?.nameAr.includes(k))
+              ) || SKETCHFAB_ANATOMY_COLLECTION[1]; // fallback to Heart
+
+              return (
+                <button
+                  onClick={() => setActiveSketchfabModel(matchedModel)}
+                  className="w-full mt-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-bold text-xs flex items-center justify-center space-x-2 shadow-lg shadow-sky-900/30 transition-all cursor-pointer"
+                >
+                  <Sparkles className="w-4 h-4 text-sky-200" />
+                  <span>
+                    {language === 'ar' 
+                      ? `فتح تشريح ${selectedStructure?.nameAr || 'العضو'} مجسماً 3D` 
+                      : `Open ${selectedStructure?.nameEn || 'Organ'} Detailed 3D`}
+                  </span>
+                </button>
+              );
+            })()}
           </div>
 
           {/* Pioneer Card: Andreas Vesalius */}
@@ -705,6 +731,87 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         </div>
 
       </div>
+
+      {/* DETAILED ORGAN & CELL 3D ATLAS GALLERY */}
+      <div className="sci-card p-6 space-y-5 border border-sky-500/25">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-sky-500/15 pb-4">
+          <div>
+            <div className="flex items-center space-x-2">
+              <span className="sci-badge flex items-center space-x-1">
+                <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+                <span>{language === 'ar' ? 'أطلس الأعضاء والخلايا التفاعلي المتقدم' : 'High-Resolution Organ & Cytology 3D Atlas'}</span>
+              </span>
+            </div>
+            <h2 className="text-xl font-bold text-white mt-1">
+              {language === 'ar' ? 'استكشف تشريح كل عضو وخلية على حدة (3D تفاعلي مجسم)' : 'Individual Organ & Cell 3D Dissection Specimens'}
+            </h2>
+            <p className="text-xs text-slate-400 mt-0.5">
+              {language === 'ar' 
+                ? 'انقر على أي عضو أو خلية في المجموعة بالأسفل لفتح واستكشاف المجسم التشريحي الحقيقي عالي الدقة، مع إمكانية التدوير والتقريب وفحص الطبقات الداخلية.'
+                : 'Select any organ or cytology specimen below to launch the authentic, interactive high-detail 3D anatomical model with 360° inspection and cross-sections.'}
+            </p>
+          </div>
+        </div>
+
+        {/* Specimen Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {SKETCHFAB_ANATOMY_COLLECTION.map((item) => (
+            <div
+              key={item.id}
+              onClick={() => setActiveSketchfabModel(item)}
+              className="group sci-surface p-3.5 rounded-xl border border-sky-500/15 hover:border-sky-400/50 hover:bg-slate-800/80 transition-all cursor-pointer flex flex-col justify-between"
+            >
+              <div>
+                <div className="relative aspect-video rounded-lg overflow-hidden mb-3 bg-slate-950 border border-slate-800">
+                  <img
+                    src={item.thumbnail}
+                    alt={item.titleEn}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                  <div className="absolute top-2 right-2 bg-slate-950/80 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-mono text-sky-300 border border-sky-500/20">
+                    {item.category.toUpperCase()}
+                  </div>
+                  <div className="absolute inset-0 bg-sky-500/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span className="bg-sky-600/90 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg flex items-center space-x-1.5">
+                      <Maximize2 className="w-3.5 h-3.5" />
+                      <span>{language === 'ar' ? 'عرض تشريحي 3D' : 'Open 3D Model'}</span>
+                    </span>
+                  </div>
+                </div>
+
+                <h3 className="text-sm font-bold text-white group-hover:text-sky-300 transition-colors line-clamp-1">
+                  {language === 'ar' ? item.titleAr : item.titleEn}
+                </h3>
+                <span className="text-[11px] text-sky-400/80 block font-serif italic mt-0.5">
+                  {language === 'ar' ? item.systemAr : item.system}
+                </span>
+
+                <p className="text-xs text-slate-400 line-clamp-2 mt-2 leading-relaxed">
+                  {language === 'ar' ? item.descriptionAr : item.descriptionEn}
+                </p>
+              </div>
+
+              <div className="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px]">
+                <span className="text-slate-500">{item.author}</span>
+                <span className="text-sky-400 font-semibold group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform flex items-center space-x-1">
+                  <span>{language === 'ar' ? 'استكشف' : 'Inspect'}</span>
+                  <span>→</span>
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Active Modal 3D Viewer */}
+      {activeSketchfabModel && (
+        <SketchfabViewerModal
+          model={activeSketchfabModel}
+          onClose={() => setActiveSketchfabModel(null)}
+          language={language}
+        />
+      )}
 
     </div>
   );
