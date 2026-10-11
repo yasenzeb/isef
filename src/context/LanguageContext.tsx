@@ -12,13 +12,13 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem('isef_language') as Language;
+    const saved = (localStorage.getItem('scinexa_language') || localStorage.getItem('isef_language')) as Language;
     return saved && ['en', 'ar', 'fr', 'de'].includes(saved) ? saved : 'en';
   });
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem('isef_language', lang);
+    localStorage.setItem('scinexa_language', lang);
   };
 
   const isRTL = language === 'ar';

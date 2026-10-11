@@ -184,39 +184,181 @@ export const BiologyLab: React.FC = () => {
     const membraneMat = new THREE.MeshStandardMaterial({
       color: cellType === 'plant' ? 0x15803d : 0x0284c7,
       transparent: true,
-      opacity: 0.22,
-      roughness: 0.3,
+      opacity: 0.18,
+      roughness: 0.25,
       side: THREE.DoubleSide,
     });
     const membraneMesh = new THREE.Mesh(membraneGeo, membraneMat);
     cellGroup.add(membraneMesh);
 
-    // Organelles
+    // Anatomically realistic organelles
     activeOrganelles.forEach(org => {
       if (org.id === 'cell_wall') return; // Rendered as container
 
-      let geo: THREE.BufferGeometry;
+      const orgSubgroup = new THREE.Group();
+      orgSubgroup.position.set(...org.position);
+
       if (org.id === 'nucleus') {
-        geo = new THREE.SphereGeometry(org.radius, 24, 24);
+        // Double-membrane nuclear envelope with nucleolus inside and chromatin texture
+        const envelopeGeo = new THREE.SphereGeometry(org.radius, 32, 32, 0, Math.PI * 1.6);
+        const envelopeMat = new THREE.MeshStandardMaterial({
+          color: 0x7c3aed,
+          roughness: 0.35,
+          metalness: 0.1,
+          side: THREE.DoubleSide,
+        });
+        const envelopeMesh = new THREE.Mesh(envelopeGeo, envelopeMat);
+        envelopeMesh.userData = { id: org.id };
+        organelleMeshes.current.set(org.id, envelopeMesh);
+        orgSubgroup.add(envelopeMesh);
+
+        // Dense inner Nucleolus
+        const nucleolusGeo = new THREE.SphereGeometry(org.radius * 0.42, 24, 24);
+        const nucleolusMat = new THREE.MeshStandardMaterial({
+          color: 0xa855f7,
+          emissive: 0x6b21a8,
+          emissiveIntensity: 0.3,
+          roughness: 0.5,
+        });
+        const nucleolusMesh = new THREE.Mesh(nucleolusGeo, nucleolusMat);
+        nucleolusMesh.userData = { id: org.id };
+        orgSubgroup.add(nucleolusMesh);
+
       } else if (org.id === 'mitochondria') {
-        geo = new THREE.CapsuleGeometry(0.25, 0.5, 12, 16);
+        // Outer mitochondrial membrane
+        const outerGeo = new THREE.CapsuleGeometry(0.24, 0.55, 16, 24);
+        const outerMat = new THREE.MeshStandardMaterial({
+          color: 0xea580c,
+          transparent: true,
+          opacity: 0.85,
+          roughness: 0.35,
+        });
+        const mitoMesh = new THREE.Mesh(outerGeo, outerMat);
+        mitoMesh.userData = { id: org.id };
+        organelleMeshes.current.set(org.id, mitoMesh);
+        mitoMesh.rotation.z = Math.PI / 3;
+        orgSubgroup.add(mitoMesh);
+
+        // Inner folding cristae (stacked internal discs)
+        for (let c = -2; c <= 2; c++) {
+          const cristaGeo = new THREE.TorusGeometry(0.14, 0.03, 8, 16);
+          const cristaMat = new THREE.MeshStandardMaterial({ color: 0xfb923c, roughness: 0.3 });
+          const cristaMesh = new THREE.Mesh(cristaGeo, cristaMat);
+          cristaMesh.position.set(0, c * 0.1, 0);
+          cristaMesh.rotation.x = Math.PI / 2;
+          mitoMesh.add(cristaMesh);
+        }
+
       } else if (org.id === 'chloroplast') {
-        geo = new THREE.CylinderGeometry(0.4, 0.4, 0.2, 16);
+        // Biconvex chloroplast stroma
+        const stromaGeo = new THREE.CylinderGeometry(0.45, 0.45, 0.22, 24);
+        const stromaMat = new THREE.MeshStandardMaterial({
+          color: 0x059669,
+          roughness: 0.4,
+          transparent: true,
+          opacity: 0.9,
+        });
+        const chloroMesh = new THREE.Mesh(stromaGeo, stromaMat);
+        chloroMesh.userData = { id: org.id };
+        organelleMeshes.current.set(org.id, chloroMesh);
+        orgSubgroup.add(chloroMesh);
+
+        // Thylakoid grana stacks (green coin columns)
+        [-0.18, 0.18].forEach(gx => {
+          for (let gy = -0.06; gy <= 0.06; gy += 0.04) {
+            const thylakoid = new THREE.Mesh(
+              new THREE.CylinderGeometry(0.1, 0.1, 0.02, 16),
+              new THREE.MeshStandardMaterial({ color: 0x34d399, roughness: 0.2 })
+            );
+            thylakoid.position.set(gx, gy, 0);
+            chloroMesh.add(thylakoid);
+          }
+        });
+
+      } else if (org.id === 'golgi') {
+        // Stack of curved cisternae membranes
+        const golgiContainer = new THREE.Mesh(
+          new THREE.SphereGeometry(0.01, 4, 4),
+          new THREE.MeshBasicMaterial({ visible: false })
+        );
+        golgiContainer.userData = { id: org.id };
+        organelleMeshes.current.set(org.id, golgiContainer);
+        orgSubgroup.add(golgiContainer);
+
+        for (let i = 0; i < 4; i++) {
+          const cisternaGeo = new THREE.TorusGeometry(0.35 + i * 0.06, 0.04, 12, 24, Math.PI * 0.85);
+          const cisternaMat = new THREE.MeshStandardMaterial({
+            color: 0xeab308,
+            roughness: 0.35,
+          });
+          const cisterna = new THREE.Mesh(cisternaGeo, cisternaMat);
+          cisterna.position.set(0, (i - 1.5) * 0.09, 0);
+          cisterna.rotation.x = Math.PI / 4;
+          cisterna.rotation.z = Math.PI * 0.1;
+          orgSubgroup.add(cisterna);
+        }
+
+        // Secretory vesicles budding off
+        for (let v = 0; v < 3; v++) {
+          const vesicle = new THREE.Mesh(
+            new THREE.SphereGeometry(0.06, 12, 12),
+            new THREE.MeshStandardMaterial({ color: 0xfde047 })
+          );
+          vesicle.position.set(0.35 + v * 0.1, 0.1 - v * 0.1, 0.1);
+          orgSubgroup.add(vesicle);
+        }
+
+      } else if (org.id === 'er') {
+        // Wavy folded tubule network wrapping outward from nucleus
+        const erMeshAnchor = new THREE.Mesh(
+          new THREE.SphereGeometry(0.01, 4, 4),
+          new THREE.MeshBasicMaterial({ visible: false })
+        );
+        erMeshAnchor.userData = { id: org.id };
+        organelleMeshes.current.set(org.id, erMeshAnchor);
+        orgSubgroup.add(erMeshAnchor);
+
+        for (let ring = 0; ring < 3; ring++) {
+          const tubeGeo = new THREE.TorusGeometry(0.4 + ring * 0.15, 0.05, 12, 32, Math.PI * 1.2);
+          const tubeMat = new THREE.MeshStandardMaterial({
+            color: 0xdb2777,
+            roughness: 0.4,
+          });
+          const tube = new THREE.Mesh(tubeGeo, tubeMat);
+          tube.position.set((ring - 1) * 0.08, (ring - 1) * 0.06, 0);
+          tube.rotation.y = (ring * Math.PI) / 6;
+          tube.rotation.x = Math.PI / 3;
+          orgSubgroup.add(tube);
+        }
+
+      } else if (org.id === 'vacuole') {
+        // Turgid liquid reservoir
+        const vacGeo = new THREE.SphereGeometry(org.radius, 28, 28);
+        const vacMat = new THREE.MeshStandardMaterial({
+          color: 0x06b6d4,
+          transparent: true,
+          opacity: 0.65,
+          roughness: 0.1,
+          metalness: 0.1,
+        });
+        const vacMesh = new THREE.Mesh(vacGeo, vacMat);
+        vacMesh.userData = { id: org.id };
+        organelleMeshes.current.set(org.id, vacMesh);
+        orgSubgroup.add(vacMesh);
+
       } else {
-        geo = new THREE.DodecahedronGeometry(org.radius);
+        const fallbackGeo = new THREE.DodecahedronGeometry(org.radius);
+        const fallbackMat = new THREE.MeshStandardMaterial({
+          color: org.color,
+          roughness: 0.4,
+        });
+        const fallbackMesh = new THREE.Mesh(fallbackGeo, fallbackMat);
+        fallbackMesh.userData = { id: org.id };
+        organelleMeshes.current.set(org.id, fallbackMesh);
+        orgSubgroup.add(fallbackMesh);
       }
 
-      const mat = new THREE.MeshStandardMaterial({
-        color: org.color,
-        roughness: 0.4,
-        metalness: 0.1,
-      });
-
-      const mesh = new THREE.Mesh(geo, mat);
-      mesh.position.set(...org.position);
-      mesh.userData = { id: org.id };
-      organelleMeshes.current.set(org.id, mesh);
-      cellGroup.add(mesh);
+      cellGroup.add(orgSubgroup);
     });
 
     scene.add(cellGroup);

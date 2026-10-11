@@ -12,11 +12,11 @@ export const EgyptLocationModal: React.FC<EgyptLocationModalProps> = ({ isOpen, 
   const { t, isRTL } = useLanguage();
   
   const [selectedGovId, setSelectedGovId] = useState<string>(() => {
-    return localStorage.getItem('isef_gov_id') || 'cairo';
+    return localStorage.getItem('scinexa_gov_id') || localStorage.getItem('isef_gov_id') || 'cairo';
   });
 
   const [selectedAdminId, setSelectedAdminId] = useState<string>(() => {
-    return localStorage.getItem('isef_admin_id') || 'cairo-east-nasr';
+    return localStorage.getItem('scinexa_admin_id') || localStorage.getItem('isef_admin_id') || 'cairo-east-nasr';
   });
 
   const [savedSuccess, setSavedSuccess] = useState(false);
@@ -33,8 +33,8 @@ export const EgyptLocationModal: React.FC<EgyptLocationModalProps> = ({ isOpen, 
   if (!isOpen) return null;
 
   const handleSave = () => {
-    localStorage.setItem('isef_gov_id', selectedGovId);
-    localStorage.setItem('isef_admin_id', selectedAdminId);
+    localStorage.setItem('scinexa_gov_id', selectedGovId);
+    localStorage.setItem('scinexa_admin_id', selectedAdminId);
     setSavedSuccess(true);
     setTimeout(() => {
       setSavedSuccess(false);

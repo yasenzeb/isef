@@ -27,7 +27,7 @@ interface AnatomyViewerProps {
   isPresentationMode?: boolean;
 }
 
-export type AnatomySystemId = 'skin' | 'skeletal' | 'muscular' | 'cardiovascular' | 'nervous' | 'visceral' | 'joints' | 'lymphatic';
+export type AnatomySystemId = 'skeletal' | 'muscular' | 'cardiovascular' | 'nervous' | 'visceral' | 'joints' | 'lymphatic';
 
 interface SystemLayerConfig {
   id: AnatomySystemId;
@@ -41,7 +41,6 @@ interface SystemLayerConfig {
 }
 
 const SYSTEM_LAYERS: SystemLayerConfig[] = [
-  { id: 'skin', labelEn: 'Integumentary (Skin)', labelAr: 'الجلد والشكل الخارجي', color: 0xdfb89a, opacity: 0.28, icon: Layers, defaultVisible: false },
   { id: 'skeletal', labelEn: 'Skeletal System (Bones)', labelAr: 'الهيكل العظمي', file: 'skeletal.glb', color: 0xe2ded4, icon: Bone, defaultVisible: true },
   { id: 'muscular', labelEn: 'Muscular System', labelAr: 'الجهاز العضلي', file: 'muscular.glb', color: 0xc2410c, icon: Activity, defaultVisible: false },
   { id: 'cardiovascular', labelEn: 'Cardiovascular (Heart & Vessels)', labelAr: 'جهاز الدوران والقلب', file: 'cardiovascular.glb', color: 0xdc2626, icon: Heart, defaultVisible: false },
@@ -73,6 +72,51 @@ const ANATOMY_DICTIONARY: Record<string, { ar: string; descEn: string; descAr: s
     descEn: 'Slender lateral leg bone serving primarily as an attachment site for muscles and stabilizing the lateral ankle joint.',
     descAr: 'عظم الساق الجانبي الرفيع، يعمل كمرتكز هام للعضلات ويثبت الجانب الخارجي لمفصل الكاحل.',
   },
+  'Patella': {
+    ar: 'عظم الرضفة (صابونة الركبة)',
+    descEn: 'Sesamoid bone embedded within the quadriceps tendon that increases mechanical leverage of the extensor apparatus.',
+    descAr: 'عظم سمسماني يقع داخل وتر العضلة رباعية الرؤوس، يزيد من العزم الميكانيكي لبسط مفصل الركبة.',
+  },
+  'Clavicle': {
+    ar: 'عظم الترقوة',
+    descEn: 'S-shaped strut bone connecting the axial skeleton (sternum) to the shoulder girdle (acromion of scapula).',
+    descAr: 'عظم منحني على شكل حرف S يربط الهيكل المحوري (عظم القص) بحزام الكتف (اللوح).',
+  },
+  'Scapula': {
+    ar: 'عظم لوح الكتف',
+    descEn: 'Flat triangular bone connecting the humerus with the clavicle, anchoring numerous rotator cuff and back muscles.',
+    descAr: 'عظم مثلث مسطح يربط العضد بالترقوة ويوفر ارتكازاً لمجموعة عضلات الكفة المدورة وعضلات الظهر.',
+  },
+  'Sternum': {
+    ar: 'عظم القص',
+    descEn: 'Flat T-shaped bone in the anterior midline of the thorax, protecting thoracic viscera and articulating with costal cartilages.',
+    descAr: 'عظم مسطح في منتصف القفص الصدري يحمي القلب والرئتين وتتمفصل معه الغضاريف الضلعية.',
+  },
+  'Rib': {
+    ar: 'الضلع',
+    descEn: 'Curved elastic bone forming the thoracic cage, protecting thoracic organs and participating in respiration.',
+    descAr: 'عظم قوسي مرن يشكل القفص الصدري، يحمي الأحشاء الصدرية ويتمدد أثناء الشهيق والزفير.',
+  },
+  'Mandible': {
+    ar: 'عظم الفك السفلي',
+    descEn: 'Strongest and only movable bone of the skull, housing the lower dental arch and enabling mastication.',
+    descAr: 'أقوى وعظم الجمجمة الوحيد المتحرك، يحمل الأسنان السفلية ويسهل عمليات المضغ والنطق.',
+  },
+  'Frontal bone': {
+    ar: 'العظم الجبهي',
+    descEn: 'Anterior cranial bone forming the forehead, upper orbital rims, and anterior cranial fossa floor.',
+    descAr: 'عظم الجمجمة الأمامي الذي يشكل الجبهة وأسقف تجاويف العينين وقاع الحفرة القحفية الأمامية.',
+  },
+  'Radius': {
+    ar: 'عظم الكعبرة',
+    descEn: 'Lateral bone of the forearm that rotates around the ulna to allow pronation and supination of the hand.',
+    descAr: 'العظم الجانبي للساعد القابل للدوران حول الزند لتمكين حركة الكب والبطح لليد.',
+  },
+  'Ulna': {
+    ar: 'عظم الزند',
+    descEn: 'Medial forearm bone forming the primary hinge joint at the elbow via the olecranon process.',
+    descAr: 'عظم الساعد الإنسي الذي يشكل المفصل المفصلي الأساسي في المرفق عبر الناتئ الزجي.',
+  },
   'Heart': {
     ar: 'القلب',
     descEn: 'Four-chambered muscular organ pumping blood through systemic and pulmonary circulations via coordinated systolic and diastolic cycles.',
@@ -88,19 +132,49 @@ const ANATOMY_DICTIONARY: Record<string, { ar: string; descEn: string; descAr: s
     descEn: 'Pumps deoxygenated blood through the pulmonary trunk into pulmonary capillaries for alveolar gas exchange.',
     descAr: 'يضخ الدم غير المؤكسج عبر الجذع الرئوي إلى الشعيرات الدموية الرئوية لتبادل الغازات.',
   },
+  'Left atrium': {
+    ar: 'الأذين الأيسر',
+    descEn: 'Receives oxygen-rich blood returning from the lungs via four pulmonary veins and delivers it to the left ventricle.',
+    descAr: 'يستقبل الدم المؤكسج القادم من الرئتين عبر الأوردة الرئوية الأربعة ويدفعه إلى البطين الأيسر.',
+  },
+  'Right atrium': {
+    ar: 'الأذين الأيمن',
+    descEn: 'Receives deoxygenated systemic venous return from the superior and inferior vena cava and coronary sinus.',
+    descAr: 'يستقبل الدم غير المؤكسج من أنحاء الجسم عبر الوريدين الأجوفين العلوي والسفلي.',
+  },
   'Aorta': {
     ar: 'الشريان الأبهر (الأورطي)',
-    descEn: 'Largest systemic artery distributing oxygenated blood from the left ventricle throughout the body.',
-    descAr: 'أكبر شريان في الجسم، يوزع الدم المؤكسج الصادر من البطين الأيسر إلى جميع أنحاء الجسم.',
+    descEn: 'Largest systemic artery distributing oxygenated blood from the left ventricle throughout the entire body.',
+    descAr: 'أكبر شريان في الجسم، ينطلق من البطين الأيسر ليوزع الدم المؤكسج إلى الرأس والأطراف والأحشاء.',
+  },
+  'Coronary': {
+    ar: 'الشريان التاجي',
+    descEn: 'Arterial vessels branching directly off the aortic root to supply oxygenated blood and nutrients to the myocardium.',
+    descAr: 'أوعية شريانية تتفرع من قاعدة الأورطي لتغذية عضلة القلب ذاتها بالأكسجين والمواد الغذائية.',
   },
   'Brain': {
     ar: 'الدماغ (المخ)',
     descEn: 'Central organ of the nervous system, containing ~86 billion neurons orchestrating cognitive, motor, and autonomic homeostasis.',
     descAr: 'العضو المركزي للجهاز العصبي، يحتوي على ~86 مليار خلية عصبية تنظم العمليات المعرفية والحركية والاتزان الداخلي.',
   },
+  'Spinal cord': {
+    ar: 'الحبل الشوكي',
+    descEn: 'Cylindrical bundle of nerve fibers continuous with the brainstem, transmitting motor impulses and sensory information.',
+    descAr: 'حزمة عصبية أسطوانية تمتد داخل العمود الفقري تنقل الإشارات الحركية والحسية وتتحكم بالأفعال المنعكسة.',
+  },
+  'Sciatic nerve': {
+    ar: 'العصب الوركي (عِرق النَّسا)',
+    descEn: 'Largest single nerve in the human body, arising from the sacral plexus (L4-S3) and innervating the lower extremity.',
+    descAr: 'أعرض وأطول عصب في جسم الإنسان، يمتد من أسفل الظهر عبر الحوض ليعصب الطرف السفلي بأكمله.',
+  },
+  'Vagus nerve': {
+    ar: 'العصب المبهم (العاشر)',
+    descEn: 'Tenth cranial nerve providing extensive parasympathetic innervation to heart, lungs, and digestive tract.',
+    descAr: 'العصب القحفي العاشر، العصب السمبتاوي الرئيسي المنظم لضربات القلب وحركة الأمعاء والتنفس.',
+  },
   'Liver': {
     ar: 'الكبد',
-    descEn: 'Largest visceral metabolic organ responsible for glycogen storage, plasma protein synthesis, and detoxification of metabolites.',
+    descEn: 'Largest visceral metabolic organ responsible for glycogen storage, plasma protein synthesis, bile production, and detoxification.',
     descAr: 'أكبر عضو حشوي استقلابي بالجسم، مسؤول عن تخزين الجليكوجين وتخليق بروتينات البلازما وتنقية السموم وإنتاج الصفراء.',
   },
   'Kidney': {
@@ -118,6 +192,46 @@ const ANATOMY_DICTIONARY: Record<string, { ar: string; descEn: string; descAr: s
     descEn: 'Muscular J-shaped digestive organ secreting gastric acid (HCl) and pepsinogen for initial protein breakdown.',
     descAr: 'عضو عضلي هضمي يفرز حمض الهيدروكلوريك وإنزيم الببسين لتفكيك البروتينات كيميائياً وتحويل الطعام إلى كيموس.',
   },
+  'Pancreas': {
+    ar: 'البنكرياس',
+    descEn: 'Dual-function gland producing endocrine hormones (insulin, glucagon) and exocrine digestive enzymes (amylase, lipase, proteases).',
+    descAr: 'غدة مختلطة تفرز هرمونات الإنسولين والجلوكاجون لضبط السكر، والإنزيمات الهاضمة في الإثني عشر.',
+  },
+  'Spleen': {
+    ar: 'الطحال',
+    descEn: 'Lymphoid organ filtering blood, removing senescent erythrocytes, storing platelets, and orchestrating immune defenses.',
+    descAr: 'عضو لمفاوي هام ينقي الدم من كريات الدم الحمراء الهرمة، ويخزن الصفائح الدموية ويدعم المناعة.',
+  },
+  'Gallbladder': {
+    ar: 'المرارة (الحويصلة الصفراوية)',
+    descEn: 'Reservoir beneath the liver storing and concentrating bile before releasing it into the duodenum for lipid emulsification.',
+    descAr: 'كيس كمثري يقع أسفل الكبد يخزن العصارة الصفراوية ويركزها قبل إفرازها لهضم واستحلاب الدهون.',
+  },
+  'Colon': {
+    ar: 'القولون (الأمعاء الغليظة)',
+    descEn: 'Terminal tract of the digestive system that absorbs water and salts from remaining indigestible food matter.',
+    descAr: 'الجزء الأخير من الجهاز الهضمي، يمتص الماء والأملاح من الفضلات ويحتوي على الميكروبيوم النافع.',
+  },
+  'Biceps': {
+    ar: 'العضلة ذات الرأسين العضدية',
+    descEn: 'Two-headed anterior arm muscle serving as a powerful supinator of the forearm and flexor of the elbow.',
+    descAr: 'عضلة ثنائية الرؤوس في مقدمة الذراع، مسؤولة عن ثني مفصل المرفق وبطح الساعد.',
+  },
+  'Triceps': {
+    ar: 'العضلة ثلاثية الرؤوس العضدية',
+    descEn: 'Three-headed posterior arm muscle acting as the primary extensor of the elbow joint.',
+    descAr: 'عضلة ثلاثية الرؤوس خلف الذراع، تمثل العضلة الرئيسية المسؤولة عن بسط وفرد مفصل المرفق.',
+  },
+  'Deltoid': {
+    ar: 'العضلة الدالية (عضلة الكتف)',
+    descEn: 'Triangular shoulder muscle responsible for arm abduction, flexion, and extension at the glenohumeral joint.',
+    descAr: 'عضلة الكتف المثلثة الكبيرة المسؤولة عن تبعيد الذراع ورفعه وتدويره.',
+  },
+  'Gluteus': {
+    ar: 'العضلة الألوية',
+    descEn: 'Largest pelvic muscle group providing hip extension, abduction, and stabilization during bipedal locomotion.',
+    descAr: 'أكبر مجموعة عضلية في الحوض مسؤولة عن بسط مفصل الورك وتثبيت الحوض أثناء المشي والوقوف.',
+  },
 };
 
 export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode = false }) => {
@@ -127,8 +241,9 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
   // Loading & Visibility states
   const [loadingSystems, setLoadingSystems] = useState<Record<string, boolean>>({ skeletal: true });
   const [loadedSystems, setLoadedSystems] = useState<Record<string, boolean>>({});
-  const [visibleSystems, setVisibleSystems] = useState<Record<string, boolean>>({ skeletal: true, skin: false });
-  const [skinOpacity, setSkinOpacity] = useState(0.28);
+  const [visibleSystems, setVisibleSystems] = useState<Record<string, boolean>>({ skeletal: true });
+  const visibleSystemsRef = useRef<Record<string, boolean>>({ skeletal: true });
+  const definitionsRef = useRef<Record<string, string>>({});
 
   // Scene references
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -136,7 +251,6 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const controlsRef = useRef<OrbitControls | null>(null);
   const systemGroups = useRef<Map<AnatomySystemId, THREE.Group>>(new Map());
-  const skinMeshRef = useRef<THREE.Mesh | null>(null);
   const selectedMeshRef = useRef<THREE.Mesh | null>(null);
   const originalMaterials = useRef<Map<THREE.Mesh, THREE.Material>>(new Map());
   const dracoLoaderRef = useRef<DRACOLoader | null>(null);
@@ -164,7 +278,6 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
 
   // Load a specific anatomical system layer
   const loadSystemLayer = (sysConfig: SystemLayerConfig, scene: THREE.Scene) => {
-    if (sysConfig.id === 'skin') return; // Handled programmatically
     if (loadedSystems[sysConfig.id] || systemGroups.current.has(sysConfig.id)) return;
 
     setLoadingSystems(prev => ({ ...prev, [sysConfig.id]: true }));
@@ -198,16 +311,12 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           }
         });
 
-        // Consistent reference alignment
-        const box = new THREE.Box3().setFromObject(root);
-        const center = box.getCenter(new THREE.Vector3());
-        const size = box.getSize(new THREE.Vector3());
+        // Authentic anatomical coordinate preservation:
+        // All Z-Anatomy systems share standard meters coordinate system where (0,0,0) is anatomical ground.
+        // We do NOT artificially center individual systems because that breaks visceral organ alignment relative to the skeleton.
+        root.position.set(0, 0, 0);
 
-        root.position.x -= center.x;
-        root.position.y -= center.y - (size.y / 2);
-        root.position.z -= center.z;
-
-        root.visible = !!visibleSystems[sysConfig.id];
+        root.visible = visibleSystemsRef.current[sysConfig.id] ?? !!sysConfig.defaultVisible;
 
         scene.add(root);
         systemGroups.current.set(sysConfig.id, root);
@@ -265,23 +374,14 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     dracoLoader.setDecoderPath('/draco/');
     dracoLoaderRef.current = dracoLoader;
 
-    // Create Semi-Transparent Outer Human Skin Geometry
-    const skinGeo = new THREE.CapsuleGeometry(0.35, 1.2, 16, 32);
-    const skinMat = new THREE.MeshStandardMaterial({
-      color: 0xdfb89a,
-      transparent: true,
-      opacity: skinOpacity,
-      roughness: 0.3,
-      side: THREE.DoubleSide,
-    });
-    const skinMesh = new THREE.Mesh(skinGeo, skinMat);
-    skinMesh.position.set(0, 1.0, 0);
-    skinMesh.visible = !!visibleSystems['skin'];
-    skinMeshRef.current = skinMesh;
-    scene.add(skinMesh);
+    // Fetch definitions.json in background for enriched anatomy metadata
+    fetch('/models/anatomy/definitions.json')
+      .then(r => r.json())
+      .then(d => { definitionsRef.current = d; })
+      .catch(() => {});
 
-    // Initial load: Skeletal layer
-    loadSystemLayer(SYSTEM_LAYERS[1], scene);
+    // Initial load: Skeletal layer (first item in SYSTEM_LAYERS)
+    loadSystemLayer(SYSTEM_LAYERS[0], scene);
 
     // Click raycaster
     const raycaster = new THREE.Raycaster();
@@ -322,13 +422,35 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
 
         const rawName = hit.name.replace(/^ZA:/, '').replace(/\.(l|r)$/i, (m, side) => ` (${side.toUpperCase() === 'L' ? 'Left' : 'Right'})`);
         const sysId = (hit.userData.systemId || 'skeletal') as AnatomySystemId;
-        const sysConfig = SYSTEM_LAYERS.find(s => s.id === sysId) || SYSTEM_LAYERS[1];
+        const sysConfig = SYSTEM_LAYERS.find(s => s.id === sysId) || SYSTEM_LAYERS[0];
 
-        // Match against dictionary
-        let matchedDict = Object.entries(ANATOMY_DICTIONARY).find(([k]) => rawName.toLowerCase().includes(k.toLowerCase()));
+        // Match against dictionary or definitions.json
+        const matchedDict = Object.entries(ANATOMY_DICTIONARY).find(([k]) => rawName.toLowerCase().includes(k.toLowerCase()));
+        
+        let descEn = matchedDict ? matchedDict[1].descEn : '';
         const nameAr = matchedDict ? matchedDict[1].ar : sysConfig.labelAr;
-        const descEn = matchedDict ? matchedDict[1].descEn : `Identified authentic anatomical specimen of the ${sysConfig.labelEn}.`;
-        const descAr = matchedDict ? matchedDict[1].descAr : `بِنية تشريحية حقيقية وموثقة تتبع ${sysConfig.labelAr}.`;
+        let descAr = matchedDict ? matchedDict[1].descAr : '';
+
+        // If not in curated dictionary, check definitions.json
+        if (!descEn && definitionsRef.current) {
+          const cleanName = rawName.replace(/\s*\((Left|Right)\)/i, '').trim();
+          const defKey = Object.keys(definitionsRef.current).find(k => 
+            k.toLowerCase() === cleanName.toLowerCase() || 
+            k.toLowerCase().includes(cleanName.toLowerCase()) || 
+            cleanName.toLowerCase().includes(k.toLowerCase())
+          );
+          if (defKey) {
+            const defText = definitionsRef.current[defKey];
+            descEn = defText.split(/==|\n/)[0].replace(/https?:\/\/\S+/g, '').trim();
+          }
+        }
+
+        if (!descEn) {
+          descEn = `Identified authentic anatomical specimen of the ${sysConfig.labelEn}.`;
+        }
+        if (!descAr) {
+          descAr = `بِنية تشريحية حقيقية وموثقة تتبع ${sysConfig.labelAr}.`;
+        }
 
         setSelectedStructure({
           nameEn: rawName || sysConfig.labelEn,
@@ -373,27 +495,21 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     };
   }, []);
 
-  // Update skin opacity dynamically
-  useEffect(() => {
-    if (skinMeshRef.current) {
-      (skinMeshRef.current.material as THREE.MeshStandardMaterial).opacity = skinOpacity;
-    }
-  }, [skinOpacity]);
-
-  // Toggle visibility and lazy load system layers
+  // Toggle visibility and lazy load system layers - Synchronous ref update fixes double-click bug!
   const toggleSystem = (sys: SystemLayerConfig) => {
-    const isNowVisible = !visibleSystems[sys.id];
-    setVisibleSystems(prev => ({ ...prev, [sys.id]: isNowVisible }));
+    const isCurrentlyVisible = visibleSystemsRef.current[sys.id] ?? false;
+    const nextVisible = !isCurrentlyVisible;
 
-    if (sys.id === 'skin') {
-      if (skinMeshRef.current) skinMeshRef.current.visible = isNowVisible;
-      return;
-    }
+    // Update synchronous ref immediately
+    visibleSystemsRef.current = { ...visibleSystemsRef.current, [sys.id]: nextVisible };
+
+    // Update React state for re-render
+    setVisibleSystems(prev => ({ ...prev, [sys.id]: nextVisible }));
 
     const grp = systemGroups.current.get(sys.id);
     if (grp) {
-      grp.visible = isNowVisible;
-    } else if (isNowVisible && sceneRef.current) {
+      grp.visible = nextVisible;
+    } else if (nextVisible && sceneRef.current) {
       loadSystemLayer(sys, sceneRef.current);
     }
   };
@@ -437,7 +553,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
               <span className="sci-badge">
                 {language === 'ar' ? 'مختبر التشريح البشري التفاعلي المتكامل' : 'Multi-System Human Anatomy Lab'}
               </span>
-              <span className="text-xs text-slate-400">8 Layers: Skin, Skeleton, Muscles, Vessels, Nerves, Viscera</span>
+              <span className="text-xs text-slate-400">7 Deep Anatomical Systems: Skeleton, Muscles, Vessels, Nerves, Visceral Organs, Joints, Lymphatics</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">
               {language === 'ar' ? 'التشريح البشري ثلاثي الأبعاد وعلم وظائف الأعضاء' : 'Interactive Human Anatomy & Physiology Laboratory'}
@@ -500,28 +616,6 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
               );
             })}
           </div>
-
-          {/* Skin Translucency Slider (Visible when skin is active) */}
-          {visibleSystems['skin'] && (
-            <div className="bg-slate-950/80 px-4 py-1.5 border-b border-sky-500/15 flex items-center justify-between text-xs text-slate-300 z-10">
-              <span className="flex items-center space-x-2">
-                <Sliders className="w-3.5 h-3.5 text-sky-400" />
-                <span>{language === 'ar' ? 'شفافية الجلد الخارجي (Skin Translucency):' : 'Skin Translucency:'}</span>
-              </span>
-              <div className="flex items-center space-x-3 w-48">
-                <input
-                  type="range"
-                  min="0.05"
-                  max="0.8"
-                  step="0.05"
-                  value={skinOpacity}
-                  onChange={(e) => setSkinOpacity(Number(e.target.value))}
-                  className="w-full accent-sky-500"
-                />
-                <span className="font-mono text-sky-400 font-bold">{(skinOpacity * 100).toFixed(0)}%</span>
-              </div>
-            </div>
-          )}
 
           {/* Canvas Mount */}
           <div ref={mountRef} className="w-full flex-1 cursor-grab active:cursor-grabbing" />

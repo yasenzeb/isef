@@ -389,7 +389,7 @@ export const translations: Record<Language, Translations> = {
       restart: "Retake Quiz",
     },
     footer: {
-      tagline: "ISEF Science Education Platform — Built for accessible, world-class experimental inquiry.",
+      tagline: "SciNexa Science Education Platform — Built for accessible, world-class experimental inquiry.",
       sources: "Scientific Sources & Citations: Z-Anatomy Project, BodyParts3D (DBCLS), IUPAC Periodic Data, USGS Geophysics.",
       credits: "Asset Attribution: BodyParts3D © The Database Center for Life Science (CC BY 4.0), Z-Anatomy (CC BY-SA 4.0).",
       license: "Application Software: MIT License.",
@@ -412,7 +412,7 @@ export const translations: Record<Language, Translations> = {
       searchPlaceholder: "ابحث عن مفاهيم، تجارب، عناصر كيميائية...",
     },
     hero: {
-      badge: "إصدار معرض العلوم والهندسة الدولي (ISEF)",
+      badge: "منصة العلوم والبحث العلمي المتطورة",
       title: "استكشاف علمي تفاعلي",
       titleAccent: "بلا حدود مادية",
       subtitle: "سد الفجوة بين الدروس النظرية والتجربة المعملية الحية. استكشف أكثر من 10 ملايين مضلع ثلاثي الأبعاد لتشريح الإنسان، ومحاكاة ميكانيكية دقيقة، وتفاعلات كيميائية، وجيولوجيا كوكب الأرض.",
@@ -610,7 +610,7 @@ export const translations: Record<Language, Translations> = {
       searchPlaceholder: "Rechercher concepts, simulations, éléments...",
     },
     hero: {
-      badge: "Édition Concours Scientifique ISEF",
+      badge: "Plateforme Scientifique Avancée SciNexa",
       title: "Découverte Scientifique Interactive",
       titleAccent: "Sans Frontières Physiques",
       subtitle: "Combler le fossé entre théorie et pratique de laboratoire. Explorez plus de 10 millions de triangles anatomiques, des simulations mécaniques et optiques, et la géophysique terrestre.",
@@ -785,7 +785,7 @@ export const translations: Record<Language, Translations> = {
       restart: "Recommencer",
     },
     footer: {
-      tagline: "Plateforme ISEF — Conçue pour un enseignement scientifique de haut niveau.",
+      tagline: "Plateforme SciNexa — Conçue pour un enseignement scientifique de haut niveau.",
       sources: "Sources Scientifiques: Z-Anatomy, BodyParts3D (DBCLS), IUPAC, USGS.",
       credits: "Licences: BodyParts3D (CC BY 4.0), Z-Anatomy (CC BY-SA 4.0).",
       license: "Code logiciel sous licence MIT.",
@@ -808,7 +808,7 @@ export const translations: Record<Language, Translations> = {
       searchPlaceholder: "Konzepte, Simulationen, Elemente suchen...",
     },
     hero: {
-      badge: "ISEF Wissenschaftswettbewerbs-Edition",
+      badge: "SciNexa Wissenschafts- und Bildungsplattform",
       title: "Interaktive Wissenschaftliche Entdeckung",
       titleAccent: "Ohne Physische Grenzen",
       subtitle: "Die Brücke zwischen Theorie und praktischem Experimentieren. Erkunden Sie über 10 Millionen anatomische Dreiecke, physikalische Simulationen und geophysikalische Modelle.",
@@ -983,7 +983,7 @@ export const translations: Record<Language, Translations> = {
       restart: "Wiederholen",
     },
     footer: {
-      tagline: "ISEF Wissenschaftsplattform — Gebaut für freien, erstklassigen Experimentalunterricht.",
+      tagline: "SciNexa Wissenschaftsplattform — Gebaut für freien, erstklassigen Experimentalunterricht.",
       sources: "Wissenschaftliche Quellen: Z-Anatomy, BodyParts3D (DBCLS), IUPAC, USGS.",
       credits: "Lizenzen: BodyParts3D (CC BY 4.0), Z-Anatomy (CC BY-SA 4.0).",
       license: "Software unter MIT-Lizenz.",
