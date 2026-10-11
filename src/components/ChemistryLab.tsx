@@ -4,13 +4,15 @@ import { OrbitControls } from 'three-stdlib';
 import { useLanguage } from '../context/LanguageContext';
 import { getFullPeriodicElements, ChemicalElement } from '../data/periodicTableData';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
-import { Search, Info, Award, RotateCcw, Box, Sparkles } from 'lucide-react';
+import { Search, Info, Award, RotateCcw, Box, Sparkles, Flame, Check } from 'lucide-react';
 
 interface MoleculePreset {
   id: string;
-  name: string;
+  nameEn: string;
+  nameAr: string;
   formula: string;
-  cid?: number;
+  geometryEn: string;
+  geometryAr: string;
   atoms: { symbol: string; x: number; y: number; z: number; color: number; radius: number }[];
   bonds: [number, number][];
 }
@@ -18,8 +20,11 @@ interface MoleculePreset {
 const PRESET_MOLECULES: MoleculePreset[] = [
   {
     id: 'water',
-    name: 'Water',
+    nameEn: 'Water',
+    nameAr: 'الماء (أكسيد الهيدروجين)',
     formula: 'H₂O',
+    geometryEn: 'Bent (V-shaped), 104.5° angle',
+    geometryAr: 'زاوي منحني، زاوية 104.5°',
     atoms: [
       { symbol: 'O', x: 0, y: 0.1, z: 0, color: 0xef4444, radius: 0.35 },
       { symbol: 'H', x: -0.75, y: -0.45, z: 0, color: 0xf8fafc, radius: 0.22 },
@@ -29,8 +34,11 @@ const PRESET_MOLECULES: MoleculePreset[] = [
   },
   {
     id: 'methane',
-    name: 'Methane (Tetrahedral)',
+    nameEn: 'Methane',
+    nameAr: 'الميثان (رباعي الأوجه)',
     formula: 'CH₄',
+    geometryEn: 'Tetrahedral, 109.5° angle',
+    geometryAr: 'رباعي أوجه منتظم، زاوية 109.5°',
     atoms: [
       { symbol: 'C', x: 0, y: 0, z: 0, color: 0x334155, radius: 0.38 },
       { symbol: 'H', x: 0.63, y: 0.63, z: 0.63, color: 0xf8fafc, radius: 0.22 },
@@ -42,8 +50,11 @@ const PRESET_MOLECULES: MoleculePreset[] = [
   },
   {
     id: 'carbon_dioxide',
-    name: 'Carbon Dioxide (Linear)',
+    nameEn: 'Carbon Dioxide',
+    nameAr: 'ثاني أكسيد الكربون',
     formula: 'CO₂',
+    geometryEn: 'Linear, 180° angle',
+    geometryAr: 'خطي مستقيم، زاوية 180°',
     atoms: [
       { symbol: 'C', x: 0, y: 0, z: 0, color: 0x334155, radius: 0.38 },
       { symbol: 'O', x: -1.16, y: 0, z: 0, color: 0xef4444, radius: 0.35 },
@@ -53,8 +64,11 @@ const PRESET_MOLECULES: MoleculePreset[] = [
   },
   {
     id: 'ethanol',
-    name: 'Ethanol',
+    nameEn: 'Ethanol',
+    nameAr: 'الإيثانول (كحول إيثيلي)',
     formula: 'C₂H₅OH',
+    geometryEn: 'Aliphatic alcohol backbone',
+    geometryAr: 'سلسلة كحولية أليفاتية',
     atoms: [
       { symbol: 'C', x: -0.7, y: 0, z: 0, color: 0x334155, radius: 0.38 },
       { symbol: 'C', x: 0.7, y: 0, z: 0, color: 0x334155, radius: 0.38 },
@@ -70,11 +84,59 @@ const PRESET_MOLECULES: MoleculePreset[] = [
   },
 ];
 
+interface ChemicalReaction {
+  id: string;
+  nameEn: string;
+  nameAr: string;
+  reactants: string;
+  products: string;
+  equation: string;
+  enthalpy: string;
+  descEn: string;
+  descAr: string;
+}
+
+const CHEMICAL_REACTIONS: ChemicalReaction[] = [
+  {
+    id: 'methane_combustion',
+    nameEn: 'Methane Complete Combustion',
+    nameAr: 'احتراق الميثان التام',
+    reactants: 'CH₄ + 2 O₂',
+    products: 'CO₂ + 2 H₂O',
+    equation: 'CH₄(g) + 2 O₂(g) → CO₂(g) + 2 H₂O(g)',
+    enthalpy: 'ΔH° = -891 kJ/mol (Exothermic)',
+    descEn: 'Exothermic hydrocarbon oxidation releasing thermal energy and conserving elemental mass (1 C, 4 H, 4 O on both sides).',
+    descAr: 'تفاعل أكسدة طارد للحرارة يحرر طاقة ويحقق قانون بقاء الكتلة (1 ذرة كربون، 4 هيدروجين، 4 أكسجين في الطرفين).',
+  },
+  {
+    id: 'water_electrolysis',
+    nameEn: 'Water Decomposition (Electrolysis)',
+    nameAr: 'التحليل الكهربائي للماء',
+    reactants: '2 H₂O(l)',
+    products: '2 H₂(g) + O₂(g)',
+    equation: '2 H₂O(l) → 2 H₂(g) + O₂(g)',
+    enthalpy: 'ΔH° = +572 kJ/mol (Endothermic)',
+    descEn: 'Electrochemical splitting of liquid water molecules into diatomic hydrogen and oxygen gases.',
+    descAr: 'تفكك كيميائي كهربائي ماص للطاقة يحلل الماء إلى غازي الهيدروجين والأكسجين بنسبة 2 : 1 حجماً.',
+  },
+  {
+    id: 'haber_bosch',
+    nameEn: 'Haber-Bosch Ammonia Synthesis',
+    nameAr: 'تخليق النشادر (طريقة هابر-بوش)',
+    reactants: 'N₂(g) + 3 H₂(g)',
+    products: '2 NH₃(g)',
+    equation: 'N₂(g) + 3 H₂(g) ⇌ 2 NH₃(g)',
+    enthalpy: 'ΔH° = -92 kJ/mol (Exothermic Equilibrium)',
+    descEn: 'Reversible industrial catalytic synthesis of ammonia from atmospheric nitrogen, fundamental to global agricultural fertilizers.',
+    descAr: 'تفاعل انعكاسي صناعي لتثبيت النيتروجين الجوي وإنتاج النشادر المستخدم في الأسمدة الزراعية العالمية.',
+  },
+];
+
 export const ChemistryLab: React.FC = () => {
   const { t, language, isRTL } = useLanguage();
   const elements = getFullPeriodicElements();
 
-  const [activeTab, setActiveTab] = useState<'periodic' | 'molecular'>('periodic');
+  const [activeTab, setActiveTab] = useState<'periodic' | 'molecular' | 'reactions'>('periodic');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedElement, setSelectedElement] = useState<ChemicalElement>(elements[0]);
@@ -82,6 +144,9 @@ export const ChemistryLab: React.FC = () => {
   // Molecular 3D Viewer state
   const [selectedMolecule, setSelectedMolecule] = useState<MoleculePreset>(PRESET_MOLECULES[0]);
   const mountRef = useRef<HTMLDivElement | null>(null);
+
+  // Reaction Lab state
+  const [selectedReaction, setSelectedReaction] = useState<ChemicalReaction>(CHEMICAL_REACTIONS[0]);
 
   // Scientist card
   const mendeleev = REAL_SCIENTISTS.find(s => s.id === 'mendeleev');
@@ -104,7 +169,7 @@ export const ChemistryLab: React.FC = () => {
     if (!mount) return;
 
     const width = mount.clientWidth;
-    const height = mount.clientHeight || 500;
+    const height = mount.clientHeight || 520;
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x090d16);
@@ -121,14 +186,13 @@ export const ChemistryLab: React.FC = () => {
     controls.enableDamping = true;
 
     // Lights
-    scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1.3);
     dirLight.position.set(3, 4, 3);
     scene.add(dirLight);
 
     // Build molecular Ball-and-Stick graph
     const molGroup = new THREE.Group();
-    const atomSpheres: THREE.Mesh[] = [];
 
     // Atoms
     selectedMolecule.atoms.forEach((atom) => {
@@ -141,7 +205,6 @@ export const ChemistryLab: React.FC = () => {
       const mesh = new THREE.Mesh(geo, mat);
       mesh.position.set(atom.x, atom.y, atom.z);
       molGroup.add(mesh);
-      atomSpheres.push(mesh);
     });
 
     // Bonds
@@ -154,7 +217,6 @@ export const ChemistryLab: React.FC = () => {
       const bondMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.4 });
       const bondMesh = new THREE.Mesh(bondGeo, bondMat);
 
-      // Position and rotate cylinder between atom A and atom B
       const mid = new THREE.Vector3().addVectors(posA, posB).multiplyScalar(0.5);
       bondMesh.position.copy(mid);
       bondMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), posB.clone().sub(posA).normalize());
@@ -163,7 +225,6 @@ export const ChemistryLab: React.FC = () => {
 
     scene.add(molGroup);
 
-    // Animation
     let animId: number;
     const animate = () => {
       animId = requestAnimationFrame(animate);
@@ -173,18 +234,7 @@ export const ChemistryLab: React.FC = () => {
     };
     animate();
 
-    const handleResize = () => {
-      if (!mount) return;
-      const w = mount.clientWidth;
-      const h = mount.clientHeight || 500;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
-      window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animId);
       renderer.dispose();
       if (mount.contains(renderer.domElement)) {
@@ -200,9 +250,11 @@ export const ChemistryLab: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-800 pb-5">
         <div>
           <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-            IUPAC Standard & 3D Molecular Viewer
+            IUPAC Standard & 3D Molecular Chemistry
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">{t.chemistry.title}</h1>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">
+            {language === 'ar' ? 'مختبر الكيمياء والجدول الدوري والجزيئات' : 'Chemistry & Molecular Visualization Lab'}
+          </h1>
           <p className="text-xs text-slate-400 mt-0.5">{t.chemistry.subtitle}</p>
         </div>
 
@@ -210,20 +262,29 @@ export const ChemistryLab: React.FC = () => {
         <div className="flex items-center space-x-2 bg-slate-900 p-1.5 rounded-xl border border-slate-800">
           <button
             onClick={() => setActiveTab('periodic')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
               activeTab === 'periodic' ? 'bg-emerald-600 text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
-            118 Periodic Elements
+            {language === 'ar' ? 'الجدول الدوري (118 عنصراً)' : '118 Periodic Elements'}
           </button>
           <button
             onClick={() => setActiveTab('molecular')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
               activeTab === 'molecular' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
             <Box className="w-3.5 h-3.5" />
-            <span>3D Molecular Conformer Viewer</span>
+            <span>{language === 'ar' ? 'المتطابقات الجزيئية 3D' : '3D Molecular Viewer'}</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('reactions')}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
+              activeTab === 'reactions' ? 'bg-amber-600 text-white shadow' : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Flame className="w-3.5 h-3.5" />
+            <span>{language === 'ar' ? 'المعادلات والتفاعلات' : 'Reaction Dynamics'}</span>
           </button>
         </div>
       </div>
@@ -233,7 +294,6 @@ export const ChemistryLab: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 bg-slate-900/60 border border-slate-800 rounded-2xl p-4 shadow-2xl overflow-x-auto space-y-4">
             
-            {/* Search toolbar */}
             <div className="flex flex-wrap items-center gap-2 pb-2 border-b border-slate-800">
               <div className="relative flex-1 min-w-[200px]">
                 <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
@@ -266,7 +326,6 @@ export const ChemistryLab: React.FC = () => {
               </select>
             </div>
 
-            {/* Elements Grid */}
             <div className="grid grid-cols-6 sm:grid-cols-9 md:grid-cols-12 gap-1.5 min-w-[500px]">
               {filteredElements.map((el) => {
                 const isSelected = selectedElement.number === el.number;
@@ -292,7 +351,6 @@ export const ChemistryLab: React.FC = () => {
             </div>
           </div>
 
-          {/* Selected Element Detail Inspector (1 col) */}
           <div className="space-y-6">
             <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
               <div className="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -310,33 +368,37 @@ export const ChemistryLab: React.FC = () => {
 
               <div className="space-y-2 text-xs">
                 <div className="flex justify-between py-1 border-b border-slate-800/60">
-                  <span className="text-slate-400">Atomic Mass</span>
+                  <span className="text-slate-400">{language === 'ar' ? 'الكتلة الذرية القياسية' : 'Atomic Mass'}</span>
                   <span className="font-mono text-white">{selectedElement.atomicMass} u</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-800/60">
-                  <span className="text-slate-400">Electron Configuration</span>
+                  <span className="text-slate-400">{language === 'ar' ? 'التوزيع الإلكتروني' : 'Electron Configuration'}</span>
                   <span className="font-mono text-emerald-400">{selectedElement.electronConfig}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-800/60">
-                  <span className="text-slate-400">Electronegativity</span>
+                  <span className="text-slate-400">{language === 'ar' ? 'السالبية الكهربائية' : 'Electronegativity'}</span>
                   <span className="font-mono text-white">{selectedElement.electronegativity ?? 'N/A'}</span>
                 </div>
               </div>
 
               <div>
-                <span className="text-xs font-bold text-slate-300 uppercase tracking-wider block mb-1">Overview</span>
+                <span className="text-xs font-bold text-slate-300 uppercase tracking-wider block mb-1">
+                  {language === 'ar' ? 'نبذة علمية وتطبيقات' : 'Overview & Occurrence'}
+                </span>
                 <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/60 p-3 rounded-xl border border-slate-800">
                   {language === 'ar' ? selectedElement.summaryAr : selectedElement.summaryEn}
                 </p>
               </div>
             </div>
 
-            {/* Dmitri Mendeleev Card */}
+            {/* Mendeleev Card */}
             {mendeleev && (
               <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
                 <div className="flex items-center space-x-2 text-emerald-400">
                   <Award className="w-4 h-4" />
-                  <h4 className="text-xs font-bold uppercase tracking-wider">Scientific Pioneer</h4>
+                  <h4 className="text-xs font-bold uppercase tracking-wider">
+                    {language === 'ar' ? 'مؤسس الجدول الدوري' : 'Scientific Pioneer'}
+                  </h4>
                 </div>
                 <div>
                   <span className="text-sm font-bold text-white block">{mendeleev.name}</span>
@@ -359,16 +421,19 @@ export const ChemistryLab: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col h-[550px]">
             <div className="bg-slate-950/80 px-4 py-3 border-b border-slate-800 flex items-center justify-between z-10">
-              <span className="text-xs font-bold text-white">Ball-and-Stick 3D Conformer: {selectedMolecule.name}</span>
+              <span className="text-xs font-bold text-white">
+                {language === 'ar' ? `المتطابق الجزيئي ثلاثي الأبعاد: ${selectedMolecule.nameAr}` : `Ball-and-Stick 3D Conformer: ${selectedMolecule.nameEn}`}
+              </span>
               <span className="text-xs font-mono text-indigo-400">{selectedMolecule.formula}</span>
             </div>
-
             <div ref={mountRef} className="w-full flex-1 cursor-grab active:cursor-grabbing" />
           </div>
 
           <div className="space-y-4">
             <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider">Select Molecular Conformer</h3>
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+                {language === 'ar' ? 'اختر الجزيء الكيميائي' : 'Select Molecular Structure'}
+              </h3>
               <div className="space-y-2">
                 {PRESET_MOLECULES.map((mol) => (
                   <button
@@ -380,8 +445,11 @@ export const ChemistryLab: React.FC = () => {
                         : 'bg-slate-950 border-slate-800 text-slate-300 hover:bg-slate-800/60'
                     }`}
                   >
-                    <span className="text-xs font-bold">{mol.name}</span>
-                    <span className="text-xs font-mono">{mol.formula}</span>
+                    <div>
+                      <span className="text-xs font-bold block">{language === 'ar' ? mol.nameAr : mol.nameEn}</span>
+                      <span className="text-[10px] text-slate-400">{language === 'ar' ? mol.geometryAr : mol.geometryEn}</span>
+                    </div>
+                    <span className="text-xs font-mono font-bold">{mol.formula}</span>
                   </button>
                 ))}
               </div>
@@ -390,8 +458,79 @@ export const ChemistryLab: React.FC = () => {
             <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl text-xs text-slate-300 space-y-2">
               <span className="font-bold text-white block">PubChem Conformer Reference</span>
               <p className="leading-relaxed text-slate-400">
-                Molecular coordinates are structured using validated bond lengths and VSEPR angles (e.g., 104.5° for water, 109.5° for tetrahedral methane).
+                {language === 'ar'
+                  ? 'تم بناء الإحداثيات الجزيئية ثلاثية الأبعاد استناداً إلى أطوال الروابط المقاسة ونظرية VSEPR للتنافر بين أزواج إلكترونات التكافؤ.'
+                  : 'Constructed using experimentally verified bond lengths and VSEPR spatial geometries (e.g., 104.5° bent angle for water).'}
               </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* VIEW 3: CHEMICAL REACTION DYNAMICS */}
+      {activeTab === 'reactions' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col justify-between space-y-6">
+            <div className="border-b border-slate-800 pb-3">
+              <h3 className="text-base font-bold text-white">
+                {language === 'ar' ? 'معادلات التفاعل وقانون بقاء الكتلة والتغير في المحتوى الحراري' : 'Balanced Reaction Dynamics & Enthalpy Changes'}
+              </h3>
+              <span className="text-xs text-slate-400">
+                {language === 'ar' ? 'حساب الحصيلة وتكافؤ الذرات قبل وبعد التفاعل الكيميائي' : 'Stoichiometric conservation of mass and reaction enthalpy'}
+              </span>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-slate-950 border border-slate-800 text-center space-y-3">
+              <span className="text-xs text-amber-400 font-bold uppercase tracking-wider block">
+                {language === 'ar' ? selectedReaction.nameAr : selectedReaction.nameEn}
+              </span>
+              <div className="text-xl sm:text-2xl font-black font-mono text-white tracking-wide">
+                {selectedReaction.equation}
+              </div>
+              <div className="inline-block px-3 py-1 rounded-full text-xs font-mono bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                {selectedReaction.enthalpy}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
+                <span className="text-xs text-slate-400 block mb-1">{language === 'ar' ? 'المتفاعلات (Reactants):' : 'Reactants:'}</span>
+                <span className="text-sm font-bold font-mono text-indigo-400">{selectedReaction.reactants}</span>
+              </div>
+              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
+                <span className="text-xs text-slate-400 block mb-1">{language === 'ar' ? 'النواتج (Products):' : 'Products:'}</span>
+                <span className="text-sm font-bold font-mono text-emerald-400">{selectedReaction.products}</span>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/60 p-4 rounded-xl border border-slate-800">
+              {language === 'ar' ? selectedReaction.descAr : selectedReaction.descEn}
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+                {language === 'ar' ? 'اختر التفاعل الكيميائي' : 'Select Chemical Reaction'}
+              </h3>
+              <div className="space-y-2">
+                {CHEMICAL_REACTIONS.map((rxn) => (
+                  <button
+                    key={rxn.id}
+                    onClick={() => setSelectedReaction(rxn)}
+                    className={`w-full p-3 rounded-xl border text-left transition-all flex items-center justify-between ${
+                      selectedReaction.id === rxn.id
+                        ? 'bg-amber-600 border-amber-500 text-white shadow'
+                        : 'bg-slate-950 border-slate-800 text-slate-300 hover:bg-slate-800/60'
+                    }`}
+                  >
+                    <div>
+                      <span className="text-xs font-bold block">{language === 'ar' ? rxn.nameAr : rxn.nameEn}</span>
+                      <span className="text-[10px] text-slate-400 font-mono">{rxn.reactants} &rarr; {rxn.products}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>

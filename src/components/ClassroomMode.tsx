@@ -107,10 +107,9 @@ export const ClassroomMode: React.FC<ClassroomModeProps> = ({ onExit }) => {
         {activeModule === 'geology' && <GeologyLab />}
       </main>
 
-      {/* Bottom Classroom Assistant Banner */}
       <footer className="bg-slate-900/90 border-t border-slate-800 px-6 py-3 flex items-center justify-between text-xs text-slate-400">
-        <div>High-Contrast Projector Output • Keyboard Shortcuts Active: Space (Pause), R (Reset), F (Fullscreen)</div>
-        <div className="font-mono text-emerald-400">ISEF Science Lab Engine v1.0</div>
+        <div>High-Contrast Projector Output &bull; Smartboard Interactive Input Active</div>
+        <div className="font-mono text-emerald-400">SciNexa Virtual Laboratory Engine v2.0</div>
       </footer>
 
     </div>

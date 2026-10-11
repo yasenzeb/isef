@@ -52,7 +52,7 @@ export const Footer: React.FC = () => {
         </div>
 
         <div className="text-center text-[11px] text-slate-600 pt-4 border-t border-slate-900">
-          ISEF Science Learning & Virtual Laboratory • Built for International Science and Engineering Fair Competitions
+          SciNexa &bull; Interactive Science Learning Platform &amp; Virtual Laboratory
         </div>
 
       </div>

@@ -31,9 +31,3 @@ build/
 _anatomy_repo/
 .temp/
 *.log
-
-# Large local raw anatomy datasets not suitable for git limits (GitHub 100MB limit)
-# Note: Keep static web scripts and data under public/ but exclude raw datasets over 100MB if needed
-
-# Heavy binary mesh chunks over 30MB (to stay within standard GitHub and Vercel limits)
-public/anatomy-site/data/zanatomy/*.bin

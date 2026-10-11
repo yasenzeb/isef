@@ -4,6 +4,8 @@ import { EGYPT_GOVERNORATES } from './data/egyptLocationData';
 import { translations } from './i18n/translations';
 import { solveCircuit, CircuitComponent } from './simulators/circuitSolver';
 import { calculateTsunamiSpeed, calculateSeismicTravelTimes } from './simulators/geophysicsSolver';
+import { calculateStructuralResponse } from './simulators/structuralSolver';
+import { SCIENTIFIC_GLOSSARY, getGlossaryTerm } from './data/scientificGlossary';
 
 describe('SciNexa Scientific Virtual Laboratory Test Suite', () => {
   // 1. Chemistry Validation
@@ -68,4 +70,31 @@ describe('SciNexa Scientific Virtual Laboratory Test Suite', () => {
     expect(cairo).toBeDefined();
     expect(cairo?.administrations.length).toBeGreaterThanOrEqual(5);
   });
+
+  // 7. Structural Dynamics and Earthquake Base Isolation Validation
+  it('should calculate base isolation displacement reduction in structural solver', () => {
+    // Fixed base structure: 5 floors, ground freq = 2.5Hz, ground acceleration = 0.3g, baseIsolated = false
+    const fixedResponse = calculateStructuralResponse(5, 2.5, 0.3, false);
+    // Base isolated structure: 5 floors, ground freq = 2.5Hz, ground acceleration = 0.3g, baseIsolated = true
+    const isolatedResponse = calculateStructuralResponse(5, 2.5, 0.3, true);
+
+    // Dynamic amplification is significantly reduced with base isolation due to period lengthening & increased damping
+    expect(fixedResponse.displacementAmplification).toBeGreaterThan(isolatedResponse.displacementAmplification);
+    expect(fixedResponse.peakBaseShearKn).toBeGreaterThan(isolatedResponse.peakBaseShearKn);
+  });
+
+  // 8. Scientific Glossary Validation
+  it('should verify precision of multilingual scientific terminology in glossary', () => {
+    expect(SCIENTIFIC_GLOSSARY.length).toBeGreaterThanOrEqual(8);
+    const dnaTerm = getGlossaryTerm('dna');
+    expect(dnaTerm).toBeDefined();
+    expect(dnaTerm?.ar).toContain('الحمض النووي');
+    expect(dnaTerm?.fr).toContain('ADN');
+
+    const mnaTerm = getGlossaryTerm('mna_solver');
+    expect(mnaTerm).toBeDefined();
+    expect(mnaTerm?.ar).toContain('المُعَدَّل');
+  });
 });
+
+
