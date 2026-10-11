@@ -200,8 +200,8 @@ export interface Translations {
 
 export const translations: Record<Language, Translations> = {
   en: {
-    appName: "ISEF Science Platform",
-    appTagline: "Interactive 3D Science Learning & Virtual Laboratory",
+    appName: "SciNexa",
+    appTagline: "Interactive Science Learning Platform & Virtual Laboratory",
     appDescription: "Empowering STEM learners with high-fidelity 3D anatomical models, real-time physics simulations, and comprehensive scientific laboratories.",
     nav: {
       home: "Home",
@@ -398,8 +398,8 @@ export const translations: Record<Language, Translations> = {
   },
 
   ar: {
-    appName: "منصة آيسف للعلوم التفاعلية",
-    appTagline: "مختبر تفاعلي ثلاثي الأبعاد لتعليم العلوم والبحث العلمي",
+    appName: "SciNexa — ساي نكسا",
+    appTagline: "منصة العلوم التفاعلية والمختبر الافتراضي الذكي",
     appDescription: "تمكين طلاب العلوم والتكنولوجيا من خلال نماذج تشريحية متقدمة ثلاثية الأبعاد، ومحاكاة فيزيائية حية، ومختبرات علمية متكاملة.",
     nav: {
       home: "الرئيسية",
@@ -596,8 +596,8 @@ export const translations: Record<Language, Translations> = {
   },
 
   fr: {
-    appName: "Plateforme Scientifique ISEF",
-    appTagline: "Apprentissage Scientifique 3D Interactif & Laboratoire Virtuel",
+    appName: "SciNexa",
+    appTagline: "Plateforme d'Apprentissage Scientifique & Laboratoire Virtuel",
     appDescription: "Offrir aux étudiants des outils d'exploration immersifs: modèles 3D anatomiques de haute précision, simulations physiques en temps réel et laboratoires intégrés.",
     nav: {
       home: "Accueil",
@@ -794,8 +794,8 @@ export const translations: Record<Language, Translations> = {
   },
 
   de: {
-    appName: "ISEF Wissenschaftsplattform",
-    appTagline: "Interaktive 3D-Wissenschaftslehre & Virtuelles Labor",
+    appName: "SciNexa",
+    appTagline: "Interaktive Wissenschaftsplattform & Virtuelles Labor",
     appDescription: "Förderung von MINT-Lernenden durch hochpräzise 3D-Anatomiemodelle, Echtzeit-Physiksimulationen und umfassende wissenschaftliche Labore.",
     nav: {
       home: "Startseite",

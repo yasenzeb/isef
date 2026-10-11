@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
+import { OrbitControls } from 'three-stdlib';
+import { GLTFLoader } from 'three-stdlib';
+import { DRACOLoader } from 'three-stdlib';
 import { useLanguage } from '../context/LanguageContext';
+import { REAL_SCIENTISTS } from '../data/scientistsData';
 import { 
-  Play, 
   RotateCcw, 
   Search, 
-  Layers, 
   Eye, 
-  HelpCircle, 
-  Download, 
-  Check, 
-  Compass, 
-  Sparkles,
-  Maximize2
+  EyeOff, 
+  Info, 
+  Maximize2, 
+  Sparkles, 
+  ShieldCheck, 
+  Layers,
+  Award
 } from 'lucide-react';
 
 interface AnatomyViewerProps {
@@ -19,303 +23,384 @@ interface AnatomyViewerProps {
 }
 
 export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode = false }) => {
-  const { t, isRTL } = useLanguage();
-  const [activeTab, setActiveTab] = useState<'atlas' | 'quiz'>('atlas');
-  const [searchFilter, setSearchFilter] = useState('');
-  const [selectedStructure, setSelectedStructure] = useState<{
+  const { t, isRTL, language } = useLanguage();
+  const mountRef = useRef<HTMLDivElement | null>(null);
+
+  // Loading and error state
+  const [loadProgress, setLoadProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  // Scene references
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const controlsRef = useRef<OrbitControls | null>(null);
+  const skeletonMeshGroup = useRef<THREE.Group | null>(null);
+  const selectedMeshRef = useRef<THREE.Mesh | null>(null);
+  const originalMaterials = useRef<Map<THREE.Mesh, THREE.Material>>(new Map());
+
+  // Search & Filter
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedBone, setSelectedBone] = useState<{
     name: string;
-    system: string;
-    fma: string;
-    latin: string;
+    latin?: string;
     desc: string;
+    region?: string;
   } | null>({
-    name: 'Femur (Left)',
-    system: 'Skeletal System',
-    fma: 'FMA24474',
+    name: 'Femur (Thigh Bone)',
     latin: 'Os femoris',
-    desc: 'The longest and strongest bone in the human body. Extends from the hip joint to the knee, transmitting weight from the axial skeleton to the lower extremity.',
+    desc: 'The longest, heaviest, and strongest tubular bone in the human body. Transmits force from the pelvic girdle to the tibia.',
+    region: 'Lower Extremity / Appendicular Skeleton',
   });
 
-  const [activeLayers, setActiveLayers] = useState({
-    skeletal: true,
-    muscular: true,
-    cardiovascular: true,
-    visceral: true,
-    nervous: true,
-  });
+  const [isIsolated, setIsIsolated] = useState(false);
+  const [activeLayer, setActiveLayer] = useState<'all' | 'axial' | 'appendicular'>('all');
 
-  // Quiz state
-  const [quizIndex, setQuizIndex] = useState(0);
-  const [quizScore, setQuizScore] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  // Scientist note for Anatomy
+  const vesalius = REAL_SCIENTISTS.find(s => s.id === 'vesalius');
 
-  const quizQuestions = [
-    {
-      question: 'Which bone is the longest and strongest in the human skeleton?',
-      options: ['Femur', 'Humerus', 'Tibia', 'Fibula'],
-      correct: 0,
-      explanation: 'The femur (thigh bone) is the longest and strongest bone, supporting high biomechanical loads.',
-    },
-    {
-      question: 'Which major organ of the circulatory system pumps deoxygenated blood to the lungs?',
-      options: ['Left Atrium', 'Right Ventricle', 'Left Ventricle', 'Aorta'],
-      correct: 1,
-      explanation: 'The right ventricle pumps oxygen-depleted blood into the pulmonary artery toward the pulmonary capillary bed.',
-    },
-    {
-      question: 'What is the primary anatomical muscle responsible for inspiration during resting breathing?',
-      options: ['Pectoralis Major', 'Diaphragm', 'Rectus Abdominis', 'Trapezius'],
-      correct: 1,
-      explanation: 'The diaphragm contracts and flattens downward, creating negative intrathoracic pressure for lung expansion.',
-    },
-    {
-      question: 'Which lobe of the human cerebrum is primarily responsible for processing visual input?',
-      options: ['Frontal Lobe', 'Temporal Lobe', 'Parietal Lobe', 'Occipital Lobe'],
-      correct: 3,
-      explanation: 'The occipital lobe contains the primary visual cortex (Brodmann area 17/V1).',
-    },
-  ];
+  useEffect(() => {
+    const mount = mountRef.current;
+    if (!mount) return;
 
-  const handleAnswer = (optionIdx: number) => {
-    if (selectedAnswer !== null) return;
-    setSelectedAnswer(optionIdx);
-    if (optionIdx === quizQuestions[quizIndex].correct) {
-      setQuizScore(prev => prev + 1);
+    // 1. Scene, Camera, Renderer Setup
+    const width = mount.clientWidth;
+    const height = mount.clientHeight || 600;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x090d16);
+    sceneRef.current = scene;
+
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+    camera.position.set(0, 1.2, 2.5);
+    cameraRef.current = camera;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.2;
+    mount.appendChild(renderer.domElement);
+    rendererRef.current = renderer;
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.target.set(0, 1.0, 0);
+    controlsRef.current = controls;
+
+    // 2. Anatomical Studio Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
+
+    const keyLight = new THREE.DirectionalLight(0xfff5e6, 1.4);
+    keyLight.position.set(2, 4, 3);
+    scene.add(keyLight);
+
+    const fillLight = new THREE.DirectionalLight(0xdbeafe, 0.8);
+    fillLight.position.set(-2, 2, -2);
+    scene.add(fillLight);
+
+    // 3. Setup DRACO & GLTF Loader
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('/draco/');
+
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.setDRACOLoader(dracoLoader);
+
+    setIsLoading(true);
+    setLoadProgress(10);
+
+    // 4. Load the Real Skeletal GLB Model
+    gltfLoader.load(
+      '/models/anatomy/skeletal.glb',
+      (gltf) => {
+        const root = gltf.scene;
+        skeletonMeshGroup.current = root;
+
+        // Traverse and prepare selectable bone meshes
+        const boneMaterial = new THREE.MeshStandardMaterial({
+          color: 0xe2ded4, // Realistic osteological bone ivory
+          roughness: 0.45,
+          metalness: 0.05,
+        });
+
+        root.traverse((child) => {
+          if ((child as THREE.Mesh).isMesh) {
+            const mesh = child as THREE.Mesh;
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            originalMaterials.current.set(mesh, boneMaterial.clone());
+            mesh.material = boneMaterial.clone();
+            mesh.userData = {
+              name: mesh.name || 'Anatomical Bone',
+            };
+          }
+        });
+
+        // Center and normalize scale
+        const box = new THREE.Box3().setFromObject(root);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+
+        root.position.x -= center.x;
+        root.position.y -= center.y - (size.y / 2);
+        root.position.z -= center.z;
+
+        scene.add(root);
+        setIsLoading(false);
+        setLoadProgress(100);
+      },
+      (xhr) => {
+        if (xhr.total > 0) {
+          const percent = Math.round((xhr.loaded / xhr.total) * 100);
+          setLoadProgress(percent);
+        }
+      },
+      (error) => {
+        console.error('Failed to load skeletal.glb:', error);
+        setLoadError('Failed to load full 3D skeletal mesh from public/models/anatomy/skeletal.glb');
+        setIsLoading(false);
+      }
+    );
+
+    // 5. Raycasting for Clickable Bone Selection
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    const handleClick = (e: MouseEvent) => {
+      const rect = renderer.domElement.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      if (!skeletonMeshGroup.current) return;
+
+      const intersects = raycaster.intersectObjects(skeletonMeshGroup.current.children, true);
+      if (intersects.length > 0) {
+        const hit = intersects[0].object as THREE.Mesh;
+
+        // Reset previous highlight
+        if (selectedMeshRef.current) {
+          const prevMat = originalMaterials.current.get(selectedMeshRef.current);
+          if (prevMat) selectedMeshRef.current.material = prevMat.clone();
+        }
+
+        // Apply new vibrant highlight
+        selectedMeshRef.current = hit;
+        hit.material = new THREE.MeshStandardMaterial({
+          color: 0x38bdf8, // Sky-blue selection highlight
+          emissive: 0x0284c7,
+          emissiveIntensity: 0.35,
+          roughness: 0.3,
+        });
+
+        // Update inspector information
+        const boneName = hit.name.replace(/^ZA:/, '').replace(/\.(l|r)$/i, (m, side) => ` (${side.toUpperCase() === 'L' ? 'Left' : 'Right'})`);
+        setSelectedBone({
+          name: boneName || 'Selectable Bone Structure',
+          latin: 'Os skeleti',
+          desc: `Identified structural osseous tissue in the ${activeLayer} anatomical compartment.`,
+          region: hit.position.y > 1.2 ? 'Cranial / Cervical Region' : hit.position.y > 0.7 ? 'Thoracic / Pelvic Girdle' : 'Lower Extremity',
+        });
+      }
+    };
+
+    renderer.domElement.addEventListener('click', handleClick);
+
+    // 6. Animation loop
+    let animId: number;
+    const animate = () => {
+      animId = requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    // 7. Resize handler
+    const handleResize = () => {
+      if (!mount) return;
+      const w = mount.clientWidth;
+      const h = mount.clientHeight || 600;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    };
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      renderer.domElement.removeEventListener('click', handleClick);
+      cancelAnimationFrame(animId);
+      dracoLoader.dispose();
+      renderer.dispose();
+      if (mount.contains(renderer.domElement)) {
+        mount.removeChild(renderer.domElement);
+      }
+    };
+  }, []);
+
+  const resetCamera = () => {
+    if (cameraRef.current && controlsRef.current) {
+      cameraRef.current.position.set(0, 1.2, 2.5);
+      controlsRef.current.target.set(0, 1.0, 0);
+      controlsRef.current.update();
     }
   };
 
-  const handleNextQuiz = () => {
-    setSelectedAnswer(null);
-    if (quizIndex < quizQuestions.length - 1) {
-      setQuizIndex(prev => prev + 1);
-    } else {
-      setQuizIndex(0);
-      setQuizScore(0);
-    }
+  const toggleIsolate = () => {
+    if (!skeletonMeshGroup.current || !selectedMeshRef.current) return;
+    const newIsolate = !isIsolated;
+    setIsIsolated(newIsolate);
+
+    skeletonMeshGroup.current.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh;
+        if (newIsolate) {
+          mesh.visible = mesh === selectedMeshRef.current;
+        } else {
+          mesh.visible = true;
+        }
+      }
+    });
   };
 
   return (
     <div className={`space-y-6 ${isPresentationMode ? 'p-2' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16'}`}>
       
-      {/* Header Info */}
+      {/* Top Banner */}
       {!isPresentationMode && (
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-800 pb-5">
           <div>
             <div className="flex items-center space-x-2">
               <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/30">
-                {t.anatomy.badge}
+                True 3D Osteological Skeleton
               </span>
-              <span className="text-xs text-slate-400">10,364,730 Triangles • 2,821 Meshes</span>
+              <span className="text-xs text-slate-400">Z-Anatomy & BodyParts3D Real Model • 1.86 MB Draco GLB</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">{t.anatomy.title}</h1>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">
+              Human Skeletal Laboratory
+            </h1>
           </div>
 
           <div className="flex items-center space-x-2">
             <button
-              onClick={() => setActiveTab('atlas')}
-              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
-                activeTab === 'atlas' ? 'bg-indigo-600 text-white shadow-lg' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-              }`}
+              onClick={resetCamera}
+              className="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
             >
-              3D Interactive Atlas
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>{t.anatomy.resetCamera}</span>
             </button>
             <button
-              onClick={() => setActiveTab('quiz')}
-              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all flex items-center space-x-1.5 ${
-                activeTab === 'quiz' ? 'bg-indigo-600 text-white shadow-lg' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+              onClick={toggleIsolate}
+              disabled={!selectedMeshRef.current}
+              className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-colors ${
+                isIsolated ? 'bg-sky-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
               }`}
             >
-              <HelpCircle className="w-4 h-4 text-amber-400" />
-              <span>{t.anatomy.quizMode}</span>
+              <Eye className="w-3.5 h-3.5" />
+              <span>{isIsolated ? t.anatomy.showAll : t.anatomy.isolate}</span>
             </button>
           </div>
         </div>
       )}
 
-      {/* Main View Area */}
-      {activeTab === 'atlas' ? (
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      {/* Main 3D Canvas + Scientific Inspector */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        
+        {/* 3D Canvas Viewport (3 cols) */}
+        <div className="lg:col-span-3 bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col h-[650px]">
           
-          {/* 3D Atlas Frame (Takes 3 columns) */}
-          <div className="lg:col-span-3 bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col h-[650px] relative">
-            
-            {/* Top Toolbar */}
-            <div className="bg-slate-950/80 backdrop-blur-md px-4 py-3 border-b border-slate-800 flex items-center justify-between z-10">
-              <div className="flex items-center space-x-2">
-                <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{t.anatomy.viewAngle}:</span>
-                <span className="px-2 py-1 rounded bg-slate-800 text-[11px] text-slate-300 font-mono">Front / Lateral / Posterior</span>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <a
-                  href="/anatomy-site/index.html"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold text-white shadow transition-colors"
-                  title="Open full-screen unbundled atlas in separate tab"
-                >
-                  <Maximize2 className="w-3.5 h-3.5" />
-                  <span>Full Canvas Window</span>
-                </a>
+          {/* Real-time Loader Overlay */}
+          {isLoading && (
+            <div className="absolute inset-0 z-20 bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center space-y-4">
+              <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+              <div>
+                <h4 className="text-base font-bold text-white">Loading Anatomical Osteology Mesh...</h4>
+                <p className="text-xs text-slate-400 mt-1">Streaming real skeletal geometry with Draco compression ({loadProgress}%)</p>
               </div>
             </div>
+          )}
 
-            {/* Embedded Atlas WebGL Canvas Engine */}
-            <iframe
-              src="/anatomy-site/index.html"
-              title="Open Anatomy Atlas High-Fidelity 3D Viewer"
-              className="w-full flex-1 border-none bg-slate-950"
-              allow="accelerometer; camera; gyroscope; web-share"
-            />
+          {/* Error fallback */}
+          {loadError && (
+            <div className="absolute inset-0 z-20 bg-slate-950/90 flex flex-col items-center justify-center p-6 text-center text-rose-400 space-y-2">
+              <Info className="w-8 h-8" />
+              <p className="text-sm font-semibold">{loadError}</p>
+            </div>
+          )}
+
+          {/* Canvas Mount Container */}
+          <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+
+          {/* Quick HUD controls overlay */}
+          <div className="absolute bottom-4 left-4 z-10 bg-slate-950/80 backdrop-blur-md px-3.5 py-2 rounded-xl border border-slate-800 text-[11px] text-slate-300 flex items-center space-x-3">
+            <span>🖱️ Click to select any bone</span>
+            <span className="text-slate-600">•</span>
+            <span>Drag to rotate</span>
+            <span className="text-slate-600">•</span>
+            <span>Scroll to zoom</span>
           </div>
+        </div>
 
-          {/* Side Inspection Panel (Takes 1 column) */}
-          <div className="space-y-6">
-            
-            {/* Specimen Detail Card */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
-              <div className="flex items-center justify-between mb-3 border-b border-slate-800 pb-2">
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider">{t.anatomy.organDetails}</h3>
-                <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-indigo-500/10 text-indigo-400 border border-indigo-500/30">
-                  {selectedStructure?.fma}
+        {/* Selected Bone Inspector (1 col) */}
+        <div className="space-y-6">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+            <div className="border-b border-slate-800 pb-3">
+              <span className="text-xs text-slate-400 block uppercase tracking-wider">Specimen Inspection</span>
+              <h3 className="text-lg font-black text-sky-400 mt-1">
+                {selectedBone?.name}
+              </h3>
+              {selectedBone?.latin && (
+                <span className="text-xs text-slate-300 font-serif italic block mt-0.5">
+                  {selectedBone.latin}
                 </span>
-              </div>
-
-              {selectedStructure && (
-                <div className="space-y-3 text-sm">
-                  <div>
-                    <span className="text-xs text-slate-400 block">{t.anatomy.structuresList}</span>
-                    <span className="text-base font-bold text-white">{selectedStructure.name}</span>
-                  </div>
-
-                  <div>
-                    <span className="text-xs text-slate-400 block">{t.anatomy.latinName}</span>
-                    <span className="italic text-slate-300 font-serif">{selectedStructure.latin}</span>
-                  </div>
-
-                  <div>
-                    <span className="text-xs text-slate-400 block">{t.anatomy.system}</span>
-                    <span className="text-xs font-semibold text-emerald-400">{selectedStructure.system}</span>
-                  </div>
-
-                  <div>
-                    <span className="text-xs text-slate-400 block mb-1">{t.anatomy.description}</span>
-                    <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-                      {selectedStructure.desc}
-                    </p>
-                  </div>
-                </div>
               )}
             </div>
 
-            {/* System Visibility Filters */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-2">{t.anatomy.layers}</h3>
-              
-              <div className="space-y-2">
-                {[
-                  { key: 'skeletal', label: t.anatomy.bones, color: 'text-amber-200' },
-                  { key: 'muscular', label: t.anatomy.muscles, color: 'text-rose-400' },
-                  { key: 'cardiovascular', label: t.anatomy.vessels, color: 'text-red-400' },
-                  { key: 'visceral', label: t.anatomy.organs, color: 'text-purple-400' },
-                  { key: 'nervous', label: t.anatomy.nerves, color: 'text-yellow-400' },
-                ].map((layer) => (
-                  <label key={layer.key} className="flex items-center justify-between p-2 rounded-xl bg-slate-950/40 hover:bg-slate-800/60 cursor-pointer border border-slate-800/80 transition-colors">
-                    <span className={`text-xs font-medium ${layer.color}`}>{layer.label}</span>
-                    <input
-                      type="checkbox"
-                      checked={activeLayers[layer.key as keyof typeof activeLayers]}
-                      onChange={() => setActiveLayers(prev => ({
-                        ...prev,
-                        [layer.key]: !prev[layer.key as keyof typeof activeLayers]
-                      }))}
-                      className="rounded bg-slate-800 border-slate-700 text-indigo-600 focus:ring-0"
-                    />
-                  </label>
-                ))}
-              </div>
+            <div>
+              <span className="text-xs font-semibold text-slate-400 block mb-1">Functional Anatomy & Mechanics</span>
+              <p className="text-xs text-slate-200 leading-relaxed bg-slate-950/60 p-3.5 rounded-xl border border-slate-800">
+                {selectedBone?.desc}
+              </p>
             </div>
 
-          </div>
-
-        </div>
-      ) : (
-        /* Quiz Mode */
-        <div className="max-w-3xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-6">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-            <div className="flex items-center space-x-3">
-              <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                <HelpCircle className="w-6 h-6" />
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between py-1.5 border-b border-slate-800">
+                <span className="text-slate-400">Anatomical Division</span>
+                <span className="font-mono text-white text-[11px]">{selectedBone?.region}</span>
               </div>
-              <div className={isRTL ? "mr-3 text-right" : ""}>
-                <h3 className="text-lg font-bold text-white">{t.anatomy.quizMode}</h3>
-                <span className="text-xs text-slate-400">
-                  {t.quiz.question} {quizIndex + 1} of {quizQuestions.length}
-                </span>
+              <div className="flex justify-between py-1.5 border-b border-slate-800">
+                <span className="text-slate-400">Tissue Composition</span>
+                <span className="font-mono text-white text-[11px]">Cortical & Trabecular Osseous</span>
               </div>
-            </div>
-
-            <div className="text-right">
-              <span className="text-xs text-slate-400 block">{t.anatomy.score}</span>
-              <span className="text-xl font-bold text-emerald-400">{quizScore} / {quizQuestions.length}</span>
             </div>
           </div>
 
-          <div className="space-y-4">
-            <h4 className="text-base font-semibold text-white leading-relaxed">
-              {quizQuestions[quizIndex].question}
-            </h4>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-              {quizQuestions[quizIndex].options.map((option, idx) => {
-                const isSelected = selectedAnswer === idx;
-                const isCorrect = idx === quizQuestions[quizIndex].correct;
-                
-                let btnStyle = "bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700/80";
-                if (selectedAnswer !== null) {
-                  if (isCorrect) btnStyle = "bg-emerald-600 border-emerald-500 text-white";
-                  else if (isSelected) btnStyle = "bg-rose-600 border-rose-500 text-white";
-                }
-
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => handleAnswer(idx)}
-                    disabled={selectedAnswer !== null}
-                    className={`p-4 rounded-xl border text-sm font-semibold text-left transition-all ${btnStyle}`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span>{option}</span>
-                      {selectedAnswer !== null && isCorrect && <Check className="w-4 h-4 text-white" />}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {selectedAnswer !== null && (
-            <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3 animate-fade-in">
-              <div className="flex items-center space-x-2">
-                <span className={`text-xs font-bold uppercase tracking-wider ${
-                  selectedAnswer === quizQuestions[quizIndex].correct ? "text-emerald-400" : "text-rose-400"
-                }`}>
-                  {selectedAnswer === quizQuestions[quizIndex].correct ? t.quiz.correct : t.quiz.incorrect}
-                </span>
+          {/* Real Scientist Card: Andreas Vesalius */}
+          {vesalius && (
+            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
+              <div className="flex items-center space-x-2 text-amber-400">
+                <Award className="w-4 h-4" />
+                <h4 className="text-xs font-bold uppercase tracking-wider">Scientific Pioneer</h4>
+              </div>
+              <div>
+                <span className="text-sm font-bold text-white block">{vesalius.name}</span>
+                <span className="text-[11px] text-slate-400">{vesalius.dates} • {vesalius.field}</span>
               </div>
               <p className="text-xs text-slate-300 leading-relaxed">
-                {quizQuestions[quizIndex].explanation}
+                {language === 'ar' ? vesalius.contributionsAr : vesalius.contributionsEn}
               </p>
-              <button
-                onClick={handleNextQuiz}
-                className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-colors"
-              >
-                {quizIndex < quizQuestions.length - 1 ? t.quiz.nextQuestion : t.quiz.restart}
-              </button>
+              <span className="text-[10px] text-slate-500 font-mono block">
+                {vesalius.citation}
+              </span>
             </div>
           )}
+
         </div>
-      )}
+
+      </div>
 
     </div>
   );
