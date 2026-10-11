@@ -3,104 +3,288 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three-stdlib';
 import { useLanguage } from '../context/LanguageContext';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
-import { Dna, Activity, Award, Check, RefreshCw, ZoomIn } from 'lucide-react';
+import { Dna, Award, Check, Eye, EyeOff, Layers, Scissors, ShieldAlert } from 'lucide-react';
 
-interface Organelle {
+interface OrganelleData {
   id: string;
   nameEn: string;
   nameAr: string;
+  color: number;
+  position: [number, number, number];
+  radius: number;
   roleEn: string;
   roleAr: string;
   foundIn: 'both' | 'plant' | 'animal';
   sizeNm: string;
 }
 
-const ORGANELLES: Organelle[] = [
+const ORGANELLES_3D: OrganelleData[] = [
   {
     id: 'nucleus',
-    nameEn: 'Nucleus (Cellular Karyon)',
-    nameAr: 'النواة الخلوية',
+    nameEn: 'Nucleus & Nucleolus',
+    nameAr: 'النواة والنوية',
+    color: 0x8b5cf6,
+    position: [0, 0, 0],
+    radius: 0.9,
     roleEn: 'Repository of genomic DNA; coordinates transcription, mRNA splicing, and chromosome replication.',
-    roleAr: 'مستودع المادة الوراثية (DNA)؛ تدير نسخ الجينات وانقسام وتكاثر الخلية وتخليق الحمض النووي الريبوزي.',
+    roleAr: 'مستودع المادة الوراثية (DNA)؛ تدير نسخ الجينات وانقسام الخلية وتخليق وتجميع الريبوسومات في النوية.',
     foundIn: 'both',
     sizeNm: '5,000 - 10,000 nm',
   },
   {
     id: 'mitochondria',
-    nameEn: 'Mitochondrion (Chondriosome)',
-    nameAr: 'الميتوكوندريا (المتقدرة)',
+    nameEn: 'Mitochondria (Powerhouse)',
+    nameAr: 'الميتوكوندريا (المتقدرات)',
+    color: 0xf97316,
+    position: [1.6, 0.7, 0.5],
+    radius: 0.45,
     roleEn: 'ATP synthesis via oxidative phosphorylation, electron transport chain, and citric acid cycle.',
-    roleAr: 'محطة توليد الطاقة في الخلية؛ تنتج جزيئات ATP عبر الفسفرة التأكسدية وسلسلة نقل الإلكترونات ودورة كريبس.',
+    roleAr: 'محطة توليد الطاقة للخلية؛ تنتج جزيئات ATP عبر الفسفرة التأكسدية وسلسلة نقل الإلكترونات ودورة كريبس.',
     foundIn: 'both',
     sizeNm: '500 - 1,000 nm',
   },
   {
     id: 'chloroplast',
-    nameEn: 'Chloroplast (Plastid)',
+    nameEn: 'Chloroplast (Thylakoids)',
     nameAr: 'البلاستيدة الخضراء',
-    roleEn: 'Photosynthesis site; converts light energy into ATP and NADPH, synthesizing hexose sugars in the Calvin cycle.',
-    roleAr: 'مقر عملية البناء الضوئي؛ تحول الطاقة الضوئية للكلوروفيل إلى طاقة كيميائية في الجلوكوز وسكر السداسي.',
+    color: 0x10b981,
+    position: [-1.5, 0.9, -0.6],
+    radius: 0.5,
+    roleEn: 'Photosynthesis site containing chlorophyll stacks; converts photon energy into glucose in the Calvin cycle.',
+    roleAr: 'مقر البناء الضوئي؛ تحول طاقة الضوء وثاني أكسيد الكربون إلى سكريات ونشويات عبر دورة كالفن.',
     foundIn: 'plant',
     sizeNm: '2,000 - 5,000 nm',
   },
   {
-    id: 'ribosome',
-    nameEn: 'Ribosome (Ribonucleoprotein)',
-    nameAr: 'الريبوسوم',
-    roleEn: 'Translates mRNA transcripts into polypeptide chains using tRNA adapters (peptidyl transferase activity).',
-    roleAr: 'المصنع الجزيئي الذي يترجم شفرة mRNA إلى سلاسل ببتيدية وبروتينات وظيفية باستخدام RNA الناقل.',
+    id: 'golgi',
+    nameEn: 'Golgi Apparatus',
+    nameAr: 'جهاز غولجي الإفرازي',
+    color: 0xeab308,
+    position: [-1.2, -0.8, 0.8],
+    radius: 0.4,
+    roleEn: 'Modifies, sorts, and packages glycoproteins and lipids for intra- and extracellular secretion.',
+    roleAr: 'تعديل وطيّ وتغليف البروتينات والليبيدات الإفرازية في حويصلات متخصصة للنقل داخل الخلية أو خارجها.',
     foundIn: 'both',
-    sizeNm: '20 - 30 nm',
+    sizeNm: '1,000 - 2,000 nm',
+  },
+  {
+    id: 'er',
+    nameEn: 'Endoplasmic Reticulum (Rough & Smooth)',
+    nameAr: 'الشبكة الإندوبلازمية (الخشنة والملساء)',
+    color: 0xec4899,
+    position: [0.9, -0.9, -0.5],
+    radius: 0.55,
+    roleEn: 'Rough ER synthesizes membrane proteins; smooth ER synthesizes lipids and handles calcium homeostasis.',
+    roleAr: 'تخليق سلاسل البروتين بواسطة ريبوسومات الشبكة الخشنة، وتخليق الليبيدات وإزالة السموم في الشبكة الملساء.',
+    foundIn: 'both',
+    sizeNm: 'Variable membranous folds',
+  },
+  {
+    id: 'vacuole',
+    nameEn: 'Central / Cellular Vacuole',
+    nameAr: 'الفجوة العصارية المركزية',
+    color: 0x06b6d4,
+    position: [0, 1.4, -0.8],
+    radius: 0.7,
+    roleEn: 'Maintains turgor pressure against the cell wall, stores amino acids, nutrients, and waste products.',
+    roleAr: 'تحافظ على ضغط الامتلاء الإسموزي داخل الخلية، وتخزن المواد الغذائية والأيونات المائية والأصباغ.',
+    foundIn: 'both',
+    sizeNm: 'Large central compartment',
   },
   {
     id: 'cell_wall',
     nameEn: 'Cellulose Cell Wall',
     nameAr: 'الجدار الخلوي السليولوزي',
-    roleEn: 'Rigid outer matrix composed of cellulose microfibrils that resists internal turgor osmotic pressure.',
-    roleAr: 'طبقة خارجية صلبة من ألياف السليولوز توفر دعامة ميكانيكية قوية وتقاوم ضغط الامتلاء الإسموزي الداخلي.',
+    color: 0x22c55e,
+    position: [0, 0, 0],
+    radius: 2.8,
+    roleEn: 'Rigid outer matrix of cellulose microfibrils that resists osmotic lysis and provides mechanical structure.',
+    roleAr: 'دعامة تركيبية صلبة تقاوم ضغط الامتلاء الإسموزي الداخلي وتحمي الخلية النباتية من التمزق.',
     foundIn: 'plant',
     sizeNm: '100 - 1,000 nm thick',
   },
 ];
 
 export const BiologyLab: React.FC = () => {
-  const { t, language, isRTL } = useLanguage();
-  const [activeTab, setActiveTab] = useState<'cytology' | 'dna'>('cytology');
+  const { t, language } = useLanguage();
+  const [activeTab, setActiveTab] = useState<'cell_3d' | 'dna'>('cell_3d');
   const [cellType, setCellType] = useState<'plant' | 'animal'>('plant');
-  const [selectedOrganelle, setSelectedOrganelle] = useState<Organelle>(ORGANELLES[0]);
+  const [selectedOrganelle, setSelectedOrganelle] = useState<OrganelleData>(ORGANELLES_3D[0]);
+  const [isCrossSection, setIsCrossSection] = useState(true);
 
   // DNA Interactive Base-Pairing State
   const [selectedBase, setSelectedBase] = useState<'A' | 'T' | 'C' | 'G'>('A');
   const [userPair, setUserPair] = useState<string | null>(null);
   const [pairFeedback, setPairFeedback] = useState<string | null>(null);
 
-  // 3D Canvas ref for DNA Double Helix
+  // 3D Canvas refs
+  const cellMountRef = useRef<HTMLDivElement | null>(null);
   const dnaMountRef = useRef<HTMLDivElement | null>(null);
-  const franklin = REAL_SCIENTISTS.find(s => s.id === 'franklin');
-  const availableOrganelles = ORGANELLES.filter(o => o.foundIn === 'both' || o.foundIn === cellType);
+  const organelleMeshes = useRef<Map<string, THREE.Mesh>>(new Map());
 
-  // Handle base pair matching quiz
+  const franklin = REAL_SCIENTISTS.find(s => s.id === 'franklin');
+  const activeOrganelles = ORGANELLES_3D.filter(o => o.foundIn === 'both' || o.foundIn === cellType);
+
+  // Base pair matching quiz
   const handlePairCheck = (candidate: 'A' | 'T' | 'C' | 'G') => {
     setUserPair(candidate);
     const correctComplement: Record<string, string> = { A: 'T', T: 'A', C: 'G', G: 'C' };
     if (correctComplement[selectedBase] === candidate) {
-      setPairFeedback(language === 'ar' ? `صحيح! يرتبط ${selectedBase} بـ ${candidate} بروابط هيدروجينية نوعية.` : `Correct! ${selectedBase} pairs with ${candidate} via specific hydrogen bonds.`);
+      setPairFeedback(
+        language === 'ar' 
+          ? `صحيح ومطابق علمياً! يرتبط ${selectedBase} بالقاعدة المكملة ${candidate} بواسطة روابط هيدروجينية نوعية.` 
+          : `Correct! ${selectedBase} bonds with complementary ${candidate} via specific hydrogen bonding.`
+      );
     } else {
-      setPairFeedback(language === 'ar' ? `غير صحيح. القاعدة المكملة لـ ${selectedBase} هي ${correctComplement[selectedBase]}.` : `Incorrect. The complementary base for ${selectedBase} is ${correctComplement[selectedBase]}.`);
+      setPairFeedback(
+        language === 'ar' 
+          ? `غير صحيح. القاعدة النيتروجينية المكملة لـ ${selectedBase} هي ${correctComplement[selectedBase]}.` 
+          : `Incorrect. The complementary nitrogenous base for ${selectedBase} is ${correctComplement[selectedBase]}.`
+      );
     }
   };
 
-  // 3D Double Helix Render
+  // 3D Interactive Cell Simulation
+  useEffect(() => {
+    if (activeTab !== 'cell_3d') return;
+    const mount = cellMountRef.current;
+    if (!mount) return;
+
+    const width = mount.clientWidth;
+    const height = mount.clientHeight || 520;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x060b18);
+
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+    camera.position.set(0, 2.5, 6.5);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    mount.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.9));
+    const pointLight = new THREE.PointLight(0x38bdf8, 2, 20);
+    pointLight.position.set(4, 5, 5);
+    scene.add(pointLight);
+
+    const cellGroup = new THREE.Group();
+    organelleMeshes.current.clear();
+
+    // Outer Membrane / Wall
+    const membraneGeo = cellType === 'plant' 
+      ? new THREE.BoxGeometry(4.8, 3.8, 3.8)
+      : new THREE.SphereGeometry(2.4, 32, 32, 0, Math.PI * (isCrossSection ? 1.5 : 2));
+
+    const membraneMat = new THREE.MeshStandardMaterial({
+      color: cellType === 'plant' ? 0x15803d : 0x0284c7,
+      transparent: true,
+      opacity: 0.22,
+      roughness: 0.3,
+      side: THREE.DoubleSide,
+    });
+    const membraneMesh = new THREE.Mesh(membraneGeo, membraneMat);
+    cellGroup.add(membraneMesh);
+
+    // Organelles
+    activeOrganelles.forEach(org => {
+      if (org.id === 'cell_wall') return; // Rendered as container
+
+      let geo: THREE.BufferGeometry;
+      if (org.id === 'nucleus') {
+        geo = new THREE.SphereGeometry(org.radius, 24, 24);
+      } else if (org.id === 'mitochondria') {
+        geo = new THREE.CapsuleGeometry(0.25, 0.5, 12, 16);
+      } else if (org.id === 'chloroplast') {
+        geo = new THREE.CylinderGeometry(0.4, 0.4, 0.2, 16);
+      } else {
+        geo = new THREE.DodecahedronGeometry(org.radius);
+      }
+
+      const mat = new THREE.MeshStandardMaterial({
+        color: org.color,
+        roughness: 0.4,
+        metalness: 0.1,
+      });
+
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.set(...org.position);
+      mesh.userData = { id: org.id };
+      organelleMeshes.current.set(org.id, mesh);
+      cellGroup.add(mesh);
+    });
+
+    scene.add(cellGroup);
+
+    // Raycaster click selection
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    const handleClick = (e: MouseEvent) => {
+      const rect = renderer.domElement.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const meshes = Array.from(organelleMeshes.current.values());
+      const intersects = raycaster.intersectObjects(meshes, false);
+
+      if (intersects.length > 0) {
+        const hit = intersects[0].object as THREE.Mesh;
+        const orgId = hit.userData.id;
+        const targetOrg = ORGANELLES_3D.find(o => o.id === orgId);
+        if (targetOrg) setSelectedOrganelle(targetOrg);
+      }
+    };
+
+    renderer.domElement.addEventListener('click', handleClick);
+
+    let animId: number;
+    const animate = () => {
+      animId = requestAnimationFrame(animate);
+      cellGroup.rotation.y += 0.003;
+      controls.update();
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    const handleResize = () => {
+      if (!mount) return;
+      const w = mount.clientWidth;
+      const h = mount.clientHeight || 520;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    };
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      renderer.domElement.removeEventListener('click', handleClick);
+      cancelAnimationFrame(animId);
+      renderer.dispose();
+      if (mount.contains(renderer.domElement)) {
+        mount.removeChild(renderer.domElement);
+      }
+    };
+  }, [activeTab, cellType, isCrossSection]);
+
+  // 3D DNA Helix Render
   useEffect(() => {
     if (activeTab !== 'dna') return;
     const mount = dnaMountRef.current;
     if (!mount) return;
 
     const width = mount.clientWidth;
-    const height = mount.clientHeight || 500;
+    const height = mount.clientHeight || 520;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x090d16);
+    scene.background = new THREE.Color(0x060b18);
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
     camera.position.set(0, 0, 8);
@@ -121,24 +305,20 @@ export const BiologyLab: React.FC = () => {
     // Build DNA Double Helix Geometry
     const helixGroup = new THREE.Group();
     const turns = 2.5;
-    const pointsCount = 40;
-    const radius = 1.2;
-    const heightSpan = 5.0;
+    const pointsCount = 44;
+    const radius = 1.25;
+    const heightSpan = 5.2;
 
     for (let i = 0; i < pointsCount; i++) {
       const tNorm = i / pointsCount;
       const angle = tNorm * Math.PI * 2 * turns;
       const y = (tNorm - 0.5) * heightSpan;
 
-      // Strand 1 (Sugar-Phosphate Backbone)
       const x1 = Math.cos(angle) * radius;
       const z1 = Math.sin(angle) * radius;
-
-      // Strand 2 (Antiparallel 180 deg offset)
       const x2 = Math.cos(angle + Math.PI) * radius;
       const z2 = Math.sin(angle + Math.PI) * radius;
 
-      // Backbone spheres
       const bbGeo = new THREE.SphereGeometry(0.12, 16, 16);
       const bbMat1 = new THREE.MeshStandardMaterial({ color: 0x38bdf8 });
       const bbMat2 = new THREE.MeshStandardMaterial({ color: 0x818cf8 });
@@ -151,7 +331,6 @@ export const BiologyLab: React.FC = () => {
       s2.position.set(x2, y, z2);
       helixGroup.add(s2);
 
-      // Base pair rungs (Cylinder connecting strands)
       if (i % 2 === 0) {
         const p1 = new THREE.Vector3(x1, y, z1);
         const p2 = new THREE.Vector3(x2, y, z2);
@@ -191,10 +370,10 @@ export const BiologyLab: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 space-y-6">
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-800 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-sky-500/15 pb-5">
         <div>
-          <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-teal-500/10 text-teal-400 border border-teal-500/30">
-            Interactive Cytology & Molecular Genetics
+          <span className="sci-badge">
+            {language === 'ar' ? 'المجسمات الخلوية ثلاثية الأبعاد والوراثة' : 'Interactive 3D Cytology & Molecular Genetics'}
           </span>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">
             {language === 'ar' ? 'مختبر العلوم الحيوية والخلية والوراثة' : 'Biological Sciences & Genetics Laboratory'}
@@ -203,19 +382,19 @@ export const BiologyLab: React.FC = () => {
         </div>
 
         {/* Lab Switcher */}
-        <div className="flex items-center space-x-2 bg-slate-900 p-1.5 rounded-xl border border-slate-800">
+        <div className="flex items-center space-x-2 sci-surface p-1.5">
           <button
-            onClick={() => setActiveTab('cytology')}
+            onClick={() => setActiveTab('cell_3d')}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              activeTab === 'cytology' ? 'bg-teal-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              activeTab === 'cell_3d' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
-            {language === 'ar' ? 'البيولوجيا الخلوية (Cytology)' : 'Cellular Cytology'}
+            {language === 'ar' ? 'مجسم الخلية ثلاثي الأبعاد' : '3D Cell Ultrastructure'}
           </button>
           <button
             onClick={() => setActiveTab('dna')}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'dna' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              activeTab === 'dna' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
             <Dna className="w-3.5 h-3.5" />
@@ -224,22 +403,11 @@ export const BiologyLab: React.FC = () => {
         </div>
       </div>
 
-      {/* VIEW 1: CELL CYTOLOGY */}
-      {activeTab === 'cytology' && (
+      {/* VIEW 1: 3D INTERACTIVE CELL */}
+      {activeTab === 'cell_3d' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col justify-between space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <div>
-                <h3 className="text-base font-bold text-white">
-                  {cellType === 'plant' 
-                    ? (language === 'ar' ? 'الخلية النباتية ذاتية التغذية' : 'Autotrophic Plant Cell') 
-                    : (language === 'ar' ? 'الخلية الحيوانية غير ذاتية التغذية' : 'Heterotrophic Animal Cell')}
-                </h3>
-                <span className="text-xs text-slate-400">
-                  {language === 'ar' ? 'انقر على أي عضية لفحص الأبعاد والمهمة الحيوية' : 'Select any organelle to examine biological function'}
-                </span>
-              </div>
-
+          <div className="lg:col-span-2 sci-card overflow-hidden flex flex-col h-[540px]">
+            <div className="bg-slate-950/80 px-4 py-3 border-b border-sky-500/15 flex flex-wrap items-center justify-between gap-2 z-10">
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setCellType('plant')}
@@ -252,50 +420,39 @@ export const BiologyLab: React.FC = () => {
                 <button
                   onClick={() => setCellType('animal')}
                   className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                    cellType === 'animal' ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400'
+                    cellType === 'animal' ? 'bg-sky-600 text-white' : 'bg-slate-800 text-slate-400'
                   }`}
                 >
                   {t.biology.animalCell}
                 </button>
               </div>
+
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setIsCrossSection(!isCrossSection)}
+                  className={`flex items-center space-x-1.5 px-3 py-1 rounded-lg text-xs font-semibold border transition-all ${
+                    isCrossSection ? 'bg-sky-500/10 text-sky-400 border-sky-500/30' : 'bg-slate-800 text-slate-300 border-slate-700'
+                  }`}
+                >
+                  <Scissors className="w-3.5 h-3.5" />
+                  <span>{language === 'ar' ? 'الوضع المقطعي (Cross-Section)' : 'Cross-Section Mode'}</span>
+                </button>
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {availableOrganelles.map((organelle) => {
-                const isSelected = selectedOrganelle.id === organelle.id;
-                return (
-                  <button
-                    key={organelle.id}
-                    onClick={() => setSelectedOrganelle(organelle)}
-                    className={`p-4 rounded-xl border text-left transition-all flex flex-col justify-between ${
-                      isSelected
-                        ? 'bg-emerald-600/20 border-emerald-500 text-white shadow-lg'
-                        : 'bg-slate-950 border-slate-800 text-slate-300 hover:bg-slate-800/60'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-bold">
-                        {language === 'ar' ? organelle.nameAr : organelle.nameEn}
-                      </span>
-                      {isSelected && <Check className="w-3.5 h-3.5 text-emerald-400" />}
-                    </div>
-                    <span className="text-[10px] text-slate-400 font-mono">{organelle.sizeNm}</span>
-                  </button>
-                );
-              })}
-            </div>
+            <div ref={cellMountRef} className="w-full flex-1 cursor-grab active:cursor-grabbing" />
 
-            <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 flex items-center justify-between">
-              <span>{language === 'ar' ? 'جهد الغشاء الخلوي: -70 ملي فولت' : 'Cell Membrane Resting Potential: -70 mV'}</span>
-              <span className="text-emerald-400 font-mono">{language === 'ar' ? 'تركيز أدينوسين ثلاثي الفوسفات: ~5 ملي مولار' : 'Cytosolic ATP: ~5 mM'}</span>
+            <div className="bg-slate-950/90 px-4 py-2 border-t border-sky-500/10 flex items-center justify-between text-[11px] text-slate-400">
+              <span>{language === 'ar' ? 'انقر على أي عضية ثلاثية الأبعاد لفحصها' : 'Click on any 3D organelle to inspect biological role'}</span>
+              <span className="text-sky-400 font-mono">Zoom / Orbit Enabled</span>
             </div>
           </div>
 
           <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
-              <div className="border-b border-slate-800 pb-3">
+            <div className="sci-card p-6 space-y-4">
+              <div className="border-b border-sky-500/15 pb-3">
                 <span className="text-xs text-slate-400 block uppercase tracking-wider">
-                  {language === 'ar' ? 'فحص العضية الخلوية' : 'Organelle Details'}
+                  {language === 'ar' ? 'فحص العضية الخلوية' : 'Inspected Organelle'}
                 </span>
                 <h3 className="text-xl font-black text-white mt-1">
                   {language === 'ar' ? selectedOrganelle.nameAr : selectedOrganelle.nameEn}
@@ -306,15 +463,23 @@ export const BiologyLab: React.FC = () => {
                 <span className="text-xs font-semibold text-slate-400 block mb-1">
                   {language === 'ar' ? 'الوظيفة الحيوية والتخليق' : 'Biological Function'}
                 </span>
-                <p className="text-xs text-slate-200 leading-relaxed bg-slate-950/60 p-3.5 rounded-xl border border-slate-800">
+                <p className="text-xs text-slate-200 leading-relaxed bg-slate-950/70 p-3.5 rounded-xl border border-sky-500/15">
                   {language === 'ar' ? selectedOrganelle.roleAr : selectedOrganelle.roleEn}
                 </p>
               </div>
 
               <div className="space-y-2 text-xs">
-                <div className="flex justify-between py-1.5 border-b border-slate-800">
-                  <span className="text-slate-400">{language === 'ar' ? 'المقاييس' : 'Scale'}</span>
-                  <span className="font-mono text-white">{selectedOrganelle.sizeNm}</span>
+                <div className="flex justify-between py-1.5 border-b border-sky-500/10">
+                  <span className="text-slate-400">{language === 'ar' ? 'الأبعاد المجهرية' : 'Scale'}</span>
+                  <span className="font-mono text-sky-400">{selectedOrganelle.sizeNm}</span>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-sky-500/10">
+                  <span className="text-slate-400">{language === 'ar' ? 'التواجد' : 'Distribution'}</span>
+                  <span className="text-white">
+                    {selectedOrganelle.foundIn === 'both' 
+                      ? (language === 'ar' ? 'مشتركة (نباتية وحيوانية)' : 'Plant & Animal') 
+                      : (language === 'ar' ? 'نباتية فقط' : 'Plant specific')}
+                  </span>
                 </div>
               </div>
             </div>
@@ -325,18 +490,18 @@ export const BiologyLab: React.FC = () => {
       {/* VIEW 2: 3D DNA DOUBLE HELIX & BASE PAIRING */}
       {activeTab === 'dna' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col h-[520px]">
-            <div className="bg-slate-950/80 px-4 py-3 border-b border-slate-800 flex items-center justify-between z-10">
+          <div className="lg:col-span-2 sci-card overflow-hidden relative flex flex-col h-[520px]">
+            <div className="bg-slate-950/80 px-4 py-3 border-b border-sky-500/15 flex items-center justify-between z-10">
               <span className="text-xs font-bold text-white">
-                {language === 'ar' ? 'النموذج الجزيئي للولب المزدوج (B-DNA)' : '3D Molecular Double Helix (B-DNA Form)'}
+                {language === 'ar' ? 'النموذج الجزيئي للولب المزدوج (B-DNA Form)' : '3D Molecular Double Helix (B-DNA Form)'}
               </span>
-              <span className="text-xs font-mono text-indigo-400">10 Base Pairs / Turn • 3.4 nm Pitch</span>
+              <span className="text-xs font-mono text-sky-400">10 Base Pairs / Turn • 3.4 nm Pitch</span>
             </div>
             <div ref={dnaMountRef} className="w-full flex-1 cursor-grab active:cursor-grabbing" />
           </div>
 
           <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+            <div className="sci-card p-5 space-y-4">
               <h3 className="text-sm font-bold text-white uppercase tracking-wider">
                 {language === 'ar' ? 'تحدي ازدواج القواعد النيتروجينية' : 'Base Pairing Verification'}
               </h3>
@@ -345,8 +510,8 @@ export const BiologyLab: React.FC = () => {
               </p>
 
               <div className="flex items-center space-x-2">
-                <span className="text-xs font-bold text-slate-400">Base:</span>
-                <span className="px-3 py-1 rounded bg-indigo-600 text-white font-mono font-bold text-sm">
+                <span className="text-xs font-bold text-slate-400">Target Base:</span>
+                <span className="px-3 py-1 rounded bg-sky-600 text-white font-mono font-bold text-sm">
                   {selectedBase}
                 </span>
               </div>
@@ -356,7 +521,7 @@ export const BiologyLab: React.FC = () => {
                   <button
                     key={b}
                     onClick={() => handlePairCheck(b)}
-                    className="p-2.5 rounded-xl border border-slate-700 bg-slate-950 hover:bg-indigo-600 text-white font-mono font-bold text-sm transition-all"
+                    className="p-2.5 rounded-xl border border-slate-700 bg-slate-950 hover:bg-sky-600 text-white font-mono font-bold text-sm transition-all"
                   >
                     {b}
                   </button>
@@ -364,7 +529,7 @@ export const BiologyLab: React.FC = () => {
               </div>
 
               {pairFeedback && (
-                <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs font-medium text-emerald-400">
+                <div className="p-3 rounded-xl bg-slate-950 border border-sky-500/30 text-xs font-medium text-emerald-400">
                   {pairFeedback}
                 </div>
               )}
@@ -372,7 +537,7 @@ export const BiologyLab: React.FC = () => {
 
             {/* Rosalind Franklin Card */}
             {franklin && (
-              <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
+              <div className="sci-card p-5 space-y-3">
                 <div className="flex items-center space-x-2 text-teal-400">
                   <Award className="w-4 h-4" />
                   <h4 className="text-xs font-bold uppercase tracking-wider">

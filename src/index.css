@@ -1,31 +1,102 @@
 @import "tailwindcss";
 
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-arabic: 'Cairo', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* SciNexa Scientific Design System Tokens */
+  --bg-app: #030712;
+  --bg-surface: #0b1329;
+  --bg-surface-elevated: #111e38;
+  --bg-surface-subtle: #172554;
+  --border-subtle: rgba(56, 189, 248, 0.12);
+  --border-active: rgba(56, 189, 248, 0.4);
+  --primary-accent: #38bdf8;
+  --primary-glow: rgba(56, 189, 248, 0.25);
+  --success-accent: #10b981;
+  --warning-accent: #f59e0b;
+  --danger-accent: #f43f5e;
+}
+
 @layer base {
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: var(--font-sans);
+    background-color: var(--bg-app);
+    color: #f1f5f9;
+    letter-spacing: -0.011em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
   [dir="rtl"] {
-    font-family: 'Cairo', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--font-arabic);
+    letter-spacing: normal;
   }
 
-  code, pre {
-    font-family: 'JetBrains Mono', monospace;
+  code, pre, .font-mono {
+    font-family: var(--font-mono);
   }
 }
 
-/* Custom scrollbar */
+/* Scientific Laboratory Glass Surface */
+.sci-card {
+  background: rgba(11, 19, 41, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease-in-out;
+}
+
+.sci-card:hover {
+  border-color: rgba(56, 189, 248, 0.25);
+  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.6), 0 0 15px -3px rgba(56, 189, 248, 0.15);
+}
+
+.sci-surface {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 0.75rem;
+}
+
+.sci-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  background: rgba(56, 189, 248, 0.1);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+}
+
+.sci-badge-success {
+  background: rgba(16, 185, 129, 0.1);
+  color: #34d399;
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.sci-badge-warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.25);
+}
+
+/* Custom scientific scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #030712;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 4px;
+  background: #1e293b;
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #334155;
 }

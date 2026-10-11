@@ -1,5 +1,5 @@
 // MNA (Modified Nodal Analysis) Linear Circuit Solver
-// Supports DC Voltage Sources, Current Sources, Resistors, and Ground references.
+// Supports DC Voltage Sources, Current Sources, Resistors, Switches, Meters, and Ground references.
 
 export interface CircuitComponent {
   id: string;
@@ -23,28 +23,53 @@ export interface CircuitSolution {
  * Solves a linear DC circuit using Modified Nodal Analysis (MNA):
  * [ G   B ] [ v ] = [ i ]
  * [ C   D ] [ j ]   [ e ]
- *
- * G is the conductance matrix (N x N)
- * B is the voltage source incidence matrix (N x M)
- * C is the transpose of B (M x N) for independent sources
- * D is the zero matrix (M x M) for ideal independent voltage sources
  */
 export function solveCircuit(components: CircuitComponent[], groundNode = 0): CircuitSolution {
+  // Filter out open switches
+  // For closed switches, model them as near-zero resistance (0.001 Ohm)
+  const effectiveComponents: CircuitComponent[] = [];
+
+  for (const c of components) {
+    if (c.type === 'switch') {
+      if (c.state !== false) {
+        // Closed switch acts like a small resistance wire (1mOhm)
+        effectiveComponents.push({
+          id: c.id,
+          type: 'resistor',
+          node1: c.node1,
+          node2: c.node2,
+          value: 0.001,
+          label: c.label || 'Closed Switch',
+        });
+      }
+      // If switch is open, it isolates the branch entirely
+    } else if (c.type === 'meter') {
+      // Ideal voltmeter has high resistance (10 MOhm)
+      effectiveComponents.push({
+        id: c.id,
+        type: 'resistor',
+        node1: c.node1,
+        node2: c.node2,
+        value: 10000000,
+        label: c.label || 'Voltmeter',
+      });
+    } else {
+      effectiveComponents.push(c);
+    }
+  }
+
   // Find all distinct nodes (excluding ground)
   const nodeSet = new Set<number>();
-  const activeComponents = components.filter(c => !(c.type === 'switch' && c.state === false));
-
-  activeComponents.forEach(c => {
+  effectiveComponents.forEach(c => {
     if (c.type !== 'ground') {
       nodeSet.add(c.node1);
       nodeSet.add(c.node2);
     }
   });
 
-  // Collect independent voltage sources
-  const vSources = activeComponents.filter(c => c.type === 'dc_source');
-  const resistors = activeComponents.filter(c => c.type === 'resistor');
-  const cSources = activeComponents.filter(c => c.type === 'current_source');
+  const vSources = effectiveComponents.filter(c => c.type === 'dc_source');
+  const resistors = effectiveComponents.filter(c => c.type === 'resistor');
+  const cSources = effectiveComponents.filter(c => c.type === 'current_source');
 
   // Remap nodes to 0..N-1 excluding ground
   const normalNodes = Array.from(nodeSet).filter(n => n !== groundNode).sort((a, b) => a - b);

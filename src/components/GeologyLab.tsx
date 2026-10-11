@@ -3,7 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { calculateTsunamiSpeed, calculateSeismicTravelTimes, calculateEarthquakeEnergyJoules } from '../simulators/geophysicsSolver';
 import { calculateStructuralResponse } from '../simulators/structuralSolver';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
-import { Globe2, AlertTriangle, Waves, Flame, Award, Building2, Sliders } from 'lucide-react';
+import { Globe2, AlertTriangle, Waves, Award, Building2 } from 'lucide-react';
 
 interface EarthLayer {
   id: string;
@@ -43,7 +43,7 @@ const EARTH_LAYERS: EarthLayer[] = [
   {
     id: 'outer_core',
     nameEn: 'Outer Core',
-    nameAr: 'اللب الخارجي',
+    nameAr: 'اللب الخارجي السائل',
     depthKm: '2,890 - 5,150 km',
     tempC: '4,000 - 5,000 °C',
     compositionEn: 'Molten iron (80%) and nickel.',
@@ -54,7 +54,7 @@ const EARTH_LAYERS: EarthLayer[] = [
   {
     id: 'inner_core',
     nameEn: 'Inner Core',
-    nameAr: 'اللب الداخلي',
+    nameAr: 'اللب الداخلي الصلب',
     depthKm: '5,150 - 6,371 km',
     tempC: '5,200 - 6,000 °C',
     compositionEn: 'Solid crystalline nickel-iron alloy.',
@@ -65,7 +65,7 @@ const EARTH_LAYERS: EarthLayer[] = [
 ];
 
 export const GeologyLab: React.FC = () => {
-  const { t, language, isRTL } = useLanguage();
+  const { t, language } = useLanguage();
   const [activeModule, setActiveModule] = useState<'layers' | 'tsunami' | 'earthquake' | 'structural'>('layers');
   const [selectedLayer, setSelectedLayer] = useState<EarthLayer>(EARTH_LAYERS[0]);
 
@@ -91,21 +91,21 @@ export const GeologyLab: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 space-y-6">
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-800 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-sky-500/15 pb-5">
         <div>
-          <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
-            Geodynamics, Seismology & Earthquake Engineering
+          <span className="sci-badge">
+            {language === 'ar' ? 'الجيوديناميكا وعلم الزلازل وهندسة المنشآت' : 'Geodynamics, Seismology & Earthquake Engineering'}
           </span>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">{t.geology.title}</h1>
           <p className="text-xs text-slate-400 mt-0.5">{t.geology.subtitle}</p>
         </div>
 
         {/* Sub-module switcher */}
-        <div className="flex flex-wrap items-center gap-1.5 bg-slate-900 p-1.5 rounded-xl border border-slate-800">
+        <div className="flex flex-wrap items-center gap-1.5 sci-surface p-1.5">
           <button
             onClick={() => setActiveModule('layers')}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              activeModule === 'layers' ? 'bg-cyan-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              activeModule === 'layers' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
             {t.geology.earthLayers}
@@ -113,7 +113,7 @@ export const GeologyLab: React.FC = () => {
           <button
             onClick={() => setActiveModule('tsunami')}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 ${
-              activeModule === 'tsunami' ? 'bg-cyan-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              activeModule === 'tsunami' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
             <Waves className="w-3.5 h-3.5" />
@@ -122,7 +122,7 @@ export const GeologyLab: React.FC = () => {
           <button
             onClick={() => setActiveModule('earthquake')}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 ${
-              activeModule === 'earthquake' ? 'bg-cyan-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              activeModule === 'earthquake' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
             <AlertTriangle className="w-3.5 h-3.5" />
@@ -131,7 +131,7 @@ export const GeologyLab: React.FC = () => {
           <button
             onClick={() => setActiveModule('structural')}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 ${
-              activeModule === 'structural' ? 'bg-amber-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              activeModule === 'structural' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
             <Building2 className="w-3.5 h-3.5" />
@@ -143,8 +143,8 @@ export const GeologyLab: React.FC = () => {
       {/* MODULE 1: EARTH STRATA */}
       {activeModule === 'layers' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col justify-between space-y-4">
-            <div className="border-b border-slate-800 pb-3">
+          <div className="lg:col-span-2 sci-card p-6 flex flex-col justify-between space-y-4">
+            <div className="border-b border-sky-500/15 pb-3">
               <h3 className="text-base font-bold text-white">
                 {language === 'ar' ? 'مقطع طبقات الأرض الداخلية الجيوفيزيائي' : 'Planetary Earth Interior Layers'}
               </h3>
@@ -161,7 +161,7 @@ export const GeologyLab: React.FC = () => {
                     key={layer.id}
                     onClick={() => setSelectedLayer(layer)}
                     className={`p-4 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
-                      isSelected ? 'bg-slate-800 border-cyan-400 shadow-xl' : 'bg-slate-950 border-slate-800 hover:bg-slate-800/40'
+                      isSelected ? 'bg-slate-800 border-sky-400 shadow-xl' : 'bg-slate-950/80 border-slate-800 hover:bg-slate-800/40'
                     }`}
                   >
                     <div className="flex items-center space-x-3">
@@ -176,15 +176,15 @@ export const GeologyLab: React.FC = () => {
               })}
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 flex items-center justify-between">
+            <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 text-xs text-slate-300 flex items-center justify-between">
               <span>{language === 'ar' ? 'متوسط نصف قطر الأرض: 6,371 كم' : 'Mean Earth Radius: 6,371 km'}</span>
-              <span className="text-cyan-400 font-mono">{language === 'ar' ? 'حرارة اللب المركزي: ~6,000 °م' : 'Core Temp: ~6,000 °C'}</span>
+              <span className="text-sky-400 font-mono">{language === 'ar' ? 'حرارة اللب المركزي: ~6,000 °م' : 'Core Temp: ~6,000 °C'}</span>
             </div>
           </div>
 
           <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
-              <div className="border-b border-slate-800 pb-3">
+            <div className="sci-card p-6 space-y-4">
+              <div className="border-b border-sky-500/15 pb-3">
                 <span className="text-xs text-slate-400 block uppercase tracking-wider">
                   {language === 'ar' ? 'بيانات الطبقة' : 'Layer Telemetry'}
                 </span>
@@ -194,13 +194,13 @@ export const GeologyLab: React.FC = () => {
               </div>
 
               <div className="space-y-2 text-xs">
-                <div className="flex justify-between py-1.5 border-b border-slate-800">
+                <div className="flex justify-between py-1.5 border-b border-sky-500/10">
                   <span className="text-slate-400">{language === 'ar' ? 'العمق' : 'Depth Boundary'}</span>
                   <span className="font-mono text-white">{selectedLayer.depthKm}</span>
                 </div>
-                <div className="flex justify-between py-1.5 border-b border-slate-800">
+                <div className="flex justify-between py-1.5 border-b border-sky-500/10">
                   <span className="text-slate-400">{language === 'ar' ? 'درجة الحرارة' : 'Temperature'}</span>
-                  <span className="font-mono text-cyan-400">{selectedLayer.tempC}</span>
+                  <span className="font-mono text-sky-400">{selectedLayer.tempC}</span>
                 </div>
               </div>
 
@@ -208,7 +208,7 @@ export const GeologyLab: React.FC = () => {
                 <span className="text-xs font-semibold text-slate-400 block mb-1">
                   {language === 'ar' ? 'التركيب الكيميائي' : 'Composition'}
                 </span>
-                <p className="text-xs text-slate-200 leading-relaxed bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                <p className="text-xs text-slate-200 leading-relaxed bg-slate-950/70 p-3 rounded-xl border border-sky-500/15">
                   {language === 'ar' ? selectedLayer.compositionAr : selectedLayer.compositionEn}
                 </p>
               </div>
@@ -216,8 +216,8 @@ export const GeologyLab: React.FC = () => {
 
             {/* Inge Lehmann Card */}
             {lehmann && (
-              <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
-                <div className="flex items-center space-x-2 text-cyan-400">
+              <div className="sci-card p-5 space-y-3">
+                <div className="flex items-center space-x-2 text-amber-400">
                   <Award className="w-4 h-4" />
                   <h4 className="text-xs font-bold uppercase tracking-wider">
                     {language === 'ar' ? 'رائدة علم الزلازل والجيوفيزياء' : 'Scientific Pioneer'}
@@ -242,8 +242,8 @@ export const GeologyLab: React.FC = () => {
       {/* MODULE 2: TSUNAMI PROPAGATION */}
       {activeModule === 'tsunami' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-5">
-            <h3 className="text-base font-bold text-white border-b border-slate-800 pb-2">
+          <div className="sci-card p-6 space-y-5">
+            <h3 className="text-base font-bold text-white border-b border-sky-500/15 pb-2">
               {language === 'ar' ? 'محرك انتشار موجات تسونامي في المياه الضحلة' : 'Shallow-Water Tsunami Propagation Engine'}
             </h3>
 
@@ -252,7 +252,7 @@ export const GeologyLab: React.FC = () => {
                 <span className="text-slate-300">
                   {language === 'ar' ? 'عمق عمود الماء بالمحيط (h):' : 'Ocean Column Bathymetric Depth (h):'}
                 </span>
-                <span className="text-cyan-400 font-mono">{oceanDepth} m</span>
+                <span className="text-sky-400 font-mono">{oceanDepth} m</span>
               </div>
               <input
                 type="range"
@@ -261,7 +261,7 @@ export const GeologyLab: React.FC = () => {
                 step="50"
                 value={oceanDepth}
                 onChange={(e) => setOceanDepth(Number(e.target.value))}
-                className="w-full accent-cyan-500"
+                className="w-full accent-sky-500"
               />
             </div>
 
@@ -270,14 +270,14 @@ export const GeologyLab: React.FC = () => {
                 <span className="text-xs text-slate-400 block mb-1">
                   {language === 'ar' ? 'سرعة الطور المحسوبة (c)' : 'Calculated Phase Speed (c)'}
                 </span>
-                <span className="text-2xl font-black text-cyan-400 font-mono">{tsunamiSpeed.speedMs.toFixed(1)} m/s</span>
+                <span className="text-2xl font-black text-sky-400 font-mono">{tsunamiSpeed.speedMs.toFixed(1)} m/s</span>
                 <span className="text-[10px] text-slate-500 block mt-1">c = &radic;(g &times; h)</span>
               </div>
               <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-center">
                 <span className="text-xs text-slate-400 block mb-1">
                   {language === 'ar' ? 'السرعة بالكم / ساعة' : 'Speed (km/h)'}
                 </span>
-                <span className="text-2xl font-black text-sky-400 font-mono">{tsunamiSpeed.speedKmh.toFixed(0)} km/h</span>
+                <span className="text-2xl font-black text-sky-300 font-mono">{tsunamiSpeed.speedKmh.toFixed(0)} km/h</span>
                 <span className="text-[10px] text-slate-500 block mt-1">
                   {language === 'ar' ? 'سرعة طائرة ركاب نفاثة' : 'Jet Airliner Velocity'}
                 </span>
@@ -285,7 +285,7 @@ export const GeologyLab: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col justify-between">
+          <div className="sci-card p-6 flex flex-col justify-between">
             <div>
               <h3 className="text-base font-bold text-white mb-2">
                 {language === 'ar' ? 'النموذج الهيدروديناميكي وقانون جرين للتضخم' : "Hydrodynamic Model & Green's Law"}
@@ -307,8 +307,8 @@ export const GeologyLab: React.FC = () => {
       {/* MODULE 3: SEISMIC TRAVEL TIMES */}
       {activeModule === 'earthquake' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-5">
-            <h3 className="text-base font-bold text-white border-b border-slate-800 pb-2">
+          <div className="sci-card p-6 space-y-5">
+            <h3 className="text-base font-bold text-white border-b border-sky-500/15 pb-2">
               {language === 'ar' ? 'حساب أزمنة وصول الموجات الزلزالية P و S' : 'Seismic P-Wave & S-Wave Arrival Times'}
             </h3>
 
@@ -317,7 +317,7 @@ export const GeologyLab: React.FC = () => {
                 <span className="text-slate-300">
                   {language === 'ar' ? 'المسافة إلى المركز السطحي (Δ):' : 'Epicentral Distance (Δ):'}
                 </span>
-                <span className="text-cyan-400 font-mono">{epicenterDistKm} km</span>
+                <span className="text-sky-400 font-mono">{epicenterDistKm} km</span>
               </div>
               <input
                 type="range"
@@ -325,7 +325,7 @@ export const GeologyLab: React.FC = () => {
                 max="800"
                 value={epicenterDistKm}
                 onChange={(e) => setEpicenterDistKm(Number(e.target.value))}
-                className="w-full accent-cyan-500"
+                className="w-full accent-sky-500"
               />
             </div>
 
@@ -369,7 +369,7 @@ export const GeologyLab: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col justify-between">
+          <div className="sci-card p-6 flex flex-col justify-between">
             <div>
               <h3 className="text-base font-bold text-white mb-2">
                 {language === 'ar' ? 'طاقة الزلزال وتحديد البؤرة' : 'Earthquake Energy & Triangulation'}
@@ -391,8 +391,8 @@ export const GeologyLab: React.FC = () => {
       {/* MODULE 4: EARTHQUAKE-RESISTANT STRUCTURES & BASE ISOLATION */}
       {activeModule === 'structural' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-5">
-            <h3 className="text-base font-bold text-white border-b border-slate-800 pb-2">
+          <div className="sci-card p-6 space-y-5">
+            <h3 className="text-base font-bold text-white border-b border-sky-500/15 pb-2">
               {language === 'ar' ? 'محاكي الاهتزاز وعزل القواعد الزلزالي للمباني' : 'Structural Vibration & Base Isolation Simulator'}
             </h3>
 
@@ -401,7 +401,7 @@ export const GeologyLab: React.FC = () => {
                 <span className="text-slate-300">
                   {language === 'ar' ? 'عدد طوابق المبنى:' : 'Building Floor Count:'}
                 </span>
-                <span className="text-amber-400 font-mono">{floors} floors</span>
+                <span className="text-sky-400 font-mono">{floors} floors</span>
               </div>
               <input
                 type="range"
@@ -409,7 +409,7 @@ export const GeologyLab: React.FC = () => {
                 max="30"
                 value={floors}
                 onChange={(e) => setFloors(Number(e.target.value))}
-                className="w-full accent-amber-500"
+                className="w-full accent-sky-500"
               />
             </div>
 
@@ -418,7 +418,7 @@ export const GeologyLab: React.FC = () => {
                 <span className="text-slate-300">
                   {language === 'ar' ? 'تردد الهزة الأرضية (Hz):' : 'Ground Motion Frequency (Hz):'}
                 </span>
-                <span className="text-amber-400 font-mono">{groundFrequency} Hz</span>
+                <span className="text-sky-400 font-mono">{groundFrequency} Hz</span>
               </div>
               <input
                 type="range"
@@ -427,7 +427,7 @@ export const GeologyLab: React.FC = () => {
                 step="0.1"
                 value={groundFrequency}
                 onChange={(e) => setGroundFrequency(Number(e.target.value))}
-                className="w-full accent-amber-500"
+                className="w-full accent-sky-500"
               />
             </div>
 
@@ -438,7 +438,7 @@ export const GeologyLab: React.FC = () => {
               <button
                 onClick={() => setIsIsolated(!isIsolated)}
                 className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  isIsolated ? 'bg-emerald-600 text-white shadow' : 'bg-slate-800 text-slate-400'
+                  isIsolated ? 'bg-sky-600 text-white shadow' : 'bg-slate-800 text-slate-400'
                 }`}
               >
                 {isIsolated ? (language === 'ar' ? 'مفعل (محمي)' : 'Active (Protected)') : (language === 'ar' ? 'غير مفعل (قواعد ثابتة)' : 'Fixed Base')}
@@ -465,7 +465,7 @@ export const GeologyLab: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col justify-between">
+          <div className="sci-card p-6 flex flex-col justify-between">
             <div>
               <h3 className="text-base font-bold text-white mb-2">
                 {language === 'ar' ? 'المبادئ الهندسية لتخميد الزلازل' : 'Earthquake Engineering Principles'}

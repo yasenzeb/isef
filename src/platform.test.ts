@@ -95,6 +95,30 @@ describe('SciNexa Scientific Virtual Laboratory Test Suite', () => {
     expect(mnaTerm).toBeDefined();
     expect(mnaTerm?.ar).toContain('المُعَدَّل');
   });
+
+  // 9. Circuit Switch & Voltmeter Validation in MNA Solver
+  it('should accurately handle switch states (open vs closed) in MNA circuit solver', () => {
+    // 12V battery, switch, and 100 Ohm resistor to ground
+    const closedCircuit: CircuitComponent[] = [
+      { id: 'v1', type: 'dc_source', node1: 1, node2: 0, value: 12 },
+      { id: 'sw1', type: 'switch', node1: 1, node2: 2, value: 0, state: true },
+      { id: 'r1', type: 'resistor', node1: 2, node2: 0, value: 100 },
+    ];
+    const closedSol = solveCircuit(closedCircuit, 0);
+    expect(closedSol.converged).toBe(true);
+    expect(closedSol.nodeVoltages[2]).toBeCloseTo(12, 1);
+    expect(closedSol.branchCurrents['r1']).toBeCloseTo(0.12, 2);
+
+    const openCircuit: CircuitComponent[] = [
+      { id: 'v1', type: 'dc_source', node1: 1, node2: 0, value: 12 },
+      { id: 'sw1', type: 'switch', node1: 1, node2: 2, value: 0, state: false },
+      { id: 'r1', type: 'resistor', node1: 2, node2: 0, value: 100 },
+    ];
+    const openSol = solveCircuit(openCircuit, 0);
+    expect(openSol.branchCurrents['r1'] ?? 0).toBe(0);
+  });
 });
+
+
 
 

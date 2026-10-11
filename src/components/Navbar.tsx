@@ -11,7 +11,8 @@ import {
   Languages, 
   MapPin,
   Menu,
-  X
+  X,
+  Sparkles
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -39,7 +40,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+    <header className="sticky top-0 z-50 bg-[#030712]/90 backdrop-blur-md border-b border-sky-500/15">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
@@ -48,23 +49,23 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
             className="flex items-center space-x-3 cursor-pointer group"
             onClick={() => setCurrentTab('home')}
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-sky-500 to-teal-400 p-0.5 shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform">
-              <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-                <Atom className="w-6 h-6 text-sky-400 animate-spin-slow" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 via-indigo-500 to-teal-400 p-0.5 shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-transform">
+              <div className="w-full h-full bg-[#030712] rounded-[10px] flex items-center justify-center">
+                <Atom className="w-6 h-6 text-sky-400" />
               </div>
             </div>
             <div className={isRTL ? "mr-3 text-right" : ""}>
-              <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-sky-400 bg-clip-text text-transparent block">
+              <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-white via-slate-100 to-sky-400 bg-clip-text text-transparent block">
                 {t.appName}
               </span>
-              <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider block">
+              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">
                 {t.hero.badge}
               </span>
             </div>
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
+          <nav className="hidden md:flex items-center space-x-1 lg:space-x-1.5">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentTab === item.id;
@@ -72,14 +73,14 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
                 <button
                   key={item.id}
                   onClick={() => setCurrentTab(item.id)}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
                     isActive 
                       ? item.highlight
-                        ? 'bg-amber-500 text-slate-950 font-semibold shadow-lg shadow-amber-500/20'
-                        : 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' 
+                        ? 'bg-amber-500 text-slate-950 font-bold shadow-lg shadow-amber-500/20'
+                        : 'bg-sky-600 text-white shadow-md shadow-sky-600/30' 
                       : item.highlight
                         ? 'text-amber-400 hover:bg-amber-500/10 border border-amber-500/30'
-                        : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                        : 'text-slate-300 hover:text-white hover:bg-slate-900'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -95,20 +96,20 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
             <button
               onClick={onOpenLocationModal}
               title={t.egyptLocation.title}
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 transition-colors"
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 sci-surface hover:bg-slate-800 transition-colors"
             >
               <MapPin className="w-3.5 h-3.5 text-emerald-400" />
               <span className="hidden lg:inline">{t.egyptLocation.detectedGovernorate}</span>
             </button>
 
             {/* Language Selector */}
-            <div className="flex items-center space-x-1 bg-slate-800/80 rounded-lg px-2 py-1 border border-slate-700">
-              <Languages className="w-4 h-4 text-slate-400" />
+            <div className="flex items-center space-x-1.5 sci-surface rounded-xl px-2.5 py-1.5">
+              <Languages className="w-4 h-4 text-sky-400" />
               <select
                 value={language}
                 onChange={handleLanguageChange}
                 aria-label="Select language"
-                className="bg-transparent text-xs font-medium text-slate-200 focus:outline-none cursor-pointer pr-1"
+                className="bg-transparent text-xs font-semibold text-slate-200 focus:outline-none cursor-pointer pr-1"
               >
                 <option value="en" className="bg-slate-900 text-white">English (EN)</option>
                 <option value="ar" className="bg-slate-900 text-white">العربية (AR)</option>
@@ -122,7 +123,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
           <div className="flex md:hidden items-center space-x-2">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none"
+              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-900 focus:outline-none"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -133,7 +134,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
 
       {/* Mobile navigation drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-slate-800 bg-slate-950 px-4 pt-2 pb-4 space-y-2">
+        <div className="md:hidden border-b border-sky-500/15 bg-[#030712] px-4 pt-2 pb-4 space-y-2">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = currentTab === item.id;
@@ -144,10 +145,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
                   setCurrentTab(item.id);
                   setMobileMenuOpen(false);
                 }}
-                className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium ${
+                className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold ${
                   isActive 
-                    ? 'bg-indigo-600 text-white' 
-                    : 'text-slate-300 hover:bg-slate-800'
+                    ? 'bg-sky-600 text-white' 
+                    : 'text-slate-300 hover:bg-slate-900'
                 }`}
               >
                 <Icon className="w-5 h-5 text-sky-400" />
@@ -156,7 +157,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
             );
           })}
 
-          <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
+          <div className="pt-3 border-t border-sky-500/15 flex items-center justify-between">
             <button
               onClick={() => {
                 onOpenLocationModal();
@@ -172,7 +173,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
               value={language}
               onChange={handleLanguageChange}
               aria-label="Select mobile language"
-              className="bg-slate-800 text-xs text-white rounded px-2 py-1 border border-slate-700"
+              className="bg-slate-900 text-xs text-white rounded-lg px-2.5 py-1.5 border border-sky-500/20"
             >
               <option value="en">English (EN)</option>
               <option value="ar">العربية (AR)</option>
