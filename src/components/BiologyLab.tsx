@@ -787,9 +787,12 @@ export const BiologyLab: React.FC = () => {
 
             <div className="flex-1 bg-black relative">
               <iframe
+                key={cellType}
                 title={cellType === 'plant' ? "Plant Cell 3D" : "Animal Cell 3D"}
                 className="w-full h-full border-0"
-                src="https://sketchfab.com/models/3a90e22871004d92a020c54e8964938c/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0&ui_help=0&ui_settings=0&ui_inspector=1&ui_stop=0"
+                src={cellType === 'plant' 
+                  ? "https://sketchfab.com/models/1c5ce80d03d149208d30cc5aeb6e42fb/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0&ui_help=0&ui_settings=0&ui_inspector=1&ui_stop=0"
+                  : "https://sketchfab.com/models/3a90e22871004d92a020c54e8964938c/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0&ui_help=0&ui_settings=0&ui_inspector=1&ui_stop=0"}
                 allow="autoplay; fullscreen; xr-spatial-tracking"
                 allowFullScreen
               />

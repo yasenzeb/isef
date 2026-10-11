@@ -17,15 +17,15 @@ export interface AnatomyAtlasModel {
 export const SKETCHFAB_ANATOMY_COLLECTION: AnatomyAtlasModel[] = [
   {
     id: 'plant-cell-specimen',
-    slug: 'plant-cell-3d-model',
-    sketchfabUid: '3a90e22871004d92a020c54e8964938c', // fallback reliable viewer
-    titleEn: 'Plant Cell Ultrastructure & Vacuole',
+    slug: 'plant-cell-cell-structure-1c5ce80d03d149208d30cc5aeb6e42fb',
+    sketchfabUid: '1c5ce80d03d149208d30cc5aeb6e42fb',
+    titleEn: 'Plant Cell - Cell Structure & Organelles',
     titleAr: 'المجسم الحقيقي للخلية النباتية والبلاستيدات الخضراء',
     system: 'Plant Cytology & Botany',
     systemAr: 'علم خلايا النبات والكلوروفيل',
     category: 'cell',
-    thumbnail: 'https://media.sketchfab.com/models/3a90e22871004d92a020c54e8964938c/thumbnails/9aed1b0e4eef4233929fdef8d110cda5/blob.jpeg',
-    author: 'BioDigital / Education 3D',
+    thumbnail: 'https://media.sketchfab.com/models/1c5ce80d03d149208d30cc5aeb6e42fb/thumbnails/67cef5ad06844bbaa103a1db3e81ffe1/ad691e1804a642dc8ab5ad56a67ad256.jpeg',
+    author: 'Vida Systems',
     descriptionEn: 'Realistic plant cell featuring the rigid cellulose cell wall, large central turgor vacuole, chloroplasts with thylakoid grana, nucleus, and plasmodesmata.',
     descriptionAr: 'تشريح مجسم متكامل للخلية النباتية يوضح الجدار الخلوي السليولوزي المتماسك، الفجوة العصارية المركزية الكبيرة، البلاستيدات الخضراء، والنواة ومسارات البلازموديزماتا.',
     keywords: ['plant', 'plant cell', 'chloroplast', 'cell wall', 'vacuole', 'نبات', 'خلية نباتية', 'بلاستيدة']
