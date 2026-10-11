@@ -30,7 +30,7 @@ interface AnatomyViewerProps {
   isPresentationMode?: boolean;
 }
 
-export type AnatomySystemId = 'skeletal' | 'muscular' | 'cardiovascular' | 'nervous' | 'visceral' | 'joints' | 'lymphatic';
+export type AnatomySystemId = 'skeletal' | 'muscular' | 'cardiovascular' | 'nervous' | 'visceral' | 'joints' | 'lymphatic' | 'ecorche' | 'exercise';
 
 interface SystemLayerConfig {
   id: AnatomySystemId;
@@ -45,7 +45,9 @@ interface SystemLayerConfig {
 
 const SYSTEM_LAYERS: SystemLayerConfig[] = [
   { id: 'skeletal', labelEn: 'Skeletal System (Bones)', labelAr: 'الهيكل العظمي', file: 'skeletal.glb', color: 0xe2ded4, icon: Bone, defaultVisible: true },
-  { id: 'muscular', labelEn: 'Muscular System', labelAr: 'الجهاز العضلي', file: 'muscular.glb', color: 0xc2410c, icon: Activity, defaultVisible: false },
+  { id: 'ecorche', labelEn: 'Full Body Ecorche (Superficial & Deep Muscles)', labelAr: 'التشريح العضلي الكامل (Ecorche)', file: 'male_full_body_ecorche.glb', color: 0xbe123c, icon: Activity, defaultVisible: false },
+  { id: 'exercise', labelEn: 'Torso & Muscle Volumes (Anatomy Study)', labelAr: 'الكتل العضلية المجسمة (3D Study)', file: 'anatomy_exercise.glb', color: 0xb45309, icon: Sparkles, defaultVisible: false },
+  { id: 'muscular', labelEn: 'Muscular System', labelAr: 'الجهاز العضلي التفصيلي', file: 'muscular.glb', color: 0xc2410c, icon: Activity, defaultVisible: false },
   { id: 'cardiovascular', labelEn: 'Cardiovascular (Heart & Vessels)', labelAr: 'جهاز الدوران والقلب', file: 'cardiovascular.glb', color: 0xdc2626, icon: Heart, defaultVisible: false },
   { id: 'nervous', labelEn: 'Nervous System & Brain', labelAr: 'الجهاز العصبي والدماغ', file: 'nervous.glb', color: 0xeab308, icon: Brain, defaultVisible: false },
   { id: 'visceral', labelEn: 'Visceral Organs', labelAr: 'الأعضاء الحشوية', file: 'visceral.glb', color: 0xa855f7, icon: Layers, defaultVisible: false },
@@ -96,9 +98,74 @@ const ANATOMY_DICTIONARY: Record<string, { ar: string; descEn: string; descAr: s
     descAr: 'عظم مسطح في منتصف القفص الصدري يحمي القلب والرئتين وتتمفصل معه الغضاريف الضلعية.',
   },
   'Rib': {
-    ar: 'الضلع',
-    descEn: 'Curved elastic bone forming the thoracic cage, protecting thoracic organs and participating in respiration.',
-    descAr: 'عظم قوسي مرن يشكل القفص الصدري، يحمي الأحشاء الصدرية ويتمدد أثناء الشهيق والزفير.',
+    ar: 'الضلع (القفص الصدري)',
+    descEn: 'Curved elastic bone forming the thoracic cage, protecting thoracic organs (heart and lungs) and participating actively in respiration.',
+    descAr: 'عظم قوسي مرن يشكل القفص الصدري، يحمي الأحشاء الصدرية الحيوية (القلب والرئتين) ويتمدد مع عضلات الورب أثناء الشهيق والزفير.',
+  },
+  'Eighth rib': {
+    ar: 'الضلع الثامن (ضلع كاذب)',
+    descEn: 'Eighth rib, a false rib whose costal cartilage articulates with the cartilage of the rib above rather than directly with the sternum.',
+    descAr: 'الضلع الثامن، يصنف كضلع كاذب يتصل غضروفه الضلعي بغضروف الضلع السابع أعلاه بدلاً من التمفصل المباشر مع القص.',
+  },
+  'Ninth rib': {
+    ar: 'الضلع التاسع (ضلع كاذب)',
+    descEn: 'Ninth rib, contributing to the costal margin and protecting the upper abdominal viscera including liver and spleen.',
+    descAr: 'الضلع التاسع، يسهم في تشكيل الحافة الضلعية السفلية ويحمي الأحشاء العلوية للبطن مثل الكبد والطحال.',
+  },
+  'Tenth rib': {
+    ar: 'الضلع العاشر (ضلع كاذب)',
+    descEn: 'Tenth rib, articulates with the costal margin and bounds the inferior aperture of the thorax.',
+    descAr: 'الضلع العاشر، يتمفصل مع الحافة الغضروفية الضلعية ويحدد الفتحة الصدرية السفلية.',
+  },
+  'Eleventh rib': {
+    ar: 'الضلع الحادي عشر (ضلع طافٍ)',
+    descEn: 'Eleventh rib, a floating rib with no anterior costal cartilage attachment, providing lateral protection to kidneys.',
+    descAr: 'الضلع الحادي عشر، ضلع طافٍ غير متصل من الأمام بالقص أو الحافة الضلعية، ويوفر حماية جانبية هامة للكلية.',
+  },
+  'Twelfth rib': {
+    ar: 'الضلع الثاني عشر (ضلع طافٍ)',
+    descEn: 'Twelfth rib, the most inferior floating rib anchoring the quadratus lumborum muscle and protecting retroperitoneal organs.',
+    descAr: 'الضلع الثاني عشر، الضلع الطافي السفلي، يرتكز عليه العضلة المربعة القطنية ويحمي الكلية والأعضاء خلف الصفاق.',
+  },
+  'First rib': {
+    ar: 'الضلع الأول',
+    descEn: 'Broadest, flattest, and most curved rib, forming the superior boundary of the thoracic inlet under the clavicle.',
+    descAr: 'أعرض وأقصر وأشد الأضلاع انحناءً، يشكل الحد العلوي لمدخل الصدر ويمر فوقه الشريان والوريد تحت الترقوة.',
+  },
+  'Second rib': {
+    ar: 'الضلع الثاني',
+    descEn: 'Twice the length of the first rib, featuring a prominent tuberosity for the serratus anterior muscle.',
+    descAr: 'الضلع الثاني، يبلغ ضعف طول الضلع الأول ويحتوي على أحدوبة لارتكاز العضلة المنشارية الأمامية.',
+  },
+  'Vertebra': {
+    ar: 'الفقرة العظمية (العمود الفقري)',
+    descEn: 'Individual segment of the vertebral column with body, arch, and processes that encases and shields the spinal cord.',
+    descAr: 'عظم متمفصل يشكل لبنة العمود الفقري، يتكون من جسم وقوس وشوكة عظمية تحيط بالحبل الشوكي وتحميه وتنقل وزن الجذع.',
+  },
+  'Thoracic vertebra': {
+    ar: 'فقرة صدرية',
+    descEn: 'One of twelve vertebrae featuring costal facets for articulation with the ribs of the thoracic cage.',
+    descAr: 'إحدى الفقرات الصدرية الاثنتي عشرة التي تتميز بوجيهات مفصلية غضروفية للتمفصل مع رؤوس وحديبات الأضلاع.',
+  },
+  'Lumbar vertebra': {
+    ar: 'فقرة قطنية',
+    descEn: 'Massive weight-bearing vertebra of the lower back designed to support trunk load and facilitate flexion/extension.',
+    descAr: 'فقرة عريضة ضخمة في أسفل الظهر مهيأة لتحمل الثقل الميكانيكي الأكبر للجذع وتسهيل الانحناء والبسط.',
+  },
+  'Cervical vertebra': {
+    ar: 'فقرة عنقية',
+    descEn: 'One of seven neck vertebrae featuring transverse foramina for vertebral artery passage; includes atlas and axis.',
+    descAr: 'إحدى فقرات العنق السبع، تحتوي نواتئها المستعرضة على ثقوب للشريان الفقري وتسمح بمرونة حركة الرأس في كافة الاتجاهات.',
+  },
+  'Pelvis': {
+    ar: 'عظم الحوض (الحزام الحوضي)',
+    descEn: 'Bony ring connecting the axial skeleton to the lower limbs, transferring mechanical weight to the femurs.',
+    descAr: 'الحلقة العظمية الحوضية التي تربط الهيكل المحوري بالطرفين السفليين وتنقل وزن الجسم إلى عظام الفخذين.',
+  },
+  'Ilium': {
+    ar: 'عظم الحرقفة',
+    descEn: 'Superior and largest part of the hip bone forming the iliac crest and the superior part of the acetabulum.',
+    descAr: 'الجزء الأكبر والعلوي من عظم الحوض، يشكل العرف الحرقفي وأعلى التجويف الحُقي لمفصل الورك.',
   },
   'Mandible': {
     ar: 'عظم الفك السفلي',
@@ -355,10 +422,25 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           }
         });
 
-        // Authentic anatomical coordinate preservation:
-        // All Z-Anatomy systems share standard meters coordinate system where (0,0,0) is anatomical ground.
-        // We do NOT artificially center individual systems because that breaks visceral organ alignment relative to the skeleton.
-        root.position.set(0, 0, 0);
+        // Accurate anatomical scale and alignment for user models vs standard meters coordinates
+        if (sysConfig.id === 'ecorche') {
+          // male_full_body_ecorche.glb: raw height is 68.16 units with center at origin.
+          // Scale to 1.76m anatomical human height: 1.76 / 68.16 = ~0.02582
+          const ecorcheScale = 0.02582;
+          root.scale.set(ecorcheScale, ecorcheScale, ecorcheScale);
+          // Ground level is (0, 0, 0) in Z-Anatomy. Feet of ecorche are at ~ -43.13 raw units.
+          // Y translation = 43.13 * 0.02582 = 1.113m offset to place soles on the ground
+          root.position.set(0, 1.113, 0);
+        } else if (sysConfig.id === 'exercise') {
+          // anatomy_exercise.glb: Torso & arm muscle study
+          // Scale appropriately to align with thoracic-abdominal region
+          const exerciseScale = 0.95;
+          root.scale.set(exerciseScale, exerciseScale, exerciseScale);
+          root.position.set(0, 0.05, 0.02);
+        } else {
+          // Authentic Z-Anatomy systems coordinate ground (0,0,0)
+          root.position.set(0, 0, 0);
+        }
 
         root.visible = visibleSystemsRef.current[sysConfig.id] ?? !!sysConfig.defaultVisible;
 
@@ -464,24 +546,47 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           roughness: 0.25,
         });
 
-        const rawName = hit.name.replace(/^ZA:/, '').replace(/\.(l|r)$/i, (m, side) => ` (${side.toUpperCase() === 'L' ? 'Left' : 'Right'})`);
+        let cleanName = hit.name.replace(/^ZA:/, '').replace(/\.(l|r)$/i, (m, side) => ` (${side.toUpperCase() === 'L' ? 'Left' : 'Right'})`);
         const sysId = (hit.userData.systemId || 'skeletal') as AnatomySystemId;
         const sysConfig = SYSTEM_LAYERS.find(s => s.id === sysId) || SYSTEM_LAYERS[0];
 
+        // Specific anatomical resolution for full body ecorche and torso volume models
+        if (sysId === 'ecorche' || sysId === 'exercise' || cleanName.includes('Object_') || cleanName.includes('Decimation')) {
+          const worldPos = new THREE.Vector3();
+          hit.getWorldPosition(worldPos);
+          const y = worldPos.y;
+
+          if (y > 1.55) {
+            cleanName = 'Facial & Cranial Musculature (عضلات الوجه والجمجمة)';
+          } else if (y > 1.40) {
+            cleanName = 'Sternocleidomastoid & Neck Musculature (عضلات الرقبة والعضلة القصية الترقوية)';
+          } else if (y > 1.20) {
+            cleanName = 'Pectoralis Major & Deltoid (عضلات الصدر والكتف)';
+          } else if (y > 0.95) {
+            cleanName = 'Rectus Abdominis & External Obliques (عضلات البطن المستقيمة والمائلة)';
+          } else if (y > 0.75) {
+            cleanName = 'Gluteal & Pelvic Girdle Musculature (عضلات الحوض والأليوية)';
+          } else if (y > 0.45) {
+            cleanName = 'Quadriceps Femoris & Hamstrings (عضلات الفخذ الأمامية والخلفية)';
+          } else {
+            cleanName = 'Gastrocnemius & Tibialis Anterior (عضلات الساق والربلة)';
+          }
+        }
+
         // Match against dictionary or definitions.json
-        const matchedDict = Object.entries(ANATOMY_DICTIONARY).find(([k]) => rawName.toLowerCase().includes(k.toLowerCase()));
+        const matchedDict = Object.entries(ANATOMY_DICTIONARY).find(([k]) => cleanName.toLowerCase().includes(k.toLowerCase()));
         
         let descEn = matchedDict ? matchedDict[1].descEn : '';
-        const nameAr = matchedDict ? matchedDict[1].ar : sysConfig.labelAr;
+        const nameAr = matchedDict ? matchedDict[1].ar : (cleanName.includes('(') ? cleanName.split('(')[1]?.replace(')', '') : sysConfig.labelAr);
         let descAr = matchedDict ? matchedDict[1].descAr : '';
 
         // If not in curated dictionary, check definitions.json
         if (!descEn && definitionsRef.current) {
-          const cleanName = rawName.replace(/\s*\((Left|Right)\)/i, '').trim();
+          const searchKey = cleanName.replace(/\s*\((Left|Right)\)/i, '').trim();
           const defKey = Object.keys(definitionsRef.current).find(k => 
-            k.toLowerCase() === cleanName.toLowerCase() || 
-            k.toLowerCase().includes(cleanName.toLowerCase()) || 
-            cleanName.toLowerCase().includes(k.toLowerCase())
+            k.toLowerCase() === searchKey.toLowerCase() || 
+            k.toLowerCase().includes(searchKey.toLowerCase()) || 
+            searchKey.toLowerCase().includes(k.toLowerCase())
           );
           if (defKey) {
             const defText = definitionsRef.current[defKey];
@@ -490,19 +595,22 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         }
 
         if (!descEn) {
-          descEn = `Identified authentic anatomical specimen of the ${sysConfig.labelEn}.`;
+          descEn = `Detailed clinical anatomy specimen belonging to the ${sysConfig.labelEn}.`;
         }
         if (!descAr) {
           descAr = `بِنية تشريحية حقيقية وموثقة تتبع ${sysConfig.labelAr}.`;
         }
 
+        const worldHitPos = new THREE.Vector3();
+        hit.getWorldPosition(worldHitPos);
+
         setSelectedStructure({
-          nameEn: rawName || sysConfig.labelEn,
+          nameEn: cleanName || sysConfig.labelEn,
           nameAr: nameAr,
           system: `${sysConfig.labelEn} — ${sysConfig.labelAr}`,
           descEn: descEn,
           descAr: descAr,
-          region: hit.position.y > 1.3 ? 'Cranial / Head & Neck (الرأس والعنق)' : hit.position.y > 0.7 ? 'Thorax & Trunk (الصدر والجذع)' : 'Lower Extremities (الأطراف السفلية)',
+          region: worldHitPos.y > 1.3 ? 'Cranial / Head & Neck (الرأس والعنق)' : worldHitPos.y > 0.7 ? 'Thorax & Trunk (الصدر والجذع)' : 'Lower Extremities (الأطراف السفلية)',
         });
       }
     };
@@ -725,10 +833,39 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
 
             {/* Launch Detailed 3D Organ Dissection Button */}
             {(() => {
-              const matchedModel = SKETCHFAB_ANATOMY_COLLECTION.find(m => 
-                m.keywords.some(k => selectedStructure?.nameEn.toLowerCase().includes(k.toLowerCase()) || 
-                                     selectedStructure?.nameAr.includes(k))
-              ) || SKETCHFAB_ANATOMY_COLLECTION[1]; // fallback to Heart
+              const queryEn = (selectedStructure?.nameEn || '').toLowerCase();
+              const queryAr = selectedStructure?.nameAr || '';
+              const querySys = (selectedStructure?.system || '').toLowerCase();
+
+              // Only match non-cell anatomical models (organs, bones, systems, tissues)
+              const anatomySpecimens = SKETCHFAB_ANATOMY_COLLECTION.filter(m => m.category !== 'cell');
+
+              // 1. Direct keyword match
+              let matchedModel = anatomySpecimens.find(m => 
+                m.keywords.some(k => queryEn.includes(k.toLowerCase()) || queryAr.includes(k))
+              );
+
+              // 2. Fallback based on anatomical system or category
+              if (!matchedModel) {
+                if (querySys.includes('skelet') || queryEn.includes('bone') || queryEn.includes('cartilage') || queryAr.includes('عظم') || queryAr.includes('هيكل')) {
+                  matchedModel = anatomySpecimens.find(m => m.id === 'rib-cage-dissection') || anatomySpecimens.find(m => m.id === 'human-femur-dissection');
+                } else if (querySys.includes('cardio') || queryEn.includes('vessel') || queryAr.includes('دوران') || queryAr.includes('قلب')) {
+                  matchedModel = anatomySpecimens.find(m => m.id === 'human-heart-animated');
+                } else if (querySys.includes('nerv') || queryEn.includes('brain') || queryAr.includes('عصب') || queryAr.includes('دماغ')) {
+                  matchedModel = anatomySpecimens.find(m => m.id === 'brain-and-nuclei');
+                } else if (querySys.includes('viscer') || querySys.includes('digest') || queryAr.includes('هضم') || queryAr.includes('أحشاء')) {
+                  matchedModel = anatomySpecimens.find(m => m.id === 'gastrointestinal-tract') || anatomySpecimens.find(m => m.id === 'stomach-cross-section');
+                } else if (querySys.includes('respirat') || queryAr.includes('تنفس')) {
+                  matchedModel = anatomySpecimens.find(m => m.id === 'human-lungs-dissection');
+                } else if (querySys.includes('muscl') || queryAr.includes('عضل')) {
+                  matchedModel = anatomySpecimens.find(m => m.id === 'muscle-tissue');
+                }
+              }
+
+              // 3. Absolute fallback: Authentic Thorax/Ribs model or Heart, NEVER animal/plant cell!
+              if (!matchedModel) {
+                matchedModel = anatomySpecimens.find(m => m.id === 'rib-cage-dissection') || anatomySpecimens[0];
+              }
 
               return (
                 <button
@@ -738,8 +875,8 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
                   <Sparkles className="w-4 h-4 text-sky-200" />
                   <span>
                     {language === 'ar' 
-                      ? `فتح تشريح ${selectedStructure?.nameAr || 'العضو'} مجسماً 3D` 
-                      : `Open ${selectedStructure?.nameEn || 'Organ'} Detailed 3D`}
+                      ? `فتح تشريح ${selectedStructure?.nameAr || 'البنية'} مجسماً 3D` 
+                      : `Open ${selectedStructure?.nameEn || 'Specimen'} Detailed 3D`}
                   </span>
                 </button>
               );
