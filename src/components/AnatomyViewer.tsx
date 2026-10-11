@@ -294,19 +294,59 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         const root = gltf.scene;
         root.name = sysConfig.id;
 
-        const defaultMat = new THREE.MeshStandardMaterial({
-          color: sysConfig.color,
-          roughness: 0.45,
-          metalness: 0.05,
-        });
-
         root.traverse((child) => {
           if ((child as THREE.Mesh).isMesh) {
             const mesh = child as THREE.Mesh;
             mesh.castShadow = true;
             mesh.receiveShadow = true;
-            originalMaterials.current.set(mesh, defaultMat.clone());
-            mesh.material = defaultMat.clone();
+
+            const name = (mesh.name || '').toLowerCase();
+            let matColor = sysConfig.color;
+            let roughness = 0.38;
+            let metalness = 0.04;
+
+            // Specialized authentic organ color shading
+            if (name.includes('liver')) {
+              matColor = 0x6e261d; // Deep reddish-brown liver
+              roughness = 0.28;
+            } else if (name.includes('stomach')) {
+              matColor = 0xb45344; // Rugose gastric pinkish-tan
+              roughness = 0.32;
+            } else if (name.includes('lung')) {
+              matColor = 0xd9777f; // Spongy pulmonary pink
+              roughness = 0.65;
+            } else if (name.includes('heart') || name.includes('myocardium')) {
+              matColor = 0x991b1b; // Cardiac muscle crimson
+              roughness = 0.25;
+            } else if (name.includes('kidney')) {
+              matColor = 0x7c2d12; // Renal cortex dark red
+              roughness = 0.3;
+            } else if (name.includes('spleen')) {
+              matColor = 0x581c87; // Splenic lymphoid purple
+              roughness = 0.35;
+            } else if (name.includes('colon') || name.includes('rectum')) {
+              matColor = 0xc27a62; // Intestinal pale ochre
+              roughness = 0.4;
+            } else if (name.includes('aorta') || name.includes('artery')) {
+              matColor = 0xdc2626; // Oxygenated arterial scarlet
+              roughness = 0.3;
+            } else if (name.includes('vein') || name.includes('cava')) {
+              matColor = 0x2563eb; // Deoxygenated venous royal blue
+              roughness = 0.3;
+            } else if (sysConfig.id === 'skeletal') {
+              matColor = 0xf5f2eb; // Cortical bone ivory
+              roughness = 0.45;
+              metalness = 0.02;
+            }
+
+            const realisticMat = new THREE.MeshStandardMaterial({
+              color: matColor,
+              roughness,
+              metalness,
+            });
+
+            originalMaterials.current.set(mesh, realisticMat.clone());
+            mesh.material = realisticMat.clone();
             mesh.userData = {
               systemId: sysConfig.id,
               systemName: sysConfig.labelEn,
@@ -755,7 +795,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
 
         {/* Specimen Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {SKETCHFAB_ANATOMY_COLLECTION.map((item) => (
+          {SKETCHFAB_ANATOMY_COLLECTION.filter(item => item.category !== 'cell').map((item) => (
             <div
               key={item.id}
               onClick={() => setActiveSketchfabModel(item)}

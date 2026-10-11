@@ -390,9 +390,38 @@ export const BiologyLab: React.FC = () => {
     renderer.domElement.addEventListener('click', handleClick);
 
     let animId: number;
+    let clock = new THREE.Clock();
+
     const animate = () => {
       animId = requestAnimationFrame(animate);
-      cellGroup.rotation.y += 0.003;
+      const elapsedTime = clock.getElapsedTime();
+
+      // Slow majestic rotation
+      cellGroup.rotation.y += 0.0025;
+
+      // Realistic cytoplasmic organelle drifting & respiration pulse
+      const mito = organelleMeshes.current.get('mitochondria');
+      if (mito) {
+        mito.position.y = 0.7 + Math.sin(elapsedTime * 2.2) * 0.04;
+        mito.rotation.z = Math.PI / 3 + Math.sin(elapsedTime * 1.5) * 0.05;
+      }
+
+      const nucleus = organelleMeshes.current.get('nucleus');
+      if (nucleus) {
+        const pulse = 1 + Math.sin(elapsedTime * 1.8) * 0.02;
+        nucleus.scale.set(pulse, pulse, pulse);
+      }
+
+      const chloroplast = organelleMeshes.current.get('chloroplast');
+      if (chloroplast) {
+        chloroplast.position.y = 0.9 + Math.cos(elapsedTime * 2.0) * 0.03;
+      }
+
+      const golgi = organelleMeshes.current.get('golgi');
+      if (golgi) {
+        golgi.position.x = -1.2 + Math.sin(elapsedTime * 1.2) * 0.03;
+      }
+
       controls.update();
       renderer.render(scene, camera);
     };
@@ -714,7 +743,7 @@ export const BiologyLab: React.FC = () => {
         </div>
       )}
 
-      {/* VIEW 3: FULL REALISTIC 3D ANIMAL CELL SPECIMEN (SKETCHFAB) */}
+      {/* VIEW 3: FULL REALISTIC 3D ANIMAL & PLANT CELL SPECIMENS */}
       {activeTab === 'sketchfab_cell' && (
         <div className="space-y-6">
           <div className="sci-card overflow-hidden h-[620px] flex flex-col border border-sky-500/25">
@@ -722,18 +751,43 @@ export const BiologyLab: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <span className="sci-badge flex items-center space-x-1">
                   <Sparkles className="w-3.5 h-3.5 text-sky-400" />
-                  <span>{language === 'ar' ? 'مجسم الخلية الحيوانية الحقيقي 3D' : 'Authentic 3D Animal Cell Specimen'}</span>
+                  <span>
+                    {cellType === 'plant' 
+                      ? (language === 'ar' ? 'مجسم الخلية النباتية الحقيقي 3D' : 'Authentic 3D Plant Cell Specimen')
+                      : (language === 'ar' ? 'مجسم الخلية الحيوانية الحقيقي 3D' : 'Authentic 3D Animal Cell Specimen')}
+                  </span>
                 </span>
                 <span className="text-xs text-slate-400">
-                  {language === 'ar' ? 'نموذج كامل بتشريح وتفاصيل العضيات' : 'Interactive Cell Dissection & Organelles'}
+                  {cellType === 'plant'
+                    ? (language === 'ar' ? 'جدار خلوي، فجوة عصارية، وبلاستيدات خضراء' : 'Cellulose wall, turgor vacuole & chloroplasts')
+                    : (language === 'ar' ? 'نموذج كامل بتشريح وتفاصيل العضيات' : 'Interactive Cell Dissection & Organelles')}
                 </span>
               </div>
-              <span className="text-xs text-slate-500 font-mono">Gaia Tech • Sketchfab Anatomy</span>
+
+              {/* Plant vs Animal Toggle */}
+              <div className="flex items-center space-x-2 sci-surface p-1">
+                <button
+                  onClick={() => setCellType('plant')}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                    cellType === 'plant' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {language === 'ar' ? 'الخلية النباتية' : 'Plant Cell'}
+                </button>
+                <button
+                  onClick={() => setCellType('animal')}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                    cellType === 'animal' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {language === 'ar' ? 'الخلية الحيوانية' : 'Animal Cell'}
+                </button>
+              </div>
             </div>
 
             <div className="flex-1 bg-black relative">
               <iframe
-                title="Animal Cell 3D"
+                title={cellType === 'plant' ? "Plant Cell 3D" : "Animal Cell 3D"}
                 className="w-full h-full border-0"
                 src="https://sketchfab.com/models/3a90e22871004d92a020c54e8964938c/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0&ui_help=0&ui_settings=0&ui_inspector=1&ui_stop=0"
                 allow="autoplay; fullscreen; xr-spatial-tracking"
