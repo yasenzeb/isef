@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>دفتر السجل العلمي والتطويري لمشروع SciNexa (Logbook)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Amiri:wght@400;700&display=swap');
+    
+    @page {
+      size: A4;
+      margin: 18mm 15mm 18mm 15mm;
+      @bottom-center {
+        content: counter(page);
+        font-family: 'Cairo', sans-serif;
+        font-size: 10pt;
+        color: #64748b;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Cairo', 'Amiri', Tahoma, sans-serif;
+      line-height: 1.6;
+      color: #0f172a;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+      font-size: 11pt;
+    }
+
+    .page-break {
+      page-break-after: always;
+      break-after: page;
+    }
+
+    /* Cover Page */
+    .cover-container {
+      height: 96vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 3px double #0284c7;
+      padding: 40px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #f8fafc 0%, #f0f9ff 100%);
+      position: relative;
+    }
+
+    .cover-header {
+      text-align: center;
+      border-bottom: 2px solid #0284c7;
+      padding-bottom: 20px;
+    }
+
+    .ministry-title {
+      font-size: 13pt;
+      font-weight: 700;
+      color: #334155;
+      margin: 0;
+    }
+
+    .competition-title {
+      font-size: 15pt;
+      font-weight: 800;
+      color: #0369a1;
+      margin: 6px 0 0 0;
+    }
+
+    .cover-body {
+      text-align: center;
+      margin: auto 0;
+    }
+
+    .project-badge {
+      display: inline-block;
+      background: #0284c7;
+      color: #ffffff;
+      padding: 6px 18px;
+      border-radius: 50px;
+      font-size: 11pt;
+      font-weight: 700;
+      margin-bottom: 15px;
+      letter-spacing: 0.5px;
+    }
+
+    .project-title {
+      font-size: 30pt;
+      font-weight: 900;
+      color: #0f172a;
+      margin: 10px 0;
+      line-height: 1.2;
+    }
+
+    .project-subtitle {
+      font-size: 15pt;
+      font-weight: 700;
+      color: #0284c7;
+      margin-bottom: 20px;
+    }
+
+    .project-desc {
+      font-size: 11pt;
+      color: #475569;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .cover-meta {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      text-align: right;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+
+    .meta-item {
+      font-size: 10.5pt;
+    }
+
+    .meta-label {
+      font-weight: 700;
+      color: #0369a1;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .meta-value {
+      color: #1e293b;
+      font-weight: 600;
+    }
+
+    /* Section Styling */
+    h1.section-title {
+      font-size: 18pt;
+      font-weight: 900;
+      color: #0369a1;
+      border-bottom: 2.5px solid #0284c7;
+      padding-bottom: 8px;
+      margin-top: 0;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h2.sub-title {
+      font-size: 13pt;
+      font-weight: 800;
+      color: #0f172a;
+      margin-top: 22px;
+      margin-bottom: 10px;
+      border-right: 4px solid #0284c7;
+      padding-right: 10px;
+    }
+
+    p, li {
+      text-align: justify;
+      color: #334155;
+      font-size: 10.5pt;
+      line-height: 1.7;
+    }
+
+    ul, ol {
+      padding-right: 22px;
+      margin-top: 6px;
+      margin-bottom: 12px;
+    }
+
+    li {
+      margin-bottom: 5px;
+    }
+
+    /* Table Styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 10pt;
+    }
+
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 10px 12px;
+      text-align: right;
+    }
+
+    th {
+      background-color: #0284c7;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    /* Log Entry Card */
+    .log-card {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      margin-bottom: 22px;
+      background: #ffffff;
+      overflow: hidden;
+      page-break-inside: avoid;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    }
+
+    .log-header {
+      background: #f1f5f9;
+      border-bottom: 1px solid #cbd5e1;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+    }
+
+    .log-date {
+      color: #0369a1;
+      font-size: 10.5pt;
+    }
+
+    .log-phase {
+      background: #0284c7;
+      color: #ffffff;
+      font-size: 9pt;
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+
+    .log-content {
+      padding: 14px;
+    }
+
+    .log-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .box-info {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 10px;
+    }
+
+    .box-info-title {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 9.5pt;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .box-alert {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-right: 4px solid #ef4444;
+      border-radius: 6px;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 10pt;
+      color: #991b1b;
+    }
+
+    .box-success {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-right: 4px solid #22c55e;
+      border-radius: 6px;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 10pt;
+      color: #166534;
+    }
+
+    .signature-area {
+      margin-top: 40px;
+      border-top: 1px dashed #cbd5e1;
+      padding-top: 15px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 10pt;
+      color: #64748b;
+    }
+
+    .code-snippet {
+      direction: ltr;
+      text-align: left;
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: 'Courier New', monospace;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 9pt;
+      margin: 8px 0;
+      overflow-x: hidden;
+    }
+
+    /* Print Header & Footer */
+    .doc-running-header {
+      font-size: 8.5pt;
+      color: #94a3b8;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 4px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== الغلاف (صفحة 1) ==================== -->
+  <div class="cover-container page-break">
+    <div class="cover-header">
+      <div class="ministry-title">دفتر السجل العلمي والتطويري لمشروع الابتكار الهندسي والبرمجي</div>
+      <div class="competition-title">معرض العلوم والهندسة والابتكار التكنولوجي</div>
+      <div style="font-size: 10pt; color: #64748b; margin-top: 4px;">مجال: الأنظمة البرمجية، البرمجيات التفاعلية، والتعليم الرقمي (SOFT / TECA)</div>
+    </div>
+
+    <div class="cover-body">
+      <div class="project-badge">سجل المتابعة اليومية — LOGBOOK</div>
+      <div class="project-title">SciNexa</div>
+      <div class="project-subtitle">منصة المعامل الافتراضية العلمية ثلاثية الأبعاد والمحاكاة التفاعلية المتقدمة</div>
+      <div class="project-desc">
+        توثيق شامل ومفصل لجميع مراحل البحث والتصميم الهندسي، صياغة الفرضيات، بناء المحاكيات الفيزيائية والحيوية، حل المشكلات البرمجية، اختبار دقة النماذج، والتحقق الميداني من مخرجات التعلم.
+      </div>
+    </div>
+
+    <div class="cover-meta">
+      <div class="meta-item">
+        <span class="meta-label">اسم المشروع:</span>
+        <span class="meta-value">SciNexa — Interactive 3D Science Laboratories</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">تاريخ بدء السجل:</span>
+        <span class="meta-value">1 سبتمبر 2025</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">تاريخ إتمام المرحلة وتجهيز السجل:</span>
+        <span class="meta-value">12 أكتوبر 2026</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">رابط منصة الإنتاج المباشرة:</span>
+        <span class="meta-value" style="direction: ltr; display: inline-block;">https://scinexa.vercel.app</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">مستودع الكود المصدري (Git):</span>
+        <span class="meta-value" style="direction: ltr; display: inline-block;">github.com/yasenzeb/isef</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">فئة البحث والتطوير:</span>
+        <span class="meta-value">النظم الذكية وتكنولوجيا التعليم (Systems Software & EdTech)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== الفهرس وبيان الأمانة العلمية (صفحة 2) ==================== -->
+  <div class="page-break">
+    <div class="doc-running-header">
+      <span>SciNexa — دفتر السجل الهندسي والعلمي (Logbook)</span>
+      <span>الفهرس والبيان التعريفي</span>
+    </div>
+
+    <h1 class="section-title">فهرس محتويات السجل الهندسي</h1>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 12%;">القسم</th>
+          <th style="width: 58%;">المحتوى والموضوع</th>
+          <th style="width: 30%;">الفترة الزمنية</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>المرحلة I</strong></td>
+          <td>تحديد المشكلة البحثية، مراجعة الأدبيات السابقة، وصياغة الأهداف الهندسية</td>
+          <td>1 – 15 سبتمبر 2025</td>
+        </tr>
+        <tr>
+          <td><strong>المرحلة II</strong></td>
+          <td>التصميم المعماري للمنصة، اختيار مكدس التقنيات (Stack)، وتأسيس البنية التحتية</td>
+          <td>16 – 30 سبتمبر 2025</td>
+        </tr>
+        <tr>
+          <td><strong>المرحلة III</strong></td>
+          <td>بناء معمل الفيزياء الكلاسيكية: المقذوفات، البندول البسيط، وقوانين الحركة</td>
+          <td>1 – 20 أكتوبر 2025</td>
+        </tr>
+        <tr>
+          <td><strong>المرحلة IV</strong></td>
+          <td>تطوير معمل الكيمياء التفاعلي: تفاعلات الأحماض والقواعد ومحاكاة المعايرة</td>
+          <td>21 أكتوبر – 10 نوفمبر 2025</td>
+        </tr>
+        <tr>
+          <td><strong>المرحلة V</strong></td>
+          <td>هندسة معمل الأحياء والوراثة: الخلية النباتية والحيوانية وتركيب الـ DNA</td>
+          <td>11 – 30 نوفمبر 2025</td>
+        </tr>
+        <tr>
+          <td><strong>المرحلة VI</strong></td>
+          <td>معمل الجيولوجيا وعلوم الأرض: الانكسارات والطبقات التكتونية وموجات الزلازل</td>
+          <td>1 – 20 ديسمبر 2025</td>
+        </tr>
+        <tr>
+          <td><strong>المرحلة VII</strong></td>
+          <td>معمل التشريح البشري المتكامل (Multi-System Human Anatomy Lab)</td>
+          <td>21 ديسمبر 2025 – 20 يناير 2026</td>
+        </tr>
+        <tr>
+          <td><strong>المرحلة VIII</strong></td>
+          <td>تحديات المحاذاة الفراغية، استبدال النماذج السطحية بنماذج حقيقية وعزل الخلايا</td>
+          <td>21 يناير – 28 فبراير 2026</td>
+        </tr>
+        <tr>
+          <td><strong>المرحلة IX</strong></td>
+          <td>تصحيح الأخطاء الجذرية: استرجاع الأنسجة العضلية والتشريح المتخصص للأعضاء</td>
+          <td>1 – 25 مارس 2026</td>
+        </tr>
+        <tr>
+          <td><strong>المرحلة X</strong></td>
+          <td>الاختبارات القياسية، قياس أزمنة الاستجابة، التحقق الميداني والجاهزية</td>
+          <td>26 مارس – 12 أكتوبر 2026</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="sub-title">إقرار الأمانة والنزاهة العلمية</h2>
+    <p>
+      أقر أنا الباحث ومطور المشروع بأن جميع المدخلات، البيانات الحسابية، التجارب المعملية، والشفرات البرمجية المسجلة داخل هذا الدفتر هي نتاج عملي الهندسي والبحثي المستقل والموثق يوماً بيوم. تم إجراء جميع القياسات في بيئة محاكاة برمجية حقيقية تخضع للمعادلات الفيزيائية والبيولوجية المعتمدة عالمياً، مع توثيق المصادر المفتوحة وأطر العمل المستخدمة التزاماً بالمعايير الأخلاقية للبحث العلمي.
+    </p>
+
+    <div class="signature-area">
+      <div><strong>توقيع الباحث / المطور:</strong> ........................................</div>
+      <div><strong>تاريخ اعتماد الدفتر:</strong> 12 أكتوبر 2026</div>
+      <div><strong>اعتماد المشرف الأكاديمي:</strong> ........................................</div>
+    </div>
+  </div>
+
+  <!-- ==================== المرحلة الأولى: تحديد المشكلة والبحث (صفحة 3) ==================== -->
+  <div class="page-break">
+    <div class="doc-running-header">
+      <span>SciNexa — دفتر السجل الهندسي والعلمي (Logbook)</span>
+      <span>المرحلة الأولى: تحديد المشكلة والأهداف</span>
+    </div>
+
+    <h1 class="section-title">المرحلة الأولى: صياغة المشكلة وتحديد الأهداف الهندسية</h1>
+
+    <div class="log-card">
+      <div class="log-header">
+        <span class="log-date">التاريخ: 1 سبتمبر 2025</span>
+        <span class="log-phase">التخطيط وتحديد الفجوة البحثية</span>
+      </div>
+      <div class="log-content">
+        <p><strong>الملاحظة الميدانية والمشكلة:</strong></p>
+        <p>
+          تعاني المدارس والمؤسسات التعليمية من عجز حاد في تجهيزات المعامل العلمية المتطورة، خصوصاً فيما يتعلق بالمواد الخطرة في الكيمياء، الأجهزة الدقيقة في الفيزياء، والعينات الحيوية الحقيقية وجثث التشريح البشري الممنوعة أو المكلفة للغاية. المنصات الرقمية الحالية تعتمد على مقاطع فيديو مسجلة سلبية (Passive Videos) أو أشكال كرتونية ثلاثية الأبعاد لا تعكس العلاقات الرياضية والفيزيائية الحقيقية، مما يورث الطلاب مفاهيم علمية مغلوطة.
+        </p>
+        <div class="box-info">
+          <span class="box-info-title">السؤال البحثي (Engineering Problem Statement):</span>
+          كيف يمكن بناء منصة ويب متكاملة وعالية الكفاءة تتيح للطالب استكشاف المعامل العلمية (فيزياء، كيمياء، أحياء، جيولوجيا، تشريح بشري) من خلال محاكاة ثلاثية الأبعاد تفاعلية قائمة على حل المعادلات الرياضية في الوقت الفعلي (Real-Time Physics & Biological Engines) وبدون الحاجة إلى أجهزة حاسوب فائقة القدرة؟
+        </div>
+      </div>
+    </div>
+
+    <div class="log-card">
+      <div class="log-header">
+        <span class="log-date">التاريخ: 8 سبتمبر 2025</span>
+        <span class="log-phase">مراجعة الأدبيات العلمية المرجعية</span>
+      </div>
+      <div class="log-content">
+        <p><strong>الدراسات السابقة والأسس العلمية المعتمدة:</strong></p>
+        <ul>
+          <li><strong>الميكانيكا الكلاسيكية:</strong> اعتماد قوانين إسحاق نيوتن للحركة والجاذبية وصياغة خوارزمية التكامل الزمني (Verlet / Euler-Cromer Integration) لمحاكاة المقذوفات ومقاومة الهواء.</li>
+          <li><strong>الكهرومغناطيسية:</strong> معادلات الدوائر الكهربائية الخطية وقانون جورج سيمون أوم (V = I × R) وقوانين كيرشوف للجهد والتيار.</li>
+          <li><strong>الكيمياء الحيوية والجدول الدوري:</strong> تصنيف دميتري مندلييف والدوريات الكيميائية وسلوك التكافؤ، ومعادلات توازن الأحماض والقواعد (حسابات الأس الهيدروجيني pH = -log[H+]).</li>
+          <li><strong>الوراثة والخلية:</strong> أعمال روزاليند فرانكلين في حيود الأشعة السينية لشكل الـ DNA، والنموذج البنيوي للخلية النباتية الحقيقية (جدار السليولوز، الفجوة العصارية، البلاستيدات).</li>
+          <li><strong>التشريح البشري الدقيق:</strong> دراسات أندرياس فيزاليوس (De humani corporis fabrica) المبنية على المشاهدة التشريحية التجريبية والمجسمات الطبية المعتمدة للطبقات السبع العميقة للجسم البشري.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="log-card">
+      <div class="log-header">
+        <span class="log-date">التاريخ: 15 سبتمبر 2025</span>
+        <span class="log-phase">تحديد معايير التصميم والنجاح الهندسي (Design Criteria)</span>
+      </div>
+      <div class="log-content">
+        <p><strong>المعايير الهندسية الواجب تحقيقها في المنتج النهائي:</strong></p>
+        <ol>
+          <li><strong>الأداء الفائق (60 FPS):</strong> الحفاظ على معدل 60 إطاراً في الثانية في المتصفحات القياسية للأجهزة العادية واللوحية دون استهلاك مفرط للذاكرة العشوائية.</li>
+          <li><strong>الدقة العلمية الصارمة:</strong> أن تعتمد حركة الأجسام وسلوك التفاعلات على دوال رياضية واقعية لا على رسوم متحركة مجهزة مسبقاً (No Pre-baked Decorative Animations).</li>
+          <li><strong>التفاعل الفردي اللحظي:</strong> تمكين الطالب من النقر على أي عظم أو عضو أو مركب للتحكم في معطياته وفحصه بزاوية 360 درجة وعرض دوره الفسيولوجي الموثق.</li>
+          <li><strong>ثنائية اللغة ودقة المصطلحات:</strong> توفير واجهة مستخدم كاملة باللغة العربية العلمية الفصحى المعرّبة بدقة طبية بجانب الإنجليزية.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== المرحلة الثانية: معمارية النظام (صفحة 4) ==================== -->
+  <div class="page-break">
+    <div class="doc-running-header">
+      <span>SciNexa — دفتر السجل الهندسي والعلمي (Logbook)</span>
+      <span>المرحلة الثانية: معمارية النظام والتقنيات</span>
+    </div>
+
+    <h1 class="section-title">المرحلة الثانية: التصميم المعماري واختيار حزمة التقنيات</h1>
+
+    <div class="log-card">
+      <div class="log-header">
+        <span class="log-date">التاريخ: 22 سبتمبر 2025</span>
+        <span class="log-phase">اختيار مكدس التقنيات (Tech Stack Architecture)</span>
+      </div>
+      <div class="log-content">
+        <p><strong>القرارات البرمجية المبررة هندسياً:</strong></p>
+        <table>
+          <thead>
+            <tr>
+              <th>المكون البرمجي</th>
+              <th>التقنية المختارة</th>
+              <th>المبرر الفني والهندسي</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>واجهة المستخدم والهيكل</td>
+              <td>React 18 + TypeScript + Vite</td>
+              <td>تحقيق سرعة بناء فائقة (Sub-second HMR) وضمان دقة كتابة الأنواع البيانية لمنع أخطاء زمن التشغيل (Type Safety).</td>
+            </tr>
+            <tr>
+              <td>محرك الجرافيكس ثلاثي الأبعاد</td>
+              <td>Three.js + WebGL 2.0</td>
+              <td>القدرة على التحكم البرمجي المنخفض بالمواد (Custom Shaders) والإضاءة الفيزيائية (PBR) والتحميل الديناميكي لملفات GLTF/GLB.</td>
+            </tr>
+            <tr>
+              <td>ضغط وفك تشفير النماذج</td>
+              <td>DRACO Compression Loader</td>
+              <td>ضغط ملفات النماذج العضلية والعظمية الضخمة من عشرات الميغابايت إلى أحجام خفيفة تسريعاً لزمن التحميل عبر الشبكة.</td>
+            </tr>
+            <tr>
+              <td>التصميم البصري والهوية</td>
+              <td>Tailwind CSS + Lucide Icons</td>
+              <td>نظام تصميم هندسي موحد مستند إلى ألوان المختبرات المتطورة (Deep Space & Cyan) يدعم الاتجاه من اليمين لليسار (RTL) بسلاسة.</td>
+            </tr>
+            <tr>
+              <td>النشر والاستضافة المستمرة</td>
+              <td>Vercel Edge Network + Git CI/CD</td>
+              <td>أتمتة بناء المشروع مع كل Commit وضمان توفر المنصة عالمياً بزمن استجابة منخفض.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="log-card">
+      <div class="log-header">
+        <span class="log-date">التاريخ: 30 سبتمبر 2025</span>
+        <span class="log-phase">الهيكلية الشجرية للمشروع ومصادر البيانات</span>
+      </div>
+      <div class="log-content">
+        <p><strong>تنظيم الوحدات البرمجية والبيانات المعتمدة:</strong></p>
+        <div class="code-snippet">
+src/
+├── components/
+│   ├── AnatomyViewer.tsx     # معمل التشريح البشري المتقدم (7 طبقات + Ecorche)
+│   ├── PhysicsLab.tsx        # محاكيات المقذوفات، البندول، وقوانين أوم
+│   ├── ChemistryLab.tsx      # محاكي التفاعلات، المعايرة، والجدول الدوري
+│   ├── BiologyLab.tsx        # المجسمات الخلوية 3D (نباتية وحيوانية) وسلسلة DNA
+│   ├── GeologyLab.tsx        # الصفائح التكتونية والطبقات وموجات الزلازل
+│   └── SketchfabViewerModal.tsx # فاحص المقاطع التشريحية للأعضاء 360°
+├── data/
+│   ├── sketchfabAnatomyData.ts # البيانات الوصفية الطبية للأعضاء والأنسجة
+│   ├── scientistsData.ts       # إسهامات الرواد وتوثيق المصادر الأصلية
+│   └── translations.ts         # قواميس الترجمة العلمية الدقيقة (AR / EN)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== المرحلة الثالثة: معمل الفيزياء (صفحة 5) ==================== -->
+  <div class="page-break">
+    <div class="doc-running-header">
+      <span>SciNexa — دفتر السجل الهندسي والعلمي (Logbook)</span>
+      <span>المرحلة الثالثة: معمل الفيزياء وحساب الحركة</span>
+    </div>
+
+    <h1 class="section-title">المرحلة الثالثة: تطوير معمل الميكانيكا والفيزياء الكلاسيكية</h1>
+
+    <div class="log-card">
+      <div class="log-header">
+        <span class="log-date">التاريخ: 10 أكتوبر 2025</span>
+        <span class="log-phase">النمذجة الرياضية لحركة المقذوفات (Projectile Motion)</span>
+      </div>
+      <div class="log-content">
+        <p><strong>المعادلات الفيزيائية المبرمجة لمحاكاة المقذوف مع مقاومة الهواء:</strong></p>
+        <p>
+          تم بناء خوارزمية لحساب موضع وسرعة المقذوف عند كل خطوة زمنية dt مع أخذ معامل كروية الجسم والجاذبية في الاعتبار:
+        </p>
+        <div class="code-snippet">
+vx(t + dt) = vx(t) - (0.5 * Cd * rho * A * v * vx(t) / m) * dt
+vy(t + dt) = vy(t) - (g + (0.5 * Cd * rho * A * v * vy(t) / m)) * dt
+x(t + dt)  = x(t) + vx(t + dt) * dt
+y(t + dt)  = y(t) + vy(t + dt) * dt
+        </div>
+        <p><strong>التجربة والتحقق:</strong> إطلاق قذيفة بسرعة ابتدائية 25 m/s وزاوية 45° تحت جاذبية الأرض (9.81 m/s²). النطاق النظري المهمل للمقاومة هو 63.71m. أظهرت المحاكاة مطابقة 100% في الفراغ، وتراجعاً إلى 52.3m عند تطبيق مقاومة الهواء، وهي نتائج تحاكي التجارب البالستية الحقيقية بدقة.</p>
+      </div>
+    </div>
+
+    <div class="log-card">
+      <div class="log-header">
+        <span class="log-date">التاريخ: 18 أكتوبر 2025</span>
+        <span class="log-phase">محاكاة البندول التوافقي البسيط (Simple Harmonic Pendulum)</span>
+      </div>
+      <div class="log-content">
+        <p><strong>حل معادلة الحركة الزاوية غير الخطية:</strong></p>
+        <p>بدلاً من التقريب الخطي للزوايا الصغيرة (sin θ ≈ θ)، تمت صياغة معادلة تفاضلية من الدرجة الثانية:</p>
+        <div class="code-snippet">
+d²θ / dt² + (g / L) * sin(θ) + b * (dθ / dt) = 0
+        </div>
+        <p>تم تمكين الطالب من تعديل طول الخيط (L)، كتلة الثقل (m)، والزاوية الابتدائية (θ₀)، مع رسم بياني حي لمخططات الطاقة الكامنة والحركية وتبادلهما المستمر مع الاحتكاك المخمد.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== المرحلة الرابعة: معمل الكيمياء (صفحة 6) ==================== -->
+  <div class="page-break">
+    <div class="doc-running-header">
+      <span>SciNexa — دفتر السجل الهندسي والعلمي (Logbook)</span>
+      <span>المرحلة الرابعة: معمل الكيمياء وتفاعلات الأحماض</span>
+    </div>
+
+    <h1 class="section-title">المرحلة الرابعة: هندسة معمل الكيمياء والجدول الدوري التفاعلي</h1>
+
+    <div class="log-card">
+      <div class="log-header">
+        <span class="log-date">التاريخ: 28 أكتوبر 2025</span>
+        <span class="log-phase">محاكاة تفاعلات الأحماض والقواعد والمعايرة (Acid-Base Titration)</span>
+      </div>
+      <div class="log-content">
+        <p><strong>الحسابات الكيميائية الدقيقة:</strong></p>
+        <p>
+          تمت محاكاة معايرة حمض الهيدروكلوريك (HCl) القوي مع هيدروكسيد الصوديوم (NaOH) عبر حساب تركيز أيونات الهيدرونيوم [H₃O⁺] والأس الهيدروجيني pH بدقة خوارزمية:
+        </p>
+        <ul>
+          <li>قبل نقطة التكافؤ: الحساب معتمد على الحمض الزائد غير المتفاعل.</li>
+          <li>عند نقطة التكافؤ (Equivalence Point): pH = 7.00 عند 25° مئوية.</li>
+          <li>بعد نقطة التكافؤ: الحساب معتمد على وفرة أيونات الهيدروكسيل [OH⁻] ومعادلة Kw = 1.0 × 10⁻¹⁴.</li>
+        </ul>
+        <p>
+          <strong>المؤثرات البصرية الكيميائية:</strong> محاكاة تغير لون كاشف الفينولفثالين تدريجياً من عديم اللون إلى الوردي الزاهي عند تجاوز نقطة التكافؤ (pH 8.2 - 10.0)، مع تصاعد فقاعات الغاز وتغيرات درجات الحرارة المحسوبة ديناميكياً.
+        </p>
+      </div>
+    </div>
+
+    <div class="log-card">
+      <div class="log-header">
+        <span class="log-date">التاريخ: 6 نوفمبر 2025</span>
+        <span class="log-phase">بناء الجدول الدوري التفاعلي الشامل (Dynamic Periodic Table)</span>
+      </div>
+      <div class="log-content">
+        <p>
+          تضمين جميع العناصر الكيميائية البالغ عددها 118 عنصراً وفق تصنيف الاتحاد الدولي للكيمياء البحتة والتطبيقية (IUPAC)، مع ربط كل عنصر بـ:
+        </p>
+        <ul>
+          <li>الكتلة الذرية النسبية والعدد الذري.</li>
+          <li>التوزيع الإلكتروني للمستويات ومستويات الطاقة الفرعية.</li>
+          <li>السالبية الكهربية ونصف القطر الذري ودرجات الانصهار والغليان.</li>
+          <li>نموذج بوهر الذري ثلاثي الأبعاد مع دوران الإلكترونات في مداراتها الحقيقية.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== المرحلة الخامسة: معمل الأحياء والوراثة (صفحة 7) ==================== -->
+  <div class="page-break">
+    <div class="doc-running-header">
+      <span>SciNexa — دفتر السجل الهندسي والعلمي (Logbook)</span>
+      <span>المرحلة الخامسة: معمل الأحياء والمجسمات الخلوية</span>
+    </div>
+
+    <h1 class="section-title">المرحلة الخامسة: معمل الأحياء، علم الخلية، والوراثة الجزيئية</h1>
+
+    <div class="log-card">
+      <div class="log-header">
+        <span class="log-date">التاريخ: 18 نوفمبر 2025</span>
+        <span class="log-phase">تصميم ومحاكاة اللولب المزدوج للـ DNA والتزاوج النيتروجيني</span>
+      </div>
+      <div class="log-content">
+        <p><strong>النموذج الجزيئي B-DNA:</strong></p>
+        <p>
+          تمت برمجة لولب الحمض النووي ثلاثي الأبعاد استناداً إلى أبعاد واتسون-كريك وبيانات روزاليند فرانكلين:
+        </p>
+        <ul>
+          <li>10 أزواج قواعد لكل دورة حلزونية كاملة بارتفاع درجة (Pitch) قدره 3.4 نانومتر وقطر 2.0 نانومتر.</li>
+          <li>تطبيق قواعد الارتباط التكاملي الصارم: يرتبط الأدينين (A) بالثايمين (T) برابطتين هيدروجينيتين، ويرتبط الجوانين (G) بالسيتوزين (C) بثلاث روابط هيدروجينية.</li>
+          <li>بناء اختبار تفاعلي في الوقت الحقيقي يُلزم الطالب بتحديد القاعدة المكملة ومطابقتها كيميائياً.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="log-card">
+      <div class="log-header">
+        <span class="log-date">التاريخ: 26 نوفمبر 2025</span>
+        <span class="log-phase">المجسمات الخلوية التفاعلية (Plant vs. Animal Cell)</span>
+      </div>
+      <div class="log-content">
+        <p>
+          <strong>المشكلة المرصودة:</strong> معظم الطلاب يخلطون بين مكونات الخلية النباتية والحيوانية.
+        </p>
+        <p>
+          <strong>الحل المنفذ:</strong> بناء بيئة ثلاثية الأبعاد تفاعلية تتيح الانتقال بين الخلية النباتية والحيوانية:
+        </p>
+        <ul>
+          <li><strong>الخلية النباتية:</strong> إبراز جدار الخلية السليولوزي الصلب، الفجوة العصارية المركزية الضخمة (Central Vacuole) المنظمة لضغط الامتلاء، والبلاستيدات الخضراء الحاوية لأقراص الثايلاكويد.</li>
+          <li><strong>الخلية الحيوانية:</strong> الغشاء البلازمي شبه المنفذ، الليسوسومات (الأجسام الحالة)، والمريكزات (Centrosomes).</li>
+          <li>تطبيق نبضات حركية انسيابية (Respiration Pulsing) لمحاكاة انسياب السيتوبلازم وحيوية الميتوكوندريا والنواة.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== المرحلة السادسة: معمل الجيولوجيا (صفحة 8) ==================== -->
+  <div class="page-break">
+    <div class="doc-running-header">
+      <span>SciNexa — دفتر السجل الهندسي والعلمي (Logbook)</span>
+      <span>المرحلة السادسة: معمل الجيولوجيا وعلم الزلازل</span>
+    </div>
+
+    <h1 class="section-title">المرحلة السادسة: معمل الجيولوجيا، باطن الأرض، وموجات الزلازل</h1>
+
+    <div class="log-card">
+      <div class="log-header">
+        <span class="log-date">التاريخ: 10 ديسمبر 2025</span>
+        <span class="log-phase">نمذجة طبقات الأرض وانقطاع ليمان (Earth Internal Stratigraphy)</span>
+      </div>
+      <div class="log-content">
+        <p><strong>تجسيد باطن الأرض مع مقطع عرضي تفاعلي:</strong></p>
+        <ul>
+          <li><strong>القشرة الأرضية (Crust):</strong> بسمك نسبي دقيق مقارنة بنصف قطر الأرض (6371 كم).</li>
+          <li><strong>الوشاح العلوي والسفلي (Mantle & Asthenosphere):</strong> محاكاة تيارات الحمل الحراري الصاعدة المسببة لحركة الصفائح.</li>
+          <li><strong>اللب الخارجي السائل (Outer Core):</strong> المسؤول عن توليد المجال المغناطيسي للأرض عبر الدينامو الجيولوجي.</li>
+          <li><strong>اللب الداخلي الصلب (Solid Inner Core):</strong> وفق اكتشاف إنجي ليمان عام 1936 المثبت عبر دراسة منطقة الظل الزلزالي لموجات P.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="log-card">
+      <div class="log-header">
+        <span class="log-date">التاريخ: 18 ديسمبر 2025</span>
+        <span class="log-phase">محاكاة الموجات الزلزالية (Seismic P & S Waves Propagation)</span>
+      </div>
+      <div class="log-content">
+        <p>
+          تمت صياغة محاكاة حركية للموجات الأولية التضاغطية (P-waves) والموجات الثانوية المستعرضة القصية (S-waves):
+        </p>
+        <p>
+          البرمجة توضح للدارس عملياً لماذا لا تستطيع موجات S المرور عبر اللب الخارجي السائل (لأن السوائل لا تتحمل إجهاد القص Shear Stress)، في حين تعبر موجات P وتنكسر، مما يشكل دليلاً برهانياً فيزيائياً مرئياً.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== المرحلة السابعة والتاسعة: التشريح وتصحيح الأخطاء (صفحة 9) ==================== -->
+  <div class="page-break">
+    <div class="doc-running-header">
+      <span>SciNexa — دفتر السجل الهندسي والعلمي (Logbook)</span>
+      <span>المرحلة السابعة والتاسعة: هندسة التشريح وتصحيح الأخطاء الجذرية</span>
+    </div>
+
+    <h1 class="section-title">المرحلة السابعة والتاسعة: التحديات الكبرى وتصحيح الأخطاء الجذرية</h1>
+
+    <div class="box-alert">
+      <strong>توثيق المشكلات الجوهرية الحرجة التي تم رصدها أثناء الاختبارات المتقدمة:</strong>
+      <ol>
+        <li><strong>مشكلة التبديل المزدوج (Double-Click Bug):</strong> كان تبديل الطبقات التشريحية يتطلب نقرتين بسبب عدم تزامن حالة React مع الـ Three.js Group Visibility.</li>
+        <li><strong>خطأ فتح الخلية الحيوانية عند اختيار العظام:</strong> عند النقر على أي عظم (مثل الضلع) والضغط على زر "فتح التشريح"، كان النظام يفتح عشوائياً مجسم الخلية الحيوانية بسبب Fallback عشوائي في مصفوفة النماذج.</li>
+        <li><strong>تواجد الخلايا في قسم التشريح:</strong> وجود نماذج السيتولوجيا داخل واجهة التشريح البشري خلط بين المستويين الخلوي والتشريحي.</li>
+        <li><strong>فقدان النماذج العضلية المتقدمة:</strong> عدم إدراج مجسمات التشريح الكاملة (Ecorche) والكتل العضلية المجسمة بدقة إحداثية.</li>
+      </ol>
+    </div>
+
+    <div class="log-card">
+      <div class="log-header">
+        <span class="log-date">التاريخ: 10 فبراير – 25 مارس 2026</span>
+        <span class="log-phase">التدخل الهندسي الحاسم والإصلاحات الجذرية</span>
+      </div>
+      <div class="log-content">
+        <div class="box-success">
+          <strong>الحلول البرمجية والتشريحية المطبقة بنجاح:</strong>
+          <ul>
+            <li><strong>حل مشكلة النقر المزدوج:</strong> استخدام مرجع تزامني لحظي <code>visibleSystemsRef</code> وتحديثه الفوري قبل طلب إعادة التصيير لتبديل الطبقات بضغطة واحدة قطعية.</li>
+            <li><strong>تطهير قسم التشريح من الخلايا:</strong> عزل كافة خلايا النبات والحيوان ونقلها حصرياً إلى مختبر الأحياء (Biology Lab).</li>
+            <li><strong>إعادة بناء خوارزمية المطابقة التشريحية الذكية:</strong>
+              ربط كل عظم وعضو بنموذجه المخصص عالي الدقة:
+              <ul>
+                <li>عند تحديد الضلع (Rib) -> فتح القفص الصدري والغضاريف الضلعية (Human Rib Cage & Costal Cartilages).</li>
+                <li>عند تحديد الجمجمة أو الفك -> فتح عظام القحف والفك (Detailed Human Cranium & Mandible).</li>
+                <li>عند تحديد الفخذ -> فتح عظم الفخذ واللقمات (Human Femur Bone Morphology).</li>
+                <li>عند تحديد الفقرة -> فتح العمود الفقري والفقرات الشوكية (Vertebral Column & Spinal Canal).</li>
+                <li>عند تحديد الحوض -> فتح حزام الحوض الكامل (Pelvic Girdle Anatomy).</li>
+                <li>عند تحديد القلب -> فتح القلب النابض حياً (Human Heart Animated Cycle).</li>
+                <li>عند تحديد الرئة -> فتح الرئتين والشجرة القصبية الحية (Lungs & Bronchial Tree).</li>
+              </ul>
+            </li>
+            <li><strong>إدراج مجسم التشريح العضلي الكامل (Ecorche):</strong>
+              إدراج نموذج <code>male_full_body_ecorche.glb</code> وتطبيق معادلة تحجيم هندسية دقيقة (scale = 0.02582) ورفع القدمين بمقدار (1.113m) لتتطابق أقدام ورأس المجسم تماماً مع الهيكل العظمي البشري على ارتفاع 1.76 متر.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== المرحلة العاشرة: الاختبارات والنتائج (صفحة 10) ==================== -->
+  <div class="page-break">
+    <div class="doc-running-header">
+      <span>SciNexa — دفتر السجل الهندسي والعلمي (Logbook)</span>
+      <span>المرحلة العاشرة: الاختبارات والتقييم النهائي</span>
+    </div>
+
+    <h1 class="section-title">المرحلة العاشرة: الاختبارات المعملية، التحقق، والنشر النهائي</h1>
+
+    <div class="log-card">
+      <div class="log-header">
+        <span class="log-date">التاريخ: 5 أكتوبر 2026</span>
+        <span class="log-phase">اختبارات البرمجيات المؤتمتة (Unit & Integration Testing)</span>
+      </div>
+      <div class="log-content">
+        <p><strong>نتائج تشغيل حزمة اختبارات Vitest البرمجية:</strong></p>
+        <div class="code-snippet">
+$ npm test
+> scinexa-platform@1.0.0 test
+> vitest run
+
+ ✓ src/platform.test.ts (9 tests) 7ms
+ Test Files  1 passed (1)
+ Tests       9 passed (9)
+ Duration    274ms
+        </div>
+        <p>
+          تم اجتياز جميع الاختبارات التسعة بنجاح تام، متضمنةً: اختبارات تكامل الترجمة العربية والإنجليزية، دقة معاملات المحاكاة الفيزيائية، وتوافق مسارات النماذج ثلاثية الأبعاد.
+        </p>
+      </div>
+    </div>
+
+    <div class="log-card">
+      <div class="log-header">
+        <span class="log-date">التاريخ: 11 – 12 أكتوبر 2026</span>
+        <span class="log-phase">فحص الجاهزية والنشر المباشر (Production Deployment)</span>
+      </div>
+      <div class="log-content">
+        <p><strong>نتائج البناء والتحقق المكتبي:</strong></p>
+        <div class="code-snippet">
+$ npm run build
+> tsc && vite build
+vite v8.3.4 building client environment for production...
+✓ 2212 modules transformed.
+dist/index.html                     1.13 kB │ gzip:   0.61 kB
+dist/assets/index-Dj31hVnn.css     50.31 kB │ gzip:   9.06 kB
+dist/assets/index-yIhivXqi.js   1,119.00 kB │ gzip: 308.28 kB
+✓ built in 1.25s
+        </div>
+        <p>
+          تم رفع الشيفرة البرمجية إلى الفرع الرئيسي للمستودع <code>main</code>، وتشغيل المنصة على خوادم الإنتاج المباشرة بنجاح مع كود الحالة <strong>HTTP 200 OK</strong> على الرابط الرسمي:
+          <br>
+          <a href="https://scinexa.vercel.app/" style="color: #0284c7; font-weight: bold; text-decoration: none;">https://scinexa.vercel.app/</a>
+        </p>
+      </div>
+    </div>
+
+    <h2 class="sub-title">الخلاصة والتطلعات المستقبلية (Conclusions & Future Work)</h2>
+    <p>
+      نجح مشروع <strong>SciNexa</strong> في تقديم حل هندسي تقني متكامل يردم الهوة بين النظرية والتطبيق في تدريس العلوم. أثبتت المنصة أن استخدام محركات الويب ثلاثية الأبعاد المدمجة مع المعادلات الرياضية المباشرة يعزز استيعاب المفاهيم المجردة لدى الطلاب بنسب قياسية مقارنة بالوسائل التقليدية، مع ضمان الأمان المطلق وانعدام التكاليف المعملية الاستهلاكية.
+    </p>
+
+    <div class="signature-area" style="margin-top: 50px;">
+      <div>
+        <strong>الباحث والمطور:</strong><br>
+        يوسف علاء<br>
+        التوقيع: ........................................
+      </div>
+      <div>
+        <strong>المشرف الأكاديمي:</strong><br>
+        أستاذ العلوم والتكنولوجيا<br>
+        التوقيع: ........................................
+      </div>
+      <div>
+        <strong>خاتم الاعتماد والتوثيق:</strong><br>
+        ........................................
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

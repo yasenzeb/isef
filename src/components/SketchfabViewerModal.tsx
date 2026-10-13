@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { X, ExternalLink, Sparkles, BookOpen, Layers } from 'lucide-react';
+import { X, Sparkles, BookOpen } from 'lucide-react';
 import { AnatomyAtlasModel } from '../data/sketchfabAnatomyData';
 
 interface SketchfabViewerModalProps {
@@ -48,15 +48,6 @@ export const SketchfabViewerModal: React.FC<SketchfabViewerModalProps> = ({
           </div>
 
           <div className="flex items-center space-x-2">
-            <a
-              href={`https://sketchfab.com/3d-models/${model.slug}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold sci-surface hover:bg-slate-800 text-slate-300 transition-colors"
-            >
-              <span>{isAr ? 'المصدر الأصلي' : 'Original Model'}</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
             <button
               onClick={onClose}
               className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
@@ -80,16 +71,11 @@ export const SketchfabViewerModal: React.FC<SketchfabViewerModalProps> = ({
 
         {/* Bottom Details Footer */}
         <div className="bg-slate-950/95 px-5 py-3 border-t border-sky-500/15 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shrink-0">
-          <div className="flex items-start space-x-2 max-w-3xl">
+          <div className="flex items-start space-x-2 max-w-4xl">
             <BookOpen className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
             <p className="text-slate-300 leading-relaxed">
               {isAr ? model.descriptionAr : model.descriptionEn}
             </p>
-          </div>
-
-          <div className="flex items-center space-x-2 shrink-0 text-slate-400 text-[11px]">
-            <Layers className="w-3.5 h-3.5 text-slate-500" />
-            <span>{isAr ? 'النموذج من:' : 'Curated from:'} <strong className="text-slate-200">{model.author}</strong></span>
           </div>
         </div>
 

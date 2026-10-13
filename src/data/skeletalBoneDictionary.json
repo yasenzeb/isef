@@ -1,0 +1,797 @@
+{
+  "Anterior cells of ethmoid bone": {
+    "ar": "الخلايا الغربالية الأمامية",
+    "descEn": "Anterior ethmoidal air cells within the ethmoid bone sinuses.",
+    "descAr": "جيوب هوائية غربالية أمامية تسهم في ترطيب الهواء وتخفيف وزن الجمجمة."
+  },
+  "Arytenoid cartilage": {
+    "ar": "الغضروف الطرجهالي (الحنجرة)",
+    "descEn": "Paired pyramid-shaped cartilages in the larynx controlling vocal cord tension.",
+    "descAr": "زوج من الغضاريف الهرمية بالحنجرة يرتكز عليها الحبلان الصوتيان للتحكم بالنبرة والتصويت."
+  },
+  "Atlas (C1)": {
+    "ar": "فقرة الأطلس (العنقية الأولى C1)",
+    "descEn": "First cervical vertebra supporting the skull on its superior articular facets.",
+    "descAr": "الفقرة العنقية الأولى التي تحمل الجمجمة وتتمفصل مع لقمتي العظم القذالي لتمكين إيماء الرأس."
+  },
+  "Axis (C2)": {
+    "ar": "فقرة المحور (العنقية الثانية C2)",
+    "descEn": "Second cervical vertebra with odontoid peg (dens) allowing head rotation.",
+    "descAr": "الفقرة العنقية الثانية ذات الناتئ السني الذي يرتكز عليه الأطلس لتمكين دوران الرأس يمنة ويسرة."
+  },
+  "Body of sternum": {
+    "ar": "جسم عظم القص",
+    "descEn": "Elongated flat middle portion of the sternum articulating with ribs 3 to 7.",
+    "descAr": "الجزء الأوسط المسطح من عظم القص الذي تتمفصل معه الغضاريف الضلعية الثالثة وحتى السابعة."
+  },
+  "Calcaneus": {
+    "ar": "عظم العقب (كعب القدم)",
+    "descEn": "Largest tarsal bone forming the heel of the foot, taking the full impact of walking.",
+    "descAr": "أكبر عظام رصغ القدم، يشكل كعب القدم ويرتكز عليه وتر أخيل لتحمل صدمات المشي والجري."
+  },
+  "Capitate bone": {
+    "ar": "العظم الكبير (الرأيسي باليد)",
+    "descEn": "Largest carpal bone in the center of the wrist articulating with the third metacarpal.",
+    "descAr": "أكبر عظام رسغ اليد، يتوسط المعصم ويتمفصل مباشرة مع عظم المشط الثالث لليد."
+  },
+  "Clavicle": {
+    "ar": "عظم الترقوة",
+    "descEn": "S-shaped strut bone connecting the sternum to the scapula, anchoring the shoulder girdle.",
+    "descAr": "عظم أنبوبي منحني كالـ S يربط عظم القص بلوح الكتف وينقل القوى من الطرف العلوي للجذع."
+  },
+  "Coccyx": {
+    "ar": "عظم العصعص (عجب الذنب)",
+    "descEn": "Small terminal tailbone formed by the fusion of 3 to 5 rudimentary vertebrae.",
+    "descAr": "عظم أسفل العمود الفقري ناتج عن اندماج 3-5 فقرات أثرية، يوفر ارتكازاً لأربطة وعضلات قاع الحوض."
+  },
+  "Corniculate cartilage": {
+    "ar": "الغضروف القريني (الحنجرة)",
+    "descEn": "Small conical nodule of elastic cartilage surmounting the arytenoid cartilage.",
+    "descAr": "عقدة غضروفية قرنية صغيرة ترتكز فوق قمة الغضروف الطرجهالي بالحنجرة."
+  },
+  "Costal cartilage of eighth rib": {
+    "ar": "الغضروف الضلعي للضلع الثامن",
+    "descEn": "Hyaline costal cartilage of rib الثامن, providing thoracic elasticity during ventilation.",
+    "descAr": "غضروف زجاجي مرن يربط الضلع الثامن بعظم القص أو الحافة الضلعية، ويمنح القفص الصدري مرونة التمدد التنفسي."
+  },
+  "Costal cartilage of fifth rib": {
+    "ar": "الغضروف الضلعي للضلع الخامس",
+    "descEn": "Hyaline costal cartilage of rib الخامس, providing thoracic elasticity during ventilation.",
+    "descAr": "غضروف زجاجي مرن يربط الضلع الخامس بعظم القص أو الحافة الضلعية، ويمنح القفص الصدري مرونة التمدد التنفسي."
+  },
+  "Costal cartilage of first rib": {
+    "ar": "الغضروف الضلعي للضلع الأول",
+    "descEn": "Hyaline costal cartilage of rib الأول, providing thoracic elasticity during ventilation.",
+    "descAr": "غضروف زجاجي مرن يربط الضلع الأول بعظم القص أو الحافة الضلعية، ويمنح القفص الصدري مرونة التمدد التنفسي."
+  },
+  "Costal cartilage of fourth rib": {
+    "ar": "الغضروف الضلعي للضلع الرابع",
+    "descEn": "Hyaline costal cartilage of rib الرابع, providing thoracic elasticity during ventilation.",
+    "descAr": "غضروف زجاجي مرن يربط الضلع الرابع بعظم القص أو الحافة الضلعية، ويمنح القفص الصدري مرونة التمدد التنفسي."
+  },
+  "Costal cartilage of ninth rib": {
+    "ar": "الغضروف الضلعي للضلع التاسع",
+    "descEn": "Hyaline costal cartilage of rib التاسع, providing thoracic elasticity during ventilation.",
+    "descAr": "غضروف زجاجي مرن يربط الضلع التاسع بعظم القص أو الحافة الضلعية، ويمنح القفص الصدري مرونة التمدد التنفسي."
+  },
+  "Costal cartilage of second rib": {
+    "ar": "الغضروف الضلعي للضلع الثاني",
+    "descEn": "Hyaline costal cartilage of rib الثاني, providing thoracic elasticity during ventilation.",
+    "descAr": "غضروف زجاجي مرن يربط الضلع الثاني بعظم القص أو الحافة الضلعية، ويمنح القفص الصدري مرونة التمدد التنفسي."
+  },
+  "Costal cartilage of seventh rib": {
+    "ar": "الغضروف الضلعي للضلع السابع",
+    "descEn": "Hyaline costal cartilage of rib السابع, providing thoracic elasticity during ventilation.",
+    "descAr": "غضروف زجاجي مرن يربط الضلع السابع بعظم القص أو الحافة الضلعية، ويمنح القفص الصدري مرونة التمدد التنفسي."
+  },
+  "Costal cartilage of sixth rib": {
+    "ar": "الغضروف الضلعي للضلع السادس",
+    "descEn": "Hyaline costal cartilage of rib السادس, providing thoracic elasticity during ventilation.",
+    "descAr": "غضروف زجاجي مرن يربط الضلع السادس بعظم القص أو الحافة الضلعية، ويمنح القفص الصدري مرونة التمدد التنفسي."
+  },
+  "Costal cartilage of tenth rib": {
+    "ar": "الغضروف الضلعي للضلع العاشر",
+    "descEn": "Hyaline costal cartilage of rib العاشر, providing thoracic elasticity during ventilation.",
+    "descAr": "غضروف زجاجي مرن يربط الضلع العاشر بعظم القص أو الحافة الضلعية، ويمنح القفص الصدري مرونة التمدد التنفسي."
+  },
+  "Costal cartilage of third rib": {
+    "ar": "الغضروف الضلعي للضلع الثالث",
+    "descEn": "Hyaline costal cartilage of rib الثالث, providing thoracic elasticity during ventilation.",
+    "descAr": "غضروف زجاجي مرن يربط الضلع الثالث بعظم القص أو الحافة الضلعية، ويمنح القفص الصدري مرونة التمدد التنفسي."
+  },
+  "Cricoid cartilage": {
+    "ar": "الغضروف الحلقي (الحنجرة)",
+    "descEn": "Complete ring of hyaline cartilage forming the inferior wall of the larynx.",
+    "descAr": "حلقة غضروفية دائرية كاملة تشكل قاعدة الحنجرة وتربطها بأعلى القصبة الهوائية."
+  },
+  "Cuboid bone": {
+    "ar": "العظم النردي (المكعبي)",
+    "descEn": "Cubical tarsal bone on the lateral aspect of the foot articulating with the calcaneus.",
+    "descAr": "عظم رصغي مكعب الشكل يقع على الجانب الوحشي للقدم ويدعم استقرار القدم الخارجي."
+  },
+  "Distal phalanx of fifth finger of foot": {
+    "ar": "سلامية القاصية (الطرفية) للإصبع الخامس بـالقدم (أصابع القدم)",
+    "descEn": "Distal phalanx of the fifth digit of the foot, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الخامس في القدم (أصابع القدم)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Distal phalanx of fifth finger of hand": {
+    "ar": "سلامية القاصية (الطرفية) للإصبع الخامس بـاليد (الأصابع)",
+    "descEn": "Distal phalanx of the fifth digit of the hand, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الخامس في اليد (الأصابع)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Distal phalanx of first finger of foot": {
+    "ar": "سلامية القاصية (الطرفية) للإصبع الأول بـالقدم (أصابع القدم)",
+    "descEn": "Distal phalanx of the first digit of the foot, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الأول في القدم (أصابع القدم)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Distal phalanx of first finger of hand": {
+    "ar": "سلامية القاصية (الطرفية) للإصبع الأول بـاليد (الأصابع)",
+    "descEn": "Distal phalanx of the first digit of the hand, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الأول في اليد (الأصابع)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Distal phalanx of fourth finger of foot": {
+    "ar": "سلامية القاصية (الطرفية) للإصبع الرابع بـالقدم (أصابع القدم)",
+    "descEn": "Distal phalanx of the fourth digit of the foot, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الرابع في القدم (أصابع القدم)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Distal phalanx of fourth finger of hand": {
+    "ar": "سلامية القاصية (الطرفية) للإصبع الرابع بـاليد (الأصابع)",
+    "descEn": "Distal phalanx of the fourth digit of the hand, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الرابع في اليد (الأصابع)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Distal phalanx of second finger of foot": {
+    "ar": "سلامية القاصية (الطرفية) للإصبع الثاني بـالقدم (أصابع القدم)",
+    "descEn": "Distal phalanx of the second digit of the foot, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الثاني في القدم (أصابع القدم)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Distal phalanx of second finger of hand": {
+    "ar": "سلامية القاصية (الطرفية) للإصبع الثاني بـاليد (الأصابع)",
+    "descEn": "Distal phalanx of the second digit of the hand, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الثاني في اليد (الأصابع)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Distal phalanx of third finger of foot": {
+    "ar": "سلامية القاصية (الطرفية) للإصبع الثالث بـالقدم (أصابع القدم)",
+    "descEn": "Distal phalanx of the third digit of the foot, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الثالث في القدم (أصابع القدم)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Distal phalanx of third finger of hand": {
+    "ar": "سلامية القاصية (الطرفية) للإصبع الثالث بـاليد (الأصابع)",
+    "descEn": "Distal phalanx of the third digit of the hand, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الثالث في اليد (الأصابع)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Eighth rib": {
+    "ar": "الضلع الثامن (ضلع كاذب)",
+    "descEn": "Eighth rib of the thoracic cage.",
+    "descAr": "الضلع الثامن (ضلع كاذب) في القفص الصدري، يحمي الأعضاء الحيوية الصدرية ويتمدد أثناء عملية التنفس."
+  },
+  "Eleventh rib": {
+    "ar": "الضلع الحادي عشر (ضلع طافٍ)",
+    "descEn": "Eleventh rib of the thoracic cage.",
+    "descAr": "الضلع الحادي عشر (ضلع طافٍ) في القفص الصدري، يحمي الأعضاء الحيوية الصدرية ويتمدد أثناء عملية التنفس."
+  },
+  "Ethmoid bone": {
+    "ar": "العظم الغربالي",
+    "descEn": "Spongy cranial bone separating nasal cavity from the brain, containing the cribriform plate.",
+    "descAr": "عظم قحفي إسفنجي مثقب يفصل تجويف الأنف عن الدماغ ويسمح بمرور ألياف العصب الشمي."
+  },
+  "Femur": {
+    "ar": "عظم الفخذ",
+    "descEn": "Longest, strongest bone in human body articulating with hip and tibia.",
+    "descAr": "أطول وأقوى عظم في الهيكل العظمي البشري، ينقل ثقل الجسم من الحوض إلى عظم الساق."
+  },
+  "Fibula": {
+    "ar": "عظم الشظية",
+    "descEn": "Slender lateral calf bone stabilizing the ankle and anchoring leg musculature.",
+    "descAr": "عظم الساق الجانبي الرفيع، لا يحمل وزناً مباشراً ولكنه يثبت مفصل الكاحل وترتكز عليه عضلات الساق."
+  },
+  "Fifth metacarpal bone": {
+    "ar": "عظم مشط اليد الخامس",
+    "descEn": "Fifth metacarpal bone connecting the carpus to phalanges.",
+    "descAr": "العظم الخامس من مشط اليد، يربط رسغ اليد بسلاميات الأصابع ويوفر ارتكازاً لعضلات راحة اليد."
+  },
+  "Fifth metatarsal bone": {
+    "ar": "عظم مشط القدم الخامس",
+    "descEn": "Fifth metatarsal bone connecting the tarsus to phalanges.",
+    "descAr": "العظم الخامس من مشط القدم، يربط عظام الرصغ بسلاميات أصابع القدم ويدعم قوس القدم."
+  },
+  "Fifth rib": {
+    "ar": "الضلع الخامس",
+    "descEn": "Fifth rib of the thoracic cage.",
+    "descAr": "الضلع الخامس في القفص الصدري، يحمي الأعضاء الحيوية الصدرية ويتمدد أثناء عملية التنفس."
+  },
+  "First metacarpal bone": {
+    "ar": "عظم مشط اليد الأول",
+    "descEn": "First metacarpal bone connecting the carpus to phalanges.",
+    "descAr": "العظم الأول من مشط اليد، يربط رسغ اليد بسلاميات الأصابع ويوفر ارتكازاً لعضلات راحة اليد."
+  },
+  "First metatarsal bone": {
+    "ar": "عظم مشط القدم الأول",
+    "descEn": "First metatarsal bone connecting the tarsus to phalanges.",
+    "descAr": "العظم الأول من مشط القدم، يربط عظام الرصغ بسلاميات أصابع القدم ويدعم قوس القدم."
+  },
+  "First rib": {
+    "ar": "الضلع الأول",
+    "descEn": "First rib of the thoracic cage.",
+    "descAr": "الضلع الأول في القفص الصدري، يحمي الأعضاء الحيوية الصدرية ويتمدد أثناء عملية التنفس."
+  },
+  "Fourth metacarpal bone": {
+    "ar": "عظم مشط اليد الرابع",
+    "descEn": "Fourth metacarpal bone connecting the carpus to phalanges.",
+    "descAr": "العظم الرابع من مشط اليد، يربط رسغ اليد بسلاميات الأصابع ويوفر ارتكازاً لعضلات راحة اليد."
+  },
+  "Fourth metatarsal bone": {
+    "ar": "عظم مشط القدم الرابع",
+    "descEn": "Fourth metatarsal bone connecting the tarsus to phalanges.",
+    "descAr": "العظم الرابع من مشط القدم، يربط عظام الرصغ بسلاميات أصابع القدم ويدعم قوس القدم."
+  },
+  "Fourth rib": {
+    "ar": "الضلع الرابع",
+    "descEn": "Fourth rib of the thoracic cage.",
+    "descAr": "الضلع الرابع في القفص الصدري، يحمي الأعضاء الحيوية الصدرية ويتمدد أثناء عملية التنفس."
+  },
+  "Frontal bone": {
+    "ar": "العظم الجبهي",
+    "descEn": "Cranial bone forming the forehead, brow ridges, and superior orbital margin.",
+    "descAr": "عظم الجمجمة الأمامي الذي يشكل الجبهة وأسقف تجاويف العينين وقاع الحفرة القحفية الأمامية."
+  },
+  "Hamate bone": {
+    "ar": "العظم الكلابي (الحماتي باليد)",
+    "descEn": "Hook-shaped carpal bone on the ulnar side of the hand protecting deep nerves.",
+    "descAr": "عظم معصمي يتميز بناتئ خطافي (شصي) بارز يرتكز عليه القيد المثني ويحمي العصب الزندي."
+  },
+  "Hip bone": {
+    "ar": "عظم الحوض (الحرقفة والعانة والإسك)",
+    "descEn": "Large irregular bone consisting of ilium, ischium, and pubis forming the pelvic girdle.",
+    "descAr": "عظم الحوض الكبير المكون من اندماج الحرقفة والإسك والعانة، يحتضن أعضاء الحوض ومفصل الورك."
+  },
+  "Humerus": {
+    "ar": "عظم العضد",
+    "descEn": "Long bone of the upper arm connecting the scapula to the radius and ulna.",
+    "descAr": "عظم الذراع الطويل الذي يربط مفصل الكتف بمفصل المرفق لتنفيذ حركات الرفع والدوران."
+  },
+  "Hyoid bone": {
+    "ar": "العظم اللامي (العظم اللساني)",
+    "descEn": "U-shaped horseshoe bone in the neck suspended by muscles without articulating with other bones.",
+    "descAr": "عظم معلق حذوي الشكل بالرقبة لا يتمفصل مع أي عظم آخر، يرتكز عليه اللسان وعضلات البلع."
+  },
+  "Incus": {
+    "ar": "عظيم السندان (الأذن الوسطى)",
+    "descEn": "Anvil-shaped auditory ossicle transmitting sound vibrations from malleus to stapes.",
+    "descAr": "إحدى عظيمات السمع الثلاث بالأذن الوسطى، ينقل الاهتزازات الصوتية من المطرقة إلى الركاب."
+  },
+  "Inferior nasal concha bone": {
+    "ar": "القرين الأنفي السفلي",
+    "descEn": "Horizontal curved spongy bone blade expanding nasal mucosa surface for air warming.",
+    "descAr": "عظم قوقعي منحني داخل جدار الأنف يزيد من مساحة الغشاء المخاطي لتدفئة وتنقية هواء التنفس."
+  },
+  "Intermediate cuneiform bone": {
+    "ar": "العظم الإسفيني المتوسط (الثاني)",
+    "descEn": "Middle wedge-shaped tarsal bone articulating with the second metatarsal.",
+    "descAr": "العظم الإسفيني الأوسط في رصغ القدم، يتمفصل مع عظم المشط الثاني."
+  },
+  "Lacrimal bone": {
+    "ar": "العظم الدمعي",
+    "descEn": "Smallest, most fragile bone of the face supporting the lacrimal sac and tear duct.",
+    "descAr": "أصغر وأرق عظام الوجه، يقع في الجدار الداخلي لمحجر العين ويحتضن الكيس والمجرى الدمعي."
+  },
+  "Lateral cuneiform bone": {
+    "ar": "العظم الإسفيني الوحشي (الثالث)",
+    "descEn": "Lateral wedge-shaped tarsal bone articulating with the third metatarsal and cuboid.",
+    "descAr": "العظم الإسفيني الخارجي برصغ القدم، يتمفصل مع عظم المشط الثالث والعظم النردي."
+  },
+  "Lateral process of nasal septal cartilage": {
+    "ar": "الناتئ الجانبي لغضروف الحاجز الأنفي",
+    "descEn": "Upper lateral cartilage extending from the nasal septum.",
+    "descAr": "امتداد غضروفي جانبي يدعم جانبي الأنف الخارجيين."
+  },
+  "Lower canine": {
+    "ar": "سن: الناب في الفك السفلي",
+    "descEn": "Lower canine situated in the mandibular dental arch.",
+    "descAr": "أحد عناصر القوس السني في الفك السفلي، متخصص في قضم أو طحن الغذاء ودعم مخارج الحروف."
+  },
+  "Lower first molar tooth": {
+    "ar": "سن: الضرس الأول (طاحن) في الفك السفلي",
+    "descEn": "Lower first molar tooth situated in the mandibular dental arch.",
+    "descAr": "أحد عناصر القوس السني في الفك السفلي، متخصص في قضم أو طحن الغذاء ودعم مخارج الحروف."
+  },
+  "Lower first premolar": {
+    "ar": "سن: الضاحك الأول في الفك السفلي",
+    "descEn": "Lower first premolar situated in the mandibular dental arch.",
+    "descAr": "أحد عناصر القوس السني في الفك السفلي، متخصص في قضم أو طحن الغذاء ودعم مخارج الحروف."
+  },
+  "Lower lateral incisor": {
+    "ar": "سن: القاطع الجانبي (الرباعية) في الفك السفلي",
+    "descEn": "Lower lateral incisor situated in the mandibular dental arch.",
+    "descAr": "أحد عناصر القوس السني في الفك السفلي، متخصص في قضم أو طحن الغذاء ودعم مخارج الحروف."
+  },
+  "Lower medial incisor": {
+    "ar": "سن: القاطع المركزي (الثنية) في الفك السفلي",
+    "descEn": "Lower medial incisor situated in the mandibular dental arch.",
+    "descAr": "أحد عناصر القوس السني في الفك السفلي، متخصص في قضم أو طحن الغذاء ودعم مخارج الحروف."
+  },
+  "Lower second molar tooth": {
+    "ar": "سن: الضرس الثاني (طاحن) في الفك السفلي",
+    "descEn": "Lower second molar tooth situated in the mandibular dental arch.",
+    "descAr": "أحد عناصر القوس السني في الفك السفلي، متخصص في قضم أو طحن الغذاء ودعم مخارج الحروف."
+  },
+  "Lower second premolar": {
+    "ar": "سن: الضاحك الثاني في الفك السفلي",
+    "descEn": "Lower second premolar situated in the mandibular dental arch.",
+    "descAr": "أحد عناصر القوس السني في الفك السفلي، متخصص في قضم أو طحن الغذاء ودعم مخارج الحروف."
+  },
+  "Lunate bone": {
+    "ar": "العظم الهلالي (باليد)",
+    "descEn": "Crescent-shaped carpal bone articulating with the radius in the radiocarpal wrist joint.",
+    "descAr": "عظم معصمي هلالي الشكل يتمفصل مع الكعبرة ويسهل انثناء وبسط مفصل الرسغ."
+  },
+  "Major alar cartilage": {
+    "ar": "الغضروف الجناحي الأكبر للأنف",
+    "descEn": "Curved cartilage forming the flexible apex and wing of the nostril.",
+    "descAr": "غضروف أنفي مرن يشكل قمة الأنف وجناح فتحة المنخر ويمنح الأنف مرونته الخارجية."
+  },
+  "Malleus": {
+    "ar": "عظيم المطرقة (الأذن الوسطى)",
+    "descEn": "Hammer-shaped auditory ossicle connected directly to the tympanic membrane.",
+    "descAr": "عظيم سمعي مطرقي متصل مباشرة بغشاء طبلة الأذن لنقل الذبذبات الميكانيكية للسندان."
+  },
+  "Mandible": {
+    "ar": "عظم الفك السفلي",
+    "descEn": "Strongest and only movable bone of the facial skeleton enabling chewing and speech.",
+    "descAr": "أقوى وعظم الجمجمة الوحيد المتحرك، يحمل الأسنان السفلية ويسهل عمليات المضغ والنطق."
+  },
+  "Manubrium of sternum": {
+    "ar": "قبضة القص (المانوبريوم)",
+    "descEn": "Superior broad segment of the sternum articulating with clavicles and first ribs.",
+    "descAr": "الجزء العلوي العريض من القص، يتمفصل مع الترقوتين والضلعين الأولين ويشكل الثلمة الوداجية."
+  },
+  "Maxilla": {
+    "ar": "عظم الفك العلوي",
+    "descEn": "Upper jawbone forming the central facial structure, floor of orbits, and palate.",
+    "descAr": "عظم الفك العلوي الثابت، يشكل أرضية محجري العينين وجوانب الأنف وسقف الفم الحلقي."
+  },
+  "Medial cuneiform bone": {
+    "ar": "العظم الإسفيني الإنسي (الأول)",
+    "descEn": "Largest cuneiform bone on the medial foot articulating with the first metatarsal.",
+    "descAr": "أكبر العظام الإسفينية الثلاثة في رصغ القدم، يتمفصل مع مشط القدم الأول."
+  },
+  "Middle cells of ethmoid bone": {
+    "ar": "الخلايا الغربالية المتوسطة",
+    "descEn": "Middle ethmoidal air cells of the ethmoidal labyrinth.",
+    "descAr": "خلايا هوائية جيبية ضمن العظم الغربالي."
+  },
+  "Middle phalanx of fifth finger of foot": {
+    "ar": "سلامية الوسطى للإصبع الخامس بـالقدم (أصابع القدم)",
+    "descEn": "Middle phalanx of the fifth digit of the foot, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الخامس في القدم (أصابع القدم)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Middle phalanx of fifth finger of hand": {
+    "ar": "سلامية الوسطى للإصبع الخامس بـاليد (الأصابع)",
+    "descEn": "Middle phalanx of the fifth digit of the hand, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الخامس في اليد (الأصابع)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Middle phalanx of fourth finger of foot": {
+    "ar": "سلامية الوسطى للإصبع الرابع بـالقدم (أصابع القدم)",
+    "descEn": "Middle phalanx of the fourth digit of the foot, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الرابع في القدم (أصابع القدم)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Middle phalanx of fourth finger of hand": {
+    "ar": "سلامية الوسطى للإصبع الرابع بـاليد (الأصابع)",
+    "descEn": "Middle phalanx of the fourth digit of the hand, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الرابع في اليد (الأصابع)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Middle phalanx of second finger of foot": {
+    "ar": "سلامية الوسطى للإصبع الثاني بـالقدم (أصابع القدم)",
+    "descEn": "Middle phalanx of the second digit of the foot, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الثاني في القدم (أصابع القدم)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Middle phalanx of second finger of hand": {
+    "ar": "سلامية الوسطى للإصبع الثاني بـاليد (الأصابع)",
+    "descEn": "Middle phalanx of the second digit of the hand, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الثاني في اليد (الأصابع)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Middle phalanx of third finger of foot": {
+    "ar": "سلامية الوسطى للإصبع الثالث بـالقدم (أصابع القدم)",
+    "descEn": "Middle phalanx of the third digit of the foot, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الثالث في القدم (أصابع القدم)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Middle phalanx of third finger of hand": {
+    "ar": "سلامية الوسطى للإصبع الثالث بـاليد (الأصابع)",
+    "descEn": "Middle phalanx of the third digit of the hand, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الثالث في اليد (الأصابع)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Nasal bone": {
+    "ar": "عظم الأنف",
+    "descEn": "Paired oblong bones forming the bridge of the nose between the frontal processes.",
+    "descAr": "عظمان مستطيلان صغيران يشكلان جسر الأنف العظمي الصلب في أعلى ملامح الأنف."
+  },
+  "Nasal septal cartilage": {
+    "ar": "غضروف الحاجز الأنفي",
+    "descEn": "Quadrangular hyaline plate dividing the anterior nasal cavity into right and left halves.",
+    "descAr": "صفيحة غضروفية رباعية تشكل الجزء الأمامي الفاصل بين تجويفي الأنف الأيمن والأيسر."
+  },
+  "Navicular bone": {
+    "ar": "العظم الزورقي (القدم)",
+    "descEn": "Boat-shaped tarsal bone on the medial side of the foot sustaining the medial longitudinal arch.",
+    "descAr": "عظم رصغي زورقي الشكل في الجانب الإنسي للقدم، يدعم القوس الطولي للقدم أثناء المشي."
+  },
+  "Ninth rib": {
+    "ar": "الضلع التاسع (ضلع كاذب)",
+    "descEn": "Ninth rib of the thoracic cage.",
+    "descAr": "الضلع التاسع (ضلع كاذب) في القفص الصدري، يحمي الأعضاء الحيوية الصدرية ويتمدد أثناء عملية التنفس."
+  },
+  "Occipital bone": {
+    "ar": "العظم القذالي",
+    "descEn": "Trapezoid skull bone at posterior base containing the foramen magnum for spinal cord passage.",
+    "descAr": "عظم خلفي سفلي للجمجمة يحتوي على الثقبة العظمى لمرور الحبل الشوكي ويتصل بالفقرة العنقية الأولى."
+  },
+  "Palatine bone": {
+    "ar": "العظم الحنكي",
+    "descEn": "L-shaped bone forming posterior hard palate, floor of nasal cavity, and floor of orbit.",
+    "descAr": "عظم حرف L يسهم في تكوين الحنك الصلب الخلفي لسقف الفم وأرضية التجويف الأنفي."
+  },
+  "Parietal bone": {
+    "ar": "العظم الجداري",
+    "descEn": "Paired cranial bone forming the roof and sides of the neurocranium.",
+    "descAr": "زوج من العظام القحفية المسطحة يشكلان قبة الجمجمة العلوية وجانبي القحف لحماية الدماغ."
+  },
+  "Patella": {
+    "ar": "عظم الرضفة (صابونة الركبة)",
+    "descEn": "Largest sesamoid bone protecting the knee joint and increasing quadriceps leverage.",
+    "descAr": "عظم سمسمي مسطح يحمي مفصل الركبة ويزيد من الذراع الميكانيكية لوتر العضلة مربعة الرؤوس."
+  },
+  "Pisiform bone": {
+    "ar": "العظم الحمصي (باليد)",
+    "descEn": "Small pea-shaped sesamoid carpal bone embedded in the flexor carpi ulnaris tendon.",
+    "descAr": "عظم معصمي صغير بحجم حبة الحمص يقع داخل وتر العضلة الزندية القابضة للرسغ."
+  },
+  "Posterior cells of ethmoid bone": {
+    "ar": "الخلايا الغربالية الخلفية",
+    "descEn": "Posterior ethmoidal air cells draining into the superior meatus.",
+    "descAr": "خلايا جيبية غربالية خلفية تصب في الصماخ الأنفي العلوي."
+  },
+  "Proximal phalanx of fifth finger of foot": {
+    "ar": "سلامية الدانية (القريبة) للإصبع الخامس بـالقدم (أصابع القدم)",
+    "descEn": "Proximal phalanx of the fifth digit of the foot, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الخامس في القدم (أصابع القدم)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Proximal phalanx of fifth finger of hand": {
+    "ar": "سلامية الدانية (القريبة) للإصبع الخامس بـاليد (الأصابع)",
+    "descEn": "Proximal phalanx of the fifth digit of the hand, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الخامس في اليد (الأصابع)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Proximal phalanx of first finger of foot": {
+    "ar": "سلامية الدانية (القريبة) للإصبع الأول بـالقدم (أصابع القدم)",
+    "descEn": "Proximal phalanx of the first digit of the foot, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الأول في القدم (أصابع القدم)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Proximal phalanx of first finger of hand": {
+    "ar": "سلامية الدانية (القريبة) للإصبع الأول بـاليد (الأصابع)",
+    "descEn": "Proximal phalanx of the first digit of the hand, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الأول في اليد (الأصابع)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Proximal phalanx of fourth finger of foot": {
+    "ar": "سلامية الدانية (القريبة) للإصبع الرابع بـالقدم (أصابع القدم)",
+    "descEn": "Proximal phalanx of the fourth digit of the foot, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الرابع في القدم (أصابع القدم)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Proximal phalanx of fourth finger of hand": {
+    "ar": "سلامية الدانية (القريبة) للإصبع الرابع بـاليد (الأصابع)",
+    "descEn": "Proximal phalanx of the fourth digit of the hand, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الرابع في اليد (الأصابع)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Proximal phalanx of second finger of foot": {
+    "ar": "سلامية الدانية (القريبة) للإصبع الثاني بـالقدم (أصابع القدم)",
+    "descEn": "Proximal phalanx of the second digit of the foot, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الثاني في القدم (أصابع القدم)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Proximal phalanx of second finger of hand": {
+    "ar": "سلامية الدانية (القريبة) للإصبع الثاني بـاليد (الأصابع)",
+    "descEn": "Proximal phalanx of the second digit of the hand, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الثاني في اليد (الأصابع)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Proximal phalanx of third finger of foot": {
+    "ar": "سلامية الدانية (القريبة) للإصبع الثالث بـالقدم (أصابع القدم)",
+    "descEn": "Proximal phalanx of the third digit of the foot, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الثالث في القدم (أصابع القدم)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Proximal phalanx of third finger of hand": {
+    "ar": "سلامية الدانية (القريبة) للإصبع الثالث بـاليد (الأصابع)",
+    "descEn": "Proximal phalanx of the third digit of the hand, essential for articulation and load transfer.",
+    "descAr": "عظم سلامي دقيق يشكل جزءاً من الهيكل المفصلي للإصبع الثالث في اليد (الأصابع)، ويوفر ارتكازاً للأوتار والحركات الدقيقة."
+  },
+  "Radius": {
+    "ar": "عظم الكعبرة",
+    "descEn": "Lateral forearm bone rotating around the ulna to permit hand pronation and supination.",
+    "descAr": "العظم الجانبي للساعد القابل للدوران حول الزند لتمكين حركة الكب والبطح لليد."
+  },
+  "Sacrum": {
+    "ar": "عظم العجز",
+    "descEn": "Shield-shaped triangular bone of 5 fused vertebrae forming the pelvic back wall.",
+    "descAr": "عظم مثلث عريض ناتج عن اندماج 5 فقرات عجزية، يشكل الجدار الخلفي للحوض وينقل وزن الجذع."
+  },
+  "Scaphoid bone": {
+    "ar": "العظم القاربي (الزورقي باليد)",
+    "descEn": "Boat-shaped carpal bone most prone to wrist fractures from falls onto outstretched hands.",
+    "descAr": "عظم معصمي قارب الشكل يربط صفي الرصغ، وهو أكثر عظام المعصم عرضة للكسر عند السقوط."
+  },
+  "Scapula": {
+    "ar": "عظم لوح الكتف",
+    "descEn": "Flat triangular bone connecting the humerus with the clavicle and rotator cuff.",
+    "descAr": "عظم مثلث مسطح يربط العضد بالترقوة ويوفر ارتكازاً لمجموعة عضلات الكفة المدورة وعضلات الظهر."
+  },
+  "Second metacarpal bone": {
+    "ar": "عظم مشط اليد الثاني",
+    "descEn": "Second metacarpal bone connecting the carpus to phalanges.",
+    "descAr": "العظم الثاني من مشط اليد، يربط رسغ اليد بسلاميات الأصابع ويوفر ارتكازاً لعضلات راحة اليد."
+  },
+  "Second metatarsal bone": {
+    "ar": "عظم مشط القدم الثاني",
+    "descEn": "Second metatarsal bone connecting the tarsus to phalanges.",
+    "descAr": "العظم الثاني من مشط القدم، يربط عظام الرصغ بسلاميات أصابع القدم ويدعم قوس القدم."
+  },
+  "Second rib": {
+    "ar": "الضلع الثاني",
+    "descEn": "Second rib of the thoracic cage.",
+    "descAr": "الضلع الثاني في القفص الصدري، يحمي الأعضاء الحيوية الصدرية ويتمدد أثناء عملية التنفس."
+  },
+  "Sesamoid bones of foot": {
+    "ar": "العظام السمسمانية للقدم",
+    "descEn": "Small embedded bones under the first metatarsal head absorbing walking impact.",
+    "descAr": "عظام سمسمية دقيقة تحت رأس مشط القدم الأول تمتص ضغط المشي وتزيد من كفاءة أوتار الإبهام."
+  },
+  "Seventh rib": {
+    "ar": "الضلع السابع",
+    "descEn": "Seventh rib of the thoracic cage.",
+    "descAr": "الضلع السابع في القفص الصدري، يحمي الأعضاء الحيوية الصدرية ويتمدد أثناء عملية التنفس."
+  },
+  "Sinus of frontal bone": {
+    "ar": "الجيب الهوائي الجبهي",
+    "descEn": "Mucosa-lined air cavity in the frontal bone above the orbital margins.",
+    "descAr": "تجويف هوائي جبهي مبطن بغشاء مخاطي يعزز رنين الصوت ويخفف وزن عظام الوجه."
+  },
+  "Sinus of sphenoid bone": {
+    "ar": "الجيب الهوائي الوتدي",
+    "descEn": "Air cavity within the sphenoid body communicating with the nasal cavity.",
+    "descAr": "تجويف هوائي عظمي في العظم الوتدي يقع مباشرة تحت السرج التركي للغدة النخامية."
+  },
+  "Sixth rib": {
+    "ar": "الضلع السادس",
+    "descEn": "Sixth rib of the thoracic cage.",
+    "descAr": "الضلع السادس في القفص الصدري، يحمي الأعضاء الحيوية الصدرية ويتمدد أثناء عملية التنفس."
+  },
+  "Sphenoid bone": {
+    "ar": "العظم الوتدي (الفراشي)",
+    "descEn": "Butterfly-shaped keystone bone at the base of the skull housing the pituitary sella turcica.",
+    "descAr": "عظم قحفي مركزي يشبه الفراشة في قاع الجمجمة يربط عظام القحف ويحتوي على السرج التركي للغدة النخامية."
+  },
+  "Stapes": {
+    "ar": "عظيم الركاب (أصغر عظم بالجسم)",
+    "descEn": "Stirrup-shaped smallest bone in the human body transmitting sound to the oval window.",
+    "descAr": "أصغر عظم في جسم الإنسان إطلاقاً، يشبه ركاب الفرس وينقل الصوت لنافذة القوقعة بالأذن الداخلية."
+  },
+  "Talus": {
+    "ar": "عظم الكاحل (القعب)",
+    "descEn": "Second largest tarsal bone articulating with the tibia and fibula to form the ankle joint.",
+    "descAr": "عظم الرصغ الذي يتمفصل مع الساق والشظية ليشكل مفصل الكاحل الأساسي لتوزيع الثقل."
+  },
+  "Temporal bone": {
+    "ar": "العظم الصدغي",
+    "descEn": "Paired skull bone housing internal/middle ear structures and acoustic meatus.",
+    "descAr": "عظم جانبي في قاع الجمجمة يحتوي على تراكيب الأذن الوسطى والداخلية وقناة السمع ومفصل الفك."
+  },
+  "Tenth rib": {
+    "ar": "الضلع العاشر (ضلع كاذب)",
+    "descEn": "Tenth rib of the thoracic cage.",
+    "descAr": "الضلع العاشر (ضلع كاذب) في القفص الصدري، يحمي الأعضاء الحيوية الصدرية ويتمدد أثناء عملية التنفس."
+  },
+  "Third metacarpal bone": {
+    "ar": "عظم مشط اليد الثالث",
+    "descEn": "Third metacarpal bone connecting the carpus to phalanges.",
+    "descAr": "العظم الثالث من مشط اليد، يربط رسغ اليد بسلاميات الأصابع ويوفر ارتكازاً لعضلات راحة اليد."
+  },
+  "Third metatarsal bone": {
+    "ar": "عظم مشط القدم الثالث",
+    "descEn": "Third metatarsal bone connecting the tarsus to phalanges.",
+    "descAr": "العظم الثالث من مشط القدم، يربط عظام الرصغ بسلاميات أصابع القدم ويدعم قوس القدم."
+  },
+  "Third rib": {
+    "ar": "الضلع الثالث",
+    "descEn": "Third rib of the thoracic cage.",
+    "descAr": "الضلع الثالث في القفص الصدري، يحمي الأعضاء الحيوية الصدرية ويتمدد أثناء عملية التنفس."
+  },
+  "Thyroid cartilage": {
+    "ar": "الغضروف الدرقي (تفاحة آدم)",
+    "descEn": "Largest laryngeal cartilage shielding vocal cords, forming the laryngeal prominence.",
+    "descAr": "أضخم غضاريف الحنجرة، يشكل تفاحة آدم ويحمي الحبال الصوتية والجهاز الصوتي الداخلي."
+  },
+  "Tibia": {
+    "ar": "عظم القصبة (الظنبوب)",
+    "descEn": "Large medial weight-bearing bone of the lower leg articulating with femur and talus.",
+    "descAr": "عظم الساق الإنسي الضخم الحامل للوزن، ينقل ثقل الجذع من الفخذ إلى القدم."
+  },
+  "Trapezium bone": {
+    "ar": "العظم المربعي (شبه المنحرف الكبير)",
+    "descEn": "Carpal bone articulating with the first metacarpal to form the opposable thumb saddle joint.",
+    "descAr": "عظم معصمي يتمفصل مع عظم مشط الإبهام ليشكل المفصل السرجي المسؤول عن حركة الإبهام المقابلة."
+  },
+  "Trapezoid bone": {
+    "ar": "العظم شبه المنحرف (الصغير باليد)",
+    "descEn": "Smallest carpal bone in the distal row anchoring the second metacarpal.",
+    "descAr": "عظم معصمي إسفيني في الصف البعيد لرسغ اليد، يثبت عظم مشط السبابة."
+  },
+  "Triquetrum bone": {
+    "ar": "العظم المثلثي (باليد)",
+    "descEn": "Pyramid-shaped carpal bone on the medial side of the wrist articulating with the pisiform.",
+    "descAr": "عظم هرمي ثلاثي السطوح يقع على الجانب الإنسي لرسغ اليد ويتمفصل مع العظم الحمصي."
+  },
+  "Twelfth rib": {
+    "ar": "الضلع الثاني عشر (ضلع طافٍ)",
+    "descEn": "Twelfth rib of the thoracic cage.",
+    "descAr": "الضلع الثاني عشر (ضلع طافٍ) في القفص الصدري، يحمي الأعضاء الحيوية الصدرية ويتمدد أثناء عملية التنفس."
+  },
+  "Ulna": {
+    "ar": "عظم الزند",
+    "descEn": "Medial forearm bone stabilizing the elbow joint via the olecranon hinge mechanism.",
+    "descAr": "عظم الساعد الإنسي الذي يشكل المفصل المفصلي الأساسي في المرفق عبر الناتئ الزجي."
+  },
+  "Upper canine": {
+    "ar": "سن: الناب في الفك العلوي",
+    "descEn": "Upper canine situated in the maxillary dental arch.",
+    "descAr": "أحد عناصر القوس السني في الفك العلوي، متخصص في قضم أو طحن الغذاء ودعم مخارج الحروف."
+  },
+  "Upper first molar tooth": {
+    "ar": "سن: الضرس الأول (طاحن) في الفك العلوي",
+    "descEn": "Upper first molar tooth situated in the maxillary dental arch.",
+    "descAr": "أحد عناصر القوس السني في الفك العلوي، متخصص في قضم أو طحن الغذاء ودعم مخارج الحروف."
+  },
+  "Upper first premolar": {
+    "ar": "سن: الضاحك الأول في الفك العلوي",
+    "descEn": "Upper first premolar situated in the maxillary dental arch.",
+    "descAr": "أحد عناصر القوس السني في الفك العلوي، متخصص في قضم أو طحن الغذاء ودعم مخارج الحروف."
+  },
+  "Upper lateral incisor": {
+    "ar": "سن: القاطع الجانبي (الرباعية) في الفك العلوي",
+    "descEn": "Upper lateral incisor situated in the maxillary dental arch.",
+    "descAr": "أحد عناصر القوس السني في الفك العلوي، متخصص في قضم أو طحن الغذاء ودعم مخارج الحروف."
+  },
+  "Upper medial incisor": {
+    "ar": "سن: القاطع المركزي (الثنية) في الفك العلوي",
+    "descEn": "Upper medial incisor situated in the maxillary dental arch.",
+    "descAr": "أحد عناصر القوس السني في الفك العلوي، متخصص في قضم أو طحن الغذاء ودعم مخارج الحروف."
+  },
+  "Upper second molar tooth": {
+    "ar": "سن: الضرس الثاني (طاحن) في الفك العلوي",
+    "descEn": "Upper second molar tooth situated in the maxillary dental arch.",
+    "descAr": "أحد عناصر القوس السني في الفك العلوي، متخصص في قضم أو طحن الغذاء ودعم مخارج الحروف."
+  },
+  "Upper second premolar": {
+    "ar": "سن: الضاحك الثاني في الفك العلوي",
+    "descEn": "Upper second premolar situated in the maxillary dental arch.",
+    "descAr": "أحد عناصر القوس السني في الفك العلوي، متخصص في قضم أو طحن الغذاء ودعم مخارج الحروف."
+  },
+  "Vertebra C3": {
+    "ar": "الفقرة العنقية (C3)",
+    "descEn": "Cervical vertebra 3 of the vertebral column.",
+    "descAr": "إحدى الفقرات العنقية المرقمة (C3) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra C4": {
+    "ar": "الفقرة العنقية (C4)",
+    "descEn": "Cervical vertebra 4 of the vertebral column.",
+    "descAr": "إحدى الفقرات العنقية المرقمة (C4) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra C5": {
+    "ar": "الفقرة العنقية (C5)",
+    "descEn": "Cervical vertebra 5 of the vertebral column.",
+    "descAr": "إحدى الفقرات العنقية المرقمة (C5) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra C6": {
+    "ar": "الفقرة العنقية (C6)",
+    "descEn": "Cervical vertebra 6 of the vertebral column.",
+    "descAr": "إحدى الفقرات العنقية المرقمة (C6) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra C7": {
+    "ar": "الفقرة العنقية (C7)",
+    "descEn": "Cervical vertebra 7 of the vertebral column.",
+    "descAr": "إحدى الفقرات العنقية المرقمة (C7) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra L1": {
+    "ar": "الفقرة القطنية (L1)",
+    "descEn": "Lumbar vertebra 1 of the vertebral column.",
+    "descAr": "إحدى الفقرات القطنية المرقمة (L1) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra L2": {
+    "ar": "الفقرة القطنية (L2)",
+    "descEn": "Lumbar vertebra 2 of the vertebral column.",
+    "descAr": "إحدى الفقرات القطنية المرقمة (L2) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra L3": {
+    "ar": "الفقرة القطنية (L3)",
+    "descEn": "Lumbar vertebra 3 of the vertebral column.",
+    "descAr": "إحدى الفقرات القطنية المرقمة (L3) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra L4": {
+    "ar": "الفقرة القطنية (L4)",
+    "descEn": "Lumbar vertebra 4 of the vertebral column.",
+    "descAr": "إحدى الفقرات القطنية المرقمة (L4) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra L5": {
+    "ar": "الفقرة القطنية (L5)",
+    "descEn": "Lumbar vertebra 5 of the vertebral column.",
+    "descAr": "إحدى الفقرات القطنية المرقمة (L5) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra T1": {
+    "ar": "الفقرة الصدرية (T1)",
+    "descEn": "Thoracic vertebra 1 of the vertebral column.",
+    "descAr": "إحدى الفقرات الصدرية المرقمة (T1) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra T10": {
+    "ar": "الفقرة الصدرية (T10)",
+    "descEn": "Thoracic vertebra 10 of the vertebral column.",
+    "descAr": "إحدى الفقرات الصدرية المرقمة (T10) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra T11": {
+    "ar": "الفقرة الصدرية (T11)",
+    "descEn": "Thoracic vertebra 11 of the vertebral column.",
+    "descAr": "إحدى الفقرات الصدرية المرقمة (T11) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra T12": {
+    "ar": "الفقرة الصدرية (T12)",
+    "descEn": "Thoracic vertebra 12 of the vertebral column.",
+    "descAr": "إحدى الفقرات الصدرية المرقمة (T12) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra T2": {
+    "ar": "الفقرة الصدرية (T2)",
+    "descEn": "Thoracic vertebra 2 of the vertebral column.",
+    "descAr": "إحدى الفقرات الصدرية المرقمة (T2) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra T3": {
+    "ar": "الفقرة الصدرية (T3)",
+    "descEn": "Thoracic vertebra 3 of the vertebral column.",
+    "descAr": "إحدى الفقرات الصدرية المرقمة (T3) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra T4": {
+    "ar": "الفقرة الصدرية (T4)",
+    "descEn": "Thoracic vertebra 4 of the vertebral column.",
+    "descAr": "إحدى الفقرات الصدرية المرقمة (T4) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra T5": {
+    "ar": "الفقرة الصدرية (T5)",
+    "descEn": "Thoracic vertebra 5 of the vertebral column.",
+    "descAr": "إحدى الفقرات الصدرية المرقمة (T5) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra T6": {
+    "ar": "الفقرة الصدرية (T6)",
+    "descEn": "Thoracic vertebra 6 of the vertebral column.",
+    "descAr": "إحدى الفقرات الصدرية المرقمة (T6) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra T7": {
+    "ar": "الفقرة الصدرية (T7)",
+    "descEn": "Thoracic vertebra 7 of the vertebral column.",
+    "descAr": "إحدى الفقرات الصدرية المرقمة (T7) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra T8": {
+    "ar": "الفقرة الصدرية (T8)",
+    "descEn": "Thoracic vertebra 8 of the vertebral column.",
+    "descAr": "إحدى الفقرات الصدرية المرقمة (T8) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vertebra T9": {
+    "ar": "الفقرة الصدرية (T9)",
+    "descEn": "Thoracic vertebra 9 of the vertebral column.",
+    "descAr": "إحدى الفقرات الصدرية المرقمة (T9) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
+  },
+  "Vomer": {
+    "ar": "عظم الميكعة (الميكعة الأنفية)",
+    "descEn": "Thin vertical bone forming the posteroinferior part of the bony nasal septum.",
+    "descAr": "عظم مفرد رفيع عمودي يشكل الجزء الخلفي السفلي من الحاجز الأنفي الفاصل بين المنخرين."
+  },
+  "Xiphoid process": {
+    "ar": "الناتئ الرهابي (خنجري القص)",
+    "descEn": "Inferior cartilaginous/bony tip of the sternum anchoring rectus abdominis.",
+    "descAr": "الطرف السفلي الصغير لعظم القص، يرتكز عليه الحجاب الحاجز والعضلة المستقيمة البطنية."
+  },
+  "Zygomatic bone": {
+    "ar": "العظم الوجني (عظم الخد)",
+    "descEn": "Prominent cheekbone articulating with maxilla, temporal, and frontal bones.",
+    "descAr": "عظم الخد البارز في الوجه، يحدد ملامح الخدين ويشكل الجدار الوحشي لتجويف العين."
+  }
+}

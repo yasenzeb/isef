@@ -21,10 +21,13 @@ import {
   Sliders,
   CheckCircle2,
   RefreshCw,
-  Maximize2
+  Maximize2,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { SKETCHFAB_ANATOMY_COLLECTION, AnatomyAtlasModel } from '../data/sketchfabAnatomyData';
 import { SketchfabViewerModal } from './SketchfabViewerModal';
+import SKELETAL_BONE_DICTIONARY from '../data/skeletalBoneDictionary.json';
 
 interface AnatomyViewerProps {
   isPresentationMode?: boolean;
@@ -314,6 +317,25 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
   const [visibleSystems, setVisibleSystems] = useState<Record<string, boolean>>({ skeletal: true });
   const visibleSystemsRef = useRef<Record<string, boolean>>({ skeletal: true });
   const definitionsRef = useRef<Record<string, string>>({});
+  const toolbarScrollRef = useRef<HTMLDivElement | null>(null);
+
+  // Background Model Preloading Strategy: Pre-fetch layers so switching is instantaneous
+  useEffect(() => {
+    // Priority preloading on idle/background
+    const preloadLayers = () => {
+      SYSTEM_LAYERS.forEach((layer) => {
+        if (layer.file) {
+          fetch(`/models/anatomy/${layer.file}`, { cache: 'force-cache' }).catch(() => {});
+        }
+      });
+    };
+
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(preloadLayers);
+    } else {
+      setTimeout(preloadLayers, 1200);
+    }
+  }, []);
 
   // Scene references
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -406,14 +428,30 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
               metalness = 0.02;
             }
 
-            const realisticMat = new THREE.MeshStandardMaterial({
-              color: matColor,
-              roughness,
-              metalness,
-            });
+            // For models with embedded textured materials (e.g. ecorche and exercise), preserve textures
+            const isTexturedLayer = sysConfig.id === 'ecorche' || sysConfig.id === 'exercise';
+            if (isTexturedLayer && mesh.material) {
+              const origMat = (Array.isArray(mesh.material) ? mesh.material[0] : mesh.material) as THREE.MeshStandardMaterial;
+              const texturedMat = origMat.clone();
+              texturedMat.roughness = 0.45;
+              texturedMat.metalness = 0.05;
+              if (!texturedMat.map) {
+                // Vibrant anatomical muscle crimson tone
+                texturedMat.color = new THREE.Color(sysConfig.id === 'ecorche' ? 0x9f1239 : 0xb45309);
+              }
+              mesh.material = texturedMat;
+              originalMaterials.current.set(mesh, texturedMat.clone());
+            } else {
+              const realisticMat = new THREE.MeshStandardMaterial({
+                color: matColor,
+                roughness,
+                metalness,
+              });
 
-            originalMaterials.current.set(mesh, realisticMat.clone());
-            mesh.material = realisticMat.clone();
+              originalMaterials.current.set(mesh, realisticMat.clone());
+              mesh.material = realisticMat.clone();
+            }
+
             mesh.userData = {
               systemId: sysConfig.id,
               systemName: sysConfig.labelEn,
@@ -424,19 +462,20 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
 
         // Accurate anatomical scale and alignment for user models vs standard meters coordinates
         if (sysConfig.id === 'ecorche') {
-          // male_full_body_ecorche.glb: raw height is 68.16 units with center at origin.
-          // Scale to 1.76m anatomical human height: 1.76 / 68.16 = ~0.02582
-          const ecorcheScale = 0.02582;
+          // male_full_body_ecorche.glb: raw height is 68.08 units with center at origin.
+          // Scale to 1.76m anatomical human height: 1.76 / 68.08 = 0.02585
+          const ecorcheScale = 0.02585;
           root.scale.set(ecorcheScale, ecorcheScale, ecorcheScale);
-          // Ground level is (0, 0, 0) in Z-Anatomy. Feet of ecorche are at ~ -43.13 raw units.
-          // Y translation = 43.13 * 0.02582 = 1.113m offset to place soles on the ground
-          root.position.set(0, 1.113, 0);
+          // Feet in raw GLTF are at Z = -43.06 units. At scale 0.02585: -43.06 * 0.02585 = -1.113m
+          // Translating Y by +1.153m places the soles at Y = 0.04m, matching skeletal foot plane
+          root.position.set(0, 1.153, 0);
         } else if (sysConfig.id === 'exercise') {
           // anatomy_exercise.glb: Torso & arm muscle study
-          // Scale appropriately to align with thoracic-abdominal region
-          const exerciseScale = 0.95;
+          // Scale to match human torso height from neck (C7) to pelvis: 0.45 scale
+          const exerciseScale = 0.45;
           root.scale.set(exerciseScale, exerciseScale, exerciseScale);
-          root.position.set(0, 0.05, 0.02);
+          // Place pelvis base at Y = 0.74m and center torso
+          root.position.set(0, 0.74, 0.03);
         } else {
           // Authentic Z-Anatomy systems coordinate ground (0,0,0)
           root.position.set(0, 0, 0);
@@ -573,12 +612,23 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           }
         }
 
+        // First check comprehensive skeletal bone dictionary
+        const baseKey = cleanName.replace(/\s*\((Left|Right)\)/i, '').trim();
+        const sideSuffix = cleanName.match(/\((Left|Right)\)/i)?.[1];
+        const sideAr = sideSuffix === 'Left' ? ' الأيسر' : sideSuffix === 'Right' ? ' الأيمن' : '';
+
+        const skeletalEntry = (SKELETAL_BONE_DICTIONARY as Record<string, { ar: string; descEn: string; descAr: string }>)[baseKey];
+
         // Match against dictionary or definitions.json
-        const matchedDict = Object.entries(ANATOMY_DICTIONARY).find(([k]) => cleanName.toLowerCase().includes(k.toLowerCase()));
+        const matchedDict = skeletalEntry 
+          ? { ar: skeletalEntry.ar + sideAr, descEn: skeletalEntry.descEn, descAr: skeletalEntry.descAr }
+          : Object.entries(ANATOMY_DICTIONARY).find(([k]) => cleanName.toLowerCase().includes(k.toLowerCase()))?.[1];
         
-        let descEn = matchedDict ? matchedDict[1].descEn : '';
-        const nameAr = matchedDict ? matchedDict[1].ar : (cleanName.includes('(') ? cleanName.split('(')[1]?.replace(')', '') : sysConfig.labelAr);
-        let descAr = matchedDict ? matchedDict[1].descAr : '';
+        let descEn = matchedDict ? matchedDict.descEn : '';
+        const nameAr = matchedDict 
+          ? matchedDict.ar 
+          : (cleanName.includes('(') ? cleanName.split('(')[1]?.replace(')', '') : `${cleanName} (${sysConfig.labelAr})`);
+        let descAr = matchedDict ? matchedDict.descAr : '';
 
         // If not in curated dictionary, check definitions.json
         if (!descEn && definitionsRef.current) {
@@ -740,33 +790,67 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         {/* 3D Canvas Viewport (Takes 3 columns) */}
         <div className="lg:col-span-3 sci-card overflow-hidden relative flex flex-col h-[700px]">
           
-          {/* Top Layer Toggles Toolbar */}
-          <div className="bg-slate-950/85 backdrop-blur-md px-4 py-2.5 border-b border-sky-500/15 flex items-center overflow-x-auto gap-2 z-10 scrollbar-none">
-            <span className="text-xs font-bold text-slate-400 shrink-0 uppercase tracking-wider flex items-center space-x-1 mr-2">
+          {/* Top Layer Toggles Toolbar with responsive chevron scroll navigation */}
+          <div className="bg-slate-950/85 backdrop-blur-md px-2 sm:px-4 py-2 border-b border-sky-500/15 flex items-center z-10 relative">
+            <span className="text-xs font-bold text-slate-400 shrink-0 uppercase tracking-wider hidden sm:flex items-center space-x-1 mr-2">
               <Layers className="w-3.5 h-3.5 text-sky-400" />
-              <span>{language === 'ar' ? 'الطبقات التشريحية:' : 'Anatomical Systems:'}</span>
+              <span>{language === 'ar' ? 'الطبقات:' : 'Systems:'}</span>
             </span>
 
-            {SYSTEM_LAYERS.map((sys) => {
-              const Icon = sys.icon;
-              const isVis = !!visibleSystems[sys.id];
-              const isLoad = !!loadingSystems[sys.id];
-              return (
-                <button
-                  key={sys.id}
-                  onClick={() => toggleSystem(sys)}
-                  className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all shrink-0 ${
-                    isVis
-                      ? 'bg-sky-600 text-white shadow-md'
-                      : 'bg-slate-900/80 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800'
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  <span>{language === 'ar' ? sys.labelAr : sys.labelEn}</span>
-                  {isLoad && <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping ml-1" />}
-                </button>
-              );
-            })}
+            {/* Scroll Left Button */}
+            <button
+              onClick={() => {
+                if (toolbarScrollRef.current) {
+                  toolbarScrollRef.current.scrollBy({ left: language === 'ar' ? 180 : -180, behavior: 'smooth' });
+                }
+              }}
+              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors shrink-0 mr-1"
+              title={language === 'ar' ? 'السابق' : 'Scroll left'}
+              aria-label="Scroll layers left"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            {/* Scrollable Layers Container */}
+            <div 
+              ref={toolbarScrollRef}
+              className="flex items-center overflow-x-auto gap-2 scrollbar-none py-1 flex-1 scroll-smooth"
+            >
+              {SYSTEM_LAYERS.map((sys) => {
+                const Icon = sys.icon;
+                const isVis = !!visibleSystems[sys.id];
+                const isLoad = !!loadingSystems[sys.id];
+                return (
+                  <button
+                    key={sys.id}
+                    onClick={() => toggleSystem(sys)}
+                    className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all shrink-0 cursor-pointer ${
+                      isVis
+                        ? 'bg-sky-600 text-white shadow-md shadow-sky-900/30'
+                        : 'bg-slate-900/80 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800'
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    <span>{language === 'ar' ? sys.labelAr : sys.labelEn}</span>
+                    {isLoad && <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping ml-1" />}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Scroll Right Button */}
+            <button
+              onClick={() => {
+                if (toolbarScrollRef.current) {
+                  toolbarScrollRef.current.scrollBy({ left: language === 'ar' ? -180 : 180, behavior: 'smooth' });
+                }
+              }}
+              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors shrink-0 ml-1"
+              title={language === 'ar' ? 'التالي' : 'Scroll right'}
+              aria-label="Scroll layers right"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
 
           {/* Canvas Mount */}
