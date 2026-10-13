@@ -49,7 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
             className="flex items-center space-x-3 cursor-pointer group"
             onClick={() => setCurrentTab('home')}
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 via-indigo-500 to-teal-400 p-0.5 shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#1e6f68] via-[#2f9d91] to-[#f4bd72] p-0.5 shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-transform">
               <div className="w-full h-full bg-[#030712] rounded-[10px] flex items-center justify-center">
                 <Atom className="w-6 h-6 text-sky-400" />
               </div>

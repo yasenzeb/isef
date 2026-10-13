@@ -91,7 +91,8 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       <section className="relative overflow-hidden pt-12 md:pt-20 pb-12">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(56,189,248,0.18),rgba(0,0,0,0))]" />
         
-        <div className="relative max-w-5xl mx-auto px-4 text-center space-y-6">
+        <div className="relative max-w-6xl mx-auto px-4 text-right space-y-8">
+          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-400 text-xs font-semibold tracking-wide uppercase">
             <Sparkles className="w-3.5 h-3.5" />
             <span>{t.hero.badge}</span>
@@ -140,6 +141,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
               <div className="text-2xl sm:text-3xl font-extrabold text-white font-mono">{t.hero.statsLanguages}</div>
               <div className="text-xs text-slate-400 mt-1">{t.hero.statsLanguagesLabel}</div>
             </div>
+          </div>
           </div>
         </div>
       </section>
