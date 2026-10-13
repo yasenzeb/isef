@@ -6,15 +6,15 @@
   --font-mono: 'JetBrains Mono', monospace;
 
   /* Scinexa Atlas — an institutional learning interface with field-note warmth. */
-  --bg-app: #101827;
-  --bg-surface: #172235;
-  --bg-surface-elevated: #202f47;
-  --bg-surface-subtle: #2a3b55;
-  --border-subtle: rgba(148, 163, 184, 0.2);
-  --border-active: rgba(45, 212, 191, 0.58);
-  --primary-accent: #2dd4bf;
-  --primary-glow: rgba(45, 212, 191, 0.2);
-  --success-accent: #a3e635;
+  --bg-app: #07111f;
+  --bg-surface: #0d1b2a;
+  --bg-surface-elevated: #13283a;
+  --bg-surface-subtle: #18384b;
+  --border-subtle: rgba(125, 211, 252, 0.18);
+  --border-active: rgba(251, 191, 36, 0.68);
+  --primary-accent: #f59e0b;
+  --primary-glow: rgba(245, 158, 11, 0.18);
+  --success-accent: #34d399;
   --warning-accent: #fbbf24;
   --danger-accent: #fb7185;
 }
@@ -50,10 +50,12 @@
   max-width: 100%;
   overflow-wrap: anywhere;
   word-break: normal;
-  background: rgba(23, 34, 53, 0.86);
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+  background: linear-gradient(145deg, rgba(13, 27, 42, 0.96), rgba(10, 31, 48, 0.88));
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(56, 189, 248, 0.12);
-  border-radius: 1rem;
+  border: 1px solid rgba(125, 211, 252, 0.16);
+  border-radius: 1.25rem;
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
   transition: all 0.2s ease-in-out;
 }
