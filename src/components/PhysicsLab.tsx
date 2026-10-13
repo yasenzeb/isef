@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { solveCircuit, CircuitComponent } from '../simulators/circuitSolver';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
-import { Circuit3DPreview } from './Circuit3DPreview';
 import { 
   Play, 
   Pause, 
@@ -164,11 +163,7 @@ export const PhysicsLab: React.FC = () => {
       {/* MODULE 1: REAL CIRCUIT LAB WITH MODIFIED NODAL ANALYSIS */}
       {activeModule === 'circuits' && (
         <div className="space-y-5">
-          <Circuit3DPreview
-            language={language}
-            voltage={circuitSolution.nodeVoltages[2] ?? 12}
-            current={circuitSolution.branchCurrents.r1 ?? 0}
-          />
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 sci-card p-6 flex flex-col justify-between space-y-6">
             <div>

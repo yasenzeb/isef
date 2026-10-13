@@ -123,7 +123,7 @@ const ANATOMY_DICTIONARY: Record<string, { ar: string; descEn: string; descAr: s
   'Eleventh rib': {
     ar: 'الضلع الحادي عشر (ضلع طافٍ)',
     descEn: 'Eleventh rib, a floating rib with no anterior costal cartilage attachment, providing lateral protection to kidneys.',
-    descAr: 'الضلع الحادي عشر، ضلع طافٍ غير متصل من الأما�� بالقص أو الحافة الضلعية، ويوفر حماية جانبية هامة للكلية.',
+    descAr: 'الضلع الحادي عشر، ضلع طافٍ غير متصل من الأما���� بالقص أو الحافة الضلعية، ويوفر حماية جانبية هامة للكلية.',
   },
   'Twelfth rib': {
     ar: 'الضلع الثاني عشر (ضلع طافٍ)',
@@ -304,6 +304,46 @@ const ANATOMY_DICTIONARY: Record<string, { ar: string; descEn: string; descAr: s
     ar: 'العضلة الألوية',
     descEn: 'Largest pelvic muscle group providing hip extension, abduction, and stabilization during bipedal locomotion.',
     descAr: 'أكبر مجموعة عضلية في الحوض مسؤولة عن بسط مفصل الورك وتثبيت الحوض أثناء المشي والوقوف.',
+  },
+  'Orbicularis oculi': {
+    ar: 'العضلة الدويرية العينية',
+    descEn: 'Circular facial muscle that closes the eyelids and supports blinking and squinting.',
+    descAr: 'عضلة دائرية حول العين تغلق الجفنين وتشارك في الرمش والتحديق.',
+  },
+  'Orbicularis oris': {
+    ar: 'العضلة الدويرية الفموية',
+    descEn: 'Circular muscle around the mouth that closes and protrudes the lips.',
+    descAr: 'عضلة دائرية حول الفم تغلق الشفتين وتساعد على ضمهما وإبرازهما.',
+  },
+  'Buccinator': {
+    ar: 'العضلة المبوقة (الخدية)',
+    descEn: 'Thin cheek muscle that compresses the cheek during chewing, blowing, and whistling.',
+    descAr: 'عضلة رقيقة في الخد تضغط الخد أثناء المضغ والنفخ والتصفير.',
+  },
+  'Zygomaticus major': {
+    ar: 'العضلة الوجنية الكبيرة',
+    descEn: 'Facial expression muscle that elevates the angle of the mouth during smiling.',
+    descAr: 'عضلة تعبيرية ترفع زاوية الفم إلى أعلى أثناء الابتسام.',
+  },
+  'Flexor digitorum profundus': {
+    ar: 'العضلة المثنية العميقة للأصابع',
+    descEn: 'Deep forearm muscle flexing the distal interphalangeal joints of the fingers.',
+    descAr: 'عضلة عميقة في الساعد تثني المفاصل بين السلاميات البعيدة لأصابع اليد.',
+  },
+  'Extensor digitorum': {
+    ar: 'العضلة الباسطة للأصابع',
+    descEn: 'Forearm muscle extending the fingers at the metacarpophalangeal and interphalangeal joints.',
+    descAr: 'عضلة في الساعد تبسط أصابع اليد عند مفاصل المشط والسلاميات.',
+  },
+  'Lumbricals': {
+    ar: 'العضلات الدودية لليد',
+    descEn: 'Four intrinsic hand muscles that flex the metacarpophalangeal joints and extend the interphalangeal joints.',
+    descAr: 'أربع عضلات صغيرة داخل اليد تثني مفاصل المشط والسلاميات وتبسط المفاصل السلامية.',
+  },
+  'Interossei': {
+    ar: 'العضلات بين العظام لليد',
+    descEn: 'Small intrinsic hand muscles between the metacarpals responsible for finger abduction and adduction.',
+    descAr: 'عضلات صغيرة بين عظام مشط اليد مسؤولة عن تبعيد الأصابع وتقريبها.',
   },
 };
 
@@ -500,8 +540,8 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     const mount = mountRef.current;
     if (!mount) return;
 
-    const width = mount.clientWidth;
-    const height = mount.clientHeight || 650;
+    const width = Math.max(mount.clientWidth, 320);
+    const height = Math.max(mount.clientHeight || 650, 420);
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x040814);
@@ -589,28 +629,9 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         const sysId = (hit.userData.systemId || 'skeletal') as AnatomySystemId;
         const sysConfig = SYSTEM_LAYERS.find(s => s.id === sysId) || SYSTEM_LAYERS[0];
 
-        // Specific anatomical resolution for full body ecorche and torso volume models
-        if (sysId === 'ecorche' || sysId === 'exercise' || cleanName.includes('Object_') || cleanName.includes('Decimation')) {
-          const worldPos = new THREE.Vector3();
-          hit.getWorldPosition(worldPos);
-          const y = worldPos.y;
-
-          if (y > 1.55) {
-            cleanName = 'Facial & Cranial Musculature (عضلات الوجه والجمجمة)';
-          } else if (y > 1.40) {
-            cleanName = 'Sternocleidomastoid & Neck Musculature (عضلات الرقبة والعضلة القصية الترقوية)';
-          } else if (y > 1.20) {
-            cleanName = 'Pectoralis Major & Deltoid (عضلات الصدر والكتف)';
-          } else if (y > 0.95) {
-            cleanName = 'Rectus Abdominis & External Obliques (عضلات البطن المستقيمة والمائلة)';
-          } else if (y > 0.75) {
-            cleanName = 'Gluteal & Pelvic Girdle Musculature (عضلات الحوض والأليوية)';
-          } else if (y > 0.45) {
-            cleanName = 'Quadriceps Femoris & Hamstrings (عضلات الفخذ الأمامية والخلفية)';
-          } else {
-            cleanName = 'Gastrocnemius & Tibialis Anterior (عضلات الساق والربلة)';
-          }
-        }
+        // Keep the mesh's anatomical name. Position-based grouping previously made every
+        // muscle in the torso appear as the rectus abdominis, including small face and finger muscles.
+        cleanName = cleanName.replace(/^(Object|Mesh|Decimation)[_\s-]*\d*$/i, '').trim() || hit.name;
 
         // First check comprehensive skeletal bone dictionary
         const baseKey = cleanName.replace(/\s*\((Left|Right)\)/i, '').trim();
@@ -897,7 +918,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
 
             <div>
               <span className="text-xs font-semibold text-slate-400 block mb-1">
-                {language === 'ar' ? 'الوظيفة الحيوية والفسيولوجية' : 'Biological & Physiological Role'}
+                {language === 'ar' ? 'ا��وظيفة الحيوية والفسيولوجية' : 'Biological & Physiological Role'}
               </span>
               <p className="text-xs text-slate-200 leading-relaxed bg-slate-950/70 p-3.5 rounded-xl border border-sky-500/15">
                 {language === 'ar' ? selectedStructure?.descAr : selectedStructure?.descEn}
