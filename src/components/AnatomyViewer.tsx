@@ -123,7 +123,7 @@ const ANATOMY_DICTIONARY: Record<string, { ar: string; descEn: string; descAr: s
   'Eleventh rib': {
     ar: 'الضلع الحادي عشر (ضلع طافٍ)',
     descEn: 'Eleventh rib, a floating rib with no anterior costal cartilage attachment, providing lateral protection to kidneys.',
-    descAr: 'الضلع الحادي عشر، ضلع طافٍ غير متصل من الأما������ بالقص أو الحافة الضلعية، ويوفر حماية جانبية هامة للكلية.',
+    descAr: 'الضلع الحادي عشر، ضلع طافٍ غير متصل من الأما�������� بالقص أو الحافة الضلعية، ويوفر حماية جانبية هامة للكلية.',
   },
   'Twelfth rib': {
     ar: 'الضلع الثاني عشر (ضلع طافٍ)',
@@ -344,6 +344,51 @@ const ANATOMY_DICTIONARY: Record<string, { ar: string; descEn: string; descAr: s
     ar: 'العضلات بين العظام لليد',
     descEn: 'Small intrinsic hand muscles between the metacarpals responsible for finger abduction and adduction.',
     descAr: 'عضلات صغيرة بين عظام مشط اليد مسؤولة عن تبعيد الأصابع وتقريبها.',
+  },
+  'Frontalis': {
+    ar: 'العضلة الجبهية',
+    descEn: 'Frontal belly of the occipitofrontalis muscle that elevates the eyebrows and wrinkles the forehead.',
+    descAr: 'البطن الجبهي للعضلة القذالية الجبهية، يرفع الحاجبين ويكوّن تجاعيد الجبهة.',
+  },
+  'Masseter': {
+    ar: 'العضلة الماضغة',
+    descEn: 'Powerful muscle of mastication that elevates the mandible and closes the jaw.',
+    descAr: 'عضلة قوية للمضغ ترفع الفك السفلي وتغلق الفكين.',
+  },
+  'Temporalis': {
+    ar: 'العضلة الصدغية',
+    descEn: 'Fan-shaped muscle that elevates and retracts the mandible during chewing.',
+    descAr: 'عضلة مروحية الشكل ترفع الفك السفلي وتسحبه للخلف أثناء المضغ.',
+  },
+  'Sternocleidomastoid': {
+    ar: 'العضلة القصية الترقوية الخشائية',
+    descEn: 'Neck muscle that rotates the head and assists flexion of the cervical spine.',
+    descAr: 'عضلة في العنق تدير الرأس وتساعد على ثني العمود الفقري العنقي.',
+  },
+  'Pectoralis major': {
+    ar: 'العضلة الصدرية الكبيرة',
+    descEn: 'Large anterior chest muscle that adducts and medially rotates the arm.',
+    descAr: 'عضلة كبيرة في الصدر تقرب الذراع وتديره إنسياً.',
+  },
+  'Rectus abdominis': {
+    ar: 'العضلة المستقيمة البطنية',
+    descEn: 'Paired vertical abdominal muscle that flexes the trunk and stabilizes the pelvis.',
+    descAr: 'عضلة بطنية طولية مزدوجة تثني الجذع وتثبت الحوض.',
+  },
+  'Adductor pollicis': {
+    ar: 'العضلة المقربة لإبهام اليد',
+    descEn: 'Intrinsic hand muscle that adducts the thumb toward the palm.',
+    descAr: 'عضلة صغيرة داخل اليد تقرب الإبهام نحو راحة اليد.',
+  },
+  'Abductor pollicis brevis': {
+    ar: 'العضلة المبعدة القصيرة لإبهام اليد',
+    descEn: 'Thenar muscle that abducts the thumb away from the plane of the palm.',
+    descAr: 'عضلة من عضلات كرة الإبهام تبعد الإبهام عن مستوى راحة اليد.',
+  },
+  'Flexor pollicis brevis': {
+    ar: 'العضلة المثنية القصيرة لإبهام اليد',
+    descEn: 'Thenar muscle that flexes the thumb at the metacarpophalangeal joint.',
+    descAr: 'عضلة من كرة الإبهام تثني الإبهام عند مفصل المشط السلامي.',
   },
 };
 
@@ -640,11 +685,23 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
 
         const dictionary = SKELETAL_BONE_DICTIONARY as Record<string, { ar: string; descEn: string; descAr: string }>;
         const normalizedKey = baseKey
+          .replace(/^(za:|object|mesh|decimation)[_\s-]*/i, '')
           .replace(/[_-]+/g, ' ')
           .replace(/\s+/g, ' ')
           .replace(/\b(left|right)\b/gi, '')
           .trim();
-        const exactKey = Object.keys(dictionary).find(key => key.toLowerCase() === normalizedKey.toLowerCase());
+        const canonicalAliases: Record<string, string> = {
+          'frontalis muscle': 'Frontalis',
+          'masseter muscle': 'Masseter',
+          'temporalis muscle': 'Temporalis',
+          'sternocleidomastoid muscle': 'Sternocleidomastoid',
+          'pectoralis major muscle': 'Pectoralis major',
+          'rectus abdominis muscle': 'Rectus abdominis',
+          'flexor digitorum profundus muscle': 'Flexor digitorum profundus',
+          'extensor digitorum muscle': 'Extensor digitorum',
+        };
+        const canonicalKey = canonicalAliases[normalizedKey.toLowerCase()] || normalizedKey;
+        const exactKey = Object.keys(dictionary).find(key => key.toLowerCase() === canonicalKey.toLowerCase());
         const skeletalEntry = exactKey ? dictionary[exactKey] : undefined;
 
         // Match exact anatomical names first; never substitute a nearby structure.
