@@ -53,7 +53,7 @@ const SYSTEM_LAYERS: SystemLayerConfig[] = [
   { id: 'muscular', labelEn: 'Muscular System', labelAr: 'الجهاز العضلي التفصيلي', file: 'muscular.glb', color: 0xc2410c, icon: Activity, defaultVisible: false },
   { id: 'cardiovascular', labelEn: 'Cardiovascular (Heart & Vessels)', labelAr: 'جهاز الدوران والقلب', file: 'cardiovascular.glb', color: 0xdc2626, icon: Heart, defaultVisible: false },
   { id: 'nervous', labelEn: 'Nervous System & Brain', labelAr: 'الجهاز العصبي والدماغ', file: 'nervous.glb', color: 0xeab308, icon: Brain, defaultVisible: false },
-  { id: 'visceral', labelEn: 'Visceral Organs', labelAr: 'الأعضاء الحشوية', color: 0x9f1239, icon: Layers, defaultVisible: false },
+  { id: 'visceral', labelEn: 'Visceral Organs', labelAr: 'الأعضاء الحشوية', file: 'visceral.glb', color: 0x9a3412, icon: Layers, defaultVisible: false },
   { id: 'joints', labelEn: 'Articular Ligaments & Joints', labelAr: 'الأربطة والمفاصل', file: 'joints.glb', color: 0x94a3b8, icon: ShieldCheck, defaultVisible: false },
   { id: 'lymphatic', labelEn: 'Lymphatic & Immune Nodes', labelAr: 'الجهاز اللمفاوي', file: 'lymphatic.glb', color: 0x10b981, icon: Sparkles, defaultVisible: false },
 ];
@@ -123,7 +123,7 @@ const ANATOMY_DICTIONARY: Record<string, { ar: string; descEn: string; descAr: s
   'Eleventh rib': {
     ar: 'الضلع الحادي عشر (ضلع طافٍ)',
     descEn: 'Eleventh rib, a floating rib with no anterior costal cartilage attachment, providing lateral protection to kidneys.',
-    descAr: 'الضلع الحادي عشر، ضلع طافٍ غير متصل من الأما��������� بالقص أو الحافة الضلعية، ويوفر حماية جانبية هامة للكلية.',
+    descAr: 'الضلع الحادي عشر، ضلع طافٍ غير متصل من الأما���������� بالقص أو الحافة الضلعية، ويوفر حماية جانبية هامة للكلية.',
   },
   'Twelfth rib': {
     ar: 'الضلع الثاني عشر (ضلع طافٍ)',
@@ -517,7 +517,7 @@ const loadSystemLayer = (sysConfig: SystemLayerConfig, scene: THREE.Scene) => {
             }
 
             // For models with embedded textured materials (e.g. ecorche and exercise), preserve textures
-            const isTexturedLayer = sysConfig.id === 'ecorche' || sysConfig.id === 'exercise';
+            const isTexturedLayer = sysConfig.id === 'ecorche' || sysConfig.id === 'exercise' || sysConfig.id === 'visceral';
             if (isTexturedLayer && mesh.material) {
               const origMat = (Array.isArray(mesh.material) ? mesh.material[0] : mesh.material) as THREE.MeshStandardMaterial;
               const texturedMat = origMat.clone();
