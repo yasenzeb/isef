@@ -16,6 +16,21 @@ export interface AnatomyAtlasModel {
 
 export const SKETCHFAB_ANATOMY_COLLECTION: AnatomyAtlasModel[] = [
   {
+    id: 'human-male-internal-organs',
+    slug: 'human-male-internal-organs-anatomy-9958172a6fd74610922a3a5fcb3e0850',
+    sketchfabUid: '9958172a6fd74610922a3a5fcb3e0850',
+    titleEn: 'Human Male Internal Organs Anatomy',
+    titleAr: 'الأعضاء الداخلية للرجل — نموذج تشريحي حقيقي',
+    system: 'Visceral Organs',
+    systemAr: 'الأعضاء الحشوية',
+    category: 'system',
+    thumbnail: 'https://media.sketchfab.com/models/9958172a6fd74610922a3a5fcb3e0850/thumbnails/placeholder.jpeg',
+    author: 'Clacydarch',
+    descriptionEn: 'Detailed human internal organs collection including the heart, lungs, liver, stomach, kidneys, spleen, pancreas, and intestines.',
+    descriptionAr: 'مجموعة تشريحية تفصيلية للأعضاء الداخلية تشمل القلب والرئتين والكبد والمعدة والكليتين والطحال والبنكرياس والأمعاء.',
+    keywords: ['visceral', 'organ', 'organs', 'internal organs', 'heart', 'lungs', 'liver', 'stomach', 'kidney', 'spleen', 'pancreas', 'intestines', 'أعضاء حشوية', 'أعضاء داخلية', 'أحشاء']
+  },
+  {
     id: 'plant-cell-specimen',
     slug: 'plant-cell-cell-structure-1c5ce80d03d149208d30cc5aeb6e42fb',
     sketchfabUid: '1c5ce80d03d149208d30cc5aeb6e42fb',
