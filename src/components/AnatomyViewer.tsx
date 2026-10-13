@@ -123,7 +123,7 @@ const ANATOMY_DICTIONARY: Record<string, { ar: string; descEn: string; descAr: s
   'Eleventh rib': {
     ar: 'الضلع الحادي عشر (ضلع طافٍ)',
     descEn: 'Eleventh rib, a floating rib with no anterior costal cartilage attachment, providing lateral protection to kidneys.',
-    descAr: 'الضلع الحادي عشر، ضلع طافٍ غير متصل من الأما���� بالقص أو الحافة الضلعية، ويوفر حماية جانبية هامة للكلية.',
+    descAr: 'الضلع الحادي عشر، ضلع طافٍ غير متصل من الأما������ بالقص أو الحافة الضلعية، ويوفر حماية جانبية هامة للكلية.',
   },
   'Twelfth rib': {
     ar: 'الضلع الثاني عشر (ضلع طافٍ)',
@@ -451,8 +451,8 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
               matColor = 0x7c2d12; // Renal cortex dark red
               roughness = 0.3;
             } else if (name.includes('spleen')) {
-              matColor = 0x581c87; // Splenic lymphoid purple
-              roughness = 0.35;
+              matColor = 0x7f1d1d; // Natural splenic burgundy
+              roughness = 0.48;
             } else if (name.includes('colon') || name.includes('rectum')) {
               matColor = 0xc27a62; // Intestinal pale ochre
               roughness = 0.4;
@@ -638,12 +638,19 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         const sideSuffix = cleanName.match(/\((Left|Right)\)/i)?.[1];
         const sideAr = sideSuffix === 'Left' ? ' الأيسر' : sideSuffix === 'Right' ? ' الأيمن' : '';
 
-        const skeletalEntry = (SKELETAL_BONE_DICTIONARY as Record<string, { ar: string; descEn: string; descAr: string }>)[baseKey];
+        const dictionary = SKELETAL_BONE_DICTIONARY as Record<string, { ar: string; descEn: string; descAr: string }>;
+        const normalizedKey = baseKey
+          .replace(/[_-]+/g, ' ')
+          .replace(/\s+/g, ' ')
+          .replace(/\b(left|right)\b/gi, '')
+          .trim();
+        const exactKey = Object.keys(dictionary).find(key => key.toLowerCase() === normalizedKey.toLowerCase());
+        const skeletalEntry = exactKey ? dictionary[exactKey] : undefined;
 
-        // Match against dictionary or definitions.json
-        const matchedDict = skeletalEntry 
+        // Match exact anatomical names first; never substitute a nearby structure.
+        const matchedDict = skeletalEntry
           ? { ar: skeletalEntry.ar + sideAr, descEn: skeletalEntry.descEn, descAr: skeletalEntry.descAr }
-          : Object.entries(ANATOMY_DICTIONARY).find(([k]) => cleanName.toLowerCase().includes(k.toLowerCase()))?.[1];
+          : Object.entries(ANATOMY_DICTIONARY).find(([k]) => normalizedKey.toLowerCase() === k.toLowerCase())?.[1];
         
         let descEn = matchedDict ? matchedDict.descEn : '';
         const nameAr = matchedDict 
@@ -950,27 +957,8 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
                 m.keywords.some(k => queryEn.includes(k.toLowerCase()) || queryAr.includes(k))
               );
 
-              // 2. Fallback based on anatomical system or category
-              if (!matchedModel) {
-                if (querySys.includes('skelet') || queryEn.includes('bone') || queryEn.includes('cartilage') || queryAr.includes('عظم') || queryAr.includes('هيكل')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'rib-cage-dissection') || anatomySpecimens.find(m => m.id === 'human-femur-dissection');
-                } else if (querySys.includes('cardio') || queryEn.includes('vessel') || queryAr.includes('دوران') || queryAr.includes('قلب')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'human-heart-animated');
-                } else if (querySys.includes('nerv') || queryEn.includes('brain') || queryAr.includes('عصب') || queryAr.includes('دماغ')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'brain-and-nuclei');
-                } else if (querySys.includes('viscer') || querySys.includes('digest') || queryAr.includes('هضم') || queryAr.includes('أحشاء')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'gastrointestinal-tract') || anatomySpecimens.find(m => m.id === 'stomach-cross-section');
-                } else if (querySys.includes('respirat') || queryAr.includes('تنفس')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'human-lungs-dissection');
-                } else if (querySys.includes('muscl') || queryAr.includes('عضل')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'muscle-tissue');
-                }
-              }
-
-              // 3. Absolute fallback: Authentic Thorax/Ribs model or Heart, NEVER animal/plant cell!
-              if (!matchedModel) {
-                matchedModel = anatomySpecimens.find(m => m.id === 'rib-cage-dissection') || anatomySpecimens[0];
-              }
+              // Only open a model when it actually represents the selected structure.
+              if (!matchedModel) return null;
 
               return (
                 <button
