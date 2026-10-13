@@ -5,18 +5,18 @@
   --font-arabic: 'Cairo', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* SciNexa Scientific Design System Tokens */
-  --bg-app: #030712;
-  --bg-surface: #0b1329;
-  --bg-surface-elevated: #111e38;
-  --bg-surface-subtle: #172554;
-  --border-subtle: rgba(56, 189, 248, 0.12);
-  --border-active: rgba(56, 189, 248, 0.4);
-  --primary-accent: #38bdf8;
-  --primary-glow: rgba(56, 189, 248, 0.25);
-  --success-accent: #10b981;
-  --warning-accent: #f59e0b;
-  --danger-accent: #f43f5e;
+  /* Scinexa Atlas — an institutional learning interface with field-note warmth. */
+  --bg-app: #07111f;
+  --bg-surface: #0d1b2a;
+  --bg-surface-elevated: #13263a;
+  --bg-surface-subtle: #18364a;
+  --border-subtle: rgba(117, 226, 201, 0.16);
+  --border-active: rgba(117, 226, 201, 0.48);
+  --primary-accent: #75e2c9;
+  --primary-glow: rgba(117, 226, 201, 0.22);
+  --success-accent: #91d88b;
+  --warning-accent: #f4bd72;
+  --danger-accent: #f57d83;
 }
 
 @layer base {
@@ -84,6 +84,26 @@
   color: #fbbf24;
   border-color: rgba(245, 158, 11, 0.25);
 }
+
+.circuit-stage {
+  background: linear-gradient(145deg, rgba(16, 44, 57, 0.98), rgba(7, 17, 31, 0.98));
+  border: 1px solid rgba(117, 226, 201, 0.22);
+  border-radius: 1.1rem;
+  padding: 1.25rem;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+}
+.circuit-stage__header, .circuit-stage__metrics { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.circuit-stage__header h3 { margin-top: .55rem; color: #f5fbf8; font-size: 1.05rem; font-weight: 800; }
+.circuit-live { color: #91d88b; font-size: .68rem; font-weight: 800; letter-spacing: .08em; }
+.circuit-live span { display: inline-block; width: .45rem; height: .45rem; margin-inline-end: .35rem; border-radius: 50%; background: #91d88b; box-shadow: 0 0 12px #91d88b; }
+.circuit-board { position: relative; min-height: 230px; margin: 1.2rem 0; border: 1px solid rgba(117,226,201,.18); border-radius: .8rem; background: radial-gradient(circle at 50% 35%, rgba(42,103,105,.5), transparent 62%), #081724; transform: perspective(800px) rotateX(5deg); }
+.circuit-board::after { content: ''; position: absolute; inset: 18% 10%; border: 1px dashed rgba(117,226,201,.14); border-radius: .6rem; transform: skewY(-3deg); }
+.circuit-wire { position: absolute; height: 3px; background: linear-gradient(90deg, #f4bd72, #75e2c9); box-shadow: 0 0 10px rgba(117,226,201,.8); transform-origin: left center; z-index: 1; }
+.wire-a { left: 16%; top: 43%; width: 24%; transform: rotate(-9deg); }.wire-b { left: 43%; top: 47%; width: 29%; transform: rotate(8deg); }.wire-c { left: 72%; top: 57%; width: 15%; transform: rotate(70deg); }
+.circuit-node { position: absolute; z-index: 2; width: .55rem; height: .55rem; border-radius: 50%; background: #f4bd72; box-shadow: 0 0 10px #f4bd72; }.node-a{left:15%;top:40%}.node-b{left:42%;top:44%}.node-c{left:71%;top:54%}
+.circuit-component { position: absolute; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: .35rem; color: #75e2c9; font-size: .7rem; font-weight: 700; }.circuit-component svg { width: 2rem; height: 2rem; padding: .35rem; border: 1px solid rgba(117,226,201,.45); border-radius: .55rem; background: #102b37; }.circuit-component small { color: #b7ccc8; font-size: .62rem; }.battery{left:8%;top:31%}.resistor-a{left:35%;top:48%}.resistor-b{right:19%;top:34%}.switch{right:5%;bottom:19%}.switch svg{color:#f4bd72}
+.circuit-chip { position: absolute; right: 7%; top: 10%; z-index: 3; display: flex; gap: .5rem; align-items: center; color: #a8c4bd; font-size: .62rem; }.circuit-chip svg{color:#f4bd72;width:1.1rem}.circuit-chip b{color:#f5fbf8;font-size:.68rem}.circuit-stage__metrics { padding-top: .8rem; border-top: 1px solid rgba(117,226,201,.14); color: #9cb5b0; font-size: .68rem; }.circuit-stage__metrics span { display: inline-flex; align-items: center; gap: .35rem; }.circuit-stage__metrics svg { width: .85rem; color: #75e2c9; }.circuit-stage__metrics b { color: #f4bd72; margin-inline-start: .2rem; }
 
 /* Custom scientific scrollbar */
 ::-webkit-scrollbar {
