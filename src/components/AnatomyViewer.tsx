@@ -53,7 +53,7 @@ const SYSTEM_LAYERS: SystemLayerConfig[] = [
   { id: 'muscular', labelEn: 'Muscular System', labelAr: 'الجهاز العضلي التفصيلي', file: 'muscular.glb', color: 0xc2410c, icon: Activity, defaultVisible: false },
   { id: 'cardiovascular', labelEn: 'Cardiovascular (Heart & Vessels)', labelAr: 'جهاز الدوران والقلب', file: 'cardiovascular.glb', color: 0xdc2626, icon: Heart, defaultVisible: false },
   { id: 'nervous', labelEn: 'Nervous System & Brain', labelAr: 'الجهاز العصبي والدماغ', file: 'nervous.glb', color: 0xeab308, icon: Brain, defaultVisible: false },
-  { id: 'visceral', labelEn: 'Visceral Organs', labelAr: 'الأعضاء الحشوية', file: 'visceral.glb', color: 0xa855f7, icon: Layers, defaultVisible: false },
+  { id: 'visceral', labelEn: 'Visceral Organs', labelAr: 'الأعضاء الحشوية', color: 0x9f1239, icon: Layers, defaultVisible: false },
   { id: 'joints', labelEn: 'Articular Ligaments & Joints', labelAr: 'الأربطة والمفاصل', file: 'joints.glb', color: 0x94a3b8, icon: ShieldCheck, defaultVisible: false },
   { id: 'lymphatic', labelEn: 'Lymphatic & Immune Nodes', labelAr: 'الجهاز اللمفاوي', file: 'lymphatic.glb', color: 0x10b981, icon: Sparkles, defaultVisible: false },
 ];
@@ -278,7 +278,7 @@ const ANATOMY_DICTIONARY: Record<string, { ar: string; descEn: string; descAr: s
   'Gallbladder': {
     ar: 'المرارة (الحويصلة الصفراوية)',
     descEn: 'Reservoir beneath the liver storing and concentrating bile before releasing it into the duodenum for lipid emulsification.',
-    descAr: 'كيس كمثري يقع أسفل الكبد يخزن العصارة الصفراوية ويركزها قبل إفرازها لهضم واستحلاب الدهون.',
+    descAr: 'كيس كم��ري يقع أسفل الكبد يخزن العصارة الصفراوية ويركزها قبل إفرازها لهضم واستحلاب الدهون.',
   },
   'Colon': {
     ar: 'القولون (الأمعاء الغليظة)',
@@ -343,7 +343,7 @@ const ANATOMY_DICTIONARY: Record<string, { ar: string; descEn: string; descAr: s
   'Interossei': {
     ar: 'العضلات بين العظام لليد',
     descEn: 'Small intrinsic hand muscles between the metacarpals responsible for finger abduction and adduction.',
-    descAr: 'عضلات صغيرة بين عظام مشط اليد مسؤولة عن تبعيد الأصابع وتقريبها.',
+    descAr: 'عضلات صغيرة بين عظام مشط اليد مسؤولة عن تبعيد الأصابع وت��ريبها.',
   },
   'Frontalis': {
     ar: 'العضلة الجبهية',
@@ -455,8 +455,11 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
   const vesalius = REAL_SCIENTISTS.find(s => s.id === 'vesalius');
 
   // Load a specific anatomical system layer
-  const loadSystemLayer = (sysConfig: SystemLayerConfig, scene: THREE.Scene) => {
-    if (loadedSystems[sysConfig.id] || systemGroups.current.has(sysConfig.id)) return;
+const loadSystemLayer = (sysConfig: SystemLayerConfig, scene: THREE.Scene) => {
+  // The visceral layer is represented by the authentic Sketchfab specimen below;
+  // never fall back to the old purple local placeholder model.
+  if (!sysConfig.file) return;
+  if (loadedSystems[sysConfig.id] || systemGroups.current.has(sysConfig.id)) return;
 
     setLoadingSystems(prev => ({ ...prev, [sysConfig.id]: true }));
     const loader = new GLTFLoader();
@@ -796,9 +799,9 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     const grp = systemGroups.current.get(sys.id);
     if (grp) {
       grp.visible = nextVisible;
-    } else if (nextVisible && sceneRef.current) {
-      loadSystemLayer(sys, sceneRef.current);
-    }
+  } else if (nextVisible && sceneRef.current && sys.file) {
+    loadSystemLayer(sys, sceneRef.current);
+  }
   };
 
   const resetCamera = () => {
