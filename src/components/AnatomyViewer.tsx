@@ -123,7 +123,7 @@ const ANATOMY_DICTIONARY: Record<string, { ar: string; descEn: string; descAr: s
   'Eleventh rib': {
     ar: 'الضلع الحادي عشر (ضلع طافٍ)',
     descEn: 'Eleventh rib, a floating rib with no anterior costal cartilage attachment, providing lateral protection to kidneys.',
-    descAr: 'الضلع الحادي عشر، ضلع طافٍ غير متصل من الأما�������� بالقص أو الحافة الضلعية، ويوفر حماية جانبية هامة للكلية.',
+    descAr: 'الضلع الحادي عشر، ضلع طافٍ غير متصل من الأما��������� بالقص أو الحافة الضلعية، ويوفر حماية جانبية هامة للكلية.',
   },
   'Twelfth rib': {
     ar: 'الضلع الثاني عشر (ضلع طافٍ)',
@@ -383,7 +383,7 @@ const ANATOMY_DICTIONARY: Record<string, { ar: string; descEn: string; descAr: s
   'Abductor pollicis brevis': {
     ar: 'العضلة المبعدة القصيرة لإبهام اليد',
     descEn: 'Thenar muscle that abducts the thumb away from the plane of the palm.',
-    descAr: 'عضلة من عضلات كرة الإبهام تبعد الإبهام عن مستوى راحة اليد.',
+    descAr: 'عضلة من عضل��ت كرة الإبهام تبعد الإبهام عن مستوى راحة اليد.',
   },
   'Flexor pollicis brevis': {
     ar: 'العضلة المثنية القصيرة لإبهام اليد',
@@ -787,6 +787,14 @@ const loadSystemLayer = (sysConfig: SystemLayerConfig, scene: THREE.Scene) => {
 
   // Toggle visibility and lazy load system layers - Synchronous ref update fixes double-click bug!
   const toggleSystem = (sys: SystemLayerConfig) => {
+    // The visceral tab uses the supplied high-fidelity Sketchfab specimen directly.
+    // It must never mount the retired purple placeholder layer.
+    if (sys.id === 'visceral') {
+      const visceralModel = SKETCHFAB_ANATOMY_COLLECTION.find(model => model.id === 'human-male-internal-organs');
+      if (visceralModel) setActiveSketchfabModel(visceralModel);
+      return;
+    }
+
     const isCurrentlyVisible = visibleSystemsRef.current[sys.id] ?? false;
     const nextVisible = !isCurrentlyVisible;
 
