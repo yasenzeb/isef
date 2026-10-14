@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
-import { OrbitControls } from 'three-stdlib';
-import { GLTFLoader } from 'three-stdlib';
-import { DRACOLoader } from 'three-stdlib';
+import { OrbitControls, GLTFLoader, DRACOLoader, FBXLoader } from 'three-stdlib';
 import { useLanguage } from '../context/LanguageContext';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
 import { 
@@ -33,7 +31,7 @@ interface AnatomyViewerProps {
   isPresentationMode?: boolean;
 }
 
-export type AnatomySystemId = 'skeletal' | 'muscular' | 'cardiovascular' | 'nervous' | 'visceral' | 'joints' | 'lymphatic' | 'ecorche' | 'exercise';
+export type AnatomySystemId = 'skeletal' | 'ecorche' | 'muscular' | 'cardiovascular' | 'nervous' | 'visceral' | 'joints' | 'lymphatic';
 
 interface SystemLayerConfig {
   id: AnatomySystemId;
@@ -48,12 +46,11 @@ interface SystemLayerConfig {
 
 const SYSTEM_LAYERS: SystemLayerConfig[] = [
   { id: 'skeletal', labelEn: 'Skeletal System (Bones)', labelAr: 'الهيكل العظمي', file: 'skeletal.glb', color: 0xe2ded4, icon: Bone, defaultVisible: true },
-  { id: 'ecorche', labelEn: 'Full Body Ecorche (Superficial & Deep Muscles)', labelAr: 'التشريح العضلي الكامل (Ecorche)', file: 'male_full_body_ecorche.glb', color: 0xbe123c, icon: Activity, defaultVisible: false },
-  { id: 'exercise', labelEn: 'Torso & Muscle Volumes (Anatomy Study)', labelAr: 'الكتل العضلية المجسمة (3D Study)', file: 'anatomy_exercise.glb', color: 0xb45309, icon: Sparkles, defaultVisible: false },
-  { id: 'muscular', labelEn: 'Muscular System', labelAr: 'الجهاز العضلي التفصيلي', file: 'muscular.glb', color: 0xc2410c, icon: Activity, defaultVisible: false },
-  { id: 'cardiovascular', labelEn: 'Cardiovascular (Heart & Vessels)', labelAr: 'جهاز الدوران والقلب', file: 'cardiovascular.glb', color: 0xdc2626, icon: Heart, defaultVisible: false },
+  { id: 'ecorche', labelEn: 'Muscular Anatomy System', labelAr: 'التشريح العضلي الكامل', file: 'male_full_body_ecorche.glb', color: 0xa82020, icon: Activity, defaultVisible: false },
+  { id: 'muscular', labelEn: 'Deep Muscular Fibers', labelAr: 'الجهاز العضلي التفصيلي', file: 'muscular.glb', color: 0xb91c1c, icon: Activity, defaultVisible: false },
+  { id: 'cardiovascular', labelEn: 'Cardiovascular & Heart', labelAr: 'الجهاز الدوري والقلب', file: 'cardiovascular.glb', color: 0xdc2626, icon: Heart, defaultVisible: false },
   { id: 'nervous', labelEn: 'Nervous System & Brain', labelAr: 'الجهاز العصبي والدماغ', file: 'nervous.glb', color: 0xeab308, icon: Brain, defaultVisible: false },
-  { id: 'visceral', labelEn: 'Visceral Organs', labelAr: 'الأعضاء الحشوية', file: 'visceral.glb', color: 0xa855f7, icon: Layers, defaultVisible: false },
+  { id: 'visceral', labelEn: 'Visceral Organs', labelAr: 'الأعضاء الحشوية', file: 'visceral.glb', color: 0xbf6b59, icon: Layers, defaultVisible: false },
   { id: 'joints', labelEn: 'Articular Ligaments & Joints', labelAr: 'الأربطة والمفاصل', file: 'joints.glb', color: 0x94a3b8, icon: ShieldCheck, defaultVisible: false },
   { id: 'lymphatic', labelEn: 'Lymphatic & Immune Nodes', labelAr: 'الجهاز اللمفاوي', file: 'lymphatic.glb', color: 0x10b981, icon: Sparkles, defaultVisible: false },
 ];
@@ -394,42 +391,54 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
             let roughness = 0.38;
             let metalness = 0.04;
 
-            // Specialized authentic organ color shading
+            // Specialized authentic organ color shading (No weird purple defaults)
             if (name.includes('liver')) {
-              matColor = 0x6e261d; // Deep reddish-brown liver
-              roughness = 0.28;
-            } else if (name.includes('stomach')) {
-              matColor = 0xb45344; // Rugose gastric pinkish-tan
-              roughness = 0.32;
-            } else if (name.includes('lung')) {
-              matColor = 0xd9777f; // Spongy pulmonary pink
-              roughness = 0.65;
+              matColor = 0x78281f; // Deep rich hepatic reddish-brown
+              roughness = 0.35;
+            } else if (name.includes('stomach') || name.includes('oesophagus') || name.includes('esophagus')) {
+              matColor = 0xc97a6e; // Natural gastric mucosa pinkish-tan
+              roughness = 0.38;
+            } else if (name.includes('lung') || name.includes('bronch') || name.includes('trachea')) {
+              matColor = 0xdd8890; // Healthy aerated lung tissue pink
+              roughness = 0.55;
             } else if (name.includes('heart') || name.includes('myocardium')) {
               matColor = 0x991b1b; // Cardiac muscle crimson
-              roughness = 0.25;
-            } else if (name.includes('kidney')) {
-              matColor = 0x7c2d12; // Renal cortex dark red
               roughness = 0.3;
-            } else if (name.includes('spleen')) {
-              matColor = 0x581c87; // Splenic lymphoid purple
+            } else if (name.includes('kidney')) {
+              matColor = 0x8a3324; // Renal cortex rich mahogany brown
               roughness = 0.35;
-            } else if (name.includes('colon') || name.includes('rectum')) {
-              matColor = 0xc27a62; // Intestinal pale ochre
-              roughness = 0.4;
+            } else if (name.includes('spleen')) {
+              matColor = 0x6b2140; // Natural dark burgundy red
+              roughness = 0.35;
+            } else if (name.includes('colon') || name.includes('intestine') || name.includes('cecum') || name.includes('appendix') || name.includes('duodenum') || name.includes('jejunum') || name.includes('ileum')) {
+              matColor = 0xd4967d; // Intestinal pale mucosal peach/ochre
+              roughness = 0.42;
+            } else if (name.includes('gallbladder') || name.includes('bile')) {
+              matColor = 0x2e6b3e; // Natural bile dark olive green
+              roughness = 0.25;
+            } else if (name.includes('pancreas')) {
+              matColor = 0xdbb078; // Pancreatic glandular pale amber
+              roughness = 0.5;
+            } else if (name.includes('omentum') || name.includes('meso')) {
+              matColor = 0xebd394; // Peritoneal fatty yellow
+              roughness = 0.55;
             } else if (name.includes('aorta') || name.includes('artery')) {
               matColor = 0xdc2626; // Oxygenated arterial scarlet
               roughness = 0.3;
             } else if (name.includes('vein') || name.includes('cava')) {
               matColor = 0x2563eb; // Deoxygenated venous royal blue
               roughness = 0.3;
+            } else if (sysConfig.id === 'visceral') {
+              matColor = 0xbf6b59; // Natural visceral warm organ tone instead of purple
+              roughness = 0.4;
             } else if (sysConfig.id === 'skeletal') {
               matColor = 0xf5f2eb; // Cortical bone ivory
               roughness = 0.45;
               metalness = 0.02;
             }
 
-            // For models with embedded textured materials (e.g. ecorche and exercise), preserve textures
-            const isTexturedLayer = sysConfig.id === 'ecorche' || sysConfig.id === 'exercise';
+            // For models with embedded textured materials (e.g. ecorche), preserve textures
+            const isTexturedLayer = sysConfig.id === 'ecorche';
             if (isTexturedLayer && mesh.material) {
               const origMat = (Array.isArray(mesh.material) ? mesh.material[0] : mesh.material) as THREE.MeshStandardMaterial;
               const texturedMat = origMat.clone();
@@ -437,7 +446,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
               texturedMat.metalness = 0.05;
               if (!texturedMat.map) {
                 // Vibrant anatomical muscle crimson tone
-                texturedMat.color = new THREE.Color(sysConfig.id === 'ecorche' ? 0x9f1239 : 0xb45309);
+                texturedMat.color = new THREE.Color(0xa82020);
               }
               mesh.material = texturedMat;
               originalMaterials.current.set(mesh, texturedMat.clone());
@@ -463,21 +472,14 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         // Accurate anatomical scale and alignment for user models vs standard meters coordinates
         if (sysConfig.id === 'ecorche') {
           // male_full_body_ecorche.glb: raw height is 68.08 units with center at origin.
-          // Scale to 1.76m anatomical human height: 1.76 / 68.08 = 0.02585
-          const ecorcheScale = 0.02585;
+          // Scale to exact 1.74m anatomical human height matching skeletal.glb
+          const ecorcheScale = 0.02555;
           root.scale.set(ecorcheScale, ecorcheScale, ecorcheScale);
-          // Feet in raw GLTF are at Z = -43.06 units. At scale 0.02585: -43.06 * 0.02585 = -1.113m
-          // Translating Y by +1.153m places the soles at Y = 0.04m, matching skeletal foot plane
-          root.position.set(0, 1.153, 0);
-        } else if (sysConfig.id === 'exercise') {
-          // anatomy_exercise.glb: Torso & arm muscle study
-          // Scale to match human torso height from neck (C7) to pelvis: 0.45 scale
-          const exerciseScale = 0.45;
-          root.scale.set(exerciseScale, exerciseScale, exerciseScale);
-          // Place pelvis base at Y = 0.74m and center torso
-          root.position.set(0, 0.74, 0.03);
+          // Precise Z-offset and Y-offset to sync cervical vertebrae, rib cage, and femoral heads
+          root.position.set(0, 1.102, -0.015);
         } else {
-          // Authentic Z-Anatomy systems coordinate ground (0,0,0)
+          // Authentic Z-Anatomy systems (skeletal, muscular, cardiovascular, nervous, visceral, joints, lymphatic)
+          // share origin (0,0,0) in anatomical space
           root.position.set(0, 0, 0);
         }
 
@@ -585,12 +587,22 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           roughness: 0.25,
         });
 
-        let cleanName = hit.name.replace(/^ZA:/, '').replace(/\.(l|r)$/i, (m, side) => ` (${side.toUpperCase() === 'L' ? 'Left' : 'Right'})`);
+        // Clean raw mesh name and remove glTF artifacts like Frontal_bone_1, Mesh_002, etc.
+        let rawClean = hit.name
+          .replace(/^ZA:/, '')
+          .replace(/\.(l|r)$/i, (m, side) => ` (${side.toUpperCase() === 'L' ? 'Left' : 'Right'})`)
+          .replace(/_([LR])$/i, (m, side) => ` (${side.toUpperCase() === 'L' ? 'Left' : 'Right'})`)
+          .replace(/_(\d+)$/, '') // Removes _1, _2
+          .replace(/\.\d+$/, '') // Removes .001, .002
+          .replace(/_/g, ' ')
+          .trim();
+
+        let cleanName = rawClean;
         const sysId = (hit.userData.systemId || 'skeletal') as AnatomySystemId;
         const sysConfig = SYSTEM_LAYERS.find(s => s.id === sysId) || SYSTEM_LAYERS[0];
 
-        // Specific anatomical resolution for full body ecorche and torso volume models
-        if (sysId === 'ecorche' || sysId === 'exercise' || cleanName.includes('Object_') || cleanName.includes('Decimation')) {
+        // Specific anatomical resolution for full body ecorche when clicking generic mesh objects
+        if (sysId === 'ecorche' || cleanName.includes('Object') || cleanName.includes('Decimation') || cleanName.includes('mesh')) {
           const worldPos = new THREE.Vector3();
           hit.getWorldPosition(worldPos);
           const y = worldPos.y;
@@ -612,17 +624,19 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           }
         }
 
-        // First check comprehensive skeletal bone dictionary
+        // Comprehensive anatomical lookup
         const baseKey = cleanName.replace(/\s*\((Left|Right)\)/i, '').trim();
         const sideSuffix = cleanName.match(/\((Left|Right)\)/i)?.[1];
         const sideAr = sideSuffix === 'Left' ? ' الأيسر' : sideSuffix === 'Right' ? ' الأيمن' : '';
 
-        const skeletalEntry = (SKELETAL_BONE_DICTIONARY as Record<string, { ar: string; descEn: string; descAr: string }>)[baseKey];
+        const dictRecord = SKELETAL_BONE_DICTIONARY as Record<string, { ar: string; descEn: string; descAr: string }>;
+        const directEntry = dictRecord[cleanName] || dictRecord[baseKey] || dictRecord[baseKey.toLowerCase()];
 
         // Match against dictionary or definitions.json
-        const matchedDict = skeletalEntry 
-          ? { ar: skeletalEntry.ar + sideAr, descEn: skeletalEntry.descEn, descAr: skeletalEntry.descAr }
-          : Object.entries(ANATOMY_DICTIONARY).find(([k]) => cleanName.toLowerCase().includes(k.toLowerCase()))?.[1];
+        const matchedDict = directEntry 
+          ? { ar: directEntry.ar + (directEntry.ar.includes('الأيسر') || directEntry.ar.includes('الأيمن') ? '' : sideAr), descEn: directEntry.descEn, descAr: directEntry.descAr }
+          : Object.entries(dictRecord).find(([k]) => baseKey.toLowerCase() === k.toLowerCase() || baseKey.toLowerCase().includes(k.toLowerCase()))?.[1]
+          || Object.entries(ANATOMY_DICTIONARY).find(([k]) => cleanName.toLowerCase().includes(k.toLowerCase()))?.[1];
         
         let descEn = matchedDict ? matchedDict.descEn : '';
         const nameAr = matchedDict 
@@ -924,43 +938,70 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
               // Only match non-cell anatomical models (organs, bones, systems, tissues)
               const anatomySpecimens = SKETCHFAB_ANATOMY_COLLECTION.filter(m => m.category !== 'cell');
 
-              // 1. Direct keyword match
+              // Strict direct keyword match
               let matchedModel = anatomySpecimens.find(m => 
-                m.keywords.some(k => queryEn.includes(k.toLowerCase()) || queryAr.includes(k))
+                m.keywords.some(k => {
+                  const kLow = k.toLowerCase();
+                  return queryEn.includes(kLow) || queryAr.includes(k);
+                })
               );
 
-              // 2. Fallback based on anatomical system or category
+              // Context-specific intelligent matching (Eye, Skull, Brain, Femur, Ribs, Heart, Lung, Liver, Stomach, Kidney, Pelvis, Spine)
               if (!matchedModel) {
-                if (querySys.includes('skelet') || queryEn.includes('bone') || queryEn.includes('cartilage') || queryAr.includes('عظم') || queryAr.includes('هيكل')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'rib-cage-dissection') || anatomySpecimens.find(m => m.id === 'human-femur-dissection');
-                } else if (querySys.includes('cardio') || queryEn.includes('vessel') || queryAr.includes('دوران') || queryAr.includes('قلب')) {
+                if (queryEn.includes('eye') || queryAr.includes('عين') || queryEn.includes('orbit') || queryAr.includes('بصر')) {
+                  matchedModel = anatomySpecimens.find(m => m.id === 'human-eye');
+                } else if (queryEn.includes('skull') || queryEn.includes('frontal') || queryEn.includes('mandible') || queryEn.includes('maxilla') || queryEn.includes('parietal') || queryEn.includes('temporal') || queryEn.includes('occipital') || queryEn.includes('sphenoid') || queryAr.includes('جمجمة') || queryAr.includes('جبهي') || queryAr.includes('فك') || queryAr.includes('قحف')) {
+                  matchedModel = anatomySpecimens.find(m => m.id === 'human-skull-dissection');
+                } else if (queryEn.includes('femur') || queryAr.includes('فخذ')) {
+                  matchedModel = anatomySpecimens.find(m => m.id === 'human-femur-dissection');
+                } else if (queryEn.includes('rib') || queryEn.includes('sternum') || queryAr.includes('ضلع') || queryAr.includes('قص') || queryAr.includes('قفص صدري')) {
+                  matchedModel = anatomySpecimens.find(m => m.id === 'rib-cage-dissection');
+                } else if (queryEn.includes('vertebra') || queryEn.includes('spine') || queryAr.includes('فقرة') || queryAr.includes('عمود فقري') || queryAr.includes('عجز') || queryAr.includes('عصعص')) {
+                  matchedModel = anatomySpecimens.find(m => m.id === 'human-spine-dissection');
+                } else if (queryEn.includes('pelvis') || queryEn.includes('ilium') || queryEn.includes('pubis') || queryEn.includes('ischium') || queryAr.includes('حوض') || queryAr.includes('حرقف')) {
+                  matchedModel = anatomySpecimens.find(m => m.id === 'human-pelvis-dissection');
+                } else if (queryEn.includes('heart') || queryEn.includes('myocard') || queryAr.includes('قلب')) {
                   matchedModel = anatomySpecimens.find(m => m.id === 'human-heart-animated');
-                } else if (querySys.includes('nerv') || queryEn.includes('brain') || queryAr.includes('عصب') || queryAr.includes('دماغ')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'brain-and-nuclei');
-                } else if (querySys.includes('viscer') || querySys.includes('digest') || queryAr.includes('هضم') || queryAr.includes('أحشاء')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'gastrointestinal-tract') || anatomySpecimens.find(m => m.id === 'stomach-cross-section');
-                } else if (querySys.includes('respirat') || queryAr.includes('تنفس')) {
+                } else if (queryEn.includes('lung') || queryEn.includes('bronch') || queryEn.includes('trachea') || queryAr.includes('رئة') || queryAr.includes('قصبة')) {
                   matchedModel = anatomySpecimens.find(m => m.id === 'human-lungs-dissection');
-                } else if (querySys.includes('muscl') || queryAr.includes('عضل')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'muscle-tissue');
+                } else if (queryEn.includes('liver') || queryEn.includes('gallbladder') || queryAr.includes('كبد') || queryAr.includes('مرارة')) {
+                  matchedModel = anatomySpecimens.find(m => m.id === 'human-liver-dissection');
+                } else if (queryEn.includes('kidney') || queryEn.includes('renal') || queryAr.includes('كلية') || queryAr.includes('كلو')) {
+                  matchedModel = anatomySpecimens.find(m => m.id === 'human-kidney-dissection');
+                } else if (queryEn.includes('stomach') || queryAr.includes('معدة')) {
+                  matchedModel = anatomySpecimens.find(m => m.id === 'stomach-cross-section');
+                } else if (queryEn.includes('brain') || queryAr.includes('دماغ') || queryAr.includes('مخ')) {
+                  matchedModel = anatomySpecimens.find(m => m.id === 'brain-and-nuclei');
                 }
               }
 
-              // 3. Absolute fallback: Authentic Thorax/Ribs model or Heart, NEVER animal/plant cell!
-              if (!matchedModel) {
-                matchedModel = anatomySpecimens.find(m => m.id === 'rib-cage-dissection') || anatomySpecimens[0];
+              if (matchedModel) {
+                return (
+                  <button
+                    onClick={() => setActiveSketchfabModel(matchedModel)}
+                    className="w-full mt-2 py-2.5 px-4 rounded-xl bg-white text-black hover:bg-slate-200 font-mono font-bold text-xs flex items-center justify-center space-x-2 shadow-lg transition-all cursor-pointer"
+                  >
+                    <Sparkles className="w-4 h-4 text-emerald-600" />
+                    <span>
+                      {language === 'ar' 
+                        ? `فتح تشريح ${selectedStructure?.nameAr || 'البنية'} مجسماً 3D` 
+                        : `Open ${selectedStructure?.nameEn || 'Specimen'} Detailed 3D`}
+                    </span>
+                  </button>
+                );
               }
 
+              // If no specific 3D dissection exists, provide the isolation & focus inspection button
               return (
                 <button
-                  onClick={() => setActiveSketchfabModel(matchedModel)}
-                  className="w-full mt-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-bold text-xs flex items-center justify-center space-x-2 shadow-lg shadow-sky-900/30 transition-all cursor-pointer"
+                  onClick={toggleIsolate}
+                  className="w-full mt-2 py-2 px-3 rounded-xl bg-white/[0.05] border border-white/20 hover:border-white/50 text-white font-mono font-semibold text-xs flex items-center justify-center space-x-2 transition-all cursor-pointer"
                 >
-                  <Sparkles className="w-4 h-4 text-sky-200" />
+                  <Eye className="w-3.5 h-3.5 text-emerald-400" />
                   <span>
-                    {language === 'ar' 
-                      ? `فتح تشريح ${selectedStructure?.nameAr || 'البنية'} مجسماً 3D` 
-                      : `Open ${selectedStructure?.nameEn || 'Specimen'} Detailed 3D`}
+                    {isIsolated 
+                      ? (language === 'ar' ? 'إلغاء العزل وإظهار الكل' : 'Exit Focus / Show All')
+                      : (language === 'ar' ? 'فحص وتقريب الجزء بمفرده (عزل 3D)' : 'Focus & Isolate Specimen Only')}
                   </span>
                 </button>
               );

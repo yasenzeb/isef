@@ -10,14 +10,14 @@
     "descAr": "زوج من الغضاريف الهرمية بالحنجرة يرتكز عليها الحبلان الصوتيان للتحكم بالنبرة والتصويت."
   },
   "Atlas (C1)": {
-    "ar": "فقرة الأطلس (العنقية الأولى C1)",
-    "descEn": "First cervical vertebra supporting the skull on its superior articular facets.",
-    "descAr": "الفقرة العنقية الأولى التي تحمل الجمجمة وتتمفصل مع لقمتي العظم القذالي لتمكين إيماء الرأس."
+    "ar": "الفقرة العنقية الأولى (الأطلس)",
+    "descEn": "Supports the head and allows nodding",
+    "descAr": "دعم الرأس والسماح بحركة الإيماء"
   },
   "Axis (C2)": {
-    "ar": "فقرة المحور (العنقية الثانية C2)",
-    "descEn": "Second cervical vertebra with odontoid peg (dens) allowing head rotation.",
-    "descAr": "الفقرة العنقية الثانية ذات الناتئ السني الذي يرتكز عليه الأطلس لتمكين دوران الرأس يمنة ويسرة."
+    "ar": "الفقرة العنقية الثانية (المحور)",
+    "descEn": "Allows head rotation",
+    "descAr": "السماح بدوران الرأس"
   },
   "Body of sternum": {
     "ar": "جسم عظم القص",
@@ -40,9 +40,9 @@
     "descAr": "عظم أنبوبي منحني كالـ S يربط عظم القص بلوح الكتف وينقل القوى من الطرف العلوي للجذع."
   },
   "Coccyx": {
-    "ar": "عظم العصعص (عجب الذنب)",
-    "descEn": "Small terminal tailbone formed by the fusion of 3 to 5 rudimentary vertebrae.",
-    "descAr": "عظم أسفل العمود الفقري ناتج عن اندماج 3-5 فقرات أثرية، يوفر ارتكازاً لأربطة وعضلات قاع الحوض."
+    "ar": "العصعص",
+    "descEn": "Attachment point for ligaments and muscles and pelvic support",
+    "descAr": "نقطة ارتباط للأربطة والعضلات ودعم الحوض"
   },
   "Corniculate cartilage": {
     "ar": "الغضروف القريني (الحنجرة)",
@@ -171,8 +171,8 @@
   },
   "Ethmoid bone": {
     "ar": "العظم الغربالي",
-    "descEn": "Spongy cranial bone separating nasal cavity from the brain, containing the cribriform plate.",
-    "descAr": "عظم قحفي إسفنجي مثقب يفصل تجويف الأنف عن الدماغ ويسمح بمرور ألياف العصب الشمي."
+    "descEn": "Forms the roof of the nasal cavity and the medial wall of the orbit",
+    "descAr": "تشكيل سقف الأنف والجدار الإنسي للحجاج"
   },
   "Femur": {
     "ar": "عظم الفخذ",
@@ -231,8 +231,8 @@
   },
   "Frontal bone": {
     "ar": "العظم الجبهي",
-    "descEn": "Cranial bone forming the forehead, brow ridges, and superior orbital margin.",
-    "descAr": "عظم الجمجمة الأمامي الذي يشكل الجبهة وأسقف تجاويف العينين وقاع الحفرة القحفية الأمامية."
+    "descEn": "Protects the frontal lobe of the brain and forms the forehead and orbital roof",
+    "descAr": "حماية الفص الأمامي للدماغ وتشكيل الجبهة وسقف الحجاج"
   },
   "Hamate bone": {
     "ar": "العظم الكلابي (الحماتي باليد)",
@@ -250,9 +250,9 @@
     "descAr": "عظم الذراع الطويل الذي يربط مفصل الكتف بمفصل المرفق لتنفيذ حركات الرفع والدوران."
   },
   "Hyoid bone": {
-    "ar": "العظم اللامي (العظم اللساني)",
-    "descEn": "U-shaped horseshoe bone in the neck suspended by muscles without articulating with other bones.",
-    "descAr": "عظم معلق حذوي الشكل بالرقبة لا يتمفصل مع أي عظم آخر، يرتكز عليه اللسان وعضلات البلع."
+    "ar": "العظم اللامي",
+    "descEn": "Anchors the tongue and larynx muscles, does not articulate with any other bone",
+    "descAr": "تثبيت عضلات اللسان والحنجرة، لا يتصل بأي عظم آخر"
   },
   "Incus": {
     "ar": "عظيم السندان (الأذن الوسطى)",
@@ -335,9 +335,9 @@
     "descAr": "عظيم سمعي مطرقي متصل مباشرة بغشاء طبلة الأذن لنقل الذبذبات الميكانيكية للسندان."
   },
   "Mandible": {
-    "ar": "عظم الفك السفلي",
-    "descEn": "Strongest and only movable bone of the facial skeleton enabling chewing and speech.",
-    "descAr": "أقوى وعظم الجمجمة الوحيد المتحرك، يحمل الأسنان السفلية ويسهل عمليات المضغ والنطق."
+    "ar": "الفك السفلي",
+    "descEn": "The only movable bone of the skull, supports the lower teeth and chewing",
+    "descAr": "العظم الوحيد المتحرك في الجمجمة، لحمل الأسنان السفلية والمضغ"
   },
   "Manubrium of sternum": {
     "ar": "قبضة القص (المانوبريوم)",
@@ -421,8 +421,8 @@
   },
   "Occipital bone": {
     "ar": "العظم القذالي",
-    "descEn": "Trapezoid skull bone at posterior base containing the foramen magnum for spinal cord passage.",
-    "descAr": "عظم خلفي سفلي للجمجمة يحتوي على الثقبة العظمى لمرور الحبل الشوكي ويتصل بالفقرة العنقية الأولى."
+    "descEn": "Protects the occipital lobe and allows the spinal cord to pass through the foramen magnum",
+    "descAr": "حماية الفص القذالي ومرور النخاع الشوكي عبر الثقبة العظمى"
   },
   "Palatine bone": {
     "ar": "العظم الحنكي",
@@ -505,9 +505,9 @@
     "descAr": "العظم الجانبي للساعد القابل للدوران حول الزند لتمكين حركة الكب والبطح لليد."
   },
   "Sacrum": {
-    "ar": "عظم العجز",
-    "descEn": "Shield-shaped triangular bone of 5 fused vertebrae forming the pelvic back wall.",
-    "descAr": "عظم مثلث عريض ناتج عن اندماج 5 فقرات عجزية، يشكل الجدار الخلفي للحوض وينقل وزن الجذع."
+    "ar": "العجز",
+    "descEn": "Transfers body weight to the pelvis and stabilizes it",
+    "descAr": "نقل وزن الجسم إلى الحوض وتثبيت الحوض"
   },
   "Scaphoid bone": {
     "ar": "العظم القاربي (الزورقي باليد)",
@@ -560,9 +560,9 @@
     "descAr": "الضلع السادس في القفص الصدري، يحمي الأعضاء الحيوية الصدرية ويتمدد أثناء عملية التنفس."
   },
   "Sphenoid bone": {
-    "ar": "العظم الوتدي (الفراشي)",
-    "descEn": "Butterfly-shaped keystone bone at the base of the skull housing the pituitary sella turcica.",
-    "descAr": "عظم قحفي مركزي يشبه الفراشة في قاع الجمجمة يربط عظام القحف ويحتوي على السرج التركي للغدة النخامية."
+    "ar": "العظم الوتدي",
+    "descEn": "Forms the base of the skull and protects the pituitary gland",
+    "descAr": "تشكيل قاعدة الجمجمة وحماية الغدة النخامية"
   },
   "Stapes": {
     "ar": "عظيم الركاب (أصغر عظم بالجسم)",
@@ -780,9 +780,9 @@
     "descAr": "إحدى الفقرات الصدرية المرقمة (T9) في العمود الفقري، تحمي الحبل الشوكي وتدعم بنية الجذع."
   },
   "Vomer": {
-    "ar": "عظم الميكعة (الميكعة الأنفية)",
-    "descEn": "Thin vertical bone forming the posteroinferior part of the bony nasal septum.",
-    "descAr": "عظم مفرد رفيع عمودي يشكل الجزء الخلفي السفلي من الحاجز الأنفي الفاصل بين المنخرين."
+    "ar": "الميكعة",
+    "descEn": "Forms the lower part of the nasal septum",
+    "descAr": "تشكيل الجزء السفلي من الحاجز الأنفي"
   },
   "Xiphoid process": {
     "ar": "الناتئ الرهابي (خنجري القص)",
@@ -793,5 +793,4060 @@
     "ar": "العظم الوجني (عظم الخد)",
     "descEn": "Prominent cheekbone articulating with maxilla, temporal, and frontal bones.",
     "descAr": "عظم الخد البارز في الوجه، يحدد ملامح الخدين ويشكل الجدار الوحشي لتجويف العين."
+  },
+  "Parietal bone _L": {
+    "ar": "العظم الجداري الأيسر",
+    "descEn": "Protects the left parietal lobe and forms the side and roof of the skull",
+    "descAr": "حماية الفص الجداري الأيسر وتشكيل جانب وسقف القحف"
+  },
+  "Parietal bone  L": {
+    "ar": "العظم الجداري الأيسر",
+    "descEn": "Protects the left parietal lobe and forms the side and roof of the skull",
+    "descAr": "حماية الفص الجداري الأيسر وتشكيل جانب وسقف القحف"
+  },
+  "Parietal bone (Left)": {
+    "ar": "العظم الجداري الأيسر",
+    "descEn": "Protects the left parietal lobe and forms the side and roof of the skull",
+    "descAr": "حماية الفص الجداري الأيسر وتشكيل جانب وسقف القحف"
+  },
+  "Parietal bone Left": {
+    "ar": "العظم الجداري الأيسر",
+    "descEn": "Protects the left parietal lobe and forms the side and roof of the skull",
+    "descAr": "حماية الفص الجداري الأيسر وتشكيل جانب وسقف القحف"
+  },
+  "Parietal bone _R": {
+    "ar": "العظم الجداري الأيمن",
+    "descEn": "Protects the right parietal lobe and forms the side and roof of the skull",
+    "descAr": "حماية الفص الجداري الأيمن وتشكيل جانب وسقف القحف"
+  },
+  "Parietal bone  R": {
+    "ar": "العظم الجداري الأيمن",
+    "descEn": "Protects the right parietal lobe and forms the side and roof of the skull",
+    "descAr": "حماية الفص الجداري الأيمن وتشكيل جانب وسقف القحف"
+  },
+  "Parietal bone (Right)": {
+    "ar": "العظم الجداري الأيمن",
+    "descEn": "Protects the right parietal lobe and forms the side and roof of the skull",
+    "descAr": "حماية الفص الجداري الأيمن وتشكيل جانب وسقف القحف"
+  },
+  "Parietal bone Right": {
+    "ar": "العظم الجداري الأيمن",
+    "descEn": "Protects the right parietal lobe and forms the side and roof of the skull",
+    "descAr": "حماية الفص الجداري الأيمن وتشكيل جانب وسقف القحف"
+  },
+  "Temporal bone _L": {
+    "ar": "العظم الصدغي الأيسر",
+    "descEn": "Protects the left temporal lobe and houses the organs of hearing and balance",
+    "descAr": "حماية الفص الصدغي الأيسر واحتواء أعضاء السمع والتوازن"
+  },
+  "Temporal bone  L": {
+    "ar": "العظم الصدغي الأيسر",
+    "descEn": "Protects the left temporal lobe and houses the organs of hearing and balance",
+    "descAr": "حماية الفص الصدغي الأيسر واحتواء أعضاء السمع والتوازن"
+  },
+  "Temporal bone (Left)": {
+    "ar": "العظم الصدغي الأيسر",
+    "descEn": "Protects the left temporal lobe and houses the organs of hearing and balance",
+    "descAr": "حماية الفص الصدغي الأيسر واحتواء أعضاء السمع والتوازن"
+  },
+  "Temporal bone Left": {
+    "ar": "العظم الصدغي الأيسر",
+    "descEn": "Protects the left temporal lobe and houses the organs of hearing and balance",
+    "descAr": "حماية الفص الصدغي الأيسر واحتواء أعضاء السمع والتوازن"
+  },
+  "Temporal bone _R": {
+    "ar": "العظم الصدغي الأيمن",
+    "descEn": "Protects the right temporal lobe and houses the organs of hearing and balance",
+    "descAr": "حماية الفص الصدغي الأيمن واحتواء أعضاء السمع والتوازن"
+  },
+  "Temporal bone  R": {
+    "ar": "العظم الصدغي الأيمن",
+    "descEn": "Protects the right temporal lobe and houses the organs of hearing and balance",
+    "descAr": "حماية الفص الصدغي الأيمن واحتواء أعضاء السمع والتوازن"
+  },
+  "Temporal bone (Right)": {
+    "ar": "العظم الصدغي الأيمن",
+    "descEn": "Protects the right temporal lobe and houses the organs of hearing and balance",
+    "descAr": "حماية الفص الصدغي الأيمن واحتواء أعضاء السمع والتوازن"
+  },
+  "Temporal bone Right": {
+    "ar": "العظم الصدغي الأيمن",
+    "descEn": "Protects the right temporal lobe and houses the organs of hearing and balance",
+    "descAr": "حماية الفص الصدغي الأيمن واحتواء أعضاء السمع والتوازن"
+  },
+  "Maxilla _L": {
+    "ar": "الفك العلوي الأيسر",
+    "descEn": "Supports the upper left teeth and forms the roof of the mouth and the orbit",
+    "descAr": "حمل الأسنان العلوية اليسرى وتشكيل سقف الفم والحجاج"
+  },
+  "Maxilla  L": {
+    "ar": "الفك العلوي الأيسر",
+    "descEn": "Supports the upper left teeth and forms the roof of the mouth and the orbit",
+    "descAr": "حمل الأسنان العلوية اليسرى وتشكيل سقف الفم والحجاج"
+  },
+  "Maxilla (Left)": {
+    "ar": "الفك العلوي الأيسر",
+    "descEn": "Supports the upper left teeth and forms the roof of the mouth and the orbit",
+    "descAr": "حمل الأسنان العلوية اليسرى وتشكيل سقف الفم والحجاج"
+  },
+  "Maxilla Left": {
+    "ar": "الفك العلوي الأيسر",
+    "descEn": "Supports the upper left teeth and forms the roof of the mouth and the orbit",
+    "descAr": "حمل الأسنان العلوية اليسرى وتشكيل سقف الفم والحجاج"
+  },
+  "Maxilla _R": {
+    "ar": "الفك العلوي الأيمن",
+    "descEn": "Supports the upper right teeth and forms the roof of the mouth and the orbit",
+    "descAr": "حمل الأسنان العلوية اليمنى وتشكيل سقف الفم والحجاج"
+  },
+  "Maxilla  R": {
+    "ar": "الفك العلوي الأيمن",
+    "descEn": "Supports the upper right teeth and forms the roof of the mouth and the orbit",
+    "descAr": "حمل الأسنان العلوية اليمنى وتشكيل سقف الفم والحجاج"
+  },
+  "Maxilla (Right)": {
+    "ar": "الفك العلوي الأيمن",
+    "descEn": "Supports the upper right teeth and forms the roof of the mouth and the orbit",
+    "descAr": "حمل الأسنان العلوية اليمنى وتشكيل سقف الفم والحجاج"
+  },
+  "Maxilla Right": {
+    "ar": "الفك العلوي الأيمن",
+    "descEn": "Supports the upper right teeth and forms the roof of the mouth and the orbit",
+    "descAr": "حمل الأسنان العلوية اليمنى وتشكيل سقف الفم والحجاج"
+  },
+  "Zygomatic bone _L": {
+    "ar": "العظم الوجني الأيسر",
+    "descEn": "Forms the left cheek prominence and the lateral wall of the orbit",
+    "descAr": "تشكيل بروز الخد الأيسر والجزء الوحشي من الحجاج"
+  },
+  "Zygomatic bone  L": {
+    "ar": "العظم الوجني الأيسر",
+    "descEn": "Forms the left cheek prominence and the lateral wall of the orbit",
+    "descAr": "تشكيل بروز الخد الأيسر والجزء الوحشي من الحجاج"
+  },
+  "Zygomatic bone (Left)": {
+    "ar": "العظم الوجني الأيسر",
+    "descEn": "Forms the left cheek prominence and the lateral wall of the orbit",
+    "descAr": "تشكيل بروز الخد الأيسر والجزء الوحشي من الحجاج"
+  },
+  "Zygomatic bone Left": {
+    "ar": "العظم الوجني الأيسر",
+    "descEn": "Forms the left cheek prominence and the lateral wall of the orbit",
+    "descAr": "تشكيل بروز الخد الأيسر والجزء الوحشي من الحجاج"
+  },
+  "Zygomatic bone _R": {
+    "ar": "العظم الوجني الأيمن",
+    "descEn": "Forms the right cheek prominence and the lateral wall of the orbit",
+    "descAr": "تشكيل بروز الخد الأيمن والجزء الوحشي من الحجاج"
+  },
+  "Zygomatic bone  R": {
+    "ar": "العظم الوجني الأيمن",
+    "descEn": "Forms the right cheek prominence and the lateral wall of the orbit",
+    "descAr": "تشكيل بروز الخد الأيمن والجزء الوحشي من الحجاج"
+  },
+  "Zygomatic bone (Right)": {
+    "ar": "العظم الوجني الأيمن",
+    "descEn": "Forms the right cheek prominence and the lateral wall of the orbit",
+    "descAr": "تشكيل بروز الخد الأيمن والجزء الوحشي من الحجاج"
+  },
+  "Zygomatic bone Right": {
+    "ar": "العظم الوجني الأيمن",
+    "descEn": "Forms the right cheek prominence and the lateral wall of the orbit",
+    "descAr": "تشكيل بروز الخد الأيمن والجزء الوحشي من الحجاج"
+  },
+  "Nasal bone _L": {
+    "ar": "العظم الأنفي الأيسر",
+    "descEn": "Forms the left bridge of the nose",
+    "descAr": "تشكيل جسر الأنف الأيسر"
+  },
+  "Nasal bone  L": {
+    "ar": "العظم الأنفي الأيسر",
+    "descEn": "Forms the left bridge of the nose",
+    "descAr": "تشكيل جسر الأنف الأيسر"
+  },
+  "Nasal bone (Left)": {
+    "ar": "العظم الأنفي الأيسر",
+    "descEn": "Forms the left bridge of the nose",
+    "descAr": "تشكيل جسر الأنف الأيسر"
+  },
+  "Nasal bone Left": {
+    "ar": "العظم الأنفي الأيسر",
+    "descEn": "Forms the left bridge of the nose",
+    "descAr": "تشكيل جسر الأنف الأيسر"
+  },
+  "Nasal bone _R": {
+    "ar": "العظم الأنفي الأيمن",
+    "descEn": "Forms the right bridge of the nose",
+    "descAr": "تشكيل جسر الأنف الأيمن"
+  },
+  "Nasal bone  R": {
+    "ar": "العظم الأنفي الأيمن",
+    "descEn": "Forms the right bridge of the nose",
+    "descAr": "تشكيل جسر الأنف الأيمن"
+  },
+  "Nasal bone (Right)": {
+    "ar": "العظم الأنفي الأيمن",
+    "descEn": "Forms the right bridge of the nose",
+    "descAr": "تشكيل جسر الأنف الأيمن"
+  },
+  "Nasal bone Right": {
+    "ar": "العظم الأنفي الأيمن",
+    "descEn": "Forms the right bridge of the nose",
+    "descAr": "تشكيل جسر الأنف الأيمن"
+  },
+  "Lacrimal bone _L": {
+    "ar": "العظم الدمعي الأيسر",
+    "descEn": "Forms the medial wall of the left orbit and the lacrimal canal",
+    "descAr": "تشكيل الجدار الإنسي للحجاج الأيسر وتجويف القناة الدمعية"
+  },
+  "Lacrimal bone  L": {
+    "ar": "العظم الدمعي الأيسر",
+    "descEn": "Forms the medial wall of the left orbit and the lacrimal canal",
+    "descAr": "تشكيل الجدار الإنسي للحجاج الأيسر وتجويف القناة الدمعية"
+  },
+  "Lacrimal bone (Left)": {
+    "ar": "العظم الدمعي الأيسر",
+    "descEn": "Forms the medial wall of the left orbit and the lacrimal canal",
+    "descAr": "تشكيل الجدار الإنسي للحجاج الأيسر وتجويف القناة الدمعية"
+  },
+  "Lacrimal bone Left": {
+    "ar": "العظم الدمعي الأيسر",
+    "descEn": "Forms the medial wall of the left orbit and the lacrimal canal",
+    "descAr": "تشكيل الجدار الإنسي للحجاج الأيسر وتجويف القناة الدمعية"
+  },
+  "Lacrimal bone _R": {
+    "ar": "العظم الدمعي الأيمن",
+    "descEn": "Forms the medial wall of the right orbit and the lacrimal canal",
+    "descAr": "تشكيل الجدار الإنسي للحجاج الأيمن وتجويف القناة الدمعية"
+  },
+  "Lacrimal bone  R": {
+    "ar": "العظم الدمعي الأيمن",
+    "descEn": "Forms the medial wall of the right orbit and the lacrimal canal",
+    "descAr": "تشكيل الجدار الإنسي للحجاج الأيمن وتجويف القناة الدمعية"
+  },
+  "Lacrimal bone (Right)": {
+    "ar": "العظم الدمعي الأيمن",
+    "descEn": "Forms the medial wall of the right orbit and the lacrimal canal",
+    "descAr": "تشكيل الجدار الإنسي للحجاج الأيمن وتجويف القناة الدمعية"
+  },
+  "Lacrimal bone Right": {
+    "ar": "العظم الدمعي الأيمن",
+    "descEn": "Forms the medial wall of the right orbit and the lacrimal canal",
+    "descAr": "تشكيل الجدار الإنسي للحجاج الأيمن وتجويف القناة الدمعية"
+  },
+  "Palatine bone _L": {
+    "ar": "العظم الحنكي الأيسر",
+    "descEn": "Forms the posterior part of the left hard palate and the nasal floor",
+    "descAr": "تشكيل الجزء الخلفي من الحنك الصلب الأيسر وأرضية الأنف"
+  },
+  "Palatine bone  L": {
+    "ar": "العظم الحنكي الأيسر",
+    "descEn": "Forms the posterior part of the left hard palate and the nasal floor",
+    "descAr": "تشكيل الجزء الخلفي من الحنك الصلب الأيسر وأرضية الأنف"
+  },
+  "Palatine bone (Left)": {
+    "ar": "العظم الحنكي الأيسر",
+    "descEn": "Forms the posterior part of the left hard palate and the nasal floor",
+    "descAr": "تشكيل الجزء الخلفي من الحنك الصلب الأيسر وأرضية الأنف"
+  },
+  "Palatine bone Left": {
+    "ar": "العظم الحنكي الأيسر",
+    "descEn": "Forms the posterior part of the left hard palate and the nasal floor",
+    "descAr": "تشكيل الجزء الخلفي من الحنك الصلب الأيسر وأرضية الأنف"
+  },
+  "Palatine bone _R": {
+    "ar": "العظم الحنكي الأيمن",
+    "descEn": "Forms the posterior part of the right hard palate and the nasal floor",
+    "descAr": "تشكيل الجزء الخلفي من الحنك الصلب الأيمن وأرضية الأنف"
+  },
+  "Palatine bone  R": {
+    "ar": "العظم الحنكي الأيمن",
+    "descEn": "Forms the posterior part of the right hard palate and the nasal floor",
+    "descAr": "تشكيل الجزء الخلفي من الحنك الصلب الأيمن وأرضية الأنف"
+  },
+  "Palatine bone (Right)": {
+    "ar": "العظم الحنكي الأيمن",
+    "descEn": "Forms the posterior part of the right hard palate and the nasal floor",
+    "descAr": "تشكيل الجزء الخلفي من الحنك الصلب الأيمن وأرضية الأنف"
+  },
+  "Palatine bone Right": {
+    "ar": "العظم الحنكي الأيمن",
+    "descEn": "Forms the posterior part of the right hard palate and the nasal floor",
+    "descAr": "تشكيل الجزء الخلفي من الحنك الصلب الأيمن وأرضية الأنف"
+  },
+  "Inferior nasal concha _L": {
+    "ar": "المحارة الأنفية السفلية اليسرى",
+    "descEn": "Directs, warms and humidifies inhaled air on the left side",
+    "descAr": "توجيه وتدفئة وترطيب الهواء المستنشق على الجانب الأيسر"
+  },
+  "Inferior nasal concha  L": {
+    "ar": "المحارة الأنفية السفلية اليسرى",
+    "descEn": "Directs, warms and humidifies inhaled air on the left side",
+    "descAr": "توجيه وتدفئة وترطيب الهواء المستنشق على الجانب الأيسر"
+  },
+  "Inferior nasal concha (Left)": {
+    "ar": "المحارة الأنفية السفلية اليسرى",
+    "descEn": "Directs, warms and humidifies inhaled air on the left side",
+    "descAr": "توجيه وتدفئة وترطيب الهواء المستنشق على الجانب الأيسر"
+  },
+  "Inferior nasal concha Left": {
+    "ar": "المحارة الأنفية السفلية اليسرى",
+    "descEn": "Directs, warms and humidifies inhaled air on the left side",
+    "descAr": "توجيه وتدفئة وترطيب الهواء المستنشق على الجانب الأيسر"
+  },
+  "Inferior nasal concha _R": {
+    "ar": "المحارة الأنفية السفلية اليمنى",
+    "descEn": "Directs, warms and humidifies inhaled air on the right side",
+    "descAr": "توجيه وتدفئة وترطيب الهواء المستنشق على الجانب الأيمن"
+  },
+  "Inferior nasal concha  R": {
+    "ar": "المحارة الأنفية السفلية اليمنى",
+    "descEn": "Directs, warms and humidifies inhaled air on the right side",
+    "descAr": "توجيه وتدفئة وترطيب الهواء المستنشق على الجانب الأيمن"
+  },
+  "Inferior nasal concha (Right)": {
+    "ar": "المحارة الأنفية السفلية اليمنى",
+    "descEn": "Directs, warms and humidifies inhaled air on the right side",
+    "descAr": "توجيه وتدفئة وترطيب الهواء المستنشق على الجانب الأيمن"
+  },
+  "Inferior nasal concha Right": {
+    "ar": "المحارة الأنفية السفلية اليمنى",
+    "descEn": "Directs, warms and humidifies inhaled air on the right side",
+    "descAr": "توجيه وتدفئة وترطيب الهواء المستنشق على الجانب الأيمن"
+  },
+  "Malleus _L": {
+    "ar": "المطرقة اليسرى",
+    "descEn": "Transmits vibrations from the left eardrum to the incus",
+    "descAr": "نقل اهتزازات طبلة الأذن اليسرى إلى السندان"
+  },
+  "Malleus  L": {
+    "ar": "المطرقة اليسرى",
+    "descEn": "Transmits vibrations from the left eardrum to the incus",
+    "descAr": "نقل اهتزازات طبلة الأذن اليسرى إلى السندان"
+  },
+  "Malleus (Left)": {
+    "ar": "المطرقة اليسرى",
+    "descEn": "Transmits vibrations from the left eardrum to the incus",
+    "descAr": "نقل اهتزازات طبلة الأذن اليسرى إلى السندان"
+  },
+  "Malleus Left": {
+    "ar": "المطرقة اليسرى",
+    "descEn": "Transmits vibrations from the left eardrum to the incus",
+    "descAr": "نقل اهتزازات طبلة الأذن اليسرى إلى السندان"
+  },
+  "Malleus _R": {
+    "ar": "المطرقة اليمنى",
+    "descEn": "Transmits vibrations from the right eardrum to the incus",
+    "descAr": "نقل اهتزازات طبلة الأذن اليمنى إلى السندان"
+  },
+  "Malleus  R": {
+    "ar": "المطرقة اليمنى",
+    "descEn": "Transmits vibrations from the right eardrum to the incus",
+    "descAr": "نقل اهتزازات طبلة الأذن اليمنى إلى السندان"
+  },
+  "Malleus (Right)": {
+    "ar": "المطرقة اليمنى",
+    "descEn": "Transmits vibrations from the right eardrum to the incus",
+    "descAr": "نقل اهتزازات طبلة الأذن اليمنى إلى السندان"
+  },
+  "Malleus Right": {
+    "ar": "المطرقة اليمنى",
+    "descEn": "Transmits vibrations from the right eardrum to the incus",
+    "descAr": "نقل اهتزازات طبلة الأذن اليمنى إلى السندان"
+  },
+  "Incus _L": {
+    "ar": "السندان الأيسر",
+    "descEn": "Transmits vibrations from the malleus to the stapes in the left ear",
+    "descAr": "نقل الاهتزازات من المطرقة إلى الركاب في الأذن اليسرى"
+  },
+  "Incus  L": {
+    "ar": "السندان الأيسر",
+    "descEn": "Transmits vibrations from the malleus to the stapes in the left ear",
+    "descAr": "نقل الاهتزازات من المطرقة إلى الركاب في الأذن اليسرى"
+  },
+  "Incus (Left)": {
+    "ar": "السندان الأيسر",
+    "descEn": "Transmits vibrations from the malleus to the stapes in the left ear",
+    "descAr": "نقل الاهتزازات من المطرقة إلى الركاب في الأذن اليسرى"
+  },
+  "Incus Left": {
+    "ar": "السندان الأيسر",
+    "descEn": "Transmits vibrations from the malleus to the stapes in the left ear",
+    "descAr": "نقل الاهتزازات من المطرقة إلى الركاب في الأذن اليسرى"
+  },
+  "Incus _R": {
+    "ar": "السندان الأيمن",
+    "descEn": "Transmits vibrations from the malleus to the stapes in the right ear",
+    "descAr": "نقل الاهتزازات من المطرقة إلى الركاب في الأذن اليمنى"
+  },
+  "Incus  R": {
+    "ar": "السندان الأيمن",
+    "descEn": "Transmits vibrations from the malleus to the stapes in the right ear",
+    "descAr": "نقل الاهتزازات من المطرقة إلى الركاب في الأذن اليمنى"
+  },
+  "Incus (Right)": {
+    "ar": "السندان الأيمن",
+    "descEn": "Transmits vibrations from the malleus to the stapes in the right ear",
+    "descAr": "نقل الاهتزازات من المطرقة إلى الركاب في الأذن اليمنى"
+  },
+  "Incus Right": {
+    "ar": "السندان الأيمن",
+    "descEn": "Transmits vibrations from the malleus to the stapes in the right ear",
+    "descAr": "نقل الاهتزازات من المطرقة إلى الركاب في الأذن اليمنى"
+  },
+  "Stapes _L": {
+    "ar": "الركاب الأيسر",
+    "descEn": "Transmits vibrations to the left inner ear (smallest bone in the body)",
+    "descAr": "نقل الاهتزازات إلى الأذن الداخلية اليسرى (أصغر عظمة في الجسم)"
+  },
+  "Stapes  L": {
+    "ar": "الركاب الأيسر",
+    "descEn": "Transmits vibrations to the left inner ear (smallest bone in the body)",
+    "descAr": "نقل الاهتزازات إلى الأذن الداخلية اليسرى (أصغر عظمة في الجسم)"
+  },
+  "Stapes (Left)": {
+    "ar": "الركاب الأيسر",
+    "descEn": "Transmits vibrations to the left inner ear (smallest bone in the body)",
+    "descAr": "نقل الاهتزازات إلى الأذن الداخلية اليسرى (أصغر عظمة في الجسم)"
+  },
+  "Stapes Left": {
+    "ar": "الركاب الأيسر",
+    "descEn": "Transmits vibrations to the left inner ear (smallest bone in the body)",
+    "descAr": "نقل الاهتزازات إلى الأذن الداخلية اليسرى (أصغر عظمة في الجسم)"
+  },
+  "Stapes _R": {
+    "ar": "الركاب الأيمن",
+    "descEn": "Transmits vibrations to the right inner ear (smallest bone in the body)",
+    "descAr": "نقل الاهتزازات إلى الأذن الداخلية اليمنى (أصغر عظمة في الجسم)"
+  },
+  "Stapes  R": {
+    "ar": "الركاب الأيمن",
+    "descEn": "Transmits vibrations to the right inner ear (smallest bone in the body)",
+    "descAr": "نقل الاهتزازات إلى الأذن الداخلية اليمنى (أصغر عظمة في الجسم)"
+  },
+  "Stapes (Right)": {
+    "ar": "الركاب الأيمن",
+    "descEn": "Transmits vibrations to the right inner ear (smallest bone in the body)",
+    "descAr": "نقل الاهتزازات إلى الأذن الداخلية اليمنى (أصغر عظمة في الجسم)"
+  },
+  "Stapes Right": {
+    "ar": "الركاب الأيمن",
+    "descEn": "Transmits vibrations to the right inner ear (smallest bone in the body)",
+    "descAr": "نقل الاهتزازات إلى الأذن الداخلية اليمنى (أصغر عظمة في الجسم)"
+  },
+  "C3 vertebra": {
+    "ar": "الفقرة العنقية الثالثة",
+    "descEn": "Supports the neck and allows movement",
+    "descAr": "دعم الرقبة والسماح بحركتها"
+  },
+  "C4 vertebra": {
+    "ar": "الفقرة العنقية الرابعة",
+    "descEn": "Supports the neck and allows movement",
+    "descAr": "دعم الرقبة والسماح بحركتها"
+  },
+  "C5 vertebra": {
+    "ar": "الفقرة العنقية الخامسة",
+    "descEn": "Supports the neck and allows movement",
+    "descAr": "دعم الرقبة والسماح بحركتها"
+  },
+  "C6 vertebra": {
+    "ar": "الفقرة العنقية السادسة",
+    "descEn": "Supports the neck and allows movement",
+    "descAr": "دعم الرقبة والسماح بحركتها"
+  },
+  "C7 vertebra": {
+    "ar": "الفقرة العنقية السابعة",
+    "descEn": "Supports the neck and stabilizes its base",
+    "descAr": "دعم الرقبة وتثبيت قاعدة العنق"
+  },
+  "T1 vertebra": {
+    "ar": "الفقرة الصدرية الأولى",
+    "descEn": "Supports the upper back and connects to rib 1",
+    "descAr": "دعم الجزء العلوي من الظهر وربطه بالضلع الأول"
+  },
+  "T2 vertebra": {
+    "ar": "الفقرة الصدرية الثانية",
+    "descEn": "Supports the back and connects to rib 2",
+    "descAr": "دعم الظهر وربطه بالضلع الثاني"
+  },
+  "T3 vertebra": {
+    "ar": "الفقرة الصدرية الثالثة",
+    "descEn": "Supports the back and connects to rib 3",
+    "descAr": "دعم الظهر وربطه بالضلع الثالث"
+  },
+  "T4 vertebra": {
+    "ar": "الفقرة الصدرية الرابعة",
+    "descEn": "Supports the back and connects to rib 4",
+    "descAr": "دعم الظهر وربطه بالضلع الرابع"
+  },
+  "T5 vertebra": {
+    "ar": "الفقرة الصدرية الخامسة",
+    "descEn": "Supports the back and connects to rib 5",
+    "descAr": "دعم الظهر وربطه بالضلع الخامس"
+  },
+  "T6 vertebra": {
+    "ar": "الفقرة الصدرية السادسة",
+    "descEn": "Supports the back and connects to rib 6",
+    "descAr": "دعم الظهر وربطه بالضلع السادس"
+  },
+  "T7 vertebra": {
+    "ar": "الفقرة الصدرية السابعة",
+    "descEn": "Supports the back and connects to rib 7",
+    "descAr": "دعم الظهر وربطه بالضلع السابع"
+  },
+  "T8 vertebra": {
+    "ar": "الفقرة الصدرية الثامنة",
+    "descEn": "Supports the back and connects to rib 8",
+    "descAr": "دعم الظهر وربطه بالضلع الثامن"
+  },
+  "T9 vertebra": {
+    "ar": "الفقرة الصدرية التاسعة",
+    "descEn": "Supports the back and connects to rib 9",
+    "descAr": "دعم الظهر وربطه بالضلع التاسع"
+  },
+  "T10 vertebra": {
+    "ar": "الفقرة الصدرية العاشرة",
+    "descEn": "Supports the back and connects to rib 10",
+    "descAr": "دعم الظهر وربطه بالضلع العاشر"
+  },
+  "T11 vertebra": {
+    "ar": "الفقرة الصدرية الحادية عشرة",
+    "descEn": "Supports the lower back and connects to rib 11",
+    "descAr": "دعم أسفل الظهر وربطه بالضلع الحادي عشر"
+  },
+  "T12 vertebra": {
+    "ar": "الفقرة الصدرية الثانية عشرة",
+    "descEn": "Supports the lower back and connects to rib 12",
+    "descAr": "دعم أسفل الظهر وربطه بالضلع الثاني عشر"
+  },
+  "L1 vertebra": {
+    "ar": "الفقرة القطنية الأولى",
+    "descEn": "Bears the weight of the upper body",
+    "descAr": "تحمل وزن الجزء العلوي من الجسم"
+  },
+  "L2 vertebra": {
+    "ar": "الفقرة القطنية الثانية",
+    "descEn": "Bears body weight and allows bending",
+    "descAr": "تحمل وزن الجسم والسماح بالانحناء"
+  },
+  "L3 vertebra": {
+    "ar": "الفقرة القطنية الثالثة",
+    "descEn": "Bears body weight and allows bending",
+    "descAr": "تحمل وزن الجسم والسماح بالانحناء"
+  },
+  "L4 vertebra": {
+    "ar": "الفقرة القطنية الرابعة",
+    "descEn": "Bears body weight and allows bending",
+    "descAr": "تحمل وزن الجسم والسماح بالانحناء"
+  },
+  "L5 vertebra": {
+    "ar": "الفقرة القطنية الخامسة",
+    "descEn": "Bears the greatest body weight and transfers it to the pelvis",
+    "descAr": "تحمل أكبر قدر من وزن الجسم ونقله للحوض"
+  },
+  "Sternum": {
+    "ar": "القص",
+    "descEn": "Protects the heart and stabilizes the front ribs",
+    "descAr": "حماية القلب وتثبيت الأضلاع الأمامية"
+  },
+  "Rib 1 _L": {
+    "ar": "الضلع الأول الأيسر",
+    "descEn": "Protects the left lung apex and aids breathing",
+    "descAr": "حماية القمة الرئوية اليسرى والمساعدة في التنفس"
+  },
+  "Rib 1  L": {
+    "ar": "الضلع الأول الأيسر",
+    "descEn": "Protects the left lung apex and aids breathing",
+    "descAr": "حماية القمة الرئوية اليسرى والمساعدة في التنفس"
+  },
+  "Rib 1 (Left)": {
+    "ar": "الضلع الأول الأيسر",
+    "descEn": "Protects the left lung apex and aids breathing",
+    "descAr": "حماية القمة الرئوية اليسرى والمساعدة في التنفس"
+  },
+  "Rib 1 Left": {
+    "ar": "الضلع الأول الأيسر",
+    "descEn": "Protects the left lung apex and aids breathing",
+    "descAr": "حماية القمة الرئوية اليسرى والمساعدة في التنفس"
+  },
+  "Rib 1 _R": {
+    "ar": "الضلع الأول الأيمن",
+    "descEn": "Protects the right lung apex and aids breathing",
+    "descAr": "حماية القمة الرئوية اليمنى والمساعدة في التنفس"
+  },
+  "Rib 1  R": {
+    "ar": "الضلع الأول الأيمن",
+    "descEn": "Protects the right lung apex and aids breathing",
+    "descAr": "حماية القمة الرئوية اليمنى والمساعدة في التنفس"
+  },
+  "Rib 1 (Right)": {
+    "ar": "الضلع الأول الأيمن",
+    "descEn": "Protects the right lung apex and aids breathing",
+    "descAr": "حماية القمة الرئوية اليمنى والمساعدة في التنفس"
+  },
+  "Rib 1 Right": {
+    "ar": "الضلع الأول الأيمن",
+    "descEn": "Protects the right lung apex and aids breathing",
+    "descAr": "حماية القمة الرئوية اليمنى والمساعدة في التنفس"
+  },
+  "Rib 2 _L": {
+    "ar": "الضلع الثاني الأيسر",
+    "descEn": "Protects the left lung and aids breathing",
+    "descAr": "حماية الرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 2  L": {
+    "ar": "الضلع الثاني الأيسر",
+    "descEn": "Protects the left lung and aids breathing",
+    "descAr": "حماية الرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 2 (Left)": {
+    "ar": "الضلع الثاني الأيسر",
+    "descEn": "Protects the left lung and aids breathing",
+    "descAr": "حماية الرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 2 Left": {
+    "ar": "الضلع الثاني الأيسر",
+    "descEn": "Protects the left lung and aids breathing",
+    "descAr": "حماية الرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 2 _R": {
+    "ar": "الضلع الثاني الأيمن",
+    "descEn": "Protects the right lung and aids breathing",
+    "descAr": "حماية الرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 2  R": {
+    "ar": "الضلع الثاني الأيمن",
+    "descEn": "Protects the right lung and aids breathing",
+    "descAr": "حماية الرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 2 (Right)": {
+    "ar": "الضلع الثاني الأيمن",
+    "descEn": "Protects the right lung and aids breathing",
+    "descAr": "حماية الرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 2 Right": {
+    "ar": "الضلع الثاني الأيمن",
+    "descEn": "Protects the right lung and aids breathing",
+    "descAr": "حماية الرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 3 _L": {
+    "ar": "الضلع الثالث الأيسر",
+    "descEn": "Protects the left lung and aids breathing",
+    "descAr": "حماية الرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 3  L": {
+    "ar": "الضلع الثالث الأيسر",
+    "descEn": "Protects the left lung and aids breathing",
+    "descAr": "حماية الرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 3 (Left)": {
+    "ar": "الضلع الثالث الأيسر",
+    "descEn": "Protects the left lung and aids breathing",
+    "descAr": "حماية الرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 3 Left": {
+    "ar": "الضلع الثالث الأيسر",
+    "descEn": "Protects the left lung and aids breathing",
+    "descAr": "حماية الرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 3 _R": {
+    "ar": "الضلع الثالث الأيمن",
+    "descEn": "Protects the right lung and aids breathing",
+    "descAr": "حماية الرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 3  R": {
+    "ar": "الضلع الثالث الأيمن",
+    "descEn": "Protects the right lung and aids breathing",
+    "descAr": "حماية الرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 3 (Right)": {
+    "ar": "الضلع الثالث الأيمن",
+    "descEn": "Protects the right lung and aids breathing",
+    "descAr": "حماية الرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 3 Right": {
+    "ar": "الضلع الثالث الأيمن",
+    "descEn": "Protects the right lung and aids breathing",
+    "descAr": "حماية الرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 4 _L": {
+    "ar": "الضلع الرابع الأيسر",
+    "descEn": "Protects the heart and left lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 4  L": {
+    "ar": "الضلع الرابع الأيسر",
+    "descEn": "Protects the heart and left lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 4 (Left)": {
+    "ar": "الضلع الرابع الأيسر",
+    "descEn": "Protects the heart and left lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 4 Left": {
+    "ar": "الضلع الرابع الأيسر",
+    "descEn": "Protects the heart and left lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 4 _R": {
+    "ar": "الضلع الرابع الأيمن",
+    "descEn": "Protects the heart and right lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 4  R": {
+    "ar": "الضلع الرابع الأيمن",
+    "descEn": "Protects the heart and right lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 4 (Right)": {
+    "ar": "الضلع الرابع الأيمن",
+    "descEn": "Protects the heart and right lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 4 Right": {
+    "ar": "الضلع الرابع الأيمن",
+    "descEn": "Protects the heart and right lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 5 _L": {
+    "ar": "الضلع الخامس الأيسر",
+    "descEn": "Protects the heart and left lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 5  L": {
+    "ar": "الضلع الخامس الأيسر",
+    "descEn": "Protects the heart and left lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 5 (Left)": {
+    "ar": "الضلع الخامس الأيسر",
+    "descEn": "Protects the heart and left lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 5 Left": {
+    "ar": "الضلع الخامس الأيسر",
+    "descEn": "Protects the heart and left lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 5 _R": {
+    "ar": "الضلع الخامس الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 5  R": {
+    "ar": "الضلع الخامس الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 5 (Right)": {
+    "ar": "الضلع الخامس الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 5 Right": {
+    "ar": "الضلع الخامس الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 6 _L": {
+    "ar": "الضلع السادس الأيسر",
+    "descEn": "Protects the heart and left lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 6  L": {
+    "ar": "الضلع السادس الأيسر",
+    "descEn": "Protects the heart and left lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 6 (Left)": {
+    "ar": "الضلع السادس الأيسر",
+    "descEn": "Protects the heart and left lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 6 Left": {
+    "ar": "الضلع السادس الأيسر",
+    "descEn": "Protects the heart and left lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 6 _R": {
+    "ar": "الضلع السادس الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 6  R": {
+    "ar": "الضلع السادس الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 6 (Right)": {
+    "ar": "الضلع السادس الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 6 Right": {
+    "ar": "الضلع السادس الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 7 _L": {
+    "ar": "الضلع السابع الأيسر",
+    "descEn": "Protects the heart and left lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 7  L": {
+    "ar": "الضلع السابع الأيسر",
+    "descEn": "Protects the heart and left lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 7 (Left)": {
+    "ar": "الضلع السابع الأيسر",
+    "descEn": "Protects the heart and left lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 7 Left": {
+    "ar": "الضلع السابع الأيسر",
+    "descEn": "Protects the heart and left lung and aids breathing",
+    "descAr": "حماية القلب والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 7 _R": {
+    "ar": "الضلع السابع الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 7  R": {
+    "ar": "الضلع السابع الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 7 (Right)": {
+    "ar": "الضلع السابع الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 7 Right": {
+    "ar": "الضلع السابع الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 8 _L": {
+    "ar": "الضلع الثامن الأيسر",
+    "descEn": "Protects the spleen and left lung and aids breathing",
+    "descAr": "حماية الطحال والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 8  L": {
+    "ar": "الضلع الثامن الأيسر",
+    "descEn": "Protects the spleen and left lung and aids breathing",
+    "descAr": "حماية الطحال والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 8 (Left)": {
+    "ar": "الضلع الثامن الأيسر",
+    "descEn": "Protects the spleen and left lung and aids breathing",
+    "descAr": "حماية الطحال والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 8 Left": {
+    "ar": "الضلع الثامن الأيسر",
+    "descEn": "Protects the spleen and left lung and aids breathing",
+    "descAr": "حماية الطحال والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 8 _R": {
+    "ar": "الضلع الثامن الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 8  R": {
+    "ar": "الضلع الثامن الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 8 (Right)": {
+    "ar": "الضلع الثامن الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 8 Right": {
+    "ar": "الضلع الثامن الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 9 _L": {
+    "ar": "الضلع التاسع الأيسر",
+    "descEn": "Protects the spleen and left lung and aids breathing",
+    "descAr": "حماية الطحال والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 9  L": {
+    "ar": "الضلع التاسع الأيسر",
+    "descEn": "Protects the spleen and left lung and aids breathing",
+    "descAr": "حماية الطحال والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 9 (Left)": {
+    "ar": "الضلع التاسع الأيسر",
+    "descEn": "Protects the spleen and left lung and aids breathing",
+    "descAr": "حماية الطحال والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 9 Left": {
+    "ar": "الضلع التاسع الأيسر",
+    "descEn": "Protects the spleen and left lung and aids breathing",
+    "descAr": "حماية الطحال والرئة اليسرى والمساعدة في التنفس"
+  },
+  "Rib 9 _R": {
+    "ar": "الضلع التاسع الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 9  R": {
+    "ar": "الضلع التاسع الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 9 (Right)": {
+    "ar": "الضلع التاسع الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 9 Right": {
+    "ar": "الضلع التاسع الأيمن",
+    "descEn": "Protects the liver and right lung and aids breathing",
+    "descAr": "حماية الكبد والرئة اليمنى والمساعدة في التنفس"
+  },
+  "Rib 10 _L": {
+    "ar": "الضلع العاشر الأيسر",
+    "descEn": "Protects the spleen and aids breathing",
+    "descAr": "حماية الطحال والمساعدة في التنفس"
+  },
+  "Rib 10  L": {
+    "ar": "الضلع العاشر الأيسر",
+    "descEn": "Protects the spleen and aids breathing",
+    "descAr": "حماية الطحال والمساعدة في التنفس"
+  },
+  "Rib 10 (Left)": {
+    "ar": "الضلع العاشر الأيسر",
+    "descEn": "Protects the spleen and aids breathing",
+    "descAr": "حماية الطحال والمساعدة في التنفس"
+  },
+  "Rib 10 Left": {
+    "ar": "الضلع العاشر الأيسر",
+    "descEn": "Protects the spleen and aids breathing",
+    "descAr": "حماية الطحال والمساعدة في التنفس"
+  },
+  "Rib 10 _R": {
+    "ar": "الضلع العاشر الأيمن",
+    "descEn": "Protects the liver and aids breathing",
+    "descAr": "حماية الكبد والمساعدة في التنفس"
+  },
+  "Rib 10  R": {
+    "ar": "الضلع العاشر الأيمن",
+    "descEn": "Protects the liver and aids breathing",
+    "descAr": "حماية الكبد والمساعدة في التنفس"
+  },
+  "Rib 10 (Right)": {
+    "ar": "الضلع العاشر الأيمن",
+    "descEn": "Protects the liver and aids breathing",
+    "descAr": "حماية الكبد والمساعدة في التنفس"
+  },
+  "Rib 10 Right": {
+    "ar": "الضلع العاشر الأيمن",
+    "descEn": "Protects the liver and aids breathing",
+    "descAr": "حماية الكبد والمساعدة في التنفس"
+  },
+  "Rib 11 _L": {
+    "ar": "الضلع الحادي عشر الأيسر",
+    "descEn": "Protects the left kidney and aids breathing",
+    "descAr": "حماية الكلية اليسرى والمساعدة في التنفس"
+  },
+  "Rib 11  L": {
+    "ar": "الضلع الحادي عشر الأيسر",
+    "descEn": "Protects the left kidney and aids breathing",
+    "descAr": "حماية الكلية اليسرى والمساعدة في التنفس"
+  },
+  "Rib 11 (Left)": {
+    "ar": "الضلع الحادي عشر الأيسر",
+    "descEn": "Protects the left kidney and aids breathing",
+    "descAr": "حماية الكلية اليسرى والمساعدة في التنفس"
+  },
+  "Rib 11 Left": {
+    "ar": "الضلع الحادي عشر الأيسر",
+    "descEn": "Protects the left kidney and aids breathing",
+    "descAr": "حماية الكلية اليسرى والمساعدة في التنفس"
+  },
+  "Rib 11 _R": {
+    "ar": "الضلع الحادي عشر الأيمن",
+    "descEn": "Protects the right kidney and aids breathing",
+    "descAr": "حماية الكلية اليمنى والمساعدة في التنفس"
+  },
+  "Rib 11  R": {
+    "ar": "الضلع الحادي عشر الأيمن",
+    "descEn": "Protects the right kidney and aids breathing",
+    "descAr": "حماية الكلية اليمنى والمساعدة في التنفس"
+  },
+  "Rib 11 (Right)": {
+    "ar": "الضلع الحادي عشر الأيمن",
+    "descEn": "Protects the right kidney and aids breathing",
+    "descAr": "حماية الكلية اليمنى والمساعدة في التنفس"
+  },
+  "Rib 11 Right": {
+    "ar": "الضلع الحادي عشر الأيمن",
+    "descEn": "Protects the right kidney and aids breathing",
+    "descAr": "حماية الكلية اليمنى والمساعدة في التنفس"
+  },
+  "Rib 12 _L": {
+    "ar": "الضلع الثاني عشر الأيسر",
+    "descEn": "Protects the left kidney and aids breathing",
+    "descAr": "حماية الكلية اليسرى والمساعدة في التنفس"
+  },
+  "Rib 12  L": {
+    "ar": "الضلع الثاني عشر الأيسر",
+    "descEn": "Protects the left kidney and aids breathing",
+    "descAr": "حماية الكلية اليسرى والمساعدة في التنفس"
+  },
+  "Rib 12 (Left)": {
+    "ar": "الضلع الثاني عشر الأيسر",
+    "descEn": "Protects the left kidney and aids breathing",
+    "descAr": "حماية الكلية اليسرى والمساعدة في التنفس"
+  },
+  "Rib 12 Left": {
+    "ar": "الضلع الثاني عشر الأيسر",
+    "descEn": "Protects the left kidney and aids breathing",
+    "descAr": "حماية الكلية اليسرى والمساعدة في التنفس"
+  },
+  "Rib 12 _R": {
+    "ar": "الضلع الثاني عشر الأيمن",
+    "descEn": "Protects the right kidney and aids breathing",
+    "descAr": "حماية الكلية اليمنى والمساعدة في التنفس"
+  },
+  "Rib 12  R": {
+    "ar": "الضلع الثاني عشر الأيمن",
+    "descEn": "Protects the right kidney and aids breathing",
+    "descAr": "حماية الكلية اليمنى والمساعدة في التنفس"
+  },
+  "Rib 12 (Right)": {
+    "ar": "الضلع الثاني عشر الأيمن",
+    "descEn": "Protects the right kidney and aids breathing",
+    "descAr": "حماية الكلية اليمنى والمساعدة في التنفس"
+  },
+  "Rib 12 Right": {
+    "ar": "الضلع الثاني عشر الأيمن",
+    "descEn": "Protects the right kidney and aids breathing",
+    "descAr": "حماية الكلية اليمنى والمساعدة في التنفس"
+  },
+  "Clavicle _L": {
+    "ar": "الترقوة اليسرى",
+    "descEn": "Connects the left upper limb to the trunk and stabilizes the shoulder",
+    "descAr": "ربط الطرف العلوي الأيسر بالجذع وتثبيت الكتف"
+  },
+  "Clavicle  L": {
+    "ar": "الترقوة اليسرى",
+    "descEn": "Connects the left upper limb to the trunk and stabilizes the shoulder",
+    "descAr": "ربط الطرف العلوي الأيسر بالجذع وتثبيت الكتف"
+  },
+  "Clavicle (Left)": {
+    "ar": "الترقوة اليسرى",
+    "descEn": "Connects the left upper limb to the trunk and stabilizes the shoulder",
+    "descAr": "ربط الطرف العلوي الأيسر بالجذع وتثبيت الكتف"
+  },
+  "Clavicle Left": {
+    "ar": "الترقوة اليسرى",
+    "descEn": "Connects the left upper limb to the trunk and stabilizes the shoulder",
+    "descAr": "ربط الطرف العلوي الأيسر بالجذع وتثبيت الكتف"
+  },
+  "Clavicle _R": {
+    "ar": "الترقوة اليمنى",
+    "descEn": "Connects the right upper limb to the trunk and stabilizes the shoulder",
+    "descAr": "ربط الطرف العلوي الأيمن بالجذع وتثبيت الكتف"
+  },
+  "Clavicle  R": {
+    "ar": "الترقوة اليمنى",
+    "descEn": "Connects the right upper limb to the trunk and stabilizes the shoulder",
+    "descAr": "ربط الطرف العلوي الأيمن بالجذع وتثبيت الكتف"
+  },
+  "Clavicle (Right)": {
+    "ar": "الترقوة اليمنى",
+    "descEn": "Connects the right upper limb to the trunk and stabilizes the shoulder",
+    "descAr": "ربط الطرف العلوي الأيمن بالجذع وتثبيت الكتف"
+  },
+  "Clavicle Right": {
+    "ar": "الترقوة اليمنى",
+    "descEn": "Connects the right upper limb to the trunk and stabilizes the shoulder",
+    "descAr": "ربط الطرف العلوي الأيمن بالجذع وتثبيت الكتف"
+  },
+  "Scapula _L": {
+    "ar": "لوح الكتف الأيسر",
+    "descEn": "Anchors the left arm muscles and allows shoulder movement",
+    "descAr": "تثبيت عضلات الذراع اليسرى والسماح بحركة الكتف"
+  },
+  "Scapula  L": {
+    "ar": "لوح الكتف الأيسر",
+    "descEn": "Anchors the left arm muscles and allows shoulder movement",
+    "descAr": "تثبيت عضلات الذراع اليسرى والسماح بحركة الكتف"
+  },
+  "Scapula (Left)": {
+    "ar": "لوح الكتف الأيسر",
+    "descEn": "Anchors the left arm muscles and allows shoulder movement",
+    "descAr": "تثبيت عضلات الذراع اليسرى والسماح بحركة الكتف"
+  },
+  "Scapula Left": {
+    "ar": "لوح الكتف الأيسر",
+    "descEn": "Anchors the left arm muscles and allows shoulder movement",
+    "descAr": "تثبيت عضلات الذراع اليسرى والسماح بحركة الكتف"
+  },
+  "Scapula _R": {
+    "ar": "لوح الكتف الأيمن",
+    "descEn": "Anchors the right arm muscles and allows shoulder movement",
+    "descAr": "تثبيت عضلات الذراع اليمنى والسماح بحركة الكتف"
+  },
+  "Scapula  R": {
+    "ar": "لوح الكتف الأيمن",
+    "descEn": "Anchors the right arm muscles and allows shoulder movement",
+    "descAr": "تثبيت عضلات الذراع اليمنى والسماح بحركة الكتف"
+  },
+  "Scapula (Right)": {
+    "ar": "لوح الكتف الأيمن",
+    "descEn": "Anchors the right arm muscles and allows shoulder movement",
+    "descAr": "تثبيت عضلات الذراع اليمنى والسماح بحركة الكتف"
+  },
+  "Scapula Right": {
+    "ar": "لوح الكتف الأيمن",
+    "descEn": "Anchors the right arm muscles and allows shoulder movement",
+    "descAr": "تثبيت عضلات الذراع اليمنى والسماح بحركة الكتف"
+  },
+  "Humerus _L": {
+    "ar": "العضد الأيسر",
+    "descEn": "Lever for the left arm and attachment for its muscles",
+    "descAr": "رافعة للذراع الأيسر وتثبيت عضلاته"
+  },
+  "Humerus  L": {
+    "ar": "العضد الأيسر",
+    "descEn": "Lever for the left arm and attachment for its muscles",
+    "descAr": "رافعة للذراع الأيسر وتثبيت عضلاته"
+  },
+  "Humerus (Left)": {
+    "ar": "العضد الأيسر",
+    "descEn": "Lever for the left arm and attachment for its muscles",
+    "descAr": "رافعة للذراع الأيسر وتثبيت عضلاته"
+  },
+  "Humerus Left": {
+    "ar": "العضد الأيسر",
+    "descEn": "Lever for the left arm and attachment for its muscles",
+    "descAr": "رافعة للذراع الأيسر وتثبيت عضلاته"
+  },
+  "Humerus _R": {
+    "ar": "العضد الأيمن",
+    "descEn": "Lever for the right arm and attachment for its muscles",
+    "descAr": "رافعة للذراع الأيمن وتثبيت عضلاته"
+  },
+  "Humerus  R": {
+    "ar": "العضد الأيمن",
+    "descEn": "Lever for the right arm and attachment for its muscles",
+    "descAr": "رافعة للذراع الأيمن وتثبيت عضلاته"
+  },
+  "Humerus (Right)": {
+    "ar": "العضد الأيمن",
+    "descEn": "Lever for the right arm and attachment for its muscles",
+    "descAr": "رافعة للذراع الأيمن وتثبيت عضلاته"
+  },
+  "Humerus Right": {
+    "ar": "العضد الأيمن",
+    "descEn": "Lever for the right arm and attachment for its muscles",
+    "descAr": "رافعة للذراع الأيمن وتثبيت عضلاته"
+  },
+  "Radius _L": {
+    "ar": "الكعبرة اليسرى",
+    "descEn": "Allows rotation of the left forearm",
+    "descAr": "السماح بدوران الساعد الأيسر"
+  },
+  "Radius  L": {
+    "ar": "الكعبرة اليسرى",
+    "descEn": "Allows rotation of the left forearm",
+    "descAr": "السماح بدوران الساعد الأيسر"
+  },
+  "Radius (Left)": {
+    "ar": "الكعبرة اليسرى",
+    "descEn": "Allows rotation of the left forearm",
+    "descAr": "السماح بدوران الساعد الأيسر"
+  },
+  "Radius Left": {
+    "ar": "الكعبرة اليسرى",
+    "descEn": "Allows rotation of the left forearm",
+    "descAr": "السماح بدوران الساعد الأيسر"
+  },
+  "Radius _R": {
+    "ar": "الكعبرة اليمنى",
+    "descEn": "Allows rotation of the right forearm",
+    "descAr": "السماح بدوران الساعد الأيمن"
+  },
+  "Radius  R": {
+    "ar": "الكعبرة اليمنى",
+    "descEn": "Allows rotation of the right forearm",
+    "descAr": "السماح بدوران الساعد الأيمن"
+  },
+  "Radius (Right)": {
+    "ar": "الكعبرة اليمنى",
+    "descEn": "Allows rotation of the right forearm",
+    "descAr": "السماح بدوران الساعد الأيمن"
+  },
+  "Radius Right": {
+    "ar": "الكعبرة اليمنى",
+    "descEn": "Allows rotation of the right forearm",
+    "descAr": "السماح بدوران الساعد الأيمن"
+  },
+  "Ulna _L": {
+    "ar": "الزند الأيسر",
+    "descEn": "Stabilizes the left forearm and forms the elbow joint",
+    "descAr": "تثبيت الساعد الأيسر وتكوين مفصل الكوع"
+  },
+  "Ulna  L": {
+    "ar": "الزند الأيسر",
+    "descEn": "Stabilizes the left forearm and forms the elbow joint",
+    "descAr": "تثبيت الساعد الأيسر وتكوين مفصل الكوع"
+  },
+  "Ulna (Left)": {
+    "ar": "الزند الأيسر",
+    "descEn": "Stabilizes the left forearm and forms the elbow joint",
+    "descAr": "تثبيت الساعد الأيسر وتكوين مفصل الكوع"
+  },
+  "Ulna Left": {
+    "ar": "الزند الأيسر",
+    "descEn": "Stabilizes the left forearm and forms the elbow joint",
+    "descAr": "تثبيت الساعد الأيسر وتكوين مفصل الكوع"
+  },
+  "Ulna _R": {
+    "ar": "الزند الأيمن",
+    "descEn": "Stabilizes the right forearm and forms the elbow joint",
+    "descAr": "تثبيت الساعد الأيمن وتكوين مفصل الكوع"
+  },
+  "Ulna  R": {
+    "ar": "الزند الأيمن",
+    "descEn": "Stabilizes the right forearm and forms the elbow joint",
+    "descAr": "تثبيت الساعد الأيمن وتكوين مفصل الكوع"
+  },
+  "Ulna (Right)": {
+    "ar": "الزند الأيمن",
+    "descEn": "Stabilizes the right forearm and forms the elbow joint",
+    "descAr": "تثبيت الساعد الأيمن وتكوين مفصل الكوع"
+  },
+  "Ulna Right": {
+    "ar": "الزند الأيمن",
+    "descEn": "Stabilizes the right forearm and forms the elbow joint",
+    "descAr": "تثبيت الساعد الأيمن وتكوين مفصل الكوع"
+  },
+  "Scaphoid _L": {
+    "ar": "الزورقي الأيسر",
+    "descEn": "Allows left wrist movement and transmits forces",
+    "descAr": "السماح بحركة المعصم الأيسر ونقل القوى"
+  },
+  "Scaphoid  L": {
+    "ar": "الزورقي الأيسر",
+    "descEn": "Allows left wrist movement and transmits forces",
+    "descAr": "السماح بحركة المعصم الأيسر ونقل القوى"
+  },
+  "Scaphoid (Left)": {
+    "ar": "الزورقي الأيسر",
+    "descEn": "Allows left wrist movement and transmits forces",
+    "descAr": "السماح بحركة المعصم الأيسر ونقل القوى"
+  },
+  "Scaphoid Left": {
+    "ar": "الزورقي الأيسر",
+    "descEn": "Allows left wrist movement and transmits forces",
+    "descAr": "السماح بحركة المعصم الأيسر ونقل القوى"
+  },
+  "Scaphoid _R": {
+    "ar": "الزورقي الأيمن",
+    "descEn": "Allows right wrist movement and transmits forces",
+    "descAr": "السماح بحركة المعصم الأيمن ونقل القوى"
+  },
+  "Scaphoid  R": {
+    "ar": "الزورقي الأيمن",
+    "descEn": "Allows right wrist movement and transmits forces",
+    "descAr": "السماح بحركة المعصم الأيمن ونقل القوى"
+  },
+  "Scaphoid (Right)": {
+    "ar": "الزورقي الأيمن",
+    "descEn": "Allows right wrist movement and transmits forces",
+    "descAr": "السماح بحركة المعصم الأيمن ونقل القوى"
+  },
+  "Scaphoid Right": {
+    "ar": "الزورقي الأيمن",
+    "descEn": "Allows right wrist movement and transmits forces",
+    "descAr": "السماح بحركة المعصم الأيمن ونقل القوى"
+  },
+  "Lunate _L": {
+    "ar": "الهلالي الأيسر",
+    "descEn": "Allows left wrist movement and distributes pressure",
+    "descAr": "السماح بحركة المعصم الأيسر وتوزيع الضغط"
+  },
+  "Lunate  L": {
+    "ar": "الهلالي الأيسر",
+    "descEn": "Allows left wrist movement and distributes pressure",
+    "descAr": "السماح بحركة المعصم الأيسر وتوزيع الضغط"
+  },
+  "Lunate (Left)": {
+    "ar": "الهلالي الأيسر",
+    "descEn": "Allows left wrist movement and distributes pressure",
+    "descAr": "السماح بحركة المعصم الأيسر وتوزيع الضغط"
+  },
+  "Lunate Left": {
+    "ar": "الهلالي الأيسر",
+    "descEn": "Allows left wrist movement and distributes pressure",
+    "descAr": "السماح بحركة المعصم الأيسر وتوزيع الضغط"
+  },
+  "Lunate _R": {
+    "ar": "الهلالي الأيمن",
+    "descEn": "Allows right wrist movement and distributes pressure",
+    "descAr": "السماح بحركة المعصم الأيمن وتوزيع الضغط"
+  },
+  "Lunate  R": {
+    "ar": "الهلالي الأيمن",
+    "descEn": "Allows right wrist movement and distributes pressure",
+    "descAr": "السماح بحركة المعصم الأيمن وتوزيع الضغط"
+  },
+  "Lunate (Right)": {
+    "ar": "الهلالي الأيمن",
+    "descEn": "Allows right wrist movement and distributes pressure",
+    "descAr": "السماح بحركة المعصم الأيمن وتوزيع الضغط"
+  },
+  "Lunate Right": {
+    "ar": "الهلالي الأيمن",
+    "descEn": "Allows right wrist movement and distributes pressure",
+    "descAr": "السماح بحركة المعصم الأيمن وتوزيع الضغط"
+  },
+  "Triquetrum _L": {
+    "ar": "ثلاثي الزوايا الأيسر",
+    "descEn": "Stabilizes the left wrist and allows movement",
+    "descAr": "تثبيت المعصم الأيسر والسماح بالحركة"
+  },
+  "Triquetrum  L": {
+    "ar": "ثلاثي الزوايا الأيسر",
+    "descEn": "Stabilizes the left wrist and allows movement",
+    "descAr": "تثبيت المعصم الأيسر والسماح بالحركة"
+  },
+  "Triquetrum (Left)": {
+    "ar": "ثلاثي الزوايا الأيسر",
+    "descEn": "Stabilizes the left wrist and allows movement",
+    "descAr": "تثبيت المعصم الأيسر والسماح بالحركة"
+  },
+  "Triquetrum Left": {
+    "ar": "ثلاثي الزوايا الأيسر",
+    "descEn": "Stabilizes the left wrist and allows movement",
+    "descAr": "تثبيت المعصم الأيسر والسماح بالحركة"
+  },
+  "Triquetrum _R": {
+    "ar": "ثلاثي الزوايا الأيمن",
+    "descEn": "Stabilizes the right wrist and allows movement",
+    "descAr": "تثبيت المعصم الأيمن والسماح بالحركة"
+  },
+  "Triquetrum  R": {
+    "ar": "ثلاثي الزوايا الأيمن",
+    "descEn": "Stabilizes the right wrist and allows movement",
+    "descAr": "تثبيت المعصم الأيمن والسماح بالحركة"
+  },
+  "Triquetrum (Right)": {
+    "ar": "ثلاثي الزوايا الأيمن",
+    "descEn": "Stabilizes the right wrist and allows movement",
+    "descAr": "تثبيت المعصم الأيمن والسماح بالحركة"
+  },
+  "Triquetrum Right": {
+    "ar": "ثلاثي الزوايا الأيمن",
+    "descEn": "Stabilizes the right wrist and allows movement",
+    "descAr": "تثبيت المعصم الأيمن والسماح بالحركة"
+  },
+  "Pisiform _L": {
+    "ar": "الحمصي الأيسر",
+    "descEn": "Anchors the left wrist muscles",
+    "descAr": "تثبيت عضلات المعصم الأيسر"
+  },
+  "Pisiform  L": {
+    "ar": "الحمصي الأيسر",
+    "descEn": "Anchors the left wrist muscles",
+    "descAr": "تثبيت عضلات المعصم الأيسر"
+  },
+  "Pisiform (Left)": {
+    "ar": "الحمصي الأيسر",
+    "descEn": "Anchors the left wrist muscles",
+    "descAr": "تثبيت عضلات المعصم الأيسر"
+  },
+  "Pisiform Left": {
+    "ar": "الحمصي الأيسر",
+    "descEn": "Anchors the left wrist muscles",
+    "descAr": "تثبيت عضلات المعصم الأيسر"
+  },
+  "Pisiform _R": {
+    "ar": "الحمصي الأيمن",
+    "descEn": "Anchors the right wrist muscles",
+    "descAr": "تثبيت عضلات المعصم الأيمن"
+  },
+  "Pisiform  R": {
+    "ar": "الحمصي الأيمن",
+    "descEn": "Anchors the right wrist muscles",
+    "descAr": "تثبيت عضلات المعصم الأيمن"
+  },
+  "Pisiform (Right)": {
+    "ar": "الحمصي الأيمن",
+    "descEn": "Anchors the right wrist muscles",
+    "descAr": "تثبيت عضلات المعصم الأيمن"
+  },
+  "Pisiform Right": {
+    "ar": "الحمصي الأيمن",
+    "descEn": "Anchors the right wrist muscles",
+    "descAr": "تثبيت عضلات المعصم الأيمن"
+  },
+  "Trapezium _L": {
+    "ar": "شبه المنحرف الأيسر",
+    "descEn": "Allows movement of the left thumb",
+    "descAr": "السماح بحركة الإبهام الأيسر"
+  },
+  "Trapezium  L": {
+    "ar": "شبه المنحرف الأيسر",
+    "descEn": "Allows movement of the left thumb",
+    "descAr": "السماح بحركة الإبهام الأيسر"
+  },
+  "Trapezium (Left)": {
+    "ar": "شبه المنحرف الأيسر",
+    "descEn": "Allows movement of the left thumb",
+    "descAr": "السماح بحركة الإبهام الأيسر"
+  },
+  "Trapezium Left": {
+    "ar": "شبه المنحرف الأيسر",
+    "descEn": "Allows movement of the left thumb",
+    "descAr": "السماح بحركة الإبهام الأيسر"
+  },
+  "Trapezium _R": {
+    "ar": "شبه المنحرف الأيمن",
+    "descEn": "Allows movement of the right thumb",
+    "descAr": "السماح بحركة الإبهام الأيمن"
+  },
+  "Trapezium  R": {
+    "ar": "شبه المنحرف الأيمن",
+    "descEn": "Allows movement of the right thumb",
+    "descAr": "السماح بحركة الإبهام الأيمن"
+  },
+  "Trapezium (Right)": {
+    "ar": "شبه المنحرف الأيمن",
+    "descEn": "Allows movement of the right thumb",
+    "descAr": "السماح بحركة الإبهام الأيمن"
+  },
+  "Trapezium Right": {
+    "ar": "شبه المنحرف الأيمن",
+    "descEn": "Allows movement of the right thumb",
+    "descAr": "السماح بحركة الإبهام الأيمن"
+  },
+  "Trapezoid _L": {
+    "ar": "شبه المنحرف الصغير الأيسر",
+    "descEn": "Stabilizes the left wrist and connects carpal bones",
+    "descAr": "تثبيت المعصم الأيسر وربط عظام الرسغ"
+  },
+  "Trapezoid  L": {
+    "ar": "شبه المنحرف الصغير الأيسر",
+    "descEn": "Stabilizes the left wrist and connects carpal bones",
+    "descAr": "تثبيت المعصم الأيسر وربط عظام الرسغ"
+  },
+  "Trapezoid (Left)": {
+    "ar": "شبه المنحرف الصغير الأيسر",
+    "descEn": "Stabilizes the left wrist and connects carpal bones",
+    "descAr": "تثبيت المعصم الأيسر وربط عظام الرسغ"
+  },
+  "Trapezoid Left": {
+    "ar": "شبه المنحرف الصغير الأيسر",
+    "descEn": "Stabilizes the left wrist and connects carpal bones",
+    "descAr": "تثبيت المعصم الأيسر وربط عظام الرسغ"
+  },
+  "Trapezoid _R": {
+    "ar": "شبه المنحرف الصغير الأيمن",
+    "descEn": "Stabilizes the right wrist and connects carpal bones",
+    "descAr": "تثبيت المعصم الأيمن وربط عظام الرسغ"
+  },
+  "Trapezoid  R": {
+    "ar": "شبه المنحرف الصغير الأيمن",
+    "descEn": "Stabilizes the right wrist and connects carpal bones",
+    "descAr": "تثبيت المعصم الأيمن وربط عظام الرسغ"
+  },
+  "Trapezoid (Right)": {
+    "ar": "شبه المنحرف الصغير الأيمن",
+    "descEn": "Stabilizes the right wrist and connects carpal bones",
+    "descAr": "تثبيت المعصم الأيمن وربط عظام الرسغ"
+  },
+  "Trapezoid Right": {
+    "ar": "شبه المنحرف الصغير الأيمن",
+    "descEn": "Stabilizes the right wrist and connects carpal bones",
+    "descAr": "تثبيت المعصم الأيمن وربط عظام الرسغ"
+  },
+  "Capitate _L": {
+    "ar": "الرأسي الأيسر",
+    "descEn": "Central axis of left wrist movement",
+    "descAr": "محور حركة المعصم الأيسر"
+  },
+  "Capitate  L": {
+    "ar": "الرأسي الأيسر",
+    "descEn": "Central axis of left wrist movement",
+    "descAr": "محور حركة المعصم الأيسر"
+  },
+  "Capitate (Left)": {
+    "ar": "الرأسي الأيسر",
+    "descEn": "Central axis of left wrist movement",
+    "descAr": "محور حركة المعصم الأيسر"
+  },
+  "Capitate Left": {
+    "ar": "الرأسي الأيسر",
+    "descEn": "Central axis of left wrist movement",
+    "descAr": "محور حركة المعصم الأيسر"
+  },
+  "Capitate _R": {
+    "ar": "الرأسي الأيمن",
+    "descEn": "Central axis of right wrist movement",
+    "descAr": "محور حركة المعصم الأيمن"
+  },
+  "Capitate  R": {
+    "ar": "الرأسي الأيمن",
+    "descEn": "Central axis of right wrist movement",
+    "descAr": "محور حركة المعصم الأيمن"
+  },
+  "Capitate (Right)": {
+    "ar": "الرأسي الأيمن",
+    "descEn": "Central axis of right wrist movement",
+    "descAr": "محور حركة المعصم الأيمن"
+  },
+  "Capitate Right": {
+    "ar": "الرأسي الأيمن",
+    "descEn": "Central axis of right wrist movement",
+    "descAr": "محور حركة المعصم الأيمن"
+  },
+  "Hamate _L": {
+    "ar": "الكلابي الأيسر",
+    "descEn": "Stabilizes the left wrist and allows finger movement",
+    "descAr": "تثبيت المعصم الأيسر والسماح بحركة الأصابع"
+  },
+  "Hamate  L": {
+    "ar": "الكلابي الأيسر",
+    "descEn": "Stabilizes the left wrist and allows finger movement",
+    "descAr": "تثبيت المعصم الأيسر والسماح بحركة الأصابع"
+  },
+  "Hamate (Left)": {
+    "ar": "الكلابي الأيسر",
+    "descEn": "Stabilizes the left wrist and allows finger movement",
+    "descAr": "تثبيت المعصم الأيسر والسماح بحركة الأصابع"
+  },
+  "Hamate Left": {
+    "ar": "الكلابي الأيسر",
+    "descEn": "Stabilizes the left wrist and allows finger movement",
+    "descAr": "تثبيت المعصم الأيسر والسماح بحركة الأصابع"
+  },
+  "Hamate _R": {
+    "ar": "الكلابي الأيمن",
+    "descEn": "Stabilizes the right wrist and allows finger movement",
+    "descAr": "تثبيت المعصم الأيمن والسماح بحركة الأصابع"
+  },
+  "Hamate  R": {
+    "ar": "الكلابي الأيمن",
+    "descEn": "Stabilizes the right wrist and allows finger movement",
+    "descAr": "تثبيت المعصم الأيمن والسماح بحركة الأصابع"
+  },
+  "Hamate (Right)": {
+    "ar": "الكلابي الأيمن",
+    "descEn": "Stabilizes the right wrist and allows finger movement",
+    "descAr": "تثبيت المعصم الأيمن والسماح بحركة الأصابع"
+  },
+  "Hamate Right": {
+    "ar": "الكلابي الأيمن",
+    "descEn": "Stabilizes the right wrist and allows finger movement",
+    "descAr": "تثبيت المعصم الأيمن والسماح بحركة الأصابع"
+  },
+  "Metacarpal I _L": {
+    "ar": "السنع الأول الأيسر",
+    "descEn": "Forms the left palm and supports the thumb",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت الإبهام"
+  },
+  "Metacarpal I  L": {
+    "ar": "السنع الأول الأيسر",
+    "descEn": "Forms the left palm and supports the thumb",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت الإبهام"
+  },
+  "Metacarpal I (Left)": {
+    "ar": "السنع الأول الأيسر",
+    "descEn": "Forms the left palm and supports the thumb",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت الإبهام"
+  },
+  "Metacarpal I Left": {
+    "ar": "السنع الأول الأيسر",
+    "descEn": "Forms the left palm and supports the thumb",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت الإبهام"
+  },
+  "Metacarpal I _R": {
+    "ar": "السنع الأول الأيمن",
+    "descEn": "Forms the right palm and supports the thumb",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت الإبهام"
+  },
+  "Metacarpal I  R": {
+    "ar": "السنع الأول الأيمن",
+    "descEn": "Forms the right palm and supports the thumb",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت الإبهام"
+  },
+  "Metacarpal I (Right)": {
+    "ar": "السنع الأول الأيمن",
+    "descEn": "Forms the right palm and supports the thumb",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت الإبهام"
+  },
+  "Metacarpal I Right": {
+    "ar": "السنع الأول الأيمن",
+    "descEn": "Forms the right palm and supports the thumb",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت الإبهام"
+  },
+  "Metacarpal II _L": {
+    "ar": "السنع الثاني الأيسر",
+    "descEn": "Forms the left palm and supports the index finger",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت السبابة"
+  },
+  "Metacarpal II  L": {
+    "ar": "السنع الثاني الأيسر",
+    "descEn": "Forms the left palm and supports the index finger",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت السبابة"
+  },
+  "Metacarpal II (Left)": {
+    "ar": "السنع الثاني الأيسر",
+    "descEn": "Forms the left palm and supports the index finger",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت السبابة"
+  },
+  "Metacarpal II Left": {
+    "ar": "السنع الثاني الأيسر",
+    "descEn": "Forms the left palm and supports the index finger",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت السبابة"
+  },
+  "Metacarpal II _R": {
+    "ar": "السنع الثاني الأيمن",
+    "descEn": "Forms the right palm and supports the index finger",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت السبابة"
+  },
+  "Metacarpal II  R": {
+    "ar": "السنع الثاني الأيمن",
+    "descEn": "Forms the right palm and supports the index finger",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت السبابة"
+  },
+  "Metacarpal II (Right)": {
+    "ar": "السنع الثاني الأيمن",
+    "descEn": "Forms the right palm and supports the index finger",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت السبابة"
+  },
+  "Metacarpal II Right": {
+    "ar": "السنع الثاني الأيمن",
+    "descEn": "Forms the right palm and supports the index finger",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت السبابة"
+  },
+  "Metacarpal III _L": {
+    "ar": "السنع الثالث الأيسر",
+    "descEn": "Forms the left palm and supports the middle finger",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت الإصبع الأوسط"
+  },
+  "Metacarpal III  L": {
+    "ar": "السنع الثالث الأيسر",
+    "descEn": "Forms the left palm and supports the middle finger",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت الإصبع الأوسط"
+  },
+  "Metacarpal III (Left)": {
+    "ar": "السنع الثالث الأيسر",
+    "descEn": "Forms the left palm and supports the middle finger",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت الإصبع الأوسط"
+  },
+  "Metacarpal III Left": {
+    "ar": "السنع الثالث الأيسر",
+    "descEn": "Forms the left palm and supports the middle finger",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت الإصبع الأوسط"
+  },
+  "Metacarpal III _R": {
+    "ar": "السنع الثالث الأيمن",
+    "descEn": "Forms the right palm and supports the middle finger",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت الإصبع الأوسط"
+  },
+  "Metacarpal III  R": {
+    "ar": "السنع الثالث الأيمن",
+    "descEn": "Forms the right palm and supports the middle finger",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت الإصبع الأوسط"
+  },
+  "Metacarpal III (Right)": {
+    "ar": "السنع الثالث الأيمن",
+    "descEn": "Forms the right palm and supports the middle finger",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت الإصبع الأوسط"
+  },
+  "Metacarpal III Right": {
+    "ar": "السنع الثالث الأيمن",
+    "descEn": "Forms the right palm and supports the middle finger",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت الإصبع الأوسط"
+  },
+  "Metacarpal IV _L": {
+    "ar": "السنع الرابع الأيسر",
+    "descEn": "Forms the left palm and supports the ring finger",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت البنصر"
+  },
+  "Metacarpal IV  L": {
+    "ar": "السنع الرابع الأيسر",
+    "descEn": "Forms the left palm and supports the ring finger",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت البنصر"
+  },
+  "Metacarpal IV (Left)": {
+    "ar": "السنع الرابع الأيسر",
+    "descEn": "Forms the left palm and supports the ring finger",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت البنصر"
+  },
+  "Metacarpal IV Left": {
+    "ar": "السنع الرابع الأيسر",
+    "descEn": "Forms the left palm and supports the ring finger",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت البنصر"
+  },
+  "Metacarpal IV _R": {
+    "ar": "السنع الرابع الأيمن",
+    "descEn": "Forms the right palm and supports the ring finger",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت البنصر"
+  },
+  "Metacarpal IV  R": {
+    "ar": "السنع الرابع الأيمن",
+    "descEn": "Forms the right palm and supports the ring finger",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت البنصر"
+  },
+  "Metacarpal IV (Right)": {
+    "ar": "السنع الرابع الأيمن",
+    "descEn": "Forms the right palm and supports the ring finger",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت البنصر"
+  },
+  "Metacarpal IV Right": {
+    "ar": "السنع الرابع الأيمن",
+    "descEn": "Forms the right palm and supports the ring finger",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت البنصر"
+  },
+  "Metacarpal V _L": {
+    "ar": "السنع الخامس الأيسر",
+    "descEn": "Forms the left palm and supports the little finger",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت الخنصر"
+  },
+  "Metacarpal V  L": {
+    "ar": "السنع الخامس الأيسر",
+    "descEn": "Forms the left palm and supports the little finger",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت الخنصر"
+  },
+  "Metacarpal V (Left)": {
+    "ar": "السنع الخامس الأيسر",
+    "descEn": "Forms the left palm and supports the little finger",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت الخنصر"
+  },
+  "Metacarpal V Left": {
+    "ar": "السنع الخامس الأيسر",
+    "descEn": "Forms the left palm and supports the little finger",
+    "descAr": "تشكيل راحة اليد اليسرى وتثبيت الخنصر"
+  },
+  "Metacarpal V _R": {
+    "ar": "السنع الخامس الأيمن",
+    "descEn": "Forms the right palm and supports the little finger",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت الخنصر"
+  },
+  "Metacarpal V  R": {
+    "ar": "السنع الخامس الأيمن",
+    "descEn": "Forms the right palm and supports the little finger",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت الخنصر"
+  },
+  "Metacarpal V (Right)": {
+    "ar": "السنع الخامس الأيمن",
+    "descEn": "Forms the right palm and supports the little finger",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت الخنصر"
+  },
+  "Metacarpal V Right": {
+    "ar": "السنع الخامس الأيمن",
+    "descEn": "Forms the right palm and supports the little finger",
+    "descAr": "تشكيل راحة اليد اليمنى وتثبيت الخنصر"
+  },
+  "Proximal phalanx thumb _L": {
+    "ar": "السلامية القريبة للإبهام الأيسر",
+    "descEn": "Allows movement of the left thumb",
+    "descAr": "السماح بحركة الإبهام الأيسر"
+  },
+  "Proximal phalanx thumb  L": {
+    "ar": "السلامية القريبة للإبهام الأيسر",
+    "descEn": "Allows movement of the left thumb",
+    "descAr": "السماح بحركة الإبهام الأيسر"
+  },
+  "Proximal phalanx thumb (Left)": {
+    "ar": "السلامية القريبة للإبهام الأيسر",
+    "descEn": "Allows movement of the left thumb",
+    "descAr": "السماح بحركة الإبهام الأيسر"
+  },
+  "Proximal phalanx thumb Left": {
+    "ar": "السلامية القريبة للإبهام الأيسر",
+    "descEn": "Allows movement of the left thumb",
+    "descAr": "السماح بحركة الإبهام الأيسر"
+  },
+  "Proximal phalanx thumb _R": {
+    "ar": "السلامية القريبة للإبهام الأيمن",
+    "descEn": "Allows movement of the right thumb",
+    "descAr": "السماح بحركة الإبهام الأيمن"
+  },
+  "Proximal phalanx thumb  R": {
+    "ar": "السلامية القريبة للإبهام الأيمن",
+    "descEn": "Allows movement of the right thumb",
+    "descAr": "السماح بحركة الإبهام الأيمن"
+  },
+  "Proximal phalanx thumb (Right)": {
+    "ar": "السلامية القريبة للإبهام الأيمن",
+    "descEn": "Allows movement of the right thumb",
+    "descAr": "السماح بحركة الإبهام الأيمن"
+  },
+  "Proximal phalanx thumb Right": {
+    "ar": "السلامية القريبة للإبهام الأيمن",
+    "descEn": "Allows movement of the right thumb",
+    "descAr": "السماح بحركة الإبهام الأيمن"
+  },
+  "Distal phalanx thumb _L": {
+    "ar": "السلامية البعيدة للإبهام الأيسر",
+    "descEn": "Enables grasping and fine touch with the left thumb",
+    "descAr": "الإمساك واللمس الدقيق بالإبهام الأيسر"
+  },
+  "Distal phalanx thumb  L": {
+    "ar": "السلامية البعيدة للإبهام الأيسر",
+    "descEn": "Enables grasping and fine touch with the left thumb",
+    "descAr": "الإمساك واللمس الدقيق بالإبهام الأيسر"
+  },
+  "Distal phalanx thumb (Left)": {
+    "ar": "السلامية البعيدة للإبهام الأيسر",
+    "descEn": "Enables grasping and fine touch with the left thumb",
+    "descAr": "الإمساك واللمس الدقيق بالإبهام الأيسر"
+  },
+  "Distal phalanx thumb Left": {
+    "ar": "السلامية البعيدة للإبهام الأيسر",
+    "descEn": "Enables grasping and fine touch with the left thumb",
+    "descAr": "الإمساك واللمس الدقيق بالإبهام الأيسر"
+  },
+  "Distal phalanx thumb _R": {
+    "ar": "السلامية البعيدة للإبهام الأيمن",
+    "descEn": "Enables grasping and fine touch with the right thumb",
+    "descAr": "الإمساك واللمس الدقيق بالإبهام الأيمن"
+  },
+  "Distal phalanx thumb  R": {
+    "ar": "السلامية البعيدة للإبهام الأيمن",
+    "descEn": "Enables grasping and fine touch with the right thumb",
+    "descAr": "الإمساك واللمس الدقيق بالإبهام الأيمن"
+  },
+  "Distal phalanx thumb (Right)": {
+    "ar": "السلامية البعيدة للإبهام الأيمن",
+    "descEn": "Enables grasping and fine touch with the right thumb",
+    "descAr": "الإمساك واللمس الدقيق بالإبهام الأيمن"
+  },
+  "Distal phalanx thumb Right": {
+    "ar": "السلامية البعيدة للإبهام الأيمن",
+    "descEn": "Enables grasping and fine touch with the right thumb",
+    "descAr": "الإمساك واللمس الدقيق بالإبهام الأيمن"
+  },
+  "Proximal phalanx index _L": {
+    "ar": "السلامية القريبة للسبابة اليسرى",
+    "descEn": "Allows movement of the left index finger",
+    "descAr": "السماح بحركة السبابة اليسرى"
+  },
+  "Proximal phalanx index  L": {
+    "ar": "السلامية القريبة للسبابة اليسرى",
+    "descEn": "Allows movement of the left index finger",
+    "descAr": "السماح بحركة السبابة اليسرى"
+  },
+  "Proximal phalanx index (Left)": {
+    "ar": "السلامية القريبة للسبابة اليسرى",
+    "descEn": "Allows movement of the left index finger",
+    "descAr": "السماح بحركة السبابة اليسرى"
+  },
+  "Proximal phalanx index Left": {
+    "ar": "السلامية القريبة للسبابة اليسرى",
+    "descEn": "Allows movement of the left index finger",
+    "descAr": "السماح بحركة السبابة اليسرى"
+  },
+  "Proximal phalanx index _R": {
+    "ar": "السلامية القريبة للسبابة اليمنى",
+    "descEn": "Allows movement of the right index finger",
+    "descAr": "السماح بحركة السبابة اليمنى"
+  },
+  "Proximal phalanx index  R": {
+    "ar": "السلامية القريبة للسبابة اليمنى",
+    "descEn": "Allows movement of the right index finger",
+    "descAr": "السماح بحركة السبابة اليمنى"
+  },
+  "Proximal phalanx index (Right)": {
+    "ar": "السلامية القريبة للسبابة اليمنى",
+    "descEn": "Allows movement of the right index finger",
+    "descAr": "السماح بحركة السبابة اليمنى"
+  },
+  "Proximal phalanx index Right": {
+    "ar": "السلامية القريبة للسبابة اليمنى",
+    "descEn": "Allows movement of the right index finger",
+    "descAr": "السماح بحركة السبابة اليمنى"
+  },
+  "Middle phalanx index _L": {
+    "ar": "السلامية الوسطى للسبابة اليسرى",
+    "descEn": "Increases flexibility of the left index finger",
+    "descAr": "زيادة مرونة السبابة اليسرى"
+  },
+  "Middle phalanx index  L": {
+    "ar": "السلامية الوسطى للسبابة اليسرى",
+    "descEn": "Increases flexibility of the left index finger",
+    "descAr": "زيادة مرونة السبابة اليسرى"
+  },
+  "Middle phalanx index (Left)": {
+    "ar": "السلامية الوسطى للسبابة اليسرى",
+    "descEn": "Increases flexibility of the left index finger",
+    "descAr": "زيادة مرونة السبابة اليسرى"
+  },
+  "Middle phalanx index Left": {
+    "ar": "السلامية الوسطى للسبابة اليسرى",
+    "descEn": "Increases flexibility of the left index finger",
+    "descAr": "زيادة مرونة السبابة اليسرى"
+  },
+  "Middle phalanx index _R": {
+    "ar": "السلامية الوسطى للسبابة اليمنى",
+    "descEn": "Increases flexibility of the right index finger",
+    "descAr": "زيادة مرونة السبابة اليمنى"
+  },
+  "Middle phalanx index  R": {
+    "ar": "السلامية الوسطى للسبابة اليمنى",
+    "descEn": "Increases flexibility of the right index finger",
+    "descAr": "زيادة مرونة السبابة اليمنى"
+  },
+  "Middle phalanx index (Right)": {
+    "ar": "السلامية الوسطى للسبابة اليمنى",
+    "descEn": "Increases flexibility of the right index finger",
+    "descAr": "زيادة مرونة السبابة اليمنى"
+  },
+  "Middle phalanx index Right": {
+    "ar": "السلامية الوسطى للسبابة اليمنى",
+    "descEn": "Increases flexibility of the right index finger",
+    "descAr": "زيادة مرونة السبابة اليمنى"
+  },
+  "Distal phalanx index _L": {
+    "ar": "السلامية البعيدة للسبابة اليسرى",
+    "descEn": "Enables grasping and fine touch with the left index finger",
+    "descAr": "الإمساك واللمس الدقيق بالسبابة اليسرى"
+  },
+  "Distal phalanx index  L": {
+    "ar": "السلامية البعيدة للسبابة اليسرى",
+    "descEn": "Enables grasping and fine touch with the left index finger",
+    "descAr": "الإمساك واللمس الدقيق بالسبابة اليسرى"
+  },
+  "Distal phalanx index (Left)": {
+    "ar": "السلامية البعيدة للسبابة اليسرى",
+    "descEn": "Enables grasping and fine touch with the left index finger",
+    "descAr": "الإمساك واللمس الدقيق بالسبابة اليسرى"
+  },
+  "Distal phalanx index Left": {
+    "ar": "السلامية البعيدة للسبابة اليسرى",
+    "descEn": "Enables grasping and fine touch with the left index finger",
+    "descAr": "الإمساك واللمس الدقيق بالسبابة اليسرى"
+  },
+  "Distal phalanx index _R": {
+    "ar": "السلامية البعيدة للسبابة اليمنى",
+    "descEn": "Enables grasping and fine touch with the right index finger",
+    "descAr": "الإمساك واللمس الدقيق بالسبابة اليمنى"
+  },
+  "Distal phalanx index  R": {
+    "ar": "السلامية البعيدة للسبابة اليمنى",
+    "descEn": "Enables grasping and fine touch with the right index finger",
+    "descAr": "الإمساك واللمس الدقيق بالسبابة اليمنى"
+  },
+  "Distal phalanx index (Right)": {
+    "ar": "السلامية البعيدة للسبابة اليمنى",
+    "descEn": "Enables grasping and fine touch with the right index finger",
+    "descAr": "الإمساك واللمس الدقيق بالسبابة اليمنى"
+  },
+  "Distal phalanx index Right": {
+    "ar": "السلامية البعيدة للسبابة اليمنى",
+    "descEn": "Enables grasping and fine touch with the right index finger",
+    "descAr": "الإمساك واللمس الدقيق بالسبابة اليمنى"
+  },
+  "Proximal phalanx middle _L": {
+    "ar": "السلامية القريبة للوسطى اليسرى",
+    "descEn": "Allows movement of the left middle finger",
+    "descAr": "السماح بحركة الإصبع الأوسط الأيسر"
+  },
+  "Proximal phalanx middle  L": {
+    "ar": "السلامية القريبة للوسطى اليسرى",
+    "descEn": "Allows movement of the left middle finger",
+    "descAr": "السماح بحركة الإصبع الأوسط الأيسر"
+  },
+  "Proximal phalanx middle (Left)": {
+    "ar": "السلامية القريبة للوسطى اليسرى",
+    "descEn": "Allows movement of the left middle finger",
+    "descAr": "السماح بحركة الإصبع الأوسط الأيسر"
+  },
+  "Proximal phalanx middle Left": {
+    "ar": "السلامية القريبة للوسطى اليسرى",
+    "descEn": "Allows movement of the left middle finger",
+    "descAr": "السماح بحركة الإصبع الأوسط الأيسر"
+  },
+  "Proximal phalanx middle _R": {
+    "ar": "السلامية القريبة للوسطى اليمنى",
+    "descEn": "Allows movement of the right middle finger",
+    "descAr": "السماح بحركة الإصبع الأوسط الأيمن"
+  },
+  "Proximal phalanx middle  R": {
+    "ar": "السلامية القريبة للوسطى اليمنى",
+    "descEn": "Allows movement of the right middle finger",
+    "descAr": "السماح بحركة الإصبع الأوسط الأيمن"
+  },
+  "Proximal phalanx middle (Right)": {
+    "ar": "السلامية القريبة للوسطى اليمنى",
+    "descEn": "Allows movement of the right middle finger",
+    "descAr": "السماح بحركة الإصبع الأوسط الأيمن"
+  },
+  "Proximal phalanx middle Right": {
+    "ar": "السلامية القريبة للوسطى اليمنى",
+    "descEn": "Allows movement of the right middle finger",
+    "descAr": "السماح بحركة الإصبع الأوسط الأيمن"
+  },
+  "Middle phalanx middle _L": {
+    "ar": "السلامية الوسطى للوسطى اليسرى",
+    "descEn": "Increases flexibility of the left middle finger",
+    "descAr": "زيادة مرونة الإصبع الأوسط الأيسر"
+  },
+  "Middle phalanx middle  L": {
+    "ar": "السلامية الوسطى للوسطى اليسرى",
+    "descEn": "Increases flexibility of the left middle finger",
+    "descAr": "زيادة مرونة الإصبع الأوسط الأيسر"
+  },
+  "Middle phalanx middle (Left)": {
+    "ar": "السلامية الوسطى للوسطى اليسرى",
+    "descEn": "Increases flexibility of the left middle finger",
+    "descAr": "زيادة مرونة الإصبع الأوسط الأيسر"
+  },
+  "Middle phalanx middle Left": {
+    "ar": "السلامية الوسطى للوسطى اليسرى",
+    "descEn": "Increases flexibility of the left middle finger",
+    "descAr": "زيادة مرونة الإصبع الأوسط الأيسر"
+  },
+  "Middle phalanx middle _R": {
+    "ar": "السلامية الوسطى للوسطى اليمنى",
+    "descEn": "Increases flexibility of the right middle finger",
+    "descAr": "زيادة مرونة الإصبع الأوسط الأيمن"
+  },
+  "Middle phalanx middle  R": {
+    "ar": "السلامية الوسطى للوسطى اليمنى",
+    "descEn": "Increases flexibility of the right middle finger",
+    "descAr": "زيادة مرونة الإصبع الأوسط الأيمن"
+  },
+  "Middle phalanx middle (Right)": {
+    "ar": "السلامية الوسطى للوسطى اليمنى",
+    "descEn": "Increases flexibility of the right middle finger",
+    "descAr": "زيادة مرونة الإصبع الأوسط الأيمن"
+  },
+  "Middle phalanx middle Right": {
+    "ar": "السلامية الوسطى للوسطى اليمنى",
+    "descEn": "Increases flexibility of the right middle finger",
+    "descAr": "زيادة مرونة الإصبع الأوسط الأيمن"
+  },
+  "Distal phalanx middle _L": {
+    "ar": "السلامية البعيدة للوسطى اليسرى",
+    "descEn": "Enables grasping and fine touch with the left middle finger",
+    "descAr": "الإمساك واللمس الدقيق بالإصبع الأوسط الأيسر"
+  },
+  "Distal phalanx middle  L": {
+    "ar": "السلامية البعيدة للوسطى اليسرى",
+    "descEn": "Enables grasping and fine touch with the left middle finger",
+    "descAr": "الإمساك واللمس الدقيق بالإصبع الأوسط الأيسر"
+  },
+  "Distal phalanx middle (Left)": {
+    "ar": "السلامية البعيدة للوسطى اليسرى",
+    "descEn": "Enables grasping and fine touch with the left middle finger",
+    "descAr": "الإمساك واللمس الدقيق بالإصبع الأوسط الأيسر"
+  },
+  "Distal phalanx middle Left": {
+    "ar": "السلامية البعيدة للوسطى اليسرى",
+    "descEn": "Enables grasping and fine touch with the left middle finger",
+    "descAr": "الإمساك واللمس الدقيق بالإصبع الأوسط الأيسر"
+  },
+  "Distal phalanx middle _R": {
+    "ar": "السلامية البعيدة للوسطى اليمنى",
+    "descEn": "Enables grasping and fine touch with the right middle finger",
+    "descAr": "الإمساك واللمس الدقيق بالإصبع الأوسط الأيمن"
+  },
+  "Distal phalanx middle  R": {
+    "ar": "السلامية البعيدة للوسطى اليمنى",
+    "descEn": "Enables grasping and fine touch with the right middle finger",
+    "descAr": "الإمساك واللمس الدقيق بالإصبع الأوسط الأيمن"
+  },
+  "Distal phalanx middle (Right)": {
+    "ar": "السلامية البعيدة للوسطى اليمنى",
+    "descEn": "Enables grasping and fine touch with the right middle finger",
+    "descAr": "الإمساك واللمس الدقيق بالإصبع الأوسط الأيمن"
+  },
+  "Distal phalanx middle Right": {
+    "ar": "السلامية البعيدة للوسطى اليمنى",
+    "descEn": "Enables grasping and fine touch with the right middle finger",
+    "descAr": "الإمساك واللمس الدقيق بالإصبع الأوسط الأيمن"
+  },
+  "Proximal phalanx ring _L": {
+    "ar": "السلامية القريبة للبنصر اليسرى",
+    "descEn": "Allows movement of the left ring finger",
+    "descAr": "السماح بحركة البنصر الأيسر"
+  },
+  "Proximal phalanx ring  L": {
+    "ar": "السلامية القريبة للبنصر اليسرى",
+    "descEn": "Allows movement of the left ring finger",
+    "descAr": "السماح بحركة البنصر الأيسر"
+  },
+  "Proximal phalanx ring (Left)": {
+    "ar": "السلامية القريبة للبنصر اليسرى",
+    "descEn": "Allows movement of the left ring finger",
+    "descAr": "السماح بحركة البنصر الأيسر"
+  },
+  "Proximal phalanx ring Left": {
+    "ar": "السلامية القريبة للبنصر اليسرى",
+    "descEn": "Allows movement of the left ring finger",
+    "descAr": "السماح بحركة البنصر الأيسر"
+  },
+  "Proximal phalanx ring _R": {
+    "ar": "السلامية القريبة للبنصر اليمنى",
+    "descEn": "Allows movement of the right ring finger",
+    "descAr": "السماح بحركة البنصر الأيمن"
+  },
+  "Proximal phalanx ring  R": {
+    "ar": "السلامية القريبة للبنصر اليمنى",
+    "descEn": "Allows movement of the right ring finger",
+    "descAr": "السماح بحركة البنصر الأيمن"
+  },
+  "Proximal phalanx ring (Right)": {
+    "ar": "السلامية القريبة للبنصر اليمنى",
+    "descEn": "Allows movement of the right ring finger",
+    "descAr": "السماح بحركة البنصر الأيمن"
+  },
+  "Proximal phalanx ring Right": {
+    "ar": "السلامية القريبة للبنصر اليمنى",
+    "descEn": "Allows movement of the right ring finger",
+    "descAr": "السماح بحركة البنصر الأيمن"
+  },
+  "Middle phalanx ring _L": {
+    "ar": "السلامية الوسطى للبنصر اليسرى",
+    "descEn": "Increases flexibility of the left ring finger",
+    "descAr": "زيادة مرونة البنصر الأيسر"
+  },
+  "Middle phalanx ring  L": {
+    "ar": "السلامية الوسطى للبنصر اليسرى",
+    "descEn": "Increases flexibility of the left ring finger",
+    "descAr": "زيادة مرونة البنصر الأيسر"
+  },
+  "Middle phalanx ring (Left)": {
+    "ar": "السلامية الوسطى للبنصر اليسرى",
+    "descEn": "Increases flexibility of the left ring finger",
+    "descAr": "زيادة مرونة البنصر الأيسر"
+  },
+  "Middle phalanx ring Left": {
+    "ar": "السلامية الوسطى للبنصر اليسرى",
+    "descEn": "Increases flexibility of the left ring finger",
+    "descAr": "زيادة مرونة البنصر الأيسر"
+  },
+  "Middle phalanx ring _R": {
+    "ar": "السلامية الوسطى للبنصر اليمنى",
+    "descEn": "Increases flexibility of the right ring finger",
+    "descAr": "زيادة مرونة البنصر الأيمن"
+  },
+  "Middle phalanx ring  R": {
+    "ar": "السلامية الوسطى للبنصر اليمنى",
+    "descEn": "Increases flexibility of the right ring finger",
+    "descAr": "زيادة مرونة البنصر الأيمن"
+  },
+  "Middle phalanx ring (Right)": {
+    "ar": "السلامية الوسطى للبنصر اليمنى",
+    "descEn": "Increases flexibility of the right ring finger",
+    "descAr": "زيادة مرونة البنصر الأيمن"
+  },
+  "Middle phalanx ring Right": {
+    "ar": "السلامية الوسطى للبنصر اليمنى",
+    "descEn": "Increases flexibility of the right ring finger",
+    "descAr": "زيادة مرونة البنصر الأيمن"
+  },
+  "Distal phalanx ring _L": {
+    "ar": "السلامية البعيدة للبنصر اليسرى",
+    "descEn": "Enables grasping and fine touch with the left ring finger",
+    "descAr": "الإمساك واللمس الدقيق بالبنصر الأيسر"
+  },
+  "Distal phalanx ring  L": {
+    "ar": "السلامية البعيدة للبنصر اليسرى",
+    "descEn": "Enables grasping and fine touch with the left ring finger",
+    "descAr": "الإمساك واللمس الدقيق بالبنصر الأيسر"
+  },
+  "Distal phalanx ring (Left)": {
+    "ar": "السلامية البعيدة للبنصر اليسرى",
+    "descEn": "Enables grasping and fine touch with the left ring finger",
+    "descAr": "الإمساك واللمس الدقيق بالبنصر الأيسر"
+  },
+  "Distal phalanx ring Left": {
+    "ar": "السلامية البعيدة للبنصر اليسرى",
+    "descEn": "Enables grasping and fine touch with the left ring finger",
+    "descAr": "الإمساك واللمس الدقيق بالبنصر الأيسر"
+  },
+  "Distal phalanx ring _R": {
+    "ar": "السلامية البعيدة للبنصر اليمنى",
+    "descEn": "Enables grasping and fine touch with the right ring finger",
+    "descAr": "الإمساك واللمس الدقيق بالبنصر الأيمن"
+  },
+  "Distal phalanx ring  R": {
+    "ar": "السلامية البعيدة للبنصر اليمنى",
+    "descEn": "Enables grasping and fine touch with the right ring finger",
+    "descAr": "الإمساك واللمس الدقيق بالبنصر الأيمن"
+  },
+  "Distal phalanx ring (Right)": {
+    "ar": "السلامية البعيدة للبنصر اليمنى",
+    "descEn": "Enables grasping and fine touch with the right ring finger",
+    "descAr": "الإمساك واللمس الدقيق بالبنصر الأيمن"
+  },
+  "Distal phalanx ring Right": {
+    "ar": "السلامية البعيدة للبنصر اليمنى",
+    "descEn": "Enables grasping and fine touch with the right ring finger",
+    "descAr": "الإمساك واللمس الدقيق بالبنصر الأيمن"
+  },
+  "Proximal phalanx little _L": {
+    "ar": "السلامية القريبة للخنصر اليسرى",
+    "descEn": "Allows movement of the left little finger",
+    "descAr": "السماح بحركة الخنصر الأيسر"
+  },
+  "Proximal phalanx little  L": {
+    "ar": "السلامية القريبة للخنصر اليسرى",
+    "descEn": "Allows movement of the left little finger",
+    "descAr": "السماح بحركة الخنصر الأيسر"
+  },
+  "Proximal phalanx little (Left)": {
+    "ar": "السلامية القريبة للخنصر اليسرى",
+    "descEn": "Allows movement of the left little finger",
+    "descAr": "السماح بحركة الخنصر الأيسر"
+  },
+  "Proximal phalanx little Left": {
+    "ar": "السلامية القريبة للخنصر اليسرى",
+    "descEn": "Allows movement of the left little finger",
+    "descAr": "السماح بحركة الخنصر الأيسر"
+  },
+  "Proximal phalanx little _R": {
+    "ar": "السلامية القريبة للخنصر اليمنى",
+    "descEn": "Allows movement of the right little finger",
+    "descAr": "السماح بحركة الخنصر الأيمن"
+  },
+  "Proximal phalanx little  R": {
+    "ar": "السلامية القريبة للخنصر اليمنى",
+    "descEn": "Allows movement of the right little finger",
+    "descAr": "السماح بحركة الخنصر الأيمن"
+  },
+  "Proximal phalanx little (Right)": {
+    "ar": "السلامية القريبة للخنصر اليمنى",
+    "descEn": "Allows movement of the right little finger",
+    "descAr": "السماح بحركة الخنصر الأيمن"
+  },
+  "Proximal phalanx little Right": {
+    "ar": "السلامية القريبة للخنصر اليمنى",
+    "descEn": "Allows movement of the right little finger",
+    "descAr": "السماح بحركة الخنصر الأيمن"
+  },
+  "Middle phalanx little _L": {
+    "ar": "السلامية الوسطى للخنصر اليسرى",
+    "descEn": "Increases flexibility of the left little finger",
+    "descAr": "زيادة مرونة الخنصر الأيسر"
+  },
+  "Middle phalanx little  L": {
+    "ar": "السلامية الوسطى للخنصر اليسرى",
+    "descEn": "Increases flexibility of the left little finger",
+    "descAr": "زيادة مرونة الخنصر الأيسر"
+  },
+  "Middle phalanx little (Left)": {
+    "ar": "السلامية الوسطى للخنصر اليسرى",
+    "descEn": "Increases flexibility of the left little finger",
+    "descAr": "زيادة مرونة الخنصر الأيسر"
+  },
+  "Middle phalanx little Left": {
+    "ar": "السلامية الوسطى للخنصر اليسرى",
+    "descEn": "Increases flexibility of the left little finger",
+    "descAr": "زيادة مرونة الخنصر الأيسر"
+  },
+  "Middle phalanx little _R": {
+    "ar": "السلامية الوسطى للخنصر اليمنى",
+    "descEn": "Increases flexibility of the right little finger",
+    "descAr": "زيادة مرونة الخنصر الأيمن"
+  },
+  "Middle phalanx little  R": {
+    "ar": "السلامية الوسطى للخنصر اليمنى",
+    "descEn": "Increases flexibility of the right little finger",
+    "descAr": "زيادة مرونة الخنصر الأيمن"
+  },
+  "Middle phalanx little (Right)": {
+    "ar": "السلامية الوسطى للخنصر اليمنى",
+    "descEn": "Increases flexibility of the right little finger",
+    "descAr": "زيادة مرونة الخنصر الأيمن"
+  },
+  "Middle phalanx little Right": {
+    "ar": "السلامية الوسطى للخنصر اليمنى",
+    "descEn": "Increases flexibility of the right little finger",
+    "descAr": "زيادة مرونة الخنصر الأيمن"
+  },
+  "Distal phalanx little _L": {
+    "ar": "السلامية البعيدة للخنصر اليسرى",
+    "descEn": "Enables grasping and fine touch with the left little finger",
+    "descAr": "الإمساك واللمس الدقيق بالخنصر الأيسر"
+  },
+  "Distal phalanx little  L": {
+    "ar": "السلامية البعيدة للخنصر اليسرى",
+    "descEn": "Enables grasping and fine touch with the left little finger",
+    "descAr": "الإمساك واللمس الدقيق بالخنصر الأيسر"
+  },
+  "Distal phalanx little (Left)": {
+    "ar": "السلامية البعيدة للخنصر اليسرى",
+    "descEn": "Enables grasping and fine touch with the left little finger",
+    "descAr": "الإمساك واللمس الدقيق بالخنصر الأيسر"
+  },
+  "Distal phalanx little Left": {
+    "ar": "السلامية البعيدة للخنصر اليسرى",
+    "descEn": "Enables grasping and fine touch with the left little finger",
+    "descAr": "الإمساك واللمس الدقيق بالخنصر الأيسر"
+  },
+  "Distal phalanx little _R": {
+    "ar": "السلامية البعيدة للخنصر اليمنى",
+    "descEn": "Enables grasping and fine touch with the right little finger",
+    "descAr": "الإمساك واللمس الدقيق بالخنصر الأيمن"
+  },
+  "Distal phalanx little  R": {
+    "ar": "السلامية البعيدة للخنصر اليمنى",
+    "descEn": "Enables grasping and fine touch with the right little finger",
+    "descAr": "الإمساك واللمس الدقيق بالخنصر الأيمن"
+  },
+  "Distal phalanx little (Right)": {
+    "ar": "السلامية البعيدة للخنصر اليمنى",
+    "descEn": "Enables grasping and fine touch with the right little finger",
+    "descAr": "الإمساك واللمس الدقيق بالخنصر الأيمن"
+  },
+  "Distal phalanx little Right": {
+    "ar": "السلامية البعيدة للخنصر اليمنى",
+    "descEn": "Enables grasping and fine touch with the right little finger",
+    "descAr": "الإمساك واللمس الدقيق بالخنصر الأيمن"
+  },
+  "Ilium _L": {
+    "ar": "العظم الحرقفي الأيسر",
+    "descEn": "Bears left body weight and protects pelvic organs",
+    "descAr": "حمل وزن الجسم الأيسر وحماية الأعضاء الحوضية"
+  },
+  "Ilium  L": {
+    "ar": "العظم الحرقفي الأيسر",
+    "descEn": "Bears left body weight and protects pelvic organs",
+    "descAr": "حمل وزن الجسم الأيسر وحماية الأعضاء الحوضية"
+  },
+  "Ilium (Left)": {
+    "ar": "العظم الحرقفي الأيسر",
+    "descEn": "Bears left body weight and protects pelvic organs",
+    "descAr": "حمل وزن الجسم الأيسر وحماية الأعضاء الحوضية"
+  },
+  "Ilium Left": {
+    "ar": "العظم الحرقفي الأيسر",
+    "descEn": "Bears left body weight and protects pelvic organs",
+    "descAr": "حمل وزن الجسم الأيسر وحماية الأعضاء الحوضية"
+  },
+  "Ilium _R": {
+    "ar": "العظم الحرقفي الأيمن",
+    "descEn": "Bears right body weight and protects pelvic organs",
+    "descAr": "حمل وزن الجسم الأيمن وحماية الأعضاء الحوضية"
+  },
+  "Ilium  R": {
+    "ar": "العظم الحرقفي الأيمن",
+    "descEn": "Bears right body weight and protects pelvic organs",
+    "descAr": "حمل وزن الجسم الأيمن وحماية الأعضاء الحوضية"
+  },
+  "Ilium (Right)": {
+    "ar": "العظم الحرقفي الأيمن",
+    "descEn": "Bears right body weight and protects pelvic organs",
+    "descAr": "حمل وزن الجسم الأيمن وحماية الأعضاء الحوضية"
+  },
+  "Ilium Right": {
+    "ar": "العظم الحرقفي الأيمن",
+    "descEn": "Bears right body weight and protects pelvic organs",
+    "descAr": "حمل وزن الجسم الأيمن وحماية الأعضاء الحوضية"
+  },
+  "Ischium _L": {
+    "ar": "العظم الإسكي الأيسر",
+    "descEn": "Supports the body in sitting position on the left",
+    "descAr": "دعم الجسم في وضع الجلوس الأيسر"
+  },
+  "Ischium  L": {
+    "ar": "العظم الإسكي الأيسر",
+    "descEn": "Supports the body in sitting position on the left",
+    "descAr": "دعم الجسم في وضع الجلوس الأيسر"
+  },
+  "Ischium (Left)": {
+    "ar": "العظم الإسكي الأيسر",
+    "descEn": "Supports the body in sitting position on the left",
+    "descAr": "دعم الجسم في وضع الجلوس الأيسر"
+  },
+  "Ischium Left": {
+    "ar": "العظم الإسكي الأيسر",
+    "descEn": "Supports the body in sitting position on the left",
+    "descAr": "دعم الجسم في وضع الجلوس الأيسر"
+  },
+  "Ischium _R": {
+    "ar": "العظم الإسكي الأيمن",
+    "descEn": "Supports the body in sitting position on the right",
+    "descAr": "دعم الجسم في وضع الجلوس الأيمن"
+  },
+  "Ischium  R": {
+    "ar": "العظم الإسكي الأيمن",
+    "descEn": "Supports the body in sitting position on the right",
+    "descAr": "دعم الجسم في وضع الجلوس الأيمن"
+  },
+  "Ischium (Right)": {
+    "ar": "العظم الإسكي الأيمن",
+    "descEn": "Supports the body in sitting position on the right",
+    "descAr": "دعم الجسم في وضع الجلوس الأيمن"
+  },
+  "Ischium Right": {
+    "ar": "العظم الإسكي الأيمن",
+    "descEn": "Supports the body in sitting position on the right",
+    "descAr": "دعم الجسم في وضع الجلوس الأيمن"
+  },
+  "Pubis _L": {
+    "ar": "العظم العاني الأيسر",
+    "descEn": "Forms the anterior part of the left pelvis",
+    "descAr": "تشكيل الجزء الأمامي من الحوض الأيسر"
+  },
+  "Pubis  L": {
+    "ar": "العظم العاني الأيسر",
+    "descEn": "Forms the anterior part of the left pelvis",
+    "descAr": "تشكيل الجزء الأمامي من الحوض الأيسر"
+  },
+  "Pubis (Left)": {
+    "ar": "العظم العاني الأيسر",
+    "descEn": "Forms the anterior part of the left pelvis",
+    "descAr": "تشكيل الجزء الأمامي من الحوض الأيسر"
+  },
+  "Pubis Left": {
+    "ar": "العظم العاني الأيسر",
+    "descEn": "Forms the anterior part of the left pelvis",
+    "descAr": "تشكيل الجزء الأمامي من الحوض الأيسر"
+  },
+  "Pubis _R": {
+    "ar": "العظم العاني الأيمن",
+    "descEn": "Forms the anterior part of the right pelvis",
+    "descAr": "تشكيل الجزء الأمامي من الحوض الأيمن"
+  },
+  "Pubis  R": {
+    "ar": "العظم العاني الأيمن",
+    "descEn": "Forms the anterior part of the right pelvis",
+    "descAr": "تشكيل الجزء الأمامي من الحوض الأيمن"
+  },
+  "Pubis (Right)": {
+    "ar": "العظم العاني الأيمن",
+    "descEn": "Forms the anterior part of the right pelvis",
+    "descAr": "تشكيل الجزء الأمامي من الحوض الأيمن"
+  },
+  "Pubis Right": {
+    "ar": "العظم العاني الأيمن",
+    "descEn": "Forms the anterior part of the right pelvis",
+    "descAr": "تشكيل الجزء الأمامي من الحوض الأيمن"
+  },
+  "Femur _L": {
+    "ar": "الفخذ الأيسر",
+    "descEn": "Bears left body weight and allows walking",
+    "descAr": "حمل وزن الجسم الأيسر والسماح بالمشي"
+  },
+  "Femur  L": {
+    "ar": "الفخذ الأيسر",
+    "descEn": "Bears left body weight and allows walking",
+    "descAr": "حمل وزن الجسم الأيسر والسماح بالمشي"
+  },
+  "Femur (Left)": {
+    "ar": "الفخذ الأيسر",
+    "descEn": "Bears left body weight and allows walking",
+    "descAr": "حمل وزن الجسم الأيسر والسماح بالمشي"
+  },
+  "Femur Left": {
+    "ar": "الفخذ الأيسر",
+    "descEn": "Bears left body weight and allows walking",
+    "descAr": "حمل وزن الجسم الأيسر والسماح بالمشي"
+  },
+  "Femur _R": {
+    "ar": "الفخذ الأيمن",
+    "descEn": "Bears right body weight and allows walking",
+    "descAr": "حمل وزن الجسم الأيمن والسماح بالمشي"
+  },
+  "Femur  R": {
+    "ar": "الفخذ الأيمن",
+    "descEn": "Bears right body weight and allows walking",
+    "descAr": "حمل وزن الجسم الأيمن والسماح بالمشي"
+  },
+  "Femur (Right)": {
+    "ar": "الفخذ الأيمن",
+    "descEn": "Bears right body weight and allows walking",
+    "descAr": "حمل وزن الجسم الأيمن والسماح بالمشي"
+  },
+  "Femur Right": {
+    "ar": "الفخذ الأيمن",
+    "descEn": "Bears right body weight and allows walking",
+    "descAr": "حمل وزن الجسم الأيمن والسماح بالمشي"
+  },
+  "Patella _L": {
+    "ar": "الرضفة اليسرى",
+    "descEn": "Protects the left knee joint and improves its movement",
+    "descAr": "حماية مفصل الركبة الأيسر وتحسين حركتها"
+  },
+  "Patella  L": {
+    "ar": "الرضفة اليسرى",
+    "descEn": "Protects the left knee joint and improves its movement",
+    "descAr": "حماية مفصل الركبة الأيسر وتحسين حركتها"
+  },
+  "Patella (Left)": {
+    "ar": "الرضفة اليسرى",
+    "descEn": "Protects the left knee joint and improves its movement",
+    "descAr": "حماية مفصل الركبة الأيسر وتحسين حركتها"
+  },
+  "Patella Left": {
+    "ar": "الرضفة اليسرى",
+    "descEn": "Protects the left knee joint and improves its movement",
+    "descAr": "حماية مفصل الركبة الأيسر وتحسين حركتها"
+  },
+  "Patella _R": {
+    "ar": "الرضفة اليمنى",
+    "descEn": "Protects the right knee joint and improves its movement",
+    "descAr": "حماية مفصل الركبة الأيمن وتحسين حركتها"
+  },
+  "Patella  R": {
+    "ar": "الرضفة اليمنى",
+    "descEn": "Protects the right knee joint and improves its movement",
+    "descAr": "حماية مفصل الركبة الأيمن وتحسين حركتها"
+  },
+  "Patella (Right)": {
+    "ar": "الرضفة اليمنى",
+    "descEn": "Protects the right knee joint and improves its movement",
+    "descAr": "حماية مفصل الركبة الأيمن وتحسين حركتها"
+  },
+  "Patella Right": {
+    "ar": "الرضفة اليمنى",
+    "descEn": "Protects the right knee joint and improves its movement",
+    "descAr": "حماية مفصل الركبة الأيمن وتحسين حركتها"
+  },
+  "Tibia _L": {
+    "ar": "الظنبوب الأيسر",
+    "descEn": "Bears the main body weight in the left leg",
+    "descAr": "حمل وزن الجسم الأساسي في الساق اليسرى"
+  },
+  "Tibia  L": {
+    "ar": "الظنبوب الأيسر",
+    "descEn": "Bears the main body weight in the left leg",
+    "descAr": "حمل وزن الجسم الأساسي في الساق اليسرى"
+  },
+  "Tibia (Left)": {
+    "ar": "الظنبوب الأيسر",
+    "descEn": "Bears the main body weight in the left leg",
+    "descAr": "حمل وزن الجسم الأساسي في الساق اليسرى"
+  },
+  "Tibia Left": {
+    "ar": "الظنبوب الأيسر",
+    "descEn": "Bears the main body weight in the left leg",
+    "descAr": "حمل وزن الجسم الأساسي في الساق اليسرى"
+  },
+  "Tibia _R": {
+    "ar": "الظنبوب الأيمن",
+    "descEn": "Bears the main body weight in the right leg",
+    "descAr": "حمل وزن الجسم الأساسي في الساق اليمنى"
+  },
+  "Tibia  R": {
+    "ar": "الظنبوب الأيمن",
+    "descEn": "Bears the main body weight in the right leg",
+    "descAr": "حمل وزن الجسم الأساسي في الساق اليمنى"
+  },
+  "Tibia (Right)": {
+    "ar": "الظنبوب الأيمن",
+    "descEn": "Bears the main body weight in the right leg",
+    "descAr": "حمل وزن الجسم الأساسي في الساق اليمنى"
+  },
+  "Tibia Right": {
+    "ar": "الظنبوب الأيمن",
+    "descEn": "Bears the main body weight in the right leg",
+    "descAr": "حمل وزن الجسم الأساسي في الساق اليمنى"
+  },
+  "Fibula _L": {
+    "ar": "الشظية اليسرى",
+    "descEn": "Stabilizes the left ankle and contributes to foot movement",
+    "descAr": "تثبيت الكاحل الأيسر والمشاركة في حركة القدم"
+  },
+  "Fibula  L": {
+    "ar": "الشظية اليسرى",
+    "descEn": "Stabilizes the left ankle and contributes to foot movement",
+    "descAr": "تثبيت الكاحل الأيسر والمشاركة في حركة القدم"
+  },
+  "Fibula (Left)": {
+    "ar": "الشظية اليسرى",
+    "descEn": "Stabilizes the left ankle and contributes to foot movement",
+    "descAr": "تثبيت الكاحل الأيسر والمشاركة في حركة القدم"
+  },
+  "Fibula Left": {
+    "ar": "الشظية اليسرى",
+    "descEn": "Stabilizes the left ankle and contributes to foot movement",
+    "descAr": "تثبيت الكاحل الأيسر والمشاركة في حركة القدم"
+  },
+  "Fibula _R": {
+    "ar": "الشظية اليمنى",
+    "descEn": "Stabilizes the right ankle and contributes to foot movement",
+    "descAr": "تثبيت الكاحل الأيمن والمشاركة في حركة القدم"
+  },
+  "Fibula  R": {
+    "ar": "الشظية اليمنى",
+    "descEn": "Stabilizes the right ankle and contributes to foot movement",
+    "descAr": "تثبيت الكاحل الأيمن والمشاركة في حركة القدم"
+  },
+  "Fibula (Right)": {
+    "ar": "الشظية اليمنى",
+    "descEn": "Stabilizes the right ankle and contributes to foot movement",
+    "descAr": "تثبيت الكاحل الأيمن والمشاركة في حركة القدم"
+  },
+  "Fibula Right": {
+    "ar": "الشظية اليمنى",
+    "descEn": "Stabilizes the right ankle and contributes to foot movement",
+    "descAr": "تثبيت الكاحل الأيمن والمشاركة في حركة القدم"
+  },
+  "Talus _L": {
+    "ar": "الكاحل الأيسر",
+    "descEn": "Transfers body weight from the leg to the left foot",
+    "descAr": "نقل وزن الجسم من الساق إلى القدم اليسرى"
+  },
+  "Talus  L": {
+    "ar": "الكاحل الأيسر",
+    "descEn": "Transfers body weight from the leg to the left foot",
+    "descAr": "نقل وزن الجسم من الساق إلى القدم اليسرى"
+  },
+  "Talus (Left)": {
+    "ar": "الكاحل الأيسر",
+    "descEn": "Transfers body weight from the leg to the left foot",
+    "descAr": "نقل وزن الجسم من الساق إلى القدم اليسرى"
+  },
+  "Talus Left": {
+    "ar": "الكاحل الأيسر",
+    "descEn": "Transfers body weight from the leg to the left foot",
+    "descAr": "نقل وزن الجسم من الساق إلى القدم اليسرى"
+  },
+  "Talus _R": {
+    "ar": "الكاحل الأيمن",
+    "descEn": "Transfers body weight from the leg to the right foot",
+    "descAr": "نقل وزن الجسم من الساق إلى القدم اليمنى"
+  },
+  "Talus  R": {
+    "ar": "الكاحل الأيمن",
+    "descEn": "Transfers body weight from the leg to the right foot",
+    "descAr": "نقل وزن الجسم من الساق إلى القدم اليمنى"
+  },
+  "Talus (Right)": {
+    "ar": "الكاحل الأيمن",
+    "descEn": "Transfers body weight from the leg to the right foot",
+    "descAr": "نقل وزن الجسم من الساق إلى القدم اليمنى"
+  },
+  "Talus Right": {
+    "ar": "الكاحل الأيمن",
+    "descEn": "Transfers body weight from the leg to the right foot",
+    "descAr": "نقل وزن الجسم من الساق إلى القدم اليمنى"
+  },
+  "Calcaneus _L": {
+    "ar": "العقب الأيسر",
+    "descEn": "Supports left body weight and forms the heel",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل كعب القدم"
+  },
+  "Calcaneus  L": {
+    "ar": "العقب الأيسر",
+    "descEn": "Supports left body weight and forms the heel",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل كعب القدم"
+  },
+  "Calcaneus (Left)": {
+    "ar": "العقب الأيسر",
+    "descEn": "Supports left body weight and forms the heel",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل كعب القدم"
+  },
+  "Calcaneus Left": {
+    "ar": "العقب الأيسر",
+    "descEn": "Supports left body weight and forms the heel",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل كعب القدم"
+  },
+  "Calcaneus _R": {
+    "ar": "العقب الأيمن",
+    "descEn": "Supports right body weight and forms the heel",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل كعب القدم"
+  },
+  "Calcaneus  R": {
+    "ar": "العقب الأيمن",
+    "descEn": "Supports right body weight and forms the heel",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل كعب القدم"
+  },
+  "Calcaneus (Right)": {
+    "ar": "العقب الأيمن",
+    "descEn": "Supports right body weight and forms the heel",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل كعب القدم"
+  },
+  "Calcaneus Right": {
+    "ar": "العقب الأيمن",
+    "descEn": "Supports right body weight and forms the heel",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل كعب القدم"
+  },
+  "Navicular _L": {
+    "ar": "الزورقي الأيسر",
+    "descEn": "Supports the arch of the left foot",
+    "descAr": "دعم قوس القدم الأيسر"
+  },
+  "Navicular  L": {
+    "ar": "الزورقي الأيسر",
+    "descEn": "Supports the arch of the left foot",
+    "descAr": "دعم قوس القدم الأيسر"
+  },
+  "Navicular (Left)": {
+    "ar": "الزورقي الأيسر",
+    "descEn": "Supports the arch of the left foot",
+    "descAr": "دعم قوس القدم الأيسر"
+  },
+  "Navicular Left": {
+    "ar": "الزورقي الأيسر",
+    "descEn": "Supports the arch of the left foot",
+    "descAr": "دعم قوس القدم الأيسر"
+  },
+  "Navicular _R": {
+    "ar": "الزورقي الأيمن",
+    "descEn": "Supports the arch of the right foot",
+    "descAr": "دعم قوس القدم الأيمن"
+  },
+  "Navicular  R": {
+    "ar": "الزورقي الأيمن",
+    "descEn": "Supports the arch of the right foot",
+    "descAr": "دعم قوس القدم الأيمن"
+  },
+  "Navicular (Right)": {
+    "ar": "الزورقي الأيمن",
+    "descEn": "Supports the arch of the right foot",
+    "descAr": "دعم قوس القدم الأيمن"
+  },
+  "Navicular Right": {
+    "ar": "الزورقي الأيمن",
+    "descEn": "Supports the arch of the right foot",
+    "descAr": "دعم قوس القدم الأيمن"
+  },
+  "Medial cuneiform _L": {
+    "ar": "الإسفيني الإنسي الأيسر",
+    "descEn": "Supports the left foot arch and stabilizes metatarsal I",
+    "descAr": "دعم قوس القدم الأيسر وتثبيت المشط الأول"
+  },
+  "Medial cuneiform  L": {
+    "ar": "الإسفيني الإنسي الأيسر",
+    "descEn": "Supports the left foot arch and stabilizes metatarsal I",
+    "descAr": "دعم قوس القدم الأيسر وتثبيت المشط الأول"
+  },
+  "Medial cuneiform (Left)": {
+    "ar": "الإسفيني الإنسي الأيسر",
+    "descEn": "Supports the left foot arch and stabilizes metatarsal I",
+    "descAr": "دعم قوس القدم الأيسر وتثبيت المشط الأول"
+  },
+  "Medial cuneiform Left": {
+    "ar": "الإسفيني الإنسي الأيسر",
+    "descEn": "Supports the left foot arch and stabilizes metatarsal I",
+    "descAr": "دعم قوس القدم الأيسر وتثبيت المشط الأول"
+  },
+  "Medial cuneiform _R": {
+    "ar": "الإسفيني الإنسي الأيمن",
+    "descEn": "Supports the right foot arch and stabilizes metatarsal I",
+    "descAr": "دعم قوس القدم الأيمن وتثبيت المشط الأول"
+  },
+  "Medial cuneiform  R": {
+    "ar": "الإسفيني الإنسي الأيمن",
+    "descEn": "Supports the right foot arch and stabilizes metatarsal I",
+    "descAr": "دعم قوس القدم الأيمن وتثبيت المشط الأول"
+  },
+  "Medial cuneiform (Right)": {
+    "ar": "الإسفيني الإنسي الأيمن",
+    "descEn": "Supports the right foot arch and stabilizes metatarsal I",
+    "descAr": "دعم قوس القدم الأيمن وتثبيت المشط الأول"
+  },
+  "Medial cuneiform Right": {
+    "ar": "الإسفيني الإنسي الأيمن",
+    "descEn": "Supports the right foot arch and stabilizes metatarsal I",
+    "descAr": "دعم قوس القدم الأيمن وتثبيت المشط الأول"
+  },
+  "Intermediate cuneiform _L": {
+    "ar": "الإسفيني المتوسط الأيسر",
+    "descEn": "Supports the left foot arch and stabilizes metatarsal II",
+    "descAr": "دعم قوس القدم الأيسر وتثبيت المشط الثاني"
+  },
+  "Intermediate cuneiform  L": {
+    "ar": "الإسفيني المتوسط الأيسر",
+    "descEn": "Supports the left foot arch and stabilizes metatarsal II",
+    "descAr": "دعم قوس القدم الأيسر وتثبيت المشط الثاني"
+  },
+  "Intermediate cuneiform (Left)": {
+    "ar": "الإسفيني المتوسط الأيسر",
+    "descEn": "Supports the left foot arch and stabilizes metatarsal II",
+    "descAr": "دعم قوس القدم الأيسر وتثبيت المشط الثاني"
+  },
+  "Intermediate cuneiform Left": {
+    "ar": "الإسفيني المتوسط الأيسر",
+    "descEn": "Supports the left foot arch and stabilizes metatarsal II",
+    "descAr": "دعم قوس القدم الأيسر وتثبيت المشط الثاني"
+  },
+  "Intermediate cuneiform _R": {
+    "ar": "الإسفيني المتوسط الأيمن",
+    "descEn": "Supports the right foot arch and stabilizes metatarsal II",
+    "descAr": "دعم قوس القدم الأيمن وتثبيت المشط الثاني"
+  },
+  "Intermediate cuneiform  R": {
+    "ar": "الإسفيني المتوسط الأيمن",
+    "descEn": "Supports the right foot arch and stabilizes metatarsal II",
+    "descAr": "دعم قوس القدم الأيمن وتثبيت المشط الثاني"
+  },
+  "Intermediate cuneiform (Right)": {
+    "ar": "الإسفيني المتوسط الأيمن",
+    "descEn": "Supports the right foot arch and stabilizes metatarsal II",
+    "descAr": "دعم قوس القدم الأيمن وتثبيت المشط الثاني"
+  },
+  "Intermediate cuneiform Right": {
+    "ar": "الإسفيني المتوسط الأيمن",
+    "descEn": "Supports the right foot arch and stabilizes metatarsal II",
+    "descAr": "دعم قوس القدم الأيمن وتثبيت المشط الثاني"
+  },
+  "Lateral cuneiform _L": {
+    "ar": "الإسفيني الوحشي الأيسر",
+    "descEn": "Supports the left foot arch and stabilizes metatarsal III",
+    "descAr": "دعم قوس القدم الأيسر وتثبيت المشط الثالث"
+  },
+  "Lateral cuneiform  L": {
+    "ar": "الإسفيني الوحشي الأيسر",
+    "descEn": "Supports the left foot arch and stabilizes metatarsal III",
+    "descAr": "دعم قوس القدم الأيسر وتثبيت المشط الثالث"
+  },
+  "Lateral cuneiform (Left)": {
+    "ar": "الإسفيني الوحشي الأيسر",
+    "descEn": "Supports the left foot arch and stabilizes metatarsal III",
+    "descAr": "دعم قوس القدم الأيسر وتثبيت المشط الثالث"
+  },
+  "Lateral cuneiform Left": {
+    "ar": "الإسفيني الوحشي الأيسر",
+    "descEn": "Supports the left foot arch and stabilizes metatarsal III",
+    "descAr": "دعم قوس القدم الأيسر وتثبيت المشط الثالث"
+  },
+  "Lateral cuneiform _R": {
+    "ar": "الإسفيني الوحشي الأيمن",
+    "descEn": "Supports the right foot arch and stabilizes metatarsal III",
+    "descAr": "دعم قوس القدم الأيمن وتثبيت المشط الثالث"
+  },
+  "Lateral cuneiform  R": {
+    "ar": "الإسفيني الوحشي الأيمن",
+    "descEn": "Supports the right foot arch and stabilizes metatarsal III",
+    "descAr": "دعم قوس القدم الأيمن وتثبيت المشط الثالث"
+  },
+  "Lateral cuneiform (Right)": {
+    "ar": "الإسفيني الوحشي الأيمن",
+    "descEn": "Supports the right foot arch and stabilizes metatarsal III",
+    "descAr": "دعم قوس القدم الأيمن وتثبيت المشط الثالث"
+  },
+  "Lateral cuneiform Right": {
+    "ar": "الإسفيني الوحشي الأيمن",
+    "descEn": "Supports the right foot arch and stabilizes metatarsal III",
+    "descAr": "دعم قوس القدم الأيمن وتثبيت المشط الثالث"
+  },
+  "Cuboid _L": {
+    "ar": "النردي الأيسر",
+    "descEn": "Stabilizes the left foot and supports ankle movement",
+    "descAr": "تثبيت القدم اليسرى ودعم حركة الكاحل"
+  },
+  "Cuboid  L": {
+    "ar": "النردي الأيسر",
+    "descEn": "Stabilizes the left foot and supports ankle movement",
+    "descAr": "تثبيت القدم اليسرى ودعم حركة الكاحل"
+  },
+  "Cuboid (Left)": {
+    "ar": "النردي الأيسر",
+    "descEn": "Stabilizes the left foot and supports ankle movement",
+    "descAr": "تثبيت القدم اليسرى ودعم حركة الكاحل"
+  },
+  "Cuboid Left": {
+    "ar": "النردي الأيسر",
+    "descEn": "Stabilizes the left foot and supports ankle movement",
+    "descAr": "تثبيت القدم اليسرى ودعم حركة الكاحل"
+  },
+  "Cuboid _R": {
+    "ar": "النردي الأيمن",
+    "descEn": "Stabilizes the right foot and supports ankle movement",
+    "descAr": "تثبيت القدم اليمنى ودعم حركة الكاحل"
+  },
+  "Cuboid  R": {
+    "ar": "النردي الأيمن",
+    "descEn": "Stabilizes the right foot and supports ankle movement",
+    "descAr": "تثبيت القدم اليمنى ودعم حركة الكاحل"
+  },
+  "Cuboid (Right)": {
+    "ar": "النردي الأيمن",
+    "descEn": "Stabilizes the right foot and supports ankle movement",
+    "descAr": "تثبيت القدم اليمنى ودعم حركة الكاحل"
+  },
+  "Cuboid Right": {
+    "ar": "النردي الأيمن",
+    "descEn": "Stabilizes the right foot and supports ankle movement",
+    "descAr": "تثبيت القدم اليمنى ودعم حركة الكاحل"
+  },
+  "Metatarsal I _L": {
+    "ar": "المشط الأول الأيسر",
+    "descEn": "Supports left body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل قوس القدم"
+  },
+  "Metatarsal I  L": {
+    "ar": "المشط الأول الأيسر",
+    "descEn": "Supports left body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل قوس القدم"
+  },
+  "Metatarsal I (Left)": {
+    "ar": "المشط الأول الأيسر",
+    "descEn": "Supports left body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل قوس القدم"
+  },
+  "Metatarsal I Left": {
+    "ar": "المشط الأول الأيسر",
+    "descEn": "Supports left body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل قوس القدم"
+  },
+  "Metatarsal I _R": {
+    "ar": "المشط الأول الأيمن",
+    "descEn": "Supports right body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل قوس القدم"
+  },
+  "Metatarsal I  R": {
+    "ar": "المشط الأول الأيمن",
+    "descEn": "Supports right body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل قوس القدم"
+  },
+  "Metatarsal I (Right)": {
+    "ar": "المشط الأول الأيمن",
+    "descEn": "Supports right body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل قوس القدم"
+  },
+  "Metatarsal I Right": {
+    "ar": "المشط الأول الأيمن",
+    "descEn": "Supports right body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل قوس القدم"
+  },
+  "Metatarsal II _L": {
+    "ar": "المشط الثاني الأيسر",
+    "descEn": "Supports left body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل قوس القدم"
+  },
+  "Metatarsal II  L": {
+    "ar": "المشط الثاني الأيسر",
+    "descEn": "Supports left body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل قوس القدم"
+  },
+  "Metatarsal II (Left)": {
+    "ar": "المشط الثاني الأيسر",
+    "descEn": "Supports left body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل قوس القدم"
+  },
+  "Metatarsal II Left": {
+    "ar": "المشط الثاني الأيسر",
+    "descEn": "Supports left body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل قوس القدم"
+  },
+  "Metatarsal II _R": {
+    "ar": "المشط الثاني الأيمن",
+    "descEn": "Supports right body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل قوس القدم"
+  },
+  "Metatarsal II  R": {
+    "ar": "المشط الثاني الأيمن",
+    "descEn": "Supports right body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل قوس القدم"
+  },
+  "Metatarsal II (Right)": {
+    "ar": "المشط الثاني الأيمن",
+    "descEn": "Supports right body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل قوس القدم"
+  },
+  "Metatarsal II Right": {
+    "ar": "المشط الثاني الأيمن",
+    "descEn": "Supports right body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل قوس القدم"
+  },
+  "Metatarsal III _L": {
+    "ar": "المشط الثالث الأيسر",
+    "descEn": "Supports left body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل قوس القدم"
+  },
+  "Metatarsal III  L": {
+    "ar": "المشط الثالث الأيسر",
+    "descEn": "Supports left body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل قوس القدم"
+  },
+  "Metatarsal III (Left)": {
+    "ar": "المشط الثالث الأيسر",
+    "descEn": "Supports left body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل قوس القدم"
+  },
+  "Metatarsal III Left": {
+    "ar": "المشط الثالث الأيسر",
+    "descEn": "Supports left body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل قوس القدم"
+  },
+  "Metatarsal III _R": {
+    "ar": "المشط الثالث الأيمن",
+    "descEn": "Supports right body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل قوس القدم"
+  },
+  "Metatarsal III  R": {
+    "ar": "المشط الثالث الأيمن",
+    "descEn": "Supports right body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل قوس القدم"
+  },
+  "Metatarsal III (Right)": {
+    "ar": "المشط الثالث الأيمن",
+    "descEn": "Supports right body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل قوس القدم"
+  },
+  "Metatarsal III Right": {
+    "ar": "المشط الثالث الأيمن",
+    "descEn": "Supports right body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل قوس القدم"
+  },
+  "Metatarsal IV _L": {
+    "ar": "المشط الرابع الأيسر",
+    "descEn": "Supports left body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل قوس القدم"
+  },
+  "Metatarsal IV  L": {
+    "ar": "المشط الرابع الأيسر",
+    "descEn": "Supports left body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل قوس القدم"
+  },
+  "Metatarsal IV (Left)": {
+    "ar": "المشط الرابع الأيسر",
+    "descEn": "Supports left body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل قوس القدم"
+  },
+  "Metatarsal IV Left": {
+    "ar": "المشط الرابع الأيسر",
+    "descEn": "Supports left body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيسر وتشكيل قوس القدم"
+  },
+  "Metatarsal IV _R": {
+    "ar": "المشط الرابع الأيمن",
+    "descEn": "Supports right body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل قوس القدم"
+  },
+  "Metatarsal IV  R": {
+    "ar": "المشط الرابع الأيمن",
+    "descEn": "Supports right body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل قوس القدم"
+  },
+  "Metatarsal IV (Right)": {
+    "ar": "المشط الرابع الأيمن",
+    "descEn": "Supports right body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل قوس القدم"
+  },
+  "Metatarsal IV Right": {
+    "ar": "المشط الرابع الأيمن",
+    "descEn": "Supports right body weight and forms the foot arch",
+    "descAr": "دعم وزن الجسم الأيمن وتشكيل قوس القدم"
+  },
+  "Metatarsal V _L": {
+    "ar": "المشط الخامس الأيسر",
+    "descEn": "Supports left body weight and stabilizes the foot side",
+    "descAr": "دعم وزن الجسم الأيسر وتثبيت جانب القدم"
+  },
+  "Metatarsal V  L": {
+    "ar": "المشط الخامس الأيسر",
+    "descEn": "Supports left body weight and stabilizes the foot side",
+    "descAr": "دعم وزن الجسم الأيسر وتثبيت جانب القدم"
+  },
+  "Metatarsal V (Left)": {
+    "ar": "المشط الخامس الأيسر",
+    "descEn": "Supports left body weight and stabilizes the foot side",
+    "descAr": "دعم وزن الجسم الأيسر وتثبيت جانب القدم"
+  },
+  "Metatarsal V Left": {
+    "ar": "المشط الخامس الأيسر",
+    "descEn": "Supports left body weight and stabilizes the foot side",
+    "descAr": "دعم وزن الجسم الأيسر وتثبيت جانب القدم"
+  },
+  "Metatarsal V _R": {
+    "ar": "المشط الخامس الأيمن",
+    "descEn": "Supports right body weight and stabilizes the foot side",
+    "descAr": "دعم وزن الجسم الأيمن وتثبيت جانب القدم"
+  },
+  "Metatarsal V  R": {
+    "ar": "المشط الخامس الأيمن",
+    "descEn": "Supports right body weight and stabilizes the foot side",
+    "descAr": "دعم وزن الجسم الأيمن وتثبيت جانب القدم"
+  },
+  "Metatarsal V (Right)": {
+    "ar": "المشط الخامس الأيمن",
+    "descEn": "Supports right body weight and stabilizes the foot side",
+    "descAr": "دعم وزن الجسم الأيمن وتثبيت جانب القدم"
+  },
+  "Metatarsal V Right": {
+    "ar": "المشط الخامس الأيمن",
+    "descEn": "Supports right body weight and stabilizes the foot side",
+    "descAr": "دعم وزن الجسم الأيمن وتثبيت جانب القدم"
+  },
+  "Proximal phalanx hallux _L": {
+    "ar": "السلامية القريبة لإبهام القدم الأيسر",
+    "descEn": "Allows movement of the left big toe",
+    "descAr": "السماح بحركة إبهام القدم الأيسر"
+  },
+  "Proximal phalanx hallux  L": {
+    "ar": "السلامية القريبة لإبهام القدم الأيسر",
+    "descEn": "Allows movement of the left big toe",
+    "descAr": "السماح بحركة إبهام القدم الأيسر"
+  },
+  "Proximal phalanx hallux (Left)": {
+    "ar": "السلامية القريبة لإبهام القدم الأيسر",
+    "descEn": "Allows movement of the left big toe",
+    "descAr": "السماح بحركة إبهام القدم الأيسر"
+  },
+  "Proximal phalanx hallux Left": {
+    "ar": "السلامية القريبة لإبهام القدم الأيسر",
+    "descEn": "Allows movement of the left big toe",
+    "descAr": "السماح بحركة إبهام القدم الأيسر"
+  },
+  "Proximal phalanx hallux _R": {
+    "ar": "السلامية القريبة لإبهام القدم الأيمن",
+    "descEn": "Allows movement of the right big toe",
+    "descAr": "السماح بحركة إبهام القدم الأيمن"
+  },
+  "Proximal phalanx hallux  R": {
+    "ar": "السلامية القريبة لإبهام القدم الأيمن",
+    "descEn": "Allows movement of the right big toe",
+    "descAr": "السماح بحركة إبهام القدم الأيمن"
+  },
+  "Proximal phalanx hallux (Right)": {
+    "ar": "السلامية القريبة لإبهام القدم الأيمن",
+    "descEn": "Allows movement of the right big toe",
+    "descAr": "السماح بحركة إبهام القدم الأيمن"
+  },
+  "Proximal phalanx hallux Right": {
+    "ar": "السلامية القريبة لإبهام القدم الأيمن",
+    "descEn": "Allows movement of the right big toe",
+    "descAr": "السماح بحركة إبهام القدم الأيمن"
+  },
+  "Distal phalanx hallux _L": {
+    "ar": "السلامية البعيدة لإبهام القدم الأيسر",
+    "descEn": "Pushes the body forward during left walking",
+    "descAr": "دفع الجسم للأمام أثناء المشي الأيسر"
+  },
+  "Distal phalanx hallux  L": {
+    "ar": "السلامية البعيدة لإبهام القدم الأيسر",
+    "descEn": "Pushes the body forward during left walking",
+    "descAr": "دفع الجسم للأمام أثناء المشي الأيسر"
+  },
+  "Distal phalanx hallux (Left)": {
+    "ar": "السلامية البعيدة لإبهام القدم الأيسر",
+    "descEn": "Pushes the body forward during left walking",
+    "descAr": "دفع الجسم للأمام أثناء المشي الأيسر"
+  },
+  "Distal phalanx hallux Left": {
+    "ar": "السلامية البعيدة لإبهام القدم الأيسر",
+    "descEn": "Pushes the body forward during left walking",
+    "descAr": "دفع الجسم للأمام أثناء المشي الأيسر"
+  },
+  "Distal phalanx hallux _R": {
+    "ar": "السلامية البعيدة لإبهام القدم الأيمن",
+    "descEn": "Pushes the body forward during right walking",
+    "descAr": "دفع الجسم للأمام أثناء المشي الأيمن"
+  },
+  "Distal phalanx hallux  R": {
+    "ar": "السلامية البعيدة لإبهام القدم الأيمن",
+    "descEn": "Pushes the body forward during right walking",
+    "descAr": "دفع الجسم للأمام أثناء المشي الأيمن"
+  },
+  "Distal phalanx hallux (Right)": {
+    "ar": "السلامية البعيدة لإبهام القدم الأيمن",
+    "descEn": "Pushes the body forward during right walking",
+    "descAr": "دفع الجسم للأمام أثناء المشي الأيمن"
+  },
+  "Distal phalanx hallux Right": {
+    "ar": "السلامية البعيدة لإبهام القدم الأيمن",
+    "descEn": "Pushes the body forward during right walking",
+    "descAr": "دفع الجسم للأمام أثناء المشي الأيمن"
+  },
+  "Proximal phalanx toe 2 _L": {
+    "ar": "السلامية القريبة للقدم الثاني الأيسر",
+    "descEn": "Allows movement of the left second toe",
+    "descAr": "السماح بحركة الإصبع الثاني الأيسر"
+  },
+  "Proximal phalanx toe 2  L": {
+    "ar": "السلامية القريبة للقدم الثاني الأيسر",
+    "descEn": "Allows movement of the left second toe",
+    "descAr": "السماح بحركة الإصبع الثاني الأيسر"
+  },
+  "Proximal phalanx toe 2 (Left)": {
+    "ar": "السلامية القريبة للقدم الثاني الأيسر",
+    "descEn": "Allows movement of the left second toe",
+    "descAr": "السماح بحركة الإصبع الثاني الأيسر"
+  },
+  "Proximal phalanx toe 2 Left": {
+    "ar": "السلامية القريبة للقدم الثاني الأيسر",
+    "descEn": "Allows movement of the left second toe",
+    "descAr": "السماح بحركة الإصبع الثاني الأيسر"
+  },
+  "Proximal phalanx toe 2 _R": {
+    "ar": "السلامية القريبة للقدم الثاني الأيمن",
+    "descEn": "Allows movement of the right second toe",
+    "descAr": "السماح بحركة الإصبع الثاني الأيمن"
+  },
+  "Proximal phalanx toe 2  R": {
+    "ar": "السلامية القريبة للقدم الثاني الأيمن",
+    "descEn": "Allows movement of the right second toe",
+    "descAr": "السماح بحركة الإصبع الثاني الأيمن"
+  },
+  "Proximal phalanx toe 2 (Right)": {
+    "ar": "السلامية القريبة للقدم الثاني الأيمن",
+    "descEn": "Allows movement of the right second toe",
+    "descAr": "السماح بحركة الإصبع الثاني الأيمن"
+  },
+  "Proximal phalanx toe 2 Right": {
+    "ar": "السلامية القريبة للقدم الثاني الأيمن",
+    "descEn": "Allows movement of the right second toe",
+    "descAr": "السماح بحركة الإصبع الثاني الأيمن"
+  },
+  "Middle phalanx toe 2 _L": {
+    "ar": "السلامية الوسطى للقدم الثاني الأيسر",
+    "descEn": "Increases flexibility of the left second toe",
+    "descAr": "زيادة مرونة الإصبع الثاني الأيسر"
+  },
+  "Middle phalanx toe 2  L": {
+    "ar": "السلامية الوسطى للقدم الثاني الأيسر",
+    "descEn": "Increases flexibility of the left second toe",
+    "descAr": "زيادة مرونة الإصبع الثاني الأيسر"
+  },
+  "Middle phalanx toe 2 (Left)": {
+    "ar": "السلامية الوسطى للقدم الثاني الأيسر",
+    "descEn": "Increases flexibility of the left second toe",
+    "descAr": "زيادة مرونة الإصبع الثاني الأيسر"
+  },
+  "Middle phalanx toe 2 Left": {
+    "ar": "السلامية الوسطى للقدم الثاني الأيسر",
+    "descEn": "Increases flexibility of the left second toe",
+    "descAr": "زيادة مرونة الإصبع الثاني الأيسر"
+  },
+  "Middle phalanx toe 2 _R": {
+    "ar": "السلامية الوسطى للقدم الثاني الأيمن",
+    "descEn": "Increases flexibility of the right second toe",
+    "descAr": "زيادة مرونة الإصبع الثاني الأيمن"
+  },
+  "Middle phalanx toe 2  R": {
+    "ar": "السلامية الوسطى للقدم الثاني الأيمن",
+    "descEn": "Increases flexibility of the right second toe",
+    "descAr": "زيادة مرونة الإصبع الثاني الأيمن"
+  },
+  "Middle phalanx toe 2 (Right)": {
+    "ar": "السلامية الوسطى للقدم الثاني الأيمن",
+    "descEn": "Increases flexibility of the right second toe",
+    "descAr": "زيادة مرونة الإصبع الثاني الأيمن"
+  },
+  "Middle phalanx toe 2 Right": {
+    "ar": "السلامية الوسطى للقدم الثاني الأيمن",
+    "descEn": "Increases flexibility of the right second toe",
+    "descAr": "زيادة مرونة الإصبع الثاني الأيمن"
+  },
+  "Distal phalanx toe 2 _L": {
+    "ar": "السلامية البعيدة للقدم الثاني الأيسر",
+    "descEn": "Supports balance during left walking",
+    "descAr": "دعم التوازن أثناء المشي الأيسر"
+  },
+  "Distal phalanx toe 2  L": {
+    "ar": "السلامية البعيدة للقدم الثاني الأيسر",
+    "descEn": "Supports balance during left walking",
+    "descAr": "دعم التوازن أثناء المشي الأيسر"
+  },
+  "Distal phalanx toe 2 (Left)": {
+    "ar": "السلامية البعيدة للقدم الثاني الأيسر",
+    "descEn": "Supports balance during left walking",
+    "descAr": "دعم التوازن أثناء المشي الأيسر"
+  },
+  "Distal phalanx toe 2 Left": {
+    "ar": "السلامية البعيدة للقدم الثاني الأيسر",
+    "descEn": "Supports balance during left walking",
+    "descAr": "دعم التوازن أثناء المشي الأيسر"
+  },
+  "Distal phalanx toe 2 _R": {
+    "ar": "السلامية البعيدة للقدم الثاني الأيمن",
+    "descEn": "Supports balance during right walking",
+    "descAr": "دعم التوازن أثناء المشي الأيمن"
+  },
+  "Distal phalanx toe 2  R": {
+    "ar": "السلامية البعيدة للقدم الثاني الأيمن",
+    "descEn": "Supports balance during right walking",
+    "descAr": "دعم التوازن أثناء المشي الأيمن"
+  },
+  "Distal phalanx toe 2 (Right)": {
+    "ar": "السلامية البعيدة للقدم الثاني الأيمن",
+    "descEn": "Supports balance during right walking",
+    "descAr": "دعم التوازن أثناء المشي الأيمن"
+  },
+  "Distal phalanx toe 2 Right": {
+    "ar": "السلامية البعيدة للقدم الثاني الأيمن",
+    "descEn": "Supports balance during right walking",
+    "descAr": "دعم التوازن أثناء المشي الأيمن"
+  },
+  "Proximal phalanx toe 3 _L": {
+    "ar": "السلامية القريبة للقدم الثالث الأيسر",
+    "descEn": "Allows movement of the left third toe",
+    "descAr": "السماح بحركة الإصبع الثالث الأيسر"
+  },
+  "Proximal phalanx toe 3  L": {
+    "ar": "السلامية القريبة للقدم الثالث الأيسر",
+    "descEn": "Allows movement of the left third toe",
+    "descAr": "السماح بحركة الإصبع الثالث الأيسر"
+  },
+  "Proximal phalanx toe 3 (Left)": {
+    "ar": "السلامية القريبة للقدم الثالث الأيسر",
+    "descEn": "Allows movement of the left third toe",
+    "descAr": "السماح بحركة الإصبع الثالث الأيسر"
+  },
+  "Proximal phalanx toe 3 Left": {
+    "ar": "السلامية القريبة للقدم الثالث الأيسر",
+    "descEn": "Allows movement of the left third toe",
+    "descAr": "السماح بحركة الإصبع الثالث الأيسر"
+  },
+  "Proximal phalanx toe 3 _R": {
+    "ar": "السلامية القريبة للقدم الثالث الأيمن",
+    "descEn": "Allows movement of the right third toe",
+    "descAr": "السماح بحركة الإصبع الثالث الأيمن"
+  },
+  "Proximal phalanx toe 3  R": {
+    "ar": "السلامية القريبة للقدم الثالث الأيمن",
+    "descEn": "Allows movement of the right third toe",
+    "descAr": "السماح بحركة الإصبع الثالث الأيمن"
+  },
+  "Proximal phalanx toe 3 (Right)": {
+    "ar": "السلامية القريبة للقدم الثالث الأيمن",
+    "descEn": "Allows movement of the right third toe",
+    "descAr": "السماح بحركة الإصبع الثالث الأيمن"
+  },
+  "Proximal phalanx toe 3 Right": {
+    "ar": "السلامية القريبة للقدم الثالث الأيمن",
+    "descEn": "Allows movement of the right third toe",
+    "descAr": "السماح بحركة الإصبع الثالث الأيمن"
+  },
+  "Middle phalanx toe 3 _L": {
+    "ar": "السلامية الوسطى للقدم الثالث الأيسر",
+    "descEn": "Increases flexibility of the left third toe",
+    "descAr": "زيادة مرونة الإصبع الثالث الأيسر"
+  },
+  "Middle phalanx toe 3  L": {
+    "ar": "السلامية الوسطى للقدم الثالث الأيسر",
+    "descEn": "Increases flexibility of the left third toe",
+    "descAr": "زيادة مرونة الإصبع الثالث الأيسر"
+  },
+  "Middle phalanx toe 3 (Left)": {
+    "ar": "السلامية الوسطى للقدم الثالث الأيسر",
+    "descEn": "Increases flexibility of the left third toe",
+    "descAr": "زيادة مرونة الإصبع الثالث الأيسر"
+  },
+  "Middle phalanx toe 3 Left": {
+    "ar": "السلامية الوسطى للقدم الثالث الأيسر",
+    "descEn": "Increases flexibility of the left third toe",
+    "descAr": "زيادة مرونة الإصبع الثالث الأيسر"
+  },
+  "Middle phalanx toe 3 _R": {
+    "ar": "السلامية الوسطى للقدم الثالث الأيمن",
+    "descEn": "Increases flexibility of the right third toe",
+    "descAr": "زيادة مرونة الإصبع الثالث الأيمن"
+  },
+  "Middle phalanx toe 3  R": {
+    "ar": "السلامية الوسطى للقدم الثالث الأيمن",
+    "descEn": "Increases flexibility of the right third toe",
+    "descAr": "زيادة مرونة الإصبع الثالث الأيمن"
+  },
+  "Middle phalanx toe 3 (Right)": {
+    "ar": "السلامية الوسطى للقدم الثالث الأيمن",
+    "descEn": "Increases flexibility of the right third toe",
+    "descAr": "زيادة مرونة الإصبع الثالث الأيمن"
+  },
+  "Middle phalanx toe 3 Right": {
+    "ar": "السلامية الوسطى للقدم الثالث الأيمن",
+    "descEn": "Increases flexibility of the right third toe",
+    "descAr": "زيادة مرونة الإصبع الثالث الأيمن"
+  },
+  "Distal phalanx toe 3 _L": {
+    "ar": "السلامية البعيدة للقدم الثالث الأيسر",
+    "descEn": "Supports balance during left walking",
+    "descAr": "دعم التوازن أثناء المشي الأيسر"
+  },
+  "Distal phalanx toe 3  L": {
+    "ar": "السلامية البعيدة للقدم الثالث الأيسر",
+    "descEn": "Supports balance during left walking",
+    "descAr": "دعم التوازن أثناء المشي الأيسر"
+  },
+  "Distal phalanx toe 3 (Left)": {
+    "ar": "السلامية البعيدة للقدم الثالث الأيسر",
+    "descEn": "Supports balance during left walking",
+    "descAr": "دعم التوازن أثناء المشي الأيسر"
+  },
+  "Distal phalanx toe 3 Left": {
+    "ar": "السلامية البعيدة للقدم الثالث الأيسر",
+    "descEn": "Supports balance during left walking",
+    "descAr": "دعم التوازن أثناء المشي الأيسر"
+  },
+  "Distal phalanx toe 3 _R": {
+    "ar": "السلامية البعيدة للقدم الثالث الأيمن",
+    "descEn": "Supports balance during right walking",
+    "descAr": "دعم التوازن أثناء المشي الأيمن"
+  },
+  "Distal phalanx toe 3  R": {
+    "ar": "السلامية البعيدة للقدم الثالث الأيمن",
+    "descEn": "Supports balance during right walking",
+    "descAr": "دعم التوازن أثناء المشي الأيمن"
+  },
+  "Distal phalanx toe 3 (Right)": {
+    "ar": "السلامية البعيدة للقدم الثالث الأيمن",
+    "descEn": "Supports balance during right walking",
+    "descAr": "دعم التوازن أثناء المشي الأيمن"
+  },
+  "Distal phalanx toe 3 Right": {
+    "ar": "السلامية البعيدة للقدم الثالث الأيمن",
+    "descEn": "Supports balance during right walking",
+    "descAr": "دعم التوازن أثناء المشي الأيمن"
+  },
+  "Proximal phalanx toe 4 _L": {
+    "ar": "السلامية القريبة للقدم الرابع الأيسر",
+    "descEn": "Allows movement of the left fourth toe",
+    "descAr": "السماح بحركة الإصبع الرابع الأيسر"
+  },
+  "Proximal phalanx toe 4  L": {
+    "ar": "السلامية القريبة للقدم الرابع الأيسر",
+    "descEn": "Allows movement of the left fourth toe",
+    "descAr": "السماح بحركة الإصبع الرابع الأيسر"
+  },
+  "Proximal phalanx toe 4 (Left)": {
+    "ar": "السلامية القريبة للقدم الرابع الأيسر",
+    "descEn": "Allows movement of the left fourth toe",
+    "descAr": "السماح بحركة الإصبع الرابع الأيسر"
+  },
+  "Proximal phalanx toe 4 Left": {
+    "ar": "السلامية القريبة للقدم الرابع الأيسر",
+    "descEn": "Allows movement of the left fourth toe",
+    "descAr": "السماح بحركة الإصبع الرابع الأيسر"
+  },
+  "Proximal phalanx toe 4 _R": {
+    "ar": "السلامية القريبة للقدم الرابع الأيمن",
+    "descEn": "Allows movement of the right fourth toe",
+    "descAr": "السماح بحركة الإصبع الرابع الأيمن"
+  },
+  "Proximal phalanx toe 4  R": {
+    "ar": "السلامية القريبة للقدم الرابع الأيمن",
+    "descEn": "Allows movement of the right fourth toe",
+    "descAr": "السماح بحركة الإصبع الرابع الأيمن"
+  },
+  "Proximal phalanx toe 4 (Right)": {
+    "ar": "السلامية القريبة للقدم الرابع الأيمن",
+    "descEn": "Allows movement of the right fourth toe",
+    "descAr": "السماح بحركة الإصبع الرابع الأيمن"
+  },
+  "Proximal phalanx toe 4 Right": {
+    "ar": "السلامية القريبة للقدم الرابع الأيمن",
+    "descEn": "Allows movement of the right fourth toe",
+    "descAr": "السماح بحركة الإصبع الرابع الأيمن"
+  },
+  "Middle phalanx toe 4 _L": {
+    "ar": "السلامية الوسطى للقدم الرابع الأيسر",
+    "descEn": "Increases flexibility of the left fourth toe",
+    "descAr": "زيادة مرونة الإصبع الرابع الأيسر"
+  },
+  "Middle phalanx toe 4  L": {
+    "ar": "السلامية الوسطى للقدم الرابع الأيسر",
+    "descEn": "Increases flexibility of the left fourth toe",
+    "descAr": "زيادة مرونة الإصبع الرابع الأيسر"
+  },
+  "Middle phalanx toe 4 (Left)": {
+    "ar": "السلامية الوسطى للقدم الرابع الأيسر",
+    "descEn": "Increases flexibility of the left fourth toe",
+    "descAr": "زيادة مرونة الإصبع الرابع الأيسر"
+  },
+  "Middle phalanx toe 4 Left": {
+    "ar": "السلامية الوسطى للقدم الرابع الأيسر",
+    "descEn": "Increases flexibility of the left fourth toe",
+    "descAr": "زيادة مرونة الإصبع الرابع الأيسر"
+  },
+  "Middle phalanx toe 4 _R": {
+    "ar": "السلامية الوسطى للقدم الرابع الأيمن",
+    "descEn": "Increases flexibility of the right fourth toe",
+    "descAr": "زيادة مرونة الإصبع الرابع الأيمن"
+  },
+  "Middle phalanx toe 4  R": {
+    "ar": "السلامية الوسطى للقدم الرابع الأيمن",
+    "descEn": "Increases flexibility of the right fourth toe",
+    "descAr": "زيادة مرونة الإصبع الرابع الأيمن"
+  },
+  "Middle phalanx toe 4 (Right)": {
+    "ar": "السلامية الوسطى للقدم الرابع الأيمن",
+    "descEn": "Increases flexibility of the right fourth toe",
+    "descAr": "زيادة مرونة الإصبع الرابع الأيمن"
+  },
+  "Middle phalanx toe 4 Right": {
+    "ar": "السلامية الوسطى للقدم الرابع الأيمن",
+    "descEn": "Increases flexibility of the right fourth toe",
+    "descAr": "زيادة مرونة الإصبع الرابع الأيمن"
+  },
+  "Distal phalanx toe 4 _L": {
+    "ar": "السلامية البعيدة للقدم الرابع الأيسر",
+    "descEn": "Supports balance during left walking",
+    "descAr": "دعم التوازن أثناء المشي الأيسر"
+  },
+  "Distal phalanx toe 4  L": {
+    "ar": "السلامية البعيدة للقدم الرابع الأيسر",
+    "descEn": "Supports balance during left walking",
+    "descAr": "دعم التوازن أثناء المشي الأيسر"
+  },
+  "Distal phalanx toe 4 (Left)": {
+    "ar": "السلامية البعيدة للقدم الرابع الأيسر",
+    "descEn": "Supports balance during left walking",
+    "descAr": "دعم التوازن أثناء المشي الأيسر"
+  },
+  "Distal phalanx toe 4 Left": {
+    "ar": "السلامية البعيدة للقدم الرابع الأيسر",
+    "descEn": "Supports balance during left walking",
+    "descAr": "دعم التوازن أثناء المشي الأيسر"
+  },
+  "Distal phalanx toe 4 _R": {
+    "ar": "السلامية البعيدة للقدم الرابع الأيمن",
+    "descEn": "Supports balance during right walking",
+    "descAr": "دعم التوازن أثناء المشي الأيمن"
+  },
+  "Distal phalanx toe 4  R": {
+    "ar": "السلامية البعيدة للقدم الرابع الأيمن",
+    "descEn": "Supports balance during right walking",
+    "descAr": "دعم التوازن أثناء المشي الأيمن"
+  },
+  "Distal phalanx toe 4 (Right)": {
+    "ar": "السلامية البعيدة للقدم الرابع الأيمن",
+    "descEn": "Supports balance during right walking",
+    "descAr": "دعم التوازن أثناء المشي الأيمن"
+  },
+  "Distal phalanx toe 4 Right": {
+    "ar": "السلامية البعيدة للقدم الرابع الأيمن",
+    "descEn": "Supports balance during right walking",
+    "descAr": "دعم التوازن أثناء المشي الأيمن"
+  },
+  "Proximal phalanx toe 5 _L": {
+    "ar": "السلامية القريبة للقدم الخامس الأيسر",
+    "descEn": "Allows movement of the left fifth toe",
+    "descAr": "السماح بحركة الإصبع الخامس الأيسر"
+  },
+  "Proximal phalanx toe 5  L": {
+    "ar": "السلامية القريبة للقدم الخامس الأيسر",
+    "descEn": "Allows movement of the left fifth toe",
+    "descAr": "السماح بحركة الإصبع الخامس الأيسر"
+  },
+  "Proximal phalanx toe 5 (Left)": {
+    "ar": "السلامية القريبة للقدم الخامس الأيسر",
+    "descEn": "Allows movement of the left fifth toe",
+    "descAr": "السماح بحركة الإصبع الخامس الأيسر"
+  },
+  "Proximal phalanx toe 5 Left": {
+    "ar": "السلامية القريبة للقدم الخامس الأيسر",
+    "descEn": "Allows movement of the left fifth toe",
+    "descAr": "السماح بحركة الإصبع الخامس الأيسر"
+  },
+  "Proximal phalanx toe 5 _R": {
+    "ar": "السلامية القريبة للقدم الخامس الأيمن",
+    "descEn": "Allows movement of the right fifth toe",
+    "descAr": "السماح بحركة الإصبع الخامس الأيمن"
+  },
+  "Proximal phalanx toe 5  R": {
+    "ar": "السلامية القريبة للقدم الخامس الأيمن",
+    "descEn": "Allows movement of the right fifth toe",
+    "descAr": "السماح بحركة الإصبع الخامس الأيمن"
+  },
+  "Proximal phalanx toe 5 (Right)": {
+    "ar": "السلامية القريبة للقدم الخامس الأيمن",
+    "descEn": "Allows movement of the right fifth toe",
+    "descAr": "السماح بحركة الإصبع الخامس الأيمن"
+  },
+  "Proximal phalanx toe 5 Right": {
+    "ar": "السلامية القريبة للقدم الخامس الأيمن",
+    "descEn": "Allows movement of the right fifth toe",
+    "descAr": "السماح بحركة الإصبع الخامس الأيمن"
+  },
+  "Middle phalanx toe 5 _L": {
+    "ar": "السلامية الوسطى للقدم الخامس الأيسر",
+    "descEn": "Increases flexibility of the left fifth toe",
+    "descAr": "زيادة مرونة الإصبع الخامس الأيسر"
+  },
+  "Middle phalanx toe 5  L": {
+    "ar": "السلامية الوسطى للقدم الخامس الأيسر",
+    "descEn": "Increases flexibility of the left fifth toe",
+    "descAr": "زيادة مرونة الإصبع الخامس الأيسر"
+  },
+  "Middle phalanx toe 5 (Left)": {
+    "ar": "السلامية الوسطى للقدم الخامس الأيسر",
+    "descEn": "Increases flexibility of the left fifth toe",
+    "descAr": "زيادة مرونة الإصبع الخامس الأيسر"
+  },
+  "Middle phalanx toe 5 Left": {
+    "ar": "السلامية الوسطى للقدم الخامس الأيسر",
+    "descEn": "Increases flexibility of the left fifth toe",
+    "descAr": "زيادة مرونة الإصبع الخامس الأيسر"
+  },
+  "Middle phalanx toe 5 _R": {
+    "ar": "السلامية الوسطى للقدم الخامس الأيمن",
+    "descEn": "Increases flexibility of the right fifth toe",
+    "descAr": "زيادة مرونة الإصبع الخامس الأيمن"
+  },
+  "Middle phalanx toe 5  R": {
+    "ar": "السلامية الوسطى للقدم الخامس الأيمن",
+    "descEn": "Increases flexibility of the right fifth toe",
+    "descAr": "زيادة مرونة الإصبع الخامس الأيمن"
+  },
+  "Middle phalanx toe 5 (Right)": {
+    "ar": "السلامية الوسطى للقدم الخامس الأيمن",
+    "descEn": "Increases flexibility of the right fifth toe",
+    "descAr": "زيادة مرونة الإصبع الخامس الأيمن"
+  },
+  "Middle phalanx toe 5 Right": {
+    "ar": "السلامية الوسطى للقدم الخامس الأيمن",
+    "descEn": "Increases flexibility of the right fifth toe",
+    "descAr": "زيادة مرونة الإصبع الخامس الأيمن"
+  },
+  "Distal phalanx toe 5 _L": {
+    "ar": "السلامية البعيدة للقدم الخامس الأيسر",
+    "descEn": "Supports balance during left walking",
+    "descAr": "دعم التوازن أثناء المشي الأيسر"
+  },
+  "Distal phalanx toe 5  L": {
+    "ar": "السلامية البعيدة للقدم الخامس الأيسر",
+    "descEn": "Supports balance during left walking",
+    "descAr": "دعم التوازن أثناء المشي الأيسر"
+  },
+  "Distal phalanx toe 5 (Left)": {
+    "ar": "السلامية البعيدة للقدم الخامس الأيسر",
+    "descEn": "Supports balance during left walking",
+    "descAr": "دعم التوازن أثناء المشي الأيسر"
+  },
+  "Distal phalanx toe 5 Left": {
+    "ar": "السلامية البعيدة للقدم الخامس الأيسر",
+    "descEn": "Supports balance during left walking",
+    "descAr": "دعم التوازن أثناء المشي الأيسر"
+  },
+  "Distal phalanx toe 5 _R": {
+    "ar": "السلامية البعيدة للقدم الخامس الأيمن",
+    "descEn": "Supports balance during right walking",
+    "descAr": "دعم التوازن أثناء المشي الأيمن"
+  },
+  "Distal phalanx toe 5  R": {
+    "ar": "السلامية البعيدة للقدم الخامس الأيمن",
+    "descEn": "Supports balance during right walking",
+    "descAr": "دعم التوازن أثناء المشي الأيمن"
+  },
+  "Distal phalanx toe 5 (Right)": {
+    "ar": "السلامية البعيدة للقدم الخامس الأيمن",
+    "descEn": "Supports balance during right walking",
+    "descAr": "دعم التوازن أثناء المشي الأيمن"
+  },
+  "Distal phalanx toe 5 Right": {
+    "ar": "السلامية البعيدة للقدم الخامس الأيمن",
+    "descEn": "Supports balance during right walking",
+    "descAr": "دعم التوازن أثناء المشي الأيمن"
+  },
+  "Stomach": {
+    "ar": "المعدة",
+    "descEn": "Primary organ of chemical and mechanical digestion.",
+    "descAr": "العضو الرئيسي للهضم الكيميائي والميكانيكي للطعام بواسطة حمض الهيدروكلوريك والبيبسين."
+  },
+  "stomach": {
+    "ar": "المعدة",
+    "descEn": "Primary organ of chemical and mechanical digestion.",
+    "descAr": "العضو الرئيسي للهضم الكيميائي والميكانيكي للطعام بواسطة حمض الهيدروكلوريك والبيبسين."
+  },
+  "Duodenum": {
+    "ar": "الاثني عشر",
+    "descEn": "First part of small intestine receiving bile and pancreatic enzymes.",
+    "descAr": "الجزء الأول من الأمعاء الدقيقة الذي يستقبل العصارة الصفراوية والإنزيمات البنكرياسية."
+  },
+  "duodenum": {
+    "ar": "الاثني عشر",
+    "descEn": "First part of small intestine receiving bile and pancreatic enzymes.",
+    "descAr": "الجزء الأول من الأمعاء الدقيقة الذي يستقبل العصارة الصفراوية والإنزيمات البنكرياسية."
+  },
+  "Jejunum": {
+    "ar": "الصائم",
+    "descEn": "Middle section of small intestine specialized in nutrient absorption.",
+    "descAr": "الجزء الأوسط من الأمعاء الدقيقة المتخصص في امتصاص العناصر الغذائية المهضومة."
+  },
+  "jejunum": {
+    "ar": "الصائم",
+    "descEn": "Middle section of small intestine specialized in nutrient absorption.",
+    "descAr": "الجزء الأوسط من الأمعاء الدقيقة المتخصص في امتصاص العناصر الغذائية المهضومة."
+  },
+  "Ileum": {
+    "ar": "اللفائفي",
+    "descEn": "Final section of small intestine absorbing vitamin B12 and bile salts.",
+    "descAr": "الجزء الأخير من الأمعاء الدقيقة المسؤول عن امتصاص فيتامين ب12 والأملاح الصفراوية."
+  },
+  "ileum": {
+    "ar": "اللفائفي",
+    "descEn": "Final section of small intestine absorbing vitamin B12 and bile salts.",
+    "descAr": "الجزء الأخير من الأمعاء الدقيقة المسؤول عن امتصاص فيتامين ب12 والأملاح الصفراوية."
+  },
+  "Ascending colon": {
+    "ar": "القولون الصاعد",
+    "descEn": "Carries feces upward through the right abdomen, absorbing water.",
+    "descAr": "ينقل الفضلات إلى الأعلى على الجانب الأيمن من البطن مع امتصاص الماء والأملاح."
+  },
+  "ascending colon": {
+    "ar": "القولون الصاعد",
+    "descEn": "Carries feces upward through the right abdomen, absorbing water.",
+    "descAr": "ينقل الفضلات إلى الأعلى على الجانب الأيمن من البطن مع امتصاص الماء والأملاح."
+  },
+  "Transverse colon": {
+    "ar": "القولون المستعرض",
+    "descEn": "Longest colon segment crossing the upper abdomen.",
+    "descAr": "أطول أجزاء القولون، يعبر أعلى البطن من اليمين إلى اليسار."
+  },
+  "transverse colon": {
+    "ar": "القولون المستعرض",
+    "descEn": "Longest colon segment crossing the upper abdomen.",
+    "descAr": "أطول أجزاء القولون، يعبر أعلى البطن من اليمين إلى اليسار."
+  },
+  "Descending colon": {
+    "ar": "القولون الهابط",
+    "descEn": "Stores feces to be emptied into rectum on the left abdomen.",
+    "descAr": "يخزن الفضلات وينقلها إلى القولون السيني والمستقيم على الجانب الأيسر."
+  },
+  "descending colon": {
+    "ar": "القولون الهابط",
+    "descEn": "Stores feces to be emptied into rectum on the left abdomen.",
+    "descAr": "يخزن الفضلات وينقلها إلى القولون السيني والمستقيم على الجانب الأيسر."
+  },
+  "Sigmoid colon": {
+    "ar": "القولون السيني",
+    "descEn": "S-shaped section connecting descending colon to rectum.",
+    "descAr": "جزء منحنٍ كالـ S يربط القولون الهابط بالمستقيم."
+  },
+  "sigmoid colon": {
+    "ar": "القولون السيني",
+    "descEn": "S-shaped section connecting descending colon to rectum.",
+    "descAr": "جزء منحنٍ كالـ S يربط القولون الهابط بالمستقيم."
+  },
+  "Vermiform appendix": {
+    "ar": "الزائدة الدودية",
+    "descEn": "Vestigial tube housing beneficial gut microbiota.",
+    "descAr": "أنبوب دقيق متصل بالأعور يعمل كمستودع للبكتيريا المعوية النافعة والمناعة."
+  },
+  "vermiform appendix": {
+    "ar": "الزائدة الدودية",
+    "descEn": "Vestigial tube housing beneficial gut microbiota.",
+    "descAr": "أنبوب دقيق متصل بالأعور يعمل كمستودع للبكتيريا المعوية النافعة والمناعة."
+  },
+  "Free taenia": {
+    "ar": "الشريطة القولونية الحرة",
+    "descEn": "Longitudinal muscular bands of the large intestine facilitating peristalsis.",
+    "descAr": "حزم عضلية طولية على جدار القولون تسهم في الحركة الدودية."
+  },
+  "free taenia": {
+    "ar": "الشريطة القولونية الحرة",
+    "descEn": "Longitudinal muscular bands of the large intestine facilitating peristalsis.",
+    "descAr": "حزم عضلية طولية على جدار القولون تسهم في الحركة الدودية."
+  },
+  "Gallbladder": {
+    "ar": "المرارة (الحويصلة الصفراوية)",
+    "descEn": "Stores and concentrates bile produced by the liver.",
+    "descAr": "تخزن وتركز العصارة الصفراوية القادمة من الكبد وتفرزها لتفكيك الدهون."
+  },
+  "gallbladder": {
+    "ar": "المرارة (الحويصلة الصفراوية)",
+    "descEn": "Stores and concentrates bile produced by the liver.",
+    "descAr": "تخزن وتركز العصارة الصفراوية القادمة من الكبد وتفرزها لتفكيك الدهون."
+  },
+  "Bile duct": {
+    "ar": "القناة الصفراوية",
+    "descEn": "Carries bile from gallbladder and liver into duodenum.",
+    "descAr": "تنقل العصارة الصفراوية إلى الاثني عشر لهضم الدهون."
+  },
+  "bile duct": {
+    "ar": "القناة الصفراوية",
+    "descEn": "Carries bile from gallbladder and liver into duodenum.",
+    "descAr": "تنقل العصارة الصفراوية إلى الاثني عشر لهضم الدهون."
+  },
+  "Oesophagus": {
+    "ar": "المريء",
+    "descEn": "Muscular tube transporting food bolus from pharynx to stomach.",
+    "descAr": "أنبوب عضلي ينقل البلعة الغذائية من البلعوم إلى المعدة بالحركة الدودية."
+  },
+  "oesophagus": {
+    "ar": "المريء",
+    "descEn": "Muscular tube transporting food bolus from pharynx to stomach.",
+    "descAr": "أنبوب عضلي ينقل البلعة الغذائية من البلعوم إلى المعدة بالحركة الدودية."
+  },
+  "Greater omentum": {
+    "ar": "الثرب الكبير",
+    "descEn": "Large apron-like fold of visceral peritoneum hanging from stomach.",
+    "descAr": "غشاء بريتوني دهني واسع يتدلى من المعدة لحماية وعزل أحشاء البطن مناعياً."
+  },
+  "greater omentum": {
+    "ar": "الثرب الكبير",
+    "descEn": "Large apron-like fold of visceral peritoneum hanging from stomach.",
+    "descAr": "غشاء بريتوني دهني واسع يتدلى من المعدة لحماية وعزل أحشاء البطن مناعياً."
+  },
+  "Lesser omentum": {
+    "ar": "الثرب الصغير",
+    "descEn": "Double layer of peritoneum extending from liver to stomach.",
+    "descAr": "غشاء بريتوني واصل بين الكبد والمعدة والاثني عشر."
+  },
+  "lesser omentum": {
+    "ar": "الثرب الصغير",
+    "descEn": "Double layer of peritoneum extending from liver to stomach.",
+    "descAr": "غشاء بريتوني واصل بين الكبد والمعدة والاثني عشر."
+  },
+  "Mesocolon": {
+    "ar": "مساريقا القولون",
+    "descEn": "Peritoneal fold anchoring the colon to the posterior abdominal wall.",
+    "descAr": "غشاء مساريقي يثبت القولون بالجدار الخلفي للبطن ويمرر الأوعية والأعصاب."
+  },
+  "mesocolon": {
+    "ar": "مساريقا القولون",
+    "descEn": "Peritoneal fold anchoring the colon to the posterior abdominal wall.",
+    "descAr": "غشاء مساريقي يثبت القولون بالجدار الخلفي للبطن ويمرر الأوعية والأعصاب."
+  },
+  "Liver": {
+    "ar": "الكبد",
+    "descEn": "Vital metabolic organ synthesizing bile, proteins, and detoxifying chemicals.",
+    "descAr": "أكبر غدة حشوية، مسؤولة عن تنقية السموم، تخليق البروتينات، وتصنيع العصارة الصفراوية."
+  },
+  "liver": {
+    "ar": "الكبد",
+    "descEn": "Vital metabolic organ synthesizing bile, proteins, and detoxifying chemicals.",
+    "descAr": "أكبر غدة حشوية، مسؤولة عن تنقية السموم، تخليق البروتينات، وتصنيع العصارة الصفراوية."
+  },
+  "Spleen": {
+    "ar": "الطحال",
+    "descEn": "Largest lymphoid organ filtering blood and recycling aged erythrocytes.",
+    "descAr": "أكبر عضو لمفاوي، يرشح الدم ويدمر كريات الدم الحمراء الهرمة ويخزن الصفائح."
+  },
+  "spleen": {
+    "ar": "الطحال",
+    "descEn": "Largest lymphoid organ filtering blood and recycling aged erythrocytes.",
+    "descAr": "أكبر عضو لمفاوي، يرشح الدم ويدمر كريات الدم الحمراء الهرمة ويخزن الصفائح."
+  },
+  "Kidney": {
+    "ar": "الكلية",
+    "descEn": "Renal organ filtering waste products and urea to form urine.",
+    "descAr": "العضو الكلوي الأساسي لتنقية الدم من الفضلات واليوريا وضبط توازن السوائل والأملاح."
+  },
+  "kidney": {
+    "ar": "الكلية",
+    "descEn": "Renal organ filtering waste products and urea to form urine.",
+    "descAr": "العضو الكلوي الأساسي لتنقية الدم من الفضلات واليوريا وضبط توازن السوائل والأملاح."
+  },
+  "Pancreas": {
+    "ar": "البنكرياس",
+    "descEn": "Dual endocrine and exocrine gland producing insulin and digestive enzymes.",
+    "descAr": "غدة مزدوجة تفرز الإنسولين لتنظيم السكر والإنزيمات الهاضمة في الاثني عشر."
+  },
+  "pancreas": {
+    "ar": "البنكرياس",
+    "descEn": "Dual endocrine and exocrine gland producing insulin and digestive enzymes.",
+    "descAr": "غدة مزدوجة تفرز الإنسولين لتنظيم السكر والإنزيمات الهاضمة في الاثني عشر."
+  },
+  "Masseteric fascia": {
+    "ar": "اللفافة الماضغة",
+    "descEn": "Strong layer of deep cervical fascia covering the masseter muscle.",
+    "descAr": "طبقة ليفية متينة من اللفافة العنقية العميقة تغطي العضلة الماضغة وتثبتها."
+  },
+  "masseteric fascia": {
+    "ar": "اللفافة الماضغة",
+    "descEn": "Strong layer of deep cervical fascia covering the masseter muscle.",
+    "descAr": "طبقة ليفية متينة من اللفافة العنقية العميقة تغطي العضلة الماضغة وتثبتها."
+  },
+  "Temporal fascia": {
+    "ar": "اللفافة الصدغية",
+    "descEn": "Dense aponeurotic fascia covering the temporalis muscle.",
+    "descAr": "لفافة ليفية قوية تغطي العضلة الصدغية وتوفر منشأً لأليافها العضلية."
+  },
+  "temporal fascia": {
+    "ar": "اللفافة الصدغية",
+    "descEn": "Dense aponeurotic fascia covering the temporalis muscle.",
+    "descAr": "لفافة ليفية قوية تغطي العضلة الصدغية وتوفر منشأً لأليافها العضلية."
+  },
+  "Diaphragmatic fascia": {
+    "ar": "اللفافة الحجابية",
+    "descEn": "Fascia covering both surfaces of the thoracoabdominal diaphragm.",
+    "descAr": "غشاء ليفي يغطي سطحي عضلة الحجاب الحاجز الصدري والبطني."
+  },
+  "diaphragmatic fascia": {
+    "ar": "اللفافة الحجابية",
+    "descEn": "Fascia covering both surfaces of the thoracoabdominal diaphragm.",
+    "descAr": "غشاء ليفي يغطي سطحي عضلة الحجاب الحاجز الصدري والبطني."
+  },
+  "Fascia lata": {
+    "ar": "اللفافة العريضة للفخذ",
+    "descEn": "Deep fascia of the thigh forming a dense muscular compression sleeve.",
+    "descAr": "اللفافة العميقة للفخذ التي تحيط بعضلات الفخذ كالجراب الضاغط لتحسين العائد الوريدي."
+  },
+  "fascia lata": {
+    "ar": "اللفافة العريضة للفخذ",
+    "descEn": "Deep fascia of the thigh forming a dense muscular compression sleeve.",
+    "descAr": "اللفافة العميقة للفخذ التي تحيط بعضلات الفخذ كالجراب الضاغط لتحسين العائد الوريدي."
+  },
+  "Transversalis fascia": {
+    "ar": "اللفافة المستعرضة للبطن",
+    "descEn": "Thin aponeurotic layer between transversus abdominis and peritoneum.",
+    "descAr": "طبقة ليفية رقيقة تبطن عضلة البطن المستعرضة وتفصلها عن الغشاء البريتوني."
+  },
+  "transversalis fascia": {
+    "ar": "اللفافة المستعرضة للبطن",
+    "descEn": "Thin aponeurotic layer between transversus abdominis and peritoneum.",
+    "descAr": "طبقة ليفية رقيقة تبطن عضلة البطن المستعرضة وتفصلها عن الغشاء البريتوني."
+  },
+  "Crural fascia": {
+    "ar": "لفافة الساق العميقة",
+    "descEn": "Deep investing fascia of the lower leg binding leg compartments.",
+    "descAr": "اللفافة العميقة المحيطة بمقصورات عضلات الساق الأمامية والخلفية والوحشية."
+  },
+  "crural fascia": {
+    "ar": "لفافة الساق العميقة",
+    "descEn": "Deep investing fascia of the lower leg binding leg compartments.",
+    "descAr": "اللفافة العميقة المحيطة بمقصورات عضلات الساق الأمامية والخلفية والوحشية."
+  },
+  "Iliopsoas fascia": {
+    "ar": "اللفافة الحرقفية القطنية",
+    "descEn": "Strong fascia covering the psoas major and iliacus muscles.",
+    "descAr": "لفافة متينة تغطي العضلتين القطنية والحرقفية وتمر عبر الحوض إلى الفخذ."
+  },
+  "iliopsoas fascia": {
+    "ar": "اللفافة الحرقفية القطنية",
+    "descEn": "Strong fascia covering the psoas major and iliacus muscles.",
+    "descAr": "لفافة متينة تغطي العضلتين القطنية والحرقفية وتمر عبر الحوض إلى الفخذ."
+  },
+  "Interosseous membrane of leg": {
+    "ar": "الغشاء بين عظمي الساق (الظنبوب والشظية)",
+    "descEn": "Broad syndesmosis ligament connecting the tibia and fibula.",
+    "descAr": "غشاء ليفي متين يربط بين عظمي الساق (الظنبوب والشظية) ويوفر مرتكزاً لعضلات الساق."
+  },
+  "interosseous membrane of leg": {
+    "ar": "الغشاء بين عظمي الساق (الظنبوب والشظية)",
+    "descEn": "Broad syndesmosis ligament connecting the tibia and fibula.",
+    "descAr": "غشاء ليفي متين يربط بين عظمي الساق (الظنبوب والشظية) ويوفر مرتكزاً لعضلات الساق."
+  },
+  "Anterior tibiofibular ligament": {
+    "ar": "الرباط الظنبوبي الشظوي الأمامي",
+    "descEn": "Flat triangular ligament reinforcing the anterior syndesmosis of the ankle.",
+    "descAr": "رباط مثلث قوي يربط أسفل الظنبوب بالشظية ويثبت شوكة مفصل الكاحل."
+  },
+  "anterior tibiofibular ligament": {
+    "ar": "الرباط الظنبوبي الشظوي الأمامي",
+    "descEn": "Flat triangular ligament reinforcing the anterior syndesmosis of the ankle.",
+    "descAr": "رباط مثلث قوي يربط أسفل الظنبوب بالشظية ويثبت شوكة مفصل الكاحل."
+  },
+  "Posterior tibiofibular ligament": {
+    "ar": "الرباط الظنبوبي الشظوي الخلفي",
+    "descEn": "Thick fibrous band stabilizing the posterior syndesmotic ankle mortise.",
+    "descAr": "شريط ليفي سميك يثبت مفصل الكاحل من الخلف ويمنع تباعد الشظية عن الظنبوب."
+  },
+  "posterior tibiofibular ligament": {
+    "ar": "الرباط الظنبوبي الشظوي الخلفي",
+    "descEn": "Thick fibrous band stabilizing the posterior syndesmotic ankle mortise.",
+    "descAr": "شريط ليفي سميك يثبت مفصل الكاحل من الخلف ويمنع تباعد الشظية عن الظنبوب."
+  },
+  "Acetabular labrum": {
+    "ar": "الشفا الحقي (مفصل الحوض)",
+    "descEn": "Fibrocartilaginous ring deepening the hip socket to stabilize the femoral head.",
+    "descAr": "حلقة غضروفية ليفية تعمق التجويف الحقي بالحوض لتثبيت رأس عظم الفخذ بإحكام."
+  },
+  "acetabular labrum": {
+    "ar": "الشفا الحقي (مفصل الحوض)",
+    "descEn": "Fibrocartilaginous ring deepening the hip socket to stabilize the femoral head.",
+    "descAr": "حلقة غضروفية ليفية تعمق التجويف الحقي بالحوض لتثبيت رأس عظم الفخذ بإحكام."
+  },
+  "Articular capsule of hip joint": {
+    "ar": "المحفظة المفصلية لمفصل الورك",
+    "descEn": "Strong dense fibrous envelope enclosing the ball-and-socket hip articulation.",
+    "descAr": "غلاف ليفي محكم يحيط بمفصل الفخذ الكروي الحقي ويحافظ على السائل الزليلي."
+  },
+  "articular capsule of hip joint": {
+    "ar": "المحفظة المفصلية لمفصل الورك",
+    "descEn": "Strong dense fibrous envelope enclosing the ball-and-socket hip articulation.",
+    "descAr": "غلاف ليفي محكم يحيط بمفصل الفخذ الكروي الحقي ويحافظ على السائل الزليلي."
+  },
+  "Iliofemoral ligament": {
+    "ar": "الرباط الحرقفي الفخزي (رباط بيغلو)",
+    "descEn": "Strongest ligament in the human body, preventing hip hyperextension.",
+    "descAr": "أقوى رباط في جسم الإنسان على شكل حرف Y، يمنع فرط بسط مفصل الفخذ أثناء الوقوف."
+  },
+  "iliofemoral ligament": {
+    "ar": "الرباط الحرقفي الفخزي (رباط بيغلو)",
+    "descEn": "Strongest ligament in the human body, preventing hip hyperextension.",
+    "descAr": "أقوى رباط في جسم الإنسان على شكل حرف Y، يمنع فرط بسط مفصل الفخذ أثناء الوقوف."
+  },
+  "Ischiofemoral ligament": {
+    "ar": "الرباط الإسكي الفخزي",
+    "descEn": "Spiral ligament strengthening the posterior aspect of the hip joint.",
+    "descAr": "رباط ليفي حلزوني يثبت محفظة مفصل الفخذ من الخلف ويحد من الدوران الداخلي."
+  },
+  "ischiofemoral ligament": {
+    "ar": "الرباط الإسكي الفخزي",
+    "descEn": "Spiral ligament strengthening the posterior aspect of the hip joint.",
+    "descAr": "رباط ليفي حلزوني يثبت محفظة مفصل الفخذ من الخلف ويحد من الدوران الداخلي."
+  },
+  "Thymus": {
+    "ar": "الغدة الزعترية (التيموسية)",
+    "descEn": "Primary lymphoid organ in the anterior mediastinum where T-lymphocytes mature.",
+    "descAr": "غدة لمفاوية رئيسية خلف القص تنضج فيها الخلايا اللمفاوية التائية (T-Cells) للمناعة."
+  },
+  "thymus": {
+    "ar": "الغدة الزعترية (التيموسية)",
+    "descEn": "Primary lymphoid organ in the anterior mediastinum where T-lymphocytes mature.",
+    "descAr": "غدة لمفاوية رئيسية خلف القص تنضج فيها الخلايا اللمفاوية التائية (T-Cells) للمناعة."
+  },
+  "Left lobe of thymus": {
+    "ar": "الفص الأيسر للغدة الزعترية",
+    "descEn": "Left anatomical lobe of the mediastinal thymus gland.",
+    "descAr": "الفص الأيسر للغدة التيموسية المسؤولة عن التدريب المناعي للخلايا التائية."
+  },
+  "left lobe of thymus": {
+    "ar": "الفص الأيسر للغدة الزعترية",
+    "descEn": "Left anatomical lobe of the mediastinal thymus gland.",
+    "descAr": "الفص الأيسر للغدة التيموسية المسؤولة عن التدريب المناعي للخلايا التائية."
+  },
+  "Right lobe of thymus": {
+    "ar": "الفص الأيمن للغدة الزعترية",
+    "descEn": "Right anatomical lobe of the mediastinal thymus gland.",
+    "descAr": "الفص الأيمن للغدة التيموسية المسؤولة عن التدريب المناعي للخلايا التائية."
+  },
+  "right lobe of thymus": {
+    "ar": "الفص الأيمن للغدة الزعترية",
+    "descEn": "Right anatomical lobe of the mediastinal thymus gland.",
+    "descAr": "الفص الأيمن للغدة التيموسية المسؤولة عن التدريب المناعي للخلايا التائية."
+  },
+  "Lateral aortic nodes": {
+    "ar": "العقد اللمفاوية الأبهرية الجانبية",
+    "descEn": "Para-aortic lymph nodes filtering lymph from kidneys, adrenals, and gonads.",
+    "descAr": "عقد لمفاوية بجانب الشريان الأبهر ترشح اللمف القادم من الكليتين والغدد التناسلية."
+  },
+  "lateral aortic nodes": {
+    "ar": "العقد اللمفاوية الأبهرية الجانبية",
+    "descEn": "Para-aortic lymph nodes filtering lymph from kidneys, adrenals, and gonads.",
+    "descAr": "عقد لمفاوية بجانب الشريان الأبهر ترشح اللمف القادم من الكليتين والغدد التناسلية."
+  },
+  "Pre-aortic nodes": {
+    "ar": "العقد اللمفاوية أمام الأبهر",
+    "descEn": "Major digestive lymph node chain lying on anterior abdominal aorta.",
+    "descAr": "مجموعة عقد لمفاوية رئيسية ترشح لمف الجهاز الهضمي والأمعاء قبل صبه بالقناة الصدرية."
+  },
+  "pre-aortic nodes": {
+    "ar": "العقد اللمفاوية أمام الأبهر",
+    "descEn": "Major digestive lymph node chain lying on anterior abdominal aorta.",
+    "descAr": "مجموعة عقد لمفاوية رئيسية ترشح لمف الجهاز الهضمي والأمعاء قبل صبه بالقناة الصدرية."
+  },
+  "Coeliac nodes": {
+    "ar": "العقد اللمفاوية الزلاقية",
+    "descEn": "Filter lymph draining from stomach, liver, spleen, and pancreas.",
+    "descAr": "عقد لمفاوية ترشح اللمف القادم من المعدة والكبد والبنكرياس والطحال."
+  },
+  "coeliac nodes": {
+    "ar": "العقد اللمفاوية الزلاقية",
+    "descEn": "Filter lymph draining from stomach, liver, spleen, and pancreas.",
+    "descAr": "عقد لمفاوية ترشح اللمف القادم من المعدة والكبد والبنكرياس والطحال."
+  },
+  "Splenic nodes": {
+    "ar": "العقد اللمفاوية الطحالية",
+    "descEn": "Lymph nodes situated along the splenic artery at the hilum of spleen.",
+    "descAr": "عقد لمفاوية تتوضع على مسار الشريان الطحالي عند سرة الطحال."
+  },
+  "splenic nodes": {
+    "ar": "العقد اللمفاوية الطحالية",
+    "descEn": "Lymph nodes situated along the splenic artery at the hilum of spleen.",
+    "descAr": "عقد لمفاوية تتوضع على مسار الشريان الطحالي عند سرة الطحال."
+  },
+  "Left colic nodes": {
+    "ar": "العقد اللمفاوية القولونية اليسرى",
+    "descEn": "Nodes filtering lymph from the descending colon along mesenteric vessels.",
+    "descAr": "عقد لمفاوية تصفي اللمف من القولون الهابط والجزء الأيسر من الأمعاء الغليظة."
+  },
+  "left colic nodes": {
+    "ar": "العقد اللمفاوية القولونية اليسرى",
+    "descEn": "Nodes filtering lymph from the descending colon along mesenteric vessels.",
+    "descAr": "عقد لمفاوية تصفي اللمف من القولون الهابط والجزء الأيسر من الأمعاء الغليظة."
   }
 }
