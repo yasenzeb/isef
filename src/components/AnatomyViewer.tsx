@@ -31,7 +31,7 @@ interface AnatomyViewerProps {
   isPresentationMode?: boolean;
 }
 
-export type AnatomySystemId = 'skeletal' | 'ecorche' | 'muscular' | 'cardiovascular' | 'nervous' | 'visceral' | 'joints' | 'lymphatic';
+export type AnatomySystemId = 'skeletal' | 'muscular' | 'cardiovascular' | 'nervous' | 'visceral' | 'joints' | 'lymphatic';
 
 interface SystemLayerConfig {
   id: AnatomySystemId;
@@ -46,8 +46,7 @@ interface SystemLayerConfig {
 
 const SYSTEM_LAYERS: SystemLayerConfig[] = [
   { id: 'skeletal', labelEn: 'Skeletal System (Bones)', labelAr: 'الهيكل العظمي', file: 'skeletal.glb', color: 0xe2ded4, icon: Bone, defaultVisible: true },
-  { id: 'ecorche', labelEn: 'Muscular Anatomy System', labelAr: 'التشريح العضلي الكامل', file: 'male_full_body_ecorche.glb', color: 0xa82020, icon: Activity, defaultVisible: false },
-  { id: 'muscular', labelEn: 'Deep Muscular Fibers', labelAr: 'الجهاز العضلي التفصيلي', file: 'muscular.glb', color: 0xb91c1c, icon: Activity, defaultVisible: false },
+  { id: 'muscular', labelEn: 'Muscular Anatomy System', labelAr: 'التشريح العضلي الكامل', file: 'muscular.glb', color: 0xbe123c, icon: Activity, defaultVisible: false },
   { id: 'cardiovascular', labelEn: 'Cardiovascular & Heart', labelAr: 'الجهاز الدوري والقلب', file: 'cardiovascular.glb', color: 0xdc2626, icon: Heart, defaultVisible: false },
   { id: 'nervous', labelEn: 'Nervous System & Brain', labelAr: 'الجهاز العصبي والدماغ', file: 'nervous.glb', color: 0xeab308, icon: Brain, defaultVisible: false },
   { id: 'visceral', labelEn: 'Visceral Organs', labelAr: 'الأعضاء الحشوية', file: 'visceral.glb', color: 0xbf6b59, icon: Layers, defaultVisible: false },
@@ -437,17 +436,12 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
               metalness = 0.02;
             }
 
-            // For models with embedded textured materials (e.g. ecorche), preserve textures
-            const isTexturedLayer = sysConfig.id === 'ecorche';
-            if (isTexturedLayer && mesh.material) {
-              const origMat = (Array.isArray(mesh.material) ? mesh.material[0] : mesh.material) as THREE.MeshStandardMaterial;
+            // For models with embedded textures, preserve their original texture map
+            const origMat = (Array.isArray(mesh.material) ? mesh.material[0] : mesh.material) as THREE.MeshStandardMaterial;
+            if (origMat && origMat.map) {
               const texturedMat = origMat.clone();
-              texturedMat.roughness = 0.45;
-              texturedMat.metalness = 0.05;
-              if (!texturedMat.map) {
-                // Vibrant anatomical muscle crimson tone
-                texturedMat.color = new THREE.Color(0xa82020);
-              }
+              texturedMat.roughness = roughness;
+              texturedMat.metalness = metalness;
               mesh.material = texturedMat;
               originalMaterials.current.set(mesh, texturedMat.clone());
             } else {
@@ -469,19 +463,9 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           }
         });
 
-        // Accurate anatomical scale and alignment for user models vs standard meters coordinates
-        if (sysConfig.id === 'ecorche') {
-          // male_full_body_ecorche.glb: raw height is 68.08 units with center at origin.
-          // Scale to exact 1.74m anatomical human height matching skeletal.glb
-          const ecorcheScale = 0.02555;
-          root.scale.set(ecorcheScale, ecorcheScale, ecorcheScale);
-          // Precise Z-offset and Y-offset to sync cervical vertebrae, rib cage, and femoral heads
-          root.position.set(0, 1.102, -0.015);
-        } else {
-          // Authentic Z-Anatomy systems (skeletal, muscular, cardiovascular, nervous, visceral, joints, lymphatic)
-          // share origin (0,0,0) in anatomical space
-          root.position.set(0, 0, 0);
-        }
+        // All authentic Z-Anatomy systems (skeletal, muscular, cardiovascular, nervous, visceral, joints, lymphatic)
+        // are perfectly registered at world origin (0,0,0) in anatomical coordinates
+        root.position.set(0, 0, 0);
 
         root.visible = visibleSystemsRef.current[sysConfig.id] ?? !!sysConfig.defaultVisible;
 
@@ -601,8 +585,8 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         const sysId = (hit.userData.systemId || 'skeletal') as AnatomySystemId;
         const sysConfig = SYSTEM_LAYERS.find(s => s.id === sysId) || SYSTEM_LAYERS[0];
 
-        // Specific anatomical resolution for full body ecorche when clicking generic mesh objects
-        if (sysId === 'ecorche' || cleanName.includes('Object') || cleanName.includes('Decimation') || cleanName.includes('mesh')) {
+        // Specific anatomical resolution for unnamed meshes when clicking generic mesh objects
+        if (cleanName.includes('Object') || cleanName.includes('Decimation') || cleanName.includes('mesh')) {
           const worldPos = new THREE.Vector3();
           hit.getWorldPosition(worldPos);
           const y = worldPos.y;
@@ -743,12 +727,42 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     const newIsolate = !isIsolated;
     setIsIsolated(newIsolate);
 
+    const hit = selectedMeshRef.current;
+
+    // When focusing/isolating, restore natural realistic material (removing the cyan selection tint)
+    if (newIsolate) {
+      const origMat = originalMaterials.current.get(hit);
+      if (origMat) {
+        hit.material = origMat.clone();
+      }
+
+      // Smoothly focus camera onto the selected specimen
+      if (cameraRef.current && controlsRef.current) {
+        const box = new THREE.Box3().setFromObject(hit);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z, 0.15);
+
+        controlsRef.current.target.copy(center);
+        cameraRef.current.position.set(center.x, center.y + maxDim * 0.4, center.z + maxDim * 2.2);
+        controlsRef.current.update();
+      }
+    } else {
+      // When exiting isolation, restore selection highlight on active mesh
+      hit.material = new THREE.MeshStandardMaterial({
+        color: 0x38bdf8,
+        emissive: 0x0284c7,
+        emissiveIntensity: 0.5,
+        roughness: 0.25,
+      });
+    }
+
     systemGroups.current.forEach((grp) => {
       grp.traverse((c) => {
         if ((c as THREE.Mesh).isMesh) {
           const mesh = c as THREE.Mesh;
           if (newIsolate) {
-            mesh.visible = mesh === selectedMeshRef.current;
+            mesh.visible = mesh === hit;
           } else {
             const sysId = mesh.userData.systemId as AnatomySystemId;
             mesh.visible = !!visibleSystems[sysId];

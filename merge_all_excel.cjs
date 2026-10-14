@@ -1,0 +1,193 @@
+const fs = require('fs');
+
+const userExcelData = [
+  // Visceral
+  ['الرئة اليسرى', 'Left lung', 'تبادل الأكسجين وثاني أكسيد الكربون', 'Exchanges oxygen and carbon dioxide'],
+  ['الرئة اليمنى', 'Right lung', 'تبادل الأكسجين وثاني أكسيد الكربون', 'Exchanges oxygen and carbon dioxide'],
+  ['القصبة الهوائية', 'Trachea', 'نقل الهواء إلى الرئتين', 'Transports air to the lungs'],
+  ['الكبد', 'Liver', 'تنقية الدم وإنتاج الصفراء', 'Filters blood and produces bile'],
+  ['المعدة', 'Stomach', 'هضم الطعام', 'Digests food'],
+  ['الأمعاء الدقيقة', 'Small intestine', 'امتصاص الغذاء', 'Absorbs nutrients'],
+  ['الأمعاء الغليظة', 'Large intestine', 'امتصاص الماء وتكوين البراز', 'Absorbs water and forms feces'],
+  ['المثانة', 'Bladder', 'تخزين البول', 'Stores urine'],
+  ['المثانة البولية', 'Urinary bladder', 'تخزين البول وإخراجه', 'Stores and empties urine'],
+
+  // Muscles Anterior
+  ['العضلة القصية الترقوية الحلمية _L', 'Sternocleidomastoid _L', 'تدوير الرقبة وثنيها', 'Rotates and flexes the neck'],
+  ['العضلة القصية الترقوية الحلمية _R', 'Sternocleidomastoid _R', 'تدوير الرقبة وثنيها', 'Rotates and flexes the neck'],
+  ['العضلة الدالية _L', 'Deltoid _L', 'رفع الذراع للجانب', 'Raises the arm to the side'],
+  ['العضلة الدالية _R', 'Deltoid _R', 'رفع الذراع للجانب', 'Raises the arm to the side'],
+  ['العضلة الصدرية الكبرى _L', 'Pectoralis major _L', 'تحريك الذراع للأمام والداخل', 'Moves the arm forward and inward'],
+  ['العضلة الصدرية الكبرى _R', 'Pectoralis major _R', 'تحريك الذراع للأمام والداخل', 'Moves the arm forward and inward'],
+  ['العضلة ذات الرأسين العضدية _L', 'Biceps brachii _L', 'ثني الكوع', 'Flexes the elbow'],
+  ['العضلة ذات الرأسين العضدية _R', 'Biceps brachii _R', 'ثني الكوع', 'Flexes the elbow'],
+  ['العضلة المستقيمة البطنية', 'Rectus abdominis', 'ثني الجذع وتثبيت الحوض', 'Flexes the trunk and stabilizes the pelvis'],
+  ['العضلة المائلة الخارجية _L', 'External oblique _L', 'تدوير الجذع', 'Rotates the trunk'],
+  ['العضلة المائلة الخارجية _R', 'External oblique _R', 'تدوير الجذع', 'Rotates the trunk'],
+  ['العضلة العضدية الكعبرية _L', 'Brachioradialis _L', 'ثني الكوع', 'Flexes the elbow'],
+  ['العضلة العضدية الكعبرية _R', 'Brachioradialis _R', 'ثني الكوع', 'Flexes the elbow'],
+  ['العضلة القابضة للرسغ الكعبرية _L', 'Flexor carpi radialis _L', 'ثني الرسغ', 'Flexes the wrist'],
+  ['العضلة القابضة للرسغ الكعبرية _R', 'Flexor carpi radialis _R', 'ثني الرسغ', 'Flexes the wrist'],
+  ['العضلة المستقيمة الفخذية _L', 'Rectus femoris _L', 'فرد الركبة', 'Extends the knee'],
+  ['العضلة المستقيمة الفخذية _R', 'Rectus femoris _R', 'فرد الركبة', 'Extends the knee'],
+  ['العضلة المتسعة الوحشية _L', 'Vastus lateralis _L', 'فرد الركبة', 'Extends the knee'],
+  ['العضلة المتسعة الوحشية _R', 'Vastus lateralis _R', 'فرد الركبة', 'Extends the knee'],
+  ['العضلة المتسعة الإنسية _L', 'Vastus medialis _L', 'فرد الركبة', 'Extends the knee'],
+  ['العضلة المتسعة الإنسية _R', 'Vastus medialis _R', 'فرد الركبة', 'Extends the knee'],
+  ['العضلة الخياطية _L', 'Sartorius _L', 'ثني الفخذ والركبة', 'Flexes the hip and knee'],
+  ['العضلة الخياطية _R', 'Sartorius _R', 'ثني الفخذ والركبة', 'Flexes the hip and knee'],
+  ['العضلة الظنبوبية الأمامية _L', 'Tibialis anterior _L', 'رفع القدم للأعلى', 'Lifts the foot upward'],
+  ['العضلة الظنبوبية الأمامية _R', 'Tibialis anterior _R', 'رفع القدم للأعلى', 'Lifts the foot upward'],
+  ['العضلة الشظوية الطويلة _L', 'Fibularis longus _L', 'تثبيت قوس القدم', 'Stabilizes the foot arch'],
+  ['العضلة الشظوية الطويلة _R', 'Fibularis longus _R', 'تثبيت قوس القدم', 'Stabilizes the foot arch'],
+  ['العضلة الشظوية القصيرة _L', 'Fibularis brevis _L', 'ثني القدم للخارج', 'Everts the foot'],
+  ['العضلة الشظوية القصيرة _R', 'Fibularis brevis _R', 'ثني القدم للخارج', 'Everts the foot'],
+  ['العضلة الباسطة الطويلة للأصابع _L', 'Extensor digitorum longus _L', 'فرد أصابع القدم', 'Extends the toes'],
+  ['العضلة الباسطة الطويلة للأصابع _R', 'Extensor digitorum longus _R', 'فرد أصابع القدم', 'Extends the toes'],
+  ['العضلة الباسطة الطويلة لإبهام القدم _L', 'Extensor hallucis longus _L', 'فرد إبهام القدم', 'Extends the big toe'],
+  ['العضلة الباسطة الطويلة لإبهام القدم _R', 'Extensor hallucis longus _R', 'فرد إبهام القدم', 'Extends the big toe'],
+
+  // Muscles Posterior
+  ['العضلة الصدغية', 'Temporalis', 'رفع الفك السفلي', 'Elevates the mandible'],
+  ['العضلة الماضغة', 'Masseter', 'مضغ الطعام', 'Chews food'],
+  ['العضلة ثلاثية الرؤوس العضدية', 'Triceps brachii', 'فرد الكوع', 'Extends the elbow'],
+  ['العضلة الظهرية العريضة', 'Latissimus dorsi', 'تحريك الذراع للخلف والأسفل', 'Moves the arm backward and downward'],
+  ['العضلة الألوية الكبرى', 'Gluteus maximus', 'فرد الفخذ ورفع الجسم', 'Extends the hip and raises the body'],
+  ['العضلة ذات الرأسين الفخذية', 'Biceps femoris', 'ثني الركبة', 'Flexes the knee'],
+  ['العضلة نصف الوترية', 'Semitendinosus', 'ثني الركبة', 'Flexes the knee'],
+  ['العضلة نصف الغشائية', 'Semimembranosus', 'ثني الركبة', 'Flexes the knee'],
+  ['العضلة التوأمية', 'Gastrocnemius', 'دفع القدم للأسفل', 'Pushes the foot downward'],
+  ['العضلة النعلية', 'Soleus', 'دعم الوقوف', 'Supports standing'],
+  ['العضلة القابضة الطويلة لإبهام القدم', 'Flexor hallucis longus', 'ثني إبهام القدم', 'Flexes the big toe'],
+  ['العضلة القابضة الطويلة للأصابع', 'Flexor digitorum longus', 'ثني أصابع القدم', 'Flexes the toes'],
+  ['العضلة القذالية الجبهية', 'Occipitofrontalis', 'تحريك فروة الرأس', 'Moves the scalp'],
+  ['العضلة الشبه المنحرفة _L', 'Trapezius _L', 'رفع الكتف', 'Elevates the shoulder'],
+  ['العضلة الشبه المنحرفة _R', 'Trapezius _R', 'رفع الكتف', 'Elevates the shoulder'],
+  ['العضلة تحت الشوكة _L', 'Infraspinatus _L', 'تدوير الذراع للخارج', 'Rotates the arm outward'],
+  ['العضلة تحت الشوكة _R', 'Infraspinatus _R', 'تدوير الذراع للخارج', 'Rotates the arm outward'],
+  ['العضلة المدورة الكبرى _L', 'Teres major _L', 'تقريب الذراع وتدويرها للداخل', 'Adducts and internally rotates the arm'],
+  ['العضلة المدورة الكبرى _R', 'Teres major _R', 'تقريب الذراع وتدويرها للداخل', 'Adducts and internally rotates the arm'],
+  ['العضلة المدورة الصغرى _L', 'Teres minor _L', 'تدوير الذراع للخارج', 'Rotates the arm outward'],
+  ['العضلة المدورة الصغرى _R', 'Teres minor _R', 'تدوير الذراع للخارج', 'Rotates the arm outward'],
+  ['العضلة الألوية المتوسطة _L', 'Gluteus medius _L', 'تثبيت الحوض', 'Stabilizes the pelvis'],
+  ['العضلة الألوية المتوسطة _R', 'Gluteus medius _R', 'تثبيت الحوض', 'Stabilizes the pelvis'],
+  ['العضلة الأخمصية _L', 'Plantaris _L', 'مساعدة ثني الركبة والكاحل', 'Assists in flexing the knee and ankle'],
+  ['العضلة الأخمصية _R', 'Plantaris _R', 'مساعدة ثني الركبة والكاحل', 'Assists in flexing the knee and ankle'],
+
+  // Cardiovascular
+  ['القلب', 'Heart', 'ضخ الدم لكل الجسم', 'Pumps blood throughout the body'],
+  ['الأبهر', 'Aorta', 'نقل الدم من القلب للجسم', 'Carries blood from the heart to the body'],
+  ['الشريان الأبهر', 'Aorta', 'نقل الدم من القلب للجسم', 'Carries blood from the heart to the body'],
+  ['الشريان الرئوي', 'Pulmonary artery', 'نقل الدم إلى الرئتين', 'Carries blood to the lungs'],
+  ['الوريد الرئوي', 'Pulmonary vein', 'إعادة الدم من الرئتين للقلب', 'Returns blood from the lungs to the heart'],
+  ['الوريد الأجوف العلوي', 'Superior vena cava', 'إعادة الدم من الجزء العلوي', 'Returns blood from the upper body'],
+  ['الوريد الأجوف السفلي', 'Inferior vena cava', 'إعادة الدم من الجزء السفلي', 'Returns blood from the lower body'],
+  ['الشريان السباتي _L', 'Carotid artery _L', 'تغذية الرأس والرقبة الأيسر', 'Supplies the left head and neck'],
+  ['الشريان السباتي _R', 'Carotid artery _R', 'تغذية الرأس والرقبة الأيمن', 'Supplies the right head and neck'],
+  ['الشريان تحت الترقوة _L', 'Subclavian artery _L', 'تغذية الذراع والكتف الأيسر', 'Supplies the left arm and shoulder'],
+  ['الشريان تحت الترقوة _R', 'Subclavian artery _R', 'تغذية الذراع والكتف الأيمن', 'Supplies the right arm and shoulder'],
+  ['الشريان العضدي _L', 'Brachial artery _L', 'تغذية الذراع الأيسر', 'Supplies the left arm'],
+  ['الشريان العضدي _R', 'Brachial artery _R', 'تغذية الذراع الأيمن', 'Supplies the right arm'],
+  ['الشريان الكعبري _L', 'Radial artery _L', 'تغذية الساعد واليد اليسرى', 'Supplies the left forearm and hand'],
+  ['الشريان الكعبري _R', 'Radial artery _R', 'تغذية الساعد واليد اليمنى', 'Supplies the right forearm and hand'],
+  ['الشريان الزندي _L', 'Ulnar artery _L', 'تغذية الساعد واليد اليسرى', 'Supplies the left forearm and hand'],
+  ['الشريان الزندي _R', 'Ulnar artery _R', 'تغذية الساعد واليد اليمنى', 'Supplies the right forearm and hand'],
+  ['الشريان الفخذي _L', 'Femoral artery _L', 'تغذية الفخذ الأيسر', 'Supplies the left thigh'],
+  ['الشريان الفخذي _R', 'Femoral artery _R', 'تغذية الفخذ الأيمن', 'Supplies the right thigh'],
+  ['الشريان المأبضي _L', 'Popliteal artery _L', 'تغذية الركبة والساق اليسرى', 'Supplies the left knee and leg'],
+  ['الشريان المأبضي _R', 'Popliteal artery _R', 'تغذية الركبة والساق اليمنى', 'Supplies the right knee and leg'],
+  ['الشريان الظنبوبي الأمامي _L', 'Anterior tibial artery _L', 'تغذية الساق الأمامية اليسرى', 'Supplies the left anterior leg'],
+  ['الشريان الظنبوبي الأمامي _R', 'Anterior tibial artery _R', 'تغذية الساق الأمامية اليمنى', 'Supplies the right anterior leg'],
+  ['الشريان الظنبوبي الخلفي _L', 'Posterior tibial artery _L', 'تغذية الساق الخلفية اليسرى', 'Supplies the left posterior leg'],
+  ['الشريان الظنبوبي الخلفي _R', 'Posterior tibial artery _R', 'تغذية الساق الخلفية اليمنى', 'Supplies the right posterior leg'],
+  ['الوريد الفخذي _L', 'Femoral vein _L', 'إعادة الدم من الساق اليسرى', 'Returns blood from the left leg'],
+  ['الوريد الفخذي _R', 'Femoral vein _R', 'إعادة الدم من الساق اليمنى', 'Returns blood from the right leg'],
+  ['الوريد المأبضي _L', 'Popliteal vein _L', 'إعادة الدم من الركبة اليسرى', 'Returns blood from the left knee'],
+  ['الوريد المأبضي _R', 'Popliteal vein _R', 'إعادة الدم من الركبة اليمنى', 'Returns blood from the right knee'],
+  ['الوريد الصافن الكبير _L', 'Great saphenous vein _L', 'إعادة الدم السطحي من الساق اليسرى', 'Returns superficial blood from the left leg'],
+  ['الوريد الصافن الكبير _R', 'Great saphenous vein _R', 'إعادة الدم السطحي من الساق اليمنى', 'Returns superficial blood from the right leg'],
+
+  // Nervous & Brain
+  ['الدماغ', 'Brain', 'مركز التحكم بالجسم والتفكير', 'Control center of the body and thought'],
+  ['المخ', 'Cerebrum', 'التفكير والذاكرة والحركة الإرادية', 'Thinking, memory and voluntary movement'],
+  ['المخيخ', 'Cerebellum', 'التوازن والتنسيق الحركي', 'Balance and motor coordination'],
+  ['جذع الدماغ', 'Brainstem', 'تنظيم التنفس ونبض القلب', 'Regulates breathing and heart rate'],
+  ['النخاع الشوكي', 'Spinal cord', 'نقل الإشارات العصبية بين الدماغ والجسم', 'Transmits nerve signals between brain and body'],
+  ['الأم الجافية النخاعية', 'Spinal dura', 'حماية النخاع الشوكي داخل القناة الفقرية', 'Tough protective outer membrane enclosing the spinal cord'],
+  ['العصب الوركي _L', 'Sciatic nerve _L', 'تغذية الساق والفخذ الأيسر', 'Supplies the left leg and thigh'],
+  ['العصب الوركي _R', 'Sciatic nerve _R', 'تغذية الساق والفخذ الأيمن', 'Supplies the right leg and thigh'],
+  ['الضفيرة العضدية _L', 'Brachial plexus _L', 'تغذية الذراع الأيسر', 'Supplies the left arm'],
+  ['الضفيرة العضدية _R', 'Brachial plexus _R', 'تغذية الذراع الأيمن', 'Supplies the right arm'],
+  ['الضفيرة القطنية العجزية _L', 'Lumbosacral plexus _L', 'تغذية الحوض والساق اليسرى', 'Supplies the left pelvis and leg'],
+  ['الضفيرة القطنية العجزية _R', 'Lumbosacral plexus _R', 'تغذية الحوض والساق اليمنى', 'Supplies the right pelvis and leg'],
+  ['العصب الفخذي _L', 'Femoral nerve _L', 'تغذية الفخذ الأيسر', 'Supplies the left thigh'],
+  ['العصب الفخذي _R', 'Femoral nerve _R', 'تغذية الفخذ الأيمن', 'Supplies the right thigh'],
+  ['العصب الظنبوبي _L', 'Tibial nerve _L', 'تغذية الساق والقدم اليسرى', 'Supplies the left leg and foot'],
+  ['العصب الظنبوبي _R', 'Tibial nerve _R', 'تغذية الساق والقدم اليمنى', 'Supplies the right leg and foot'],
+  ['العصب الشظوي _L', 'Fibular nerve _L', 'تغذية الساق الأمامية اليسرى', 'Supplies the left anterior leg'],
+  ['العصب الشظوي _R', 'Fibular nerve _R', 'تغذية الساق الأمامية اليمنى', 'Supplies the right anterior leg'],
+
+  // Joints & Ligaments
+  ['المفصل الصدغي الفكي _L', 'Temporomandibular joint _L', 'فتح الفم والمضغ الأيسر', 'Opens the mouth and chews on the left'],
+  ['المفصل الصدغي الفكي _R', 'Temporomandibular joint _R', 'فتح الفم والمضغ الأيمن', 'Opens the mouth and chews on the right'],
+  ['الغضروف المفصلي للفك _L', 'Articular disc of TMJ _L', 'امتصاص الصدمات في الفك الأيسر', 'Absorbs shocks in the left jaw'],
+  ['الغضروف المفصلي للفك _R', 'Articular disc of TMJ _R', 'امتصاص الصدمات في الفك الأيمن', 'Absorbs shocks in the right jaw'],
+  ['المفصل الفهقي القذالي', 'Atlanto-occipital joint', 'إيماء الرأس', 'Nodding of the head'],
+  ['المفصل الفهقي المحوري', 'Atlantoaxial joint', 'دوران الرأس', 'Rotation of the head'],
+  ['الأقراص بين الفقرات', 'Intervertebral discs', 'امتصاص الصدمات بين الفقرات', 'Absorb shocks between vertebrae'],
+  ['الحلقة الليفية', 'Annulus fibrosus', 'احتواء النواة اللبية وتثبيت القرص', 'Contains the nucleus pulposus and stabilizes the disc'],
+  ['النواة اللبية', 'Nucleus pulposus', 'امتصاص الضغط وتوزيعه', 'Absorbs and distributes pressure'],
+  ['الرباط الطولي الأمامي للعمود الفقري', 'Anterior longitudinal ligament', 'تثبيت الفقرات ومنع فرط بسط العمود الفقري', 'Stabilizes vertebral bodies and prevents spinal hyperextension'],
+  ['المفاصل الوجيهية العنقية _L', 'Cervical facet joints _L', 'توجيه حركة الفقرات العنقية اليسرى', 'Guide left cervical movement'],
+  ['المفاصل الوجيهية العنقية _R', 'Cervical facet joints _R', 'توجيه حركة الفقرات العنقية اليمنى', 'Guide right cervical movement'],
+  ['المفاصل الوجيهية الصدرية _L', 'Thoracic facet joints _L', 'توجيه حركة الفقرات الصدرية اليسرى', 'Guide left thoracic movement'],
+  ['المفاصل الوجيهية الصدرية _R', 'Thoracic facet joints _R', 'توجيه حركة الفقرات الصدرية اليمنى', 'Guide right thoracic movement'],
+  ['المفاصل الوجيهية القطنية _L', 'Lumbar facet joints _L', 'توجيه حركة الفقرات القطنية اليسرى', 'Guide left lumbar movement'],
+  ['المفاصل الوجيهية القطنية _R', 'Lumbar facet joints _R', 'توجيه حركة الفقرات القطنية اليمنى', 'Guide right lumbar movement'],
+  ['المفصل العجزي الحرقفي _L', 'Sacroiliac joint _L', 'نقل الوزن للحوض الأيسر', 'Transfers weight to the left pelvis'],
+  ['المفصل العجزي الحرقفي _R', 'Sacroiliac joint _R', 'نقل الوزن للحوض الأيمن', 'Transfers weight to the right pelvis'],
+  ['الارتفاق العاني', 'Pubic symphysis', 'ربط نصفي الحوض والمرونة أثناء الولادة', 'Connects pelvic halves and allows flexibility during childbirth'],
+  ['الغضروف الليفي للارتفاق العاني', 'Pubic symphysis fibrocartilage', 'امتصاص الضغط بين نصفي الحوض', 'Absorbs pressure between pelvic halves'],
+  ['المفصل الوركي _L', 'Hip joint _L', 'حركة الفخذ الأيسر وحمل الوزن', 'Left thigh movement and weight-bearing'],
+  ['المفصل الوركي _R', 'Hip joint _R', 'حركة الفخذ الأيمن وحمل الوزن', 'Right thigh movement and weight-bearing'],
+  ['الشفة الحقية _L', 'Acetabular labrum _L', 'تعميق تجويف الحوض الأيسر', 'Deepens the left hip socket'],
+  ['الشفة الحقية _R', 'Acetabular labrum _R', 'تعميق تجويف الحوض الأيمن', 'Deepens the right hip socket'],
+  ['الغضروف المفصلي للورك _L', 'Hip articular cartilage _L', 'تقليل الاحتكاك في الورك الأيسر', 'Reduces friction in the left hip'],
+  ['الغضروف المفصلي للورك _R', 'Hip articular cartilage _R', 'تقليل الاحتكاك في الورك الأيمن', 'Reduces friction in the right hip'],
+  ['المفصل الركبي _L', 'Knee joint _L', 'ثني وفرد الساق اليسرى', 'Flexes and extends the left leg'],
+  ['المفصل الركبي _R', 'Knee joint _R', 'ثني وفرد الساق اليمنى', 'Flexes and extends the right leg'],
+  ['الغضروف الهلالي الإنسي _L', 'Medial meniscus _L', 'امتصاص الصدمات في الركبة اليسرى', 'Absorbs shocks in the left knee'],
+  ['الغضروف الهلالي الإنسي _R', 'Medial meniscus _R', 'امتصاص الصدمات في الركبة اليمنى', 'Absorbs shocks in the right knee'],
+  ['الغضروف الهلالي الوحشي _L', 'Lateral meniscus _L', 'امتصاص الصدمات في الركبة اليسرى', 'Absorbs shocks in the left knee'],
+  ['الغضروف الهلالي الوحشي _R', 'Lateral meniscus _R', 'امتصاص الصدمات في الركبة اليمنى', 'Absorbs shocks in the right knee'],
+  ['الغضروف المفصلي للركبة _L', 'Knee articular cartilage _L', 'تقليل الاحتكاك في الركبة اليسرى', 'Reduces friction in the left knee'],
+  ['الغضروف المفصلي للركبة _R', 'Knee articular cartilage _R', 'تقليل الاحتكاك في الركبة اليمنى', 'Reduces friction in the right knee'],
+  ['مفصل الكاحل _L', 'Ankle joint _L', 'ثني وفرد القدم اليسرى', 'Flexes and extends the left foot'],
+  ['مفصل الكاحل _R', 'Ankle joint _R', 'ثني وفرد القدم اليمنى', 'Flexes and extends the right foot'],
+  ['الغضروف المفصلي للكاحل _L', 'Ankle articular cartilage _L', 'تقليل الاحتكاك في الكاحل الأيسر', 'Reduces friction in the left ankle'],
+  ['الغضروف المفصلي للكاحل _R', 'Ankle articular cartilage _R', 'تقليل الاحتكاك في الكاحل الأيمن', 'Reduces friction in the right ankle'],
+  ['الغضروف الزجاجي', 'Hyaline cartilage', 'تغطية أسطح المفاصل وتقليل الاحتكاك', 'Covers joint surfaces and reduces friction'],
+  ['الغضروف الليفي', 'Fibrocartilage', 'امتصاص الصدمات في الأقراص والارتفاقات', 'Absorbs shocks in discs and symphyses'],
+  ['الغضروف المرن', 'Elastic cartilage', 'توفير المرونة في الأذن والأنف', 'Provides flexibility in the ear and nose']
+];
+
+const dict = JSON.parse(fs.readFileSync('d:/isef/src/data/skeletalBoneDictionary.json', 'utf8'));
+
+userExcelData.forEach(([ar, en, descAr, descEn]) => {
+  const cleanEn = en.trim();
+  dict[cleanEn] = { ar: ar.trim(), descAr: descAr.trim(), descEn: descEn.trim() };
+  dict[cleanEn.toLowerCase()] = { ar: ar.trim(), descAr: descAr.trim(), descEn: descEn.trim() };
+
+  if (cleanEn.includes('_L')) {
+    const base = cleanEn.replace('_L', '').trim();
+    dict[`${base} (Left)`] = { ar: ar.trim(), descAr: descAr.trim(), descEn: descEn.trim() };
+    dict[`${base}.l`] = { ar: ar.trim(), descAr: descAr.trim(), descEn: descEn.trim() };
+  } else if (cleanEn.includes('_R')) {
+    const base = cleanEn.replace('_R', '').trim();
+    dict[`${base} (Right)`] = { ar: ar.trim(), descAr: descAr.trim(), descEn: descEn.trim() };
+    dict[`${base}.r`] = { ar: ar.trim(), descAr: descAr.trim(), descEn: descEn.trim() };
+  }
+});
+
+fs.writeFileSync('d:/isef/src/data/skeletalBoneDictionary.json', JSON.stringify(dict, null, 2), 'utf8');
+console.log('Saved all new excel organs, vessels, nerves, muscles & joints into dictionary! Total entries:', Object.keys(dict).length);

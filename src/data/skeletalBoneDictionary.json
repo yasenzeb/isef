@@ -4431,13 +4431,13 @@
   },
   "Stomach": {
     "ar": "المعدة",
-    "descEn": "Primary organ of chemical and mechanical digestion.",
-    "descAr": "العضو الرئيسي للهضم الكيميائي والميكانيكي للطعام بواسطة حمض الهيدروكلوريك والبيبسين."
+    "descAr": "هضم الطعام",
+    "descEn": "Digests food"
   },
   "stomach": {
     "ar": "المعدة",
-    "descEn": "Primary organ of chemical and mechanical digestion.",
-    "descAr": "العضو الرئيسي للهضم الكيميائي والميكانيكي للطعام بواسطة حمض الهيدروكلوريك والبيبسين."
+    "descAr": "هضم الطعام",
+    "descEn": "Digests food"
   },
   "Duodenum": {
     "ar": "الاثني عشر",
@@ -4591,13 +4591,13 @@
   },
   "Liver": {
     "ar": "الكبد",
-    "descEn": "Vital metabolic organ synthesizing bile, proteins, and detoxifying chemicals.",
-    "descAr": "أكبر غدة حشوية، مسؤولة عن تنقية السموم، تخليق البروتينات، وتصنيع العصارة الصفراوية."
+    "descAr": "تنقية الدم وإنتاج الصفراء",
+    "descEn": "Filters blood and produces bile"
   },
   "liver": {
     "ar": "الكبد",
-    "descEn": "Vital metabolic organ synthesizing bile, proteins, and detoxifying chemicals.",
-    "descAr": "أكبر غدة حشوية، مسؤولة عن تنقية السموم، تخليق البروتينات، وتصنيع العصارة الصفراوية."
+    "descAr": "تنقية الدم وإنتاج الصفراء",
+    "descEn": "Filters blood and produces bile"
   },
   "Spleen": {
     "ar": "الطحال",
@@ -4848,5 +4848,2645 @@
     "ar": "العقد اللمفاوية القولونية اليسرى",
     "descEn": "Nodes filtering lymph from the descending colon along mesenteric vessels.",
     "descAr": "عقد لمفاوية تصفي اللمف من القولون الهابط والجزء الأيسر من الأمعاء الغليظة."
+  },
+  "Left lung": {
+    "ar": "الرئة اليسرى",
+    "descAr": "تبادل الأكسجين وثاني أكسيد الكربون",
+    "descEn": "Exchanges oxygen and carbon dioxide"
+  },
+  "left lung": {
+    "ar": "الرئة اليسرى",
+    "descAr": "تبادل الأكسجين وثاني أكسيد الكربون",
+    "descEn": "Exchanges oxygen and carbon dioxide"
+  },
+  "Right lung": {
+    "ar": "الرئة اليمنى",
+    "descAr": "تبادل الأكسجين وثاني أكسيد الكربون",
+    "descEn": "Exchanges oxygen and carbon dioxide"
+  },
+  "right lung": {
+    "ar": "الرئة اليمنى",
+    "descAr": "تبادل الأكسجين وثاني أكسيد الكربون",
+    "descEn": "Exchanges oxygen and carbon dioxide"
+  },
+  "Trachea": {
+    "ar": "القصبة الهوائية",
+    "descAr": "نقل الهواء إلى الرئتين",
+    "descEn": "Transports air to the lungs"
+  },
+  "trachea": {
+    "ar": "القصبة الهوائية",
+    "descAr": "نقل الهواء إلى الرئتين",
+    "descEn": "Transports air to the lungs"
+  },
+  "Small intestine": {
+    "ar": "الأمعاء الدقيقة",
+    "descAr": "امتصاص الغذاء",
+    "descEn": "Absorbs nutrients"
+  },
+  "small intestine": {
+    "ar": "الأمعاء الدقيقة",
+    "descAr": "امتصاص الغذاء",
+    "descEn": "Absorbs nutrients"
+  },
+  "Large intestine": {
+    "ar": "الأمعاء الغليظة",
+    "descAr": "امتصاص الماء وتكوين البراز",
+    "descEn": "Absorbs water and forms feces"
+  },
+  "large intestine": {
+    "ar": "الأمعاء الغليظة",
+    "descAr": "امتصاص الماء وتكوين البراز",
+    "descEn": "Absorbs water and forms feces"
+  },
+  "Bladder": {
+    "ar": "المثانة",
+    "descAr": "تخزين البول",
+    "descEn": "Stores urine"
+  },
+  "bladder": {
+    "ar": "المثانة",
+    "descAr": "تخزين البول",
+    "descEn": "Stores urine"
+  },
+  "Urinary bladder": {
+    "ar": "المثانة البولية",
+    "descAr": "تخزين البول وإخراجه",
+    "descEn": "Stores and empties urine"
+  },
+  "urinary bladder": {
+    "ar": "المثانة البولية",
+    "descAr": "تخزين البول وإخراجه",
+    "descEn": "Stores and empties urine"
+  },
+  "Sternocleidomastoid _L": {
+    "ar": "العضلة القصية الترقوية الحلمية _L",
+    "descAr": "تدوير الرقبة وثنيها",
+    "descEn": "Rotates and flexes the neck"
+  },
+  "sternocleidomastoid _l": {
+    "ar": "العضلة القصية الترقوية الحلمية _L",
+    "descAr": "تدوير الرقبة وثنيها",
+    "descEn": "Rotates and flexes the neck"
+  },
+  "Sternocleidomastoid (Left)": {
+    "ar": "العضلة القصية الترقوية الحلمية _L",
+    "descAr": "تدوير الرقبة وثنيها",
+    "descEn": "Rotates and flexes the neck"
+  },
+  "Sternocleidomastoid.l": {
+    "ar": "العضلة القصية الترقوية الحلمية _L",
+    "descAr": "تدوير الرقبة وثنيها",
+    "descEn": "Rotates and flexes the neck"
+  },
+  "Sternocleidomastoid _R": {
+    "ar": "العضلة القصية الترقوية الحلمية _R",
+    "descAr": "تدوير الرقبة وثنيها",
+    "descEn": "Rotates and flexes the neck"
+  },
+  "sternocleidomastoid _r": {
+    "ar": "العضلة القصية الترقوية الحلمية _R",
+    "descAr": "تدوير الرقبة وثنيها",
+    "descEn": "Rotates and flexes the neck"
+  },
+  "Sternocleidomastoid (Right)": {
+    "ar": "العضلة القصية الترقوية الحلمية _R",
+    "descAr": "تدوير الرقبة وثنيها",
+    "descEn": "Rotates and flexes the neck"
+  },
+  "Sternocleidomastoid.r": {
+    "ar": "العضلة القصية الترقوية الحلمية _R",
+    "descAr": "تدوير الرقبة وثنيها",
+    "descEn": "Rotates and flexes the neck"
+  },
+  "Deltoid _L": {
+    "ar": "العضلة الدالية _L",
+    "descAr": "رفع الذراع للجانب",
+    "descEn": "Raises the arm to the side"
+  },
+  "deltoid _l": {
+    "ar": "العضلة الدالية _L",
+    "descAr": "رفع الذراع للجانب",
+    "descEn": "Raises the arm to the side"
+  },
+  "Deltoid (Left)": {
+    "ar": "العضلة الدالية _L",
+    "descAr": "رفع الذراع للجانب",
+    "descEn": "Raises the arm to the side"
+  },
+  "Deltoid.l": {
+    "ar": "العضلة الدالية _L",
+    "descAr": "رفع الذراع للجانب",
+    "descEn": "Raises the arm to the side"
+  },
+  "Deltoid _R": {
+    "ar": "العضلة الدالية _R",
+    "descAr": "رفع الذراع للجانب",
+    "descEn": "Raises the arm to the side"
+  },
+  "deltoid _r": {
+    "ar": "العضلة الدالية _R",
+    "descAr": "رفع الذراع للجانب",
+    "descEn": "Raises the arm to the side"
+  },
+  "Deltoid (Right)": {
+    "ar": "العضلة الدالية _R",
+    "descAr": "رفع الذراع للجانب",
+    "descEn": "Raises the arm to the side"
+  },
+  "Deltoid.r": {
+    "ar": "العضلة الدالية _R",
+    "descAr": "رفع الذراع للجانب",
+    "descEn": "Raises the arm to the side"
+  },
+  "Pectoralis major _L": {
+    "ar": "العضلة الصدرية الكبرى _L",
+    "descAr": "تحريك الذراع للأمام والداخل",
+    "descEn": "Moves the arm forward and inward"
+  },
+  "pectoralis major _l": {
+    "ar": "العضلة الصدرية الكبرى _L",
+    "descAr": "تحريك الذراع للأمام والداخل",
+    "descEn": "Moves the arm forward and inward"
+  },
+  "Pectoralis major (Left)": {
+    "ar": "العضلة الصدرية الكبرى _L",
+    "descAr": "تحريك الذراع للأمام والداخل",
+    "descEn": "Moves the arm forward and inward"
+  },
+  "Pectoralis major.l": {
+    "ar": "العضلة الصدرية الكبرى _L",
+    "descAr": "تحريك الذراع للأمام والداخل",
+    "descEn": "Moves the arm forward and inward"
+  },
+  "Pectoralis major _R": {
+    "ar": "العضلة الصدرية الكبرى _R",
+    "descAr": "تحريك الذراع للأمام والداخل",
+    "descEn": "Moves the arm forward and inward"
+  },
+  "pectoralis major _r": {
+    "ar": "العضلة الصدرية الكبرى _R",
+    "descAr": "تحريك الذراع للأمام والداخل",
+    "descEn": "Moves the arm forward and inward"
+  },
+  "Pectoralis major (Right)": {
+    "ar": "العضلة الصدرية الكبرى _R",
+    "descAr": "تحريك الذراع للأمام والداخل",
+    "descEn": "Moves the arm forward and inward"
+  },
+  "Pectoralis major.r": {
+    "ar": "العضلة الصدرية الكبرى _R",
+    "descAr": "تحريك الذراع للأمام والداخل",
+    "descEn": "Moves the arm forward and inward"
+  },
+  "Biceps brachii _L": {
+    "ar": "العضلة ذات الرأسين العضدية _L",
+    "descAr": "ثني الكوع",
+    "descEn": "Flexes the elbow"
+  },
+  "biceps brachii _l": {
+    "ar": "العضلة ذات الرأسين العضدية _L",
+    "descAr": "ثني الكوع",
+    "descEn": "Flexes the elbow"
+  },
+  "Biceps brachii (Left)": {
+    "ar": "العضلة ذات الرأسين العضدية _L",
+    "descAr": "ثني الكوع",
+    "descEn": "Flexes the elbow"
+  },
+  "Biceps brachii.l": {
+    "ar": "العضلة ذات الرأسين العضدية _L",
+    "descAr": "ثني الكوع",
+    "descEn": "Flexes the elbow"
+  },
+  "Biceps brachii _R": {
+    "ar": "العضلة ذات الرأسين العضدية _R",
+    "descAr": "ثني الكوع",
+    "descEn": "Flexes the elbow"
+  },
+  "biceps brachii _r": {
+    "ar": "العضلة ذات الرأسين العضدية _R",
+    "descAr": "ثني الكوع",
+    "descEn": "Flexes the elbow"
+  },
+  "Biceps brachii (Right)": {
+    "ar": "العضلة ذات الرأسين العضدية _R",
+    "descAr": "ثني الكوع",
+    "descEn": "Flexes the elbow"
+  },
+  "Biceps brachii.r": {
+    "ar": "العضلة ذات الرأسين العضدية _R",
+    "descAr": "ثني الكوع",
+    "descEn": "Flexes the elbow"
+  },
+  "Rectus abdominis": {
+    "ar": "العضلة المستقيمة البطنية",
+    "descAr": "ثني الجذع وتثبيت الحوض",
+    "descEn": "Flexes the trunk and stabilizes the pelvis"
+  },
+  "rectus abdominis": {
+    "ar": "العضلة المستقيمة البطنية",
+    "descAr": "ثني الجذع وتثبيت الحوض",
+    "descEn": "Flexes the trunk and stabilizes the pelvis"
+  },
+  "External oblique _L": {
+    "ar": "العضلة المائلة الخارجية _L",
+    "descAr": "تدوير الجذع",
+    "descEn": "Rotates the trunk"
+  },
+  "external oblique _l": {
+    "ar": "العضلة المائلة الخارجية _L",
+    "descAr": "تدوير الجذع",
+    "descEn": "Rotates the trunk"
+  },
+  "External oblique (Left)": {
+    "ar": "العضلة المائلة الخارجية _L",
+    "descAr": "تدوير الجذع",
+    "descEn": "Rotates the trunk"
+  },
+  "External oblique.l": {
+    "ar": "العضلة المائلة الخارجية _L",
+    "descAr": "تدوير الجذع",
+    "descEn": "Rotates the trunk"
+  },
+  "External oblique _R": {
+    "ar": "العضلة المائلة الخارجية _R",
+    "descAr": "تدوير الجذع",
+    "descEn": "Rotates the trunk"
+  },
+  "external oblique _r": {
+    "ar": "العضلة المائلة الخارجية _R",
+    "descAr": "تدوير الجذع",
+    "descEn": "Rotates the trunk"
+  },
+  "External oblique (Right)": {
+    "ar": "العضلة المائلة الخارجية _R",
+    "descAr": "تدوير الجذع",
+    "descEn": "Rotates the trunk"
+  },
+  "External oblique.r": {
+    "ar": "العضلة المائلة الخارجية _R",
+    "descAr": "تدوير الجذع",
+    "descEn": "Rotates the trunk"
+  },
+  "Brachioradialis _L": {
+    "ar": "العضلة العضدية الكعبرية _L",
+    "descAr": "ثني الكوع",
+    "descEn": "Flexes the elbow"
+  },
+  "brachioradialis _l": {
+    "ar": "العضلة العضدية الكعبرية _L",
+    "descAr": "ثني الكوع",
+    "descEn": "Flexes the elbow"
+  },
+  "Brachioradialis (Left)": {
+    "ar": "العضلة العضدية الكعبرية _L",
+    "descAr": "ثني الكوع",
+    "descEn": "Flexes the elbow"
+  },
+  "Brachioradialis.l": {
+    "ar": "العضلة العضدية الكعبرية _L",
+    "descAr": "ثني الكوع",
+    "descEn": "Flexes the elbow"
+  },
+  "Brachioradialis _R": {
+    "ar": "العضلة العضدية الكعبرية _R",
+    "descAr": "ثني الكوع",
+    "descEn": "Flexes the elbow"
+  },
+  "brachioradialis _r": {
+    "ar": "العضلة العضدية الكعبرية _R",
+    "descAr": "ثني الكوع",
+    "descEn": "Flexes the elbow"
+  },
+  "Brachioradialis (Right)": {
+    "ar": "العضلة العضدية الكعبرية _R",
+    "descAr": "ثني الكوع",
+    "descEn": "Flexes the elbow"
+  },
+  "Brachioradialis.r": {
+    "ar": "العضلة العضدية الكعبرية _R",
+    "descAr": "ثني الكوع",
+    "descEn": "Flexes the elbow"
+  },
+  "Flexor carpi radialis _L": {
+    "ar": "العضلة القابضة للرسغ الكعبرية _L",
+    "descAr": "ثني الرسغ",
+    "descEn": "Flexes the wrist"
+  },
+  "flexor carpi radialis _l": {
+    "ar": "العضلة القابضة للرسغ الكعبرية _L",
+    "descAr": "ثني الرسغ",
+    "descEn": "Flexes the wrist"
+  },
+  "Flexor carpi radialis (Left)": {
+    "ar": "العضلة القابضة للرسغ الكعبرية _L",
+    "descAr": "ثني الرسغ",
+    "descEn": "Flexes the wrist"
+  },
+  "Flexor carpi radialis.l": {
+    "ar": "العضلة القابضة للرسغ الكعبرية _L",
+    "descAr": "ثني الرسغ",
+    "descEn": "Flexes the wrist"
+  },
+  "Flexor carpi radialis _R": {
+    "ar": "العضلة القابضة للرسغ الكعبرية _R",
+    "descAr": "ثني الرسغ",
+    "descEn": "Flexes the wrist"
+  },
+  "flexor carpi radialis _r": {
+    "ar": "العضلة القابضة للرسغ الكعبرية _R",
+    "descAr": "ثني الرسغ",
+    "descEn": "Flexes the wrist"
+  },
+  "Flexor carpi radialis (Right)": {
+    "ar": "العضلة القابضة للرسغ الكعبرية _R",
+    "descAr": "ثني الرسغ",
+    "descEn": "Flexes the wrist"
+  },
+  "Flexor carpi radialis.r": {
+    "ar": "العضلة القابضة للرسغ الكعبرية _R",
+    "descAr": "ثني الرسغ",
+    "descEn": "Flexes the wrist"
+  },
+  "Rectus femoris _L": {
+    "ar": "العضلة المستقيمة الفخذية _L",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "rectus femoris _l": {
+    "ar": "العضلة المستقيمة الفخذية _L",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "Rectus femoris (Left)": {
+    "ar": "العضلة المستقيمة الفخذية _L",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "Rectus femoris.l": {
+    "ar": "العضلة المستقيمة الفخذية _L",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "Rectus femoris _R": {
+    "ar": "العضلة المستقيمة الفخذية _R",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "rectus femoris _r": {
+    "ar": "العضلة المستقيمة الفخذية _R",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "Rectus femoris (Right)": {
+    "ar": "العضلة المستقيمة الفخذية _R",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "Rectus femoris.r": {
+    "ar": "العضلة المستقيمة الفخذية _R",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "Vastus lateralis _L": {
+    "ar": "العضلة المتسعة الوحشية _L",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "vastus lateralis _l": {
+    "ar": "العضلة المتسعة الوحشية _L",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "Vastus lateralis (Left)": {
+    "ar": "العضلة المتسعة الوحشية _L",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "Vastus lateralis.l": {
+    "ar": "العضلة المتسعة الوحشية _L",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "Vastus lateralis _R": {
+    "ar": "العضلة المتسعة الوحشية _R",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "vastus lateralis _r": {
+    "ar": "العضلة المتسعة الوحشية _R",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "Vastus lateralis (Right)": {
+    "ar": "العضلة المتسعة الوحشية _R",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "Vastus lateralis.r": {
+    "ar": "العضلة المتسعة الوحشية _R",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "Vastus medialis _L": {
+    "ar": "العضلة المتسعة الإنسية _L",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "vastus medialis _l": {
+    "ar": "العضلة المتسعة الإنسية _L",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "Vastus medialis (Left)": {
+    "ar": "العضلة المتسعة الإنسية _L",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "Vastus medialis.l": {
+    "ar": "العضلة المتسعة الإنسية _L",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "Vastus medialis _R": {
+    "ar": "العضلة المتسعة الإنسية _R",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "vastus medialis _r": {
+    "ar": "العضلة المتسعة الإنسية _R",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "Vastus medialis (Right)": {
+    "ar": "العضلة المتسعة الإنسية _R",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "Vastus medialis.r": {
+    "ar": "العضلة المتسعة الإنسية _R",
+    "descAr": "فرد الركبة",
+    "descEn": "Extends the knee"
+  },
+  "Sartorius _L": {
+    "ar": "العضلة الخياطية _L",
+    "descAr": "ثني الفخذ والركبة",
+    "descEn": "Flexes the hip and knee"
+  },
+  "sartorius _l": {
+    "ar": "العضلة الخياطية _L",
+    "descAr": "ثني الفخذ والركبة",
+    "descEn": "Flexes the hip and knee"
+  },
+  "Sartorius (Left)": {
+    "ar": "العضلة الخياطية _L",
+    "descAr": "ثني الفخذ والركبة",
+    "descEn": "Flexes the hip and knee"
+  },
+  "Sartorius.l": {
+    "ar": "العضلة الخياطية _L",
+    "descAr": "ثني الفخذ والركبة",
+    "descEn": "Flexes the hip and knee"
+  },
+  "Sartorius _R": {
+    "ar": "العضلة الخياطية _R",
+    "descAr": "ثني الفخذ والركبة",
+    "descEn": "Flexes the hip and knee"
+  },
+  "sartorius _r": {
+    "ar": "العضلة الخياطية _R",
+    "descAr": "ثني الفخذ والركبة",
+    "descEn": "Flexes the hip and knee"
+  },
+  "Sartorius (Right)": {
+    "ar": "العضلة الخياطية _R",
+    "descAr": "ثني الفخذ والركبة",
+    "descEn": "Flexes the hip and knee"
+  },
+  "Sartorius.r": {
+    "ar": "العضلة الخياطية _R",
+    "descAr": "ثني الفخذ والركبة",
+    "descEn": "Flexes the hip and knee"
+  },
+  "Tibialis anterior _L": {
+    "ar": "العضلة الظنبوبية الأمامية _L",
+    "descAr": "رفع القدم للأعلى",
+    "descEn": "Lifts the foot upward"
+  },
+  "tibialis anterior _l": {
+    "ar": "العضلة الظنبوبية الأمامية _L",
+    "descAr": "رفع القدم للأعلى",
+    "descEn": "Lifts the foot upward"
+  },
+  "Tibialis anterior (Left)": {
+    "ar": "العضلة الظنبوبية الأمامية _L",
+    "descAr": "رفع القدم للأعلى",
+    "descEn": "Lifts the foot upward"
+  },
+  "Tibialis anterior.l": {
+    "ar": "العضلة الظنبوبية الأمامية _L",
+    "descAr": "رفع القدم للأعلى",
+    "descEn": "Lifts the foot upward"
+  },
+  "Tibialis anterior _R": {
+    "ar": "العضلة الظنبوبية الأمامية _R",
+    "descAr": "رفع القدم للأعلى",
+    "descEn": "Lifts the foot upward"
+  },
+  "tibialis anterior _r": {
+    "ar": "العضلة الظنبوبية الأمامية _R",
+    "descAr": "رفع القدم للأعلى",
+    "descEn": "Lifts the foot upward"
+  },
+  "Tibialis anterior (Right)": {
+    "ar": "العضلة الظنبوبية الأمامية _R",
+    "descAr": "رفع القدم للأعلى",
+    "descEn": "Lifts the foot upward"
+  },
+  "Tibialis anterior.r": {
+    "ar": "العضلة الظنبوبية الأمامية _R",
+    "descAr": "رفع القدم للأعلى",
+    "descEn": "Lifts the foot upward"
+  },
+  "Fibularis longus _L": {
+    "ar": "العضلة الشظوية الطويلة _L",
+    "descAr": "تثبيت قوس القدم",
+    "descEn": "Stabilizes the foot arch"
+  },
+  "fibularis longus _l": {
+    "ar": "العضلة الشظوية الطويلة _L",
+    "descAr": "تثبيت قوس القدم",
+    "descEn": "Stabilizes the foot arch"
+  },
+  "Fibularis longus (Left)": {
+    "ar": "العضلة الشظوية الطويلة _L",
+    "descAr": "تثبيت قوس القدم",
+    "descEn": "Stabilizes the foot arch"
+  },
+  "Fibularis longus.l": {
+    "ar": "العضلة الشظوية الطويلة _L",
+    "descAr": "تثبيت قوس القدم",
+    "descEn": "Stabilizes the foot arch"
+  },
+  "Fibularis longus _R": {
+    "ar": "العضلة الشظوية الطويلة _R",
+    "descAr": "تثبيت قوس القدم",
+    "descEn": "Stabilizes the foot arch"
+  },
+  "fibularis longus _r": {
+    "ar": "العضلة الشظوية الطويلة _R",
+    "descAr": "تثبيت قوس القدم",
+    "descEn": "Stabilizes the foot arch"
+  },
+  "Fibularis longus (Right)": {
+    "ar": "العضلة الشظوية الطويلة _R",
+    "descAr": "تثبيت قوس القدم",
+    "descEn": "Stabilizes the foot arch"
+  },
+  "Fibularis longus.r": {
+    "ar": "العضلة الشظوية الطويلة _R",
+    "descAr": "تثبيت قوس القدم",
+    "descEn": "Stabilizes the foot arch"
+  },
+  "Fibularis brevis _L": {
+    "ar": "العضلة الشظوية القصيرة _L",
+    "descAr": "ثني القدم للخارج",
+    "descEn": "Everts the foot"
+  },
+  "fibularis brevis _l": {
+    "ar": "العضلة الشظوية القصيرة _L",
+    "descAr": "ثني القدم للخارج",
+    "descEn": "Everts the foot"
+  },
+  "Fibularis brevis (Left)": {
+    "ar": "العضلة الشظوية القصيرة _L",
+    "descAr": "ثني القدم للخارج",
+    "descEn": "Everts the foot"
+  },
+  "Fibularis brevis.l": {
+    "ar": "العضلة الشظوية القصيرة _L",
+    "descAr": "ثني القدم للخارج",
+    "descEn": "Everts the foot"
+  },
+  "Fibularis brevis _R": {
+    "ar": "العضلة الشظوية القصيرة _R",
+    "descAr": "ثني القدم للخارج",
+    "descEn": "Everts the foot"
+  },
+  "fibularis brevis _r": {
+    "ar": "العضلة الشظوية القصيرة _R",
+    "descAr": "ثني القدم للخارج",
+    "descEn": "Everts the foot"
+  },
+  "Fibularis brevis (Right)": {
+    "ar": "العضلة الشظوية القصيرة _R",
+    "descAr": "ثني القدم للخارج",
+    "descEn": "Everts the foot"
+  },
+  "Fibularis brevis.r": {
+    "ar": "العضلة الشظوية القصيرة _R",
+    "descAr": "ثني القدم للخارج",
+    "descEn": "Everts the foot"
+  },
+  "Extensor digitorum longus _L": {
+    "ar": "العضلة الباسطة الطويلة للأصابع _L",
+    "descAr": "فرد أصابع القدم",
+    "descEn": "Extends the toes"
+  },
+  "extensor digitorum longus _l": {
+    "ar": "العضلة الباسطة الطويلة للأصابع _L",
+    "descAr": "فرد أصابع القدم",
+    "descEn": "Extends the toes"
+  },
+  "Extensor digitorum longus (Left)": {
+    "ar": "العضلة الباسطة الطويلة للأصابع _L",
+    "descAr": "فرد أصابع القدم",
+    "descEn": "Extends the toes"
+  },
+  "Extensor digitorum longus.l": {
+    "ar": "العضلة الباسطة الطويلة للأصابع _L",
+    "descAr": "فرد أصابع القدم",
+    "descEn": "Extends the toes"
+  },
+  "Extensor digitorum longus _R": {
+    "ar": "العضلة الباسطة الطويلة للأصابع _R",
+    "descAr": "فرد أصابع القدم",
+    "descEn": "Extends the toes"
+  },
+  "extensor digitorum longus _r": {
+    "ar": "العضلة الباسطة الطويلة للأصابع _R",
+    "descAr": "فرد أصابع القدم",
+    "descEn": "Extends the toes"
+  },
+  "Extensor digitorum longus (Right)": {
+    "ar": "العضلة الباسطة الطويلة للأصابع _R",
+    "descAr": "فرد أصابع القدم",
+    "descEn": "Extends the toes"
+  },
+  "Extensor digitorum longus.r": {
+    "ar": "العضلة الباسطة الطويلة للأصابع _R",
+    "descAr": "فرد أصابع القدم",
+    "descEn": "Extends the toes"
+  },
+  "Extensor hallucis longus _L": {
+    "ar": "العضلة الباسطة الطويلة لإبهام القدم _L",
+    "descAr": "فرد إبهام القدم",
+    "descEn": "Extends the big toe"
+  },
+  "extensor hallucis longus _l": {
+    "ar": "العضلة الباسطة الطويلة لإبهام القدم _L",
+    "descAr": "فرد إبهام القدم",
+    "descEn": "Extends the big toe"
+  },
+  "Extensor hallucis longus (Left)": {
+    "ar": "العضلة الباسطة الطويلة لإبهام القدم _L",
+    "descAr": "فرد إبهام القدم",
+    "descEn": "Extends the big toe"
+  },
+  "Extensor hallucis longus.l": {
+    "ar": "العضلة الباسطة الطويلة لإبهام القدم _L",
+    "descAr": "فرد إبهام القدم",
+    "descEn": "Extends the big toe"
+  },
+  "Extensor hallucis longus _R": {
+    "ar": "العضلة الباسطة الطويلة لإبهام القدم _R",
+    "descAr": "فرد إبهام القدم",
+    "descEn": "Extends the big toe"
+  },
+  "extensor hallucis longus _r": {
+    "ar": "العضلة الباسطة الطويلة لإبهام القدم _R",
+    "descAr": "فرد إبهام القدم",
+    "descEn": "Extends the big toe"
+  },
+  "Extensor hallucis longus (Right)": {
+    "ar": "العضلة الباسطة الطويلة لإبهام القدم _R",
+    "descAr": "فرد إبهام القدم",
+    "descEn": "Extends the big toe"
+  },
+  "Extensor hallucis longus.r": {
+    "ar": "العضلة الباسطة الطويلة لإبهام القدم _R",
+    "descAr": "فرد إبهام القدم",
+    "descEn": "Extends the big toe"
+  },
+  "Temporalis": {
+    "ar": "العضلة الصدغية",
+    "descAr": "رفع الفك السفلي",
+    "descEn": "Elevates the mandible"
+  },
+  "temporalis": {
+    "ar": "العضلة الصدغية",
+    "descAr": "رفع الفك السفلي",
+    "descEn": "Elevates the mandible"
+  },
+  "Masseter": {
+    "ar": "العضلة الماضغة",
+    "descAr": "مضغ الطعام",
+    "descEn": "Chews food"
+  },
+  "masseter": {
+    "ar": "العضلة الماضغة",
+    "descAr": "مضغ الطعام",
+    "descEn": "Chews food"
+  },
+  "Triceps brachii": {
+    "ar": "العضلة ثلاثية الرؤوس العضدية",
+    "descAr": "فرد الكوع",
+    "descEn": "Extends the elbow"
+  },
+  "triceps brachii": {
+    "ar": "العضلة ثلاثية الرؤوس العضدية",
+    "descAr": "فرد الكوع",
+    "descEn": "Extends the elbow"
+  },
+  "Latissimus dorsi": {
+    "ar": "العضلة الظهرية العريضة",
+    "descAr": "تحريك الذراع للخلف والأسفل",
+    "descEn": "Moves the arm backward and downward"
+  },
+  "latissimus dorsi": {
+    "ar": "العضلة الظهرية العريضة",
+    "descAr": "تحريك الذراع للخلف والأسفل",
+    "descEn": "Moves the arm backward and downward"
+  },
+  "Gluteus maximus": {
+    "ar": "العضلة الألوية الكبرى",
+    "descAr": "فرد الفخذ ورفع الجسم",
+    "descEn": "Extends the hip and raises the body"
+  },
+  "gluteus maximus": {
+    "ar": "العضلة الألوية الكبرى",
+    "descAr": "فرد الفخذ ورفع الجسم",
+    "descEn": "Extends the hip and raises the body"
+  },
+  "Biceps femoris": {
+    "ar": "العضلة ذات الرأسين الفخذية",
+    "descAr": "ثني الركبة",
+    "descEn": "Flexes the knee"
+  },
+  "biceps femoris": {
+    "ar": "العضلة ذات الرأسين الفخذية",
+    "descAr": "ثني الركبة",
+    "descEn": "Flexes the knee"
+  },
+  "Semitendinosus": {
+    "ar": "العضلة نصف الوترية",
+    "descAr": "ثني الركبة",
+    "descEn": "Flexes the knee"
+  },
+  "semitendinosus": {
+    "ar": "العضلة نصف الوترية",
+    "descAr": "ثني الركبة",
+    "descEn": "Flexes the knee"
+  },
+  "Semimembranosus": {
+    "ar": "العضلة نصف الغشائية",
+    "descAr": "ثني الركبة",
+    "descEn": "Flexes the knee"
+  },
+  "semimembranosus": {
+    "ar": "العضلة نصف الغشائية",
+    "descAr": "ثني الركبة",
+    "descEn": "Flexes the knee"
+  },
+  "Gastrocnemius": {
+    "ar": "العضلة التوأمية",
+    "descAr": "دفع القدم للأسفل",
+    "descEn": "Pushes the foot downward"
+  },
+  "gastrocnemius": {
+    "ar": "العضلة التوأمية",
+    "descAr": "دفع القدم للأسفل",
+    "descEn": "Pushes the foot downward"
+  },
+  "Soleus": {
+    "ar": "العضلة النعلية",
+    "descAr": "دعم الوقوف",
+    "descEn": "Supports standing"
+  },
+  "soleus": {
+    "ar": "العضلة النعلية",
+    "descAr": "دعم الوقوف",
+    "descEn": "Supports standing"
+  },
+  "Flexor hallucis longus": {
+    "ar": "العضلة القابضة الطويلة لإبهام القدم",
+    "descAr": "ثني إبهام القدم",
+    "descEn": "Flexes the big toe"
+  },
+  "flexor hallucis longus": {
+    "ar": "العضلة القابضة الطويلة لإبهام القدم",
+    "descAr": "ثني إبهام القدم",
+    "descEn": "Flexes the big toe"
+  },
+  "Flexor digitorum longus": {
+    "ar": "العضلة القابضة الطويلة للأصابع",
+    "descAr": "ثني أصابع القدم",
+    "descEn": "Flexes the toes"
+  },
+  "flexor digitorum longus": {
+    "ar": "العضلة القابضة الطويلة للأصابع",
+    "descAr": "ثني أصابع القدم",
+    "descEn": "Flexes the toes"
+  },
+  "Occipitofrontalis": {
+    "ar": "العضلة القذالية الجبهية",
+    "descAr": "تحريك فروة الرأس",
+    "descEn": "Moves the scalp"
+  },
+  "occipitofrontalis": {
+    "ar": "العضلة القذالية الجبهية",
+    "descAr": "تحريك فروة الرأس",
+    "descEn": "Moves the scalp"
+  },
+  "Trapezius _L": {
+    "ar": "العضلة الشبه المنحرفة _L",
+    "descAr": "رفع الكتف",
+    "descEn": "Elevates the shoulder"
+  },
+  "trapezius _l": {
+    "ar": "العضلة الشبه المنحرفة _L",
+    "descAr": "رفع الكتف",
+    "descEn": "Elevates the shoulder"
+  },
+  "Trapezius (Left)": {
+    "ar": "العضلة الشبه المنحرفة _L",
+    "descAr": "رفع الكتف",
+    "descEn": "Elevates the shoulder"
+  },
+  "Trapezius.l": {
+    "ar": "العضلة الشبه المنحرفة _L",
+    "descAr": "رفع الكتف",
+    "descEn": "Elevates the shoulder"
+  },
+  "Trapezius _R": {
+    "ar": "العضلة الشبه المنحرفة _R",
+    "descAr": "رفع الكتف",
+    "descEn": "Elevates the shoulder"
+  },
+  "trapezius _r": {
+    "ar": "العضلة الشبه المنحرفة _R",
+    "descAr": "رفع الكتف",
+    "descEn": "Elevates the shoulder"
+  },
+  "Trapezius (Right)": {
+    "ar": "العضلة الشبه المنحرفة _R",
+    "descAr": "رفع الكتف",
+    "descEn": "Elevates the shoulder"
+  },
+  "Trapezius.r": {
+    "ar": "العضلة الشبه المنحرفة _R",
+    "descAr": "رفع الكتف",
+    "descEn": "Elevates the shoulder"
+  },
+  "Infraspinatus _L": {
+    "ar": "العضلة تحت الشوكة _L",
+    "descAr": "تدوير الذراع للخارج",
+    "descEn": "Rotates the arm outward"
+  },
+  "infraspinatus _l": {
+    "ar": "العضلة تحت الشوكة _L",
+    "descAr": "تدوير الذراع للخارج",
+    "descEn": "Rotates the arm outward"
+  },
+  "Infraspinatus (Left)": {
+    "ar": "العضلة تحت الشوكة _L",
+    "descAr": "تدوير الذراع للخارج",
+    "descEn": "Rotates the arm outward"
+  },
+  "Infraspinatus.l": {
+    "ar": "العضلة تحت الشوكة _L",
+    "descAr": "تدوير الذراع للخارج",
+    "descEn": "Rotates the arm outward"
+  },
+  "Infraspinatus _R": {
+    "ar": "العضلة تحت الشوكة _R",
+    "descAr": "تدوير الذراع للخارج",
+    "descEn": "Rotates the arm outward"
+  },
+  "infraspinatus _r": {
+    "ar": "العضلة تحت الشوكة _R",
+    "descAr": "تدوير الذراع للخارج",
+    "descEn": "Rotates the arm outward"
+  },
+  "Infraspinatus (Right)": {
+    "ar": "العضلة تحت الشوكة _R",
+    "descAr": "تدوير الذراع للخارج",
+    "descEn": "Rotates the arm outward"
+  },
+  "Infraspinatus.r": {
+    "ar": "العضلة تحت الشوكة _R",
+    "descAr": "تدوير الذراع للخارج",
+    "descEn": "Rotates the arm outward"
+  },
+  "Teres major _L": {
+    "ar": "العضلة المدورة الكبرى _L",
+    "descAr": "تقريب الذراع وتدويرها للداخل",
+    "descEn": "Adducts and internally rotates the arm"
+  },
+  "teres major _l": {
+    "ar": "العضلة المدورة الكبرى _L",
+    "descAr": "تقريب الذراع وتدويرها للداخل",
+    "descEn": "Adducts and internally rotates the arm"
+  },
+  "Teres major (Left)": {
+    "ar": "العضلة المدورة الكبرى _L",
+    "descAr": "تقريب الذراع وتدويرها للداخل",
+    "descEn": "Adducts and internally rotates the arm"
+  },
+  "Teres major.l": {
+    "ar": "العضلة المدورة الكبرى _L",
+    "descAr": "تقريب الذراع وتدويرها للداخل",
+    "descEn": "Adducts and internally rotates the arm"
+  },
+  "Teres major _R": {
+    "ar": "العضلة المدورة الكبرى _R",
+    "descAr": "تقريب الذراع وتدويرها للداخل",
+    "descEn": "Adducts and internally rotates the arm"
+  },
+  "teres major _r": {
+    "ar": "العضلة المدورة الكبرى _R",
+    "descAr": "تقريب الذراع وتدويرها للداخل",
+    "descEn": "Adducts and internally rotates the arm"
+  },
+  "Teres major (Right)": {
+    "ar": "العضلة المدورة الكبرى _R",
+    "descAr": "تقريب الذراع وتدويرها للداخل",
+    "descEn": "Adducts and internally rotates the arm"
+  },
+  "Teres major.r": {
+    "ar": "العضلة المدورة الكبرى _R",
+    "descAr": "تقريب الذراع وتدويرها للداخل",
+    "descEn": "Adducts and internally rotates the arm"
+  },
+  "Teres minor _L": {
+    "ar": "العضلة المدورة الصغرى _L",
+    "descAr": "تدوير الذراع للخارج",
+    "descEn": "Rotates the arm outward"
+  },
+  "teres minor _l": {
+    "ar": "العضلة المدورة الصغرى _L",
+    "descAr": "تدوير الذراع للخارج",
+    "descEn": "Rotates the arm outward"
+  },
+  "Teres minor (Left)": {
+    "ar": "العضلة المدورة الصغرى _L",
+    "descAr": "تدوير الذراع للخارج",
+    "descEn": "Rotates the arm outward"
+  },
+  "Teres minor.l": {
+    "ar": "العضلة المدورة الصغرى _L",
+    "descAr": "تدوير الذراع للخارج",
+    "descEn": "Rotates the arm outward"
+  },
+  "Teres minor _R": {
+    "ar": "العضلة المدورة الصغرى _R",
+    "descAr": "تدوير الذراع للخارج",
+    "descEn": "Rotates the arm outward"
+  },
+  "teres minor _r": {
+    "ar": "العضلة المدورة الصغرى _R",
+    "descAr": "تدوير الذراع للخارج",
+    "descEn": "Rotates the arm outward"
+  },
+  "Teres minor (Right)": {
+    "ar": "العضلة المدورة الصغرى _R",
+    "descAr": "تدوير الذراع للخارج",
+    "descEn": "Rotates the arm outward"
+  },
+  "Teres minor.r": {
+    "ar": "العضلة المدورة الصغرى _R",
+    "descAr": "تدوير الذراع للخارج",
+    "descEn": "Rotates the arm outward"
+  },
+  "Gluteus medius _L": {
+    "ar": "العضلة الألوية المتوسطة _L",
+    "descAr": "تثبيت الحوض",
+    "descEn": "Stabilizes the pelvis"
+  },
+  "gluteus medius _l": {
+    "ar": "العضلة الألوية المتوسطة _L",
+    "descAr": "تثبيت الحوض",
+    "descEn": "Stabilizes the pelvis"
+  },
+  "Gluteus medius (Left)": {
+    "ar": "العضلة الألوية المتوسطة _L",
+    "descAr": "تثبيت الحوض",
+    "descEn": "Stabilizes the pelvis"
+  },
+  "Gluteus medius.l": {
+    "ar": "العضلة الألوية المتوسطة _L",
+    "descAr": "تثبيت الحوض",
+    "descEn": "Stabilizes the pelvis"
+  },
+  "Gluteus medius _R": {
+    "ar": "العضلة الألوية المتوسطة _R",
+    "descAr": "تثبيت الحوض",
+    "descEn": "Stabilizes the pelvis"
+  },
+  "gluteus medius _r": {
+    "ar": "العضلة الألوية المتوسطة _R",
+    "descAr": "تثبيت الحوض",
+    "descEn": "Stabilizes the pelvis"
+  },
+  "Gluteus medius (Right)": {
+    "ar": "العضلة الألوية المتوسطة _R",
+    "descAr": "تثبيت الحوض",
+    "descEn": "Stabilizes the pelvis"
+  },
+  "Gluteus medius.r": {
+    "ar": "العضلة الألوية المتوسطة _R",
+    "descAr": "تثبيت الحوض",
+    "descEn": "Stabilizes the pelvis"
+  },
+  "Plantaris _L": {
+    "ar": "العضلة الأخمصية _L",
+    "descAr": "مساعدة ثني الركبة والكاحل",
+    "descEn": "Assists in flexing the knee and ankle"
+  },
+  "plantaris _l": {
+    "ar": "العضلة الأخمصية _L",
+    "descAr": "مساعدة ثني الركبة والكاحل",
+    "descEn": "Assists in flexing the knee and ankle"
+  },
+  "Plantaris (Left)": {
+    "ar": "العضلة الأخمصية _L",
+    "descAr": "مساعدة ثني الركبة والكاحل",
+    "descEn": "Assists in flexing the knee and ankle"
+  },
+  "Plantaris.l": {
+    "ar": "العضلة الأخمصية _L",
+    "descAr": "مساعدة ثني الركبة والكاحل",
+    "descEn": "Assists in flexing the knee and ankle"
+  },
+  "Plantaris _R": {
+    "ar": "العضلة الأخمصية _R",
+    "descAr": "مساعدة ثني الركبة والكاحل",
+    "descEn": "Assists in flexing the knee and ankle"
+  },
+  "plantaris _r": {
+    "ar": "العضلة الأخمصية _R",
+    "descAr": "مساعدة ثني الركبة والكاحل",
+    "descEn": "Assists in flexing the knee and ankle"
+  },
+  "Plantaris (Right)": {
+    "ar": "العضلة الأخمصية _R",
+    "descAr": "مساعدة ثني الركبة والكاحل",
+    "descEn": "Assists in flexing the knee and ankle"
+  },
+  "Plantaris.r": {
+    "ar": "العضلة الأخمصية _R",
+    "descAr": "مساعدة ثني الركبة والكاحل",
+    "descEn": "Assists in flexing the knee and ankle"
+  },
+  "Heart": {
+    "ar": "القلب",
+    "descAr": "ضخ الدم لكل الجسم",
+    "descEn": "Pumps blood throughout the body"
+  },
+  "heart": {
+    "ar": "القلب",
+    "descAr": "ضخ الدم لكل الجسم",
+    "descEn": "Pumps blood throughout the body"
+  },
+  "Aorta": {
+    "ar": "الشريان الأبهر",
+    "descAr": "نقل الدم من القلب للجسم",
+    "descEn": "Carries blood from the heart to the body"
+  },
+  "aorta": {
+    "ar": "الشريان الأبهر",
+    "descAr": "نقل الدم من القلب للجسم",
+    "descEn": "Carries blood from the heart to the body"
+  },
+  "Pulmonary artery": {
+    "ar": "الشريان الرئوي",
+    "descAr": "نقل الدم إلى الرئتين",
+    "descEn": "Carries blood to the lungs"
+  },
+  "pulmonary artery": {
+    "ar": "الشريان الرئوي",
+    "descAr": "نقل الدم إلى الرئتين",
+    "descEn": "Carries blood to the lungs"
+  },
+  "Pulmonary vein": {
+    "ar": "الوريد الرئوي",
+    "descAr": "إعادة الدم من الرئتين للقلب",
+    "descEn": "Returns blood from the lungs to the heart"
+  },
+  "pulmonary vein": {
+    "ar": "الوريد الرئوي",
+    "descAr": "إعادة الدم من الرئتين للقلب",
+    "descEn": "Returns blood from the lungs to the heart"
+  },
+  "Superior vena cava": {
+    "ar": "الوريد الأجوف العلوي",
+    "descAr": "إعادة الدم من الجزء العلوي",
+    "descEn": "Returns blood from the upper body"
+  },
+  "superior vena cava": {
+    "ar": "الوريد الأجوف العلوي",
+    "descAr": "إعادة الدم من الجزء العلوي",
+    "descEn": "Returns blood from the upper body"
+  },
+  "Inferior vena cava": {
+    "ar": "الوريد الأجوف السفلي",
+    "descAr": "إعادة الدم من الجزء السفلي",
+    "descEn": "Returns blood from the lower body"
+  },
+  "inferior vena cava": {
+    "ar": "الوريد الأجوف السفلي",
+    "descAr": "إعادة الدم من الجزء السفلي",
+    "descEn": "Returns blood from the lower body"
+  },
+  "Carotid artery _L": {
+    "ar": "الشريان السباتي _L",
+    "descAr": "تغذية الرأس والرقبة الأيسر",
+    "descEn": "Supplies the left head and neck"
+  },
+  "carotid artery _l": {
+    "ar": "الشريان السباتي _L",
+    "descAr": "تغذية الرأس والرقبة الأيسر",
+    "descEn": "Supplies the left head and neck"
+  },
+  "Carotid artery (Left)": {
+    "ar": "الشريان السباتي _L",
+    "descAr": "تغذية الرأس والرقبة الأيسر",
+    "descEn": "Supplies the left head and neck"
+  },
+  "Carotid artery.l": {
+    "ar": "الشريان السباتي _L",
+    "descAr": "تغذية الرأس والرقبة الأيسر",
+    "descEn": "Supplies the left head and neck"
+  },
+  "Carotid artery _R": {
+    "ar": "الشريان السباتي _R",
+    "descAr": "تغذية الرأس والرقبة الأيمن",
+    "descEn": "Supplies the right head and neck"
+  },
+  "carotid artery _r": {
+    "ar": "الشريان السباتي _R",
+    "descAr": "تغذية الرأس والرقبة الأيمن",
+    "descEn": "Supplies the right head and neck"
+  },
+  "Carotid artery (Right)": {
+    "ar": "الشريان السباتي _R",
+    "descAr": "تغذية الرأس والرقبة الأيمن",
+    "descEn": "Supplies the right head and neck"
+  },
+  "Carotid artery.r": {
+    "ar": "الشريان السباتي _R",
+    "descAr": "تغذية الرأس والرقبة الأيمن",
+    "descEn": "Supplies the right head and neck"
+  },
+  "Subclavian artery _L": {
+    "ar": "الشريان تحت الترقوة _L",
+    "descAr": "تغذية الذراع والكتف الأيسر",
+    "descEn": "Supplies the left arm and shoulder"
+  },
+  "subclavian artery _l": {
+    "ar": "الشريان تحت الترقوة _L",
+    "descAr": "تغذية الذراع والكتف الأيسر",
+    "descEn": "Supplies the left arm and shoulder"
+  },
+  "Subclavian artery (Left)": {
+    "ar": "الشريان تحت الترقوة _L",
+    "descAr": "تغذية الذراع والكتف الأيسر",
+    "descEn": "Supplies the left arm and shoulder"
+  },
+  "Subclavian artery.l": {
+    "ar": "الشريان تحت الترقوة _L",
+    "descAr": "تغذية الذراع والكتف الأيسر",
+    "descEn": "Supplies the left arm and shoulder"
+  },
+  "Subclavian artery _R": {
+    "ar": "الشريان تحت الترقوة _R",
+    "descAr": "تغذية الذراع والكتف الأيمن",
+    "descEn": "Supplies the right arm and shoulder"
+  },
+  "subclavian artery _r": {
+    "ar": "الشريان تحت الترقوة _R",
+    "descAr": "تغذية الذراع والكتف الأيمن",
+    "descEn": "Supplies the right arm and shoulder"
+  },
+  "Subclavian artery (Right)": {
+    "ar": "الشريان تحت الترقوة _R",
+    "descAr": "تغذية الذراع والكتف الأيمن",
+    "descEn": "Supplies the right arm and shoulder"
+  },
+  "Subclavian artery.r": {
+    "ar": "الشريان تحت الترقوة _R",
+    "descAr": "تغذية الذراع والكتف الأيمن",
+    "descEn": "Supplies the right arm and shoulder"
+  },
+  "Brachial artery _L": {
+    "ar": "الشريان العضدي _L",
+    "descAr": "تغذية الذراع الأيسر",
+    "descEn": "Supplies the left arm"
+  },
+  "brachial artery _l": {
+    "ar": "الشريان العضدي _L",
+    "descAr": "تغذية الذراع الأيسر",
+    "descEn": "Supplies the left arm"
+  },
+  "Brachial artery (Left)": {
+    "ar": "الشريان العضدي _L",
+    "descAr": "تغذية الذراع الأيسر",
+    "descEn": "Supplies the left arm"
+  },
+  "Brachial artery.l": {
+    "ar": "الشريان العضدي _L",
+    "descAr": "تغذية الذراع الأيسر",
+    "descEn": "Supplies the left arm"
+  },
+  "Brachial artery _R": {
+    "ar": "الشريان العضدي _R",
+    "descAr": "تغذية الذراع الأيمن",
+    "descEn": "Supplies the right arm"
+  },
+  "brachial artery _r": {
+    "ar": "الشريان العضدي _R",
+    "descAr": "تغذية الذراع الأيمن",
+    "descEn": "Supplies the right arm"
+  },
+  "Brachial artery (Right)": {
+    "ar": "الشريان العضدي _R",
+    "descAr": "تغذية الذراع الأيمن",
+    "descEn": "Supplies the right arm"
+  },
+  "Brachial artery.r": {
+    "ar": "الشريان العضدي _R",
+    "descAr": "تغذية الذراع الأيمن",
+    "descEn": "Supplies the right arm"
+  },
+  "Radial artery _L": {
+    "ar": "الشريان الكعبري _L",
+    "descAr": "تغذية الساعد واليد اليسرى",
+    "descEn": "Supplies the left forearm and hand"
+  },
+  "radial artery _l": {
+    "ar": "الشريان الكعبري _L",
+    "descAr": "تغذية الساعد واليد اليسرى",
+    "descEn": "Supplies the left forearm and hand"
+  },
+  "Radial artery (Left)": {
+    "ar": "الشريان الكعبري _L",
+    "descAr": "تغذية الساعد واليد اليسرى",
+    "descEn": "Supplies the left forearm and hand"
+  },
+  "Radial artery.l": {
+    "ar": "الشريان الكعبري _L",
+    "descAr": "تغذية الساعد واليد اليسرى",
+    "descEn": "Supplies the left forearm and hand"
+  },
+  "Radial artery _R": {
+    "ar": "الشريان الكعبري _R",
+    "descAr": "تغذية الساعد واليد اليمنى",
+    "descEn": "Supplies the right forearm and hand"
+  },
+  "radial artery _r": {
+    "ar": "الشريان الكعبري _R",
+    "descAr": "تغذية الساعد واليد اليمنى",
+    "descEn": "Supplies the right forearm and hand"
+  },
+  "Radial artery (Right)": {
+    "ar": "الشريان الكعبري _R",
+    "descAr": "تغذية الساعد واليد اليمنى",
+    "descEn": "Supplies the right forearm and hand"
+  },
+  "Radial artery.r": {
+    "ar": "الشريان الكعبري _R",
+    "descAr": "تغذية الساعد واليد اليمنى",
+    "descEn": "Supplies the right forearm and hand"
+  },
+  "Ulnar artery _L": {
+    "ar": "الشريان الزندي _L",
+    "descAr": "تغذية الساعد واليد اليسرى",
+    "descEn": "Supplies the left forearm and hand"
+  },
+  "ulnar artery _l": {
+    "ar": "الشريان الزندي _L",
+    "descAr": "تغذية الساعد واليد اليسرى",
+    "descEn": "Supplies the left forearm and hand"
+  },
+  "Ulnar artery (Left)": {
+    "ar": "الشريان الزندي _L",
+    "descAr": "تغذية الساعد واليد اليسرى",
+    "descEn": "Supplies the left forearm and hand"
+  },
+  "Ulnar artery.l": {
+    "ar": "الشريان الزندي _L",
+    "descAr": "تغذية الساعد واليد اليسرى",
+    "descEn": "Supplies the left forearm and hand"
+  },
+  "Ulnar artery _R": {
+    "ar": "الشريان الزندي _R",
+    "descAr": "تغذية الساعد واليد اليمنى",
+    "descEn": "Supplies the right forearm and hand"
+  },
+  "ulnar artery _r": {
+    "ar": "الشريان الزندي _R",
+    "descAr": "تغذية الساعد واليد اليمنى",
+    "descEn": "Supplies the right forearm and hand"
+  },
+  "Ulnar artery (Right)": {
+    "ar": "الشريان الزندي _R",
+    "descAr": "تغذية الساعد واليد اليمنى",
+    "descEn": "Supplies the right forearm and hand"
+  },
+  "Ulnar artery.r": {
+    "ar": "الشريان الزندي _R",
+    "descAr": "تغذية الساعد واليد اليمنى",
+    "descEn": "Supplies the right forearm and hand"
+  },
+  "Femoral artery _L": {
+    "ar": "الشريان الفخذي _L",
+    "descAr": "تغذية الفخذ الأيسر",
+    "descEn": "Supplies the left thigh"
+  },
+  "femoral artery _l": {
+    "ar": "الشريان الفخذي _L",
+    "descAr": "تغذية الفخذ الأيسر",
+    "descEn": "Supplies the left thigh"
+  },
+  "Femoral artery (Left)": {
+    "ar": "الشريان الفخذي _L",
+    "descAr": "تغذية الفخذ الأيسر",
+    "descEn": "Supplies the left thigh"
+  },
+  "Femoral artery.l": {
+    "ar": "الشريان الفخذي _L",
+    "descAr": "تغذية الفخذ الأيسر",
+    "descEn": "Supplies the left thigh"
+  },
+  "Femoral artery _R": {
+    "ar": "الشريان الفخذي _R",
+    "descAr": "تغذية الفخذ الأيمن",
+    "descEn": "Supplies the right thigh"
+  },
+  "femoral artery _r": {
+    "ar": "الشريان الفخذي _R",
+    "descAr": "تغذية الفخذ الأيمن",
+    "descEn": "Supplies the right thigh"
+  },
+  "Femoral artery (Right)": {
+    "ar": "الشريان الفخذي _R",
+    "descAr": "تغذية الفخذ الأيمن",
+    "descEn": "Supplies the right thigh"
+  },
+  "Femoral artery.r": {
+    "ar": "الشريان الفخذي _R",
+    "descAr": "تغذية الفخذ الأيمن",
+    "descEn": "Supplies the right thigh"
+  },
+  "Popliteal artery _L": {
+    "ar": "الشريان المأبضي _L",
+    "descAr": "تغذية الركبة والساق اليسرى",
+    "descEn": "Supplies the left knee and leg"
+  },
+  "popliteal artery _l": {
+    "ar": "الشريان المأبضي _L",
+    "descAr": "تغذية الركبة والساق اليسرى",
+    "descEn": "Supplies the left knee and leg"
+  },
+  "Popliteal artery (Left)": {
+    "ar": "الشريان المأبضي _L",
+    "descAr": "تغذية الركبة والساق اليسرى",
+    "descEn": "Supplies the left knee and leg"
+  },
+  "Popliteal artery.l": {
+    "ar": "الشريان المأبضي _L",
+    "descAr": "تغذية الركبة والساق اليسرى",
+    "descEn": "Supplies the left knee and leg"
+  },
+  "Popliteal artery _R": {
+    "ar": "الشريان المأبضي _R",
+    "descAr": "تغذية الركبة والساق اليمنى",
+    "descEn": "Supplies the right knee and leg"
+  },
+  "popliteal artery _r": {
+    "ar": "الشريان المأبضي _R",
+    "descAr": "تغذية الركبة والساق اليمنى",
+    "descEn": "Supplies the right knee and leg"
+  },
+  "Popliteal artery (Right)": {
+    "ar": "الشريان المأبضي _R",
+    "descAr": "تغذية الركبة والساق اليمنى",
+    "descEn": "Supplies the right knee and leg"
+  },
+  "Popliteal artery.r": {
+    "ar": "الشريان المأبضي _R",
+    "descAr": "تغذية الركبة والساق اليمنى",
+    "descEn": "Supplies the right knee and leg"
+  },
+  "Anterior tibial artery _L": {
+    "ar": "الشريان الظنبوبي الأمامي _L",
+    "descAr": "تغذية الساق الأمامية اليسرى",
+    "descEn": "Supplies the left anterior leg"
+  },
+  "anterior tibial artery _l": {
+    "ar": "الشريان الظنبوبي الأمامي _L",
+    "descAr": "تغذية الساق الأمامية اليسرى",
+    "descEn": "Supplies the left anterior leg"
+  },
+  "Anterior tibial artery (Left)": {
+    "ar": "الشريان الظنبوبي الأمامي _L",
+    "descAr": "تغذية الساق الأمامية اليسرى",
+    "descEn": "Supplies the left anterior leg"
+  },
+  "Anterior tibial artery.l": {
+    "ar": "الشريان الظنبوبي الأمامي _L",
+    "descAr": "تغذية الساق الأمامية اليسرى",
+    "descEn": "Supplies the left anterior leg"
+  },
+  "Anterior tibial artery _R": {
+    "ar": "الشريان الظنبوبي الأمامي _R",
+    "descAr": "تغذية الساق الأمامية اليمنى",
+    "descEn": "Supplies the right anterior leg"
+  },
+  "anterior tibial artery _r": {
+    "ar": "الشريان الظنبوبي الأمامي _R",
+    "descAr": "تغذية الساق الأمامية اليمنى",
+    "descEn": "Supplies the right anterior leg"
+  },
+  "Anterior tibial artery (Right)": {
+    "ar": "الشريان الظنبوبي الأمامي _R",
+    "descAr": "تغذية الساق الأمامية اليمنى",
+    "descEn": "Supplies the right anterior leg"
+  },
+  "Anterior tibial artery.r": {
+    "ar": "الشريان الظنبوبي الأمامي _R",
+    "descAr": "تغذية الساق الأمامية اليمنى",
+    "descEn": "Supplies the right anterior leg"
+  },
+  "Posterior tibial artery _L": {
+    "ar": "الشريان الظنبوبي الخلفي _L",
+    "descAr": "تغذية الساق الخلفية اليسرى",
+    "descEn": "Supplies the left posterior leg"
+  },
+  "posterior tibial artery _l": {
+    "ar": "الشريان الظنبوبي الخلفي _L",
+    "descAr": "تغذية الساق الخلفية اليسرى",
+    "descEn": "Supplies the left posterior leg"
+  },
+  "Posterior tibial artery (Left)": {
+    "ar": "الشريان الظنبوبي الخلفي _L",
+    "descAr": "تغذية الساق الخلفية اليسرى",
+    "descEn": "Supplies the left posterior leg"
+  },
+  "Posterior tibial artery.l": {
+    "ar": "الشريان الظنبوبي الخلفي _L",
+    "descAr": "تغذية الساق الخلفية اليسرى",
+    "descEn": "Supplies the left posterior leg"
+  },
+  "Posterior tibial artery _R": {
+    "ar": "الشريان الظنبوبي الخلفي _R",
+    "descAr": "تغذية الساق الخلفية اليمنى",
+    "descEn": "Supplies the right posterior leg"
+  },
+  "posterior tibial artery _r": {
+    "ar": "الشريان الظنبوبي الخلفي _R",
+    "descAr": "تغذية الساق الخلفية اليمنى",
+    "descEn": "Supplies the right posterior leg"
+  },
+  "Posterior tibial artery (Right)": {
+    "ar": "الشريان الظنبوبي الخلفي _R",
+    "descAr": "تغذية الساق الخلفية اليمنى",
+    "descEn": "Supplies the right posterior leg"
+  },
+  "Posterior tibial artery.r": {
+    "ar": "الشريان الظنبوبي الخلفي _R",
+    "descAr": "تغذية الساق الخلفية اليمنى",
+    "descEn": "Supplies the right posterior leg"
+  },
+  "Femoral vein _L": {
+    "ar": "الوريد الفخذي _L",
+    "descAr": "إعادة الدم من الساق اليسرى",
+    "descEn": "Returns blood from the left leg"
+  },
+  "femoral vein _l": {
+    "ar": "الوريد الفخذي _L",
+    "descAr": "إعادة الدم من الساق اليسرى",
+    "descEn": "Returns blood from the left leg"
+  },
+  "Femoral vein (Left)": {
+    "ar": "الوريد الفخذي _L",
+    "descAr": "إعادة الدم من الساق اليسرى",
+    "descEn": "Returns blood from the left leg"
+  },
+  "Femoral vein.l": {
+    "ar": "الوريد الفخذي _L",
+    "descAr": "إعادة الدم من الساق اليسرى",
+    "descEn": "Returns blood from the left leg"
+  },
+  "Femoral vein _R": {
+    "ar": "الوريد الفخذي _R",
+    "descAr": "إعادة الدم من الساق اليمنى",
+    "descEn": "Returns blood from the right leg"
+  },
+  "femoral vein _r": {
+    "ar": "الوريد الفخذي _R",
+    "descAr": "إعادة الدم من الساق اليمنى",
+    "descEn": "Returns blood from the right leg"
+  },
+  "Femoral vein (Right)": {
+    "ar": "الوريد الفخذي _R",
+    "descAr": "إعادة الدم من الساق اليمنى",
+    "descEn": "Returns blood from the right leg"
+  },
+  "Femoral vein.r": {
+    "ar": "الوريد الفخذي _R",
+    "descAr": "إعادة الدم من الساق اليمنى",
+    "descEn": "Returns blood from the right leg"
+  },
+  "Popliteal vein _L": {
+    "ar": "الوريد المأبضي _L",
+    "descAr": "إعادة الدم من الركبة اليسرى",
+    "descEn": "Returns blood from the left knee"
+  },
+  "popliteal vein _l": {
+    "ar": "الوريد المأبضي _L",
+    "descAr": "إعادة الدم من الركبة اليسرى",
+    "descEn": "Returns blood from the left knee"
+  },
+  "Popliteal vein (Left)": {
+    "ar": "الوريد المأبضي _L",
+    "descAr": "إعادة الدم من الركبة اليسرى",
+    "descEn": "Returns blood from the left knee"
+  },
+  "Popliteal vein.l": {
+    "ar": "الوريد المأبضي _L",
+    "descAr": "إعادة الدم من الركبة اليسرى",
+    "descEn": "Returns blood from the left knee"
+  },
+  "Popliteal vein _R": {
+    "ar": "الوريد المأبضي _R",
+    "descAr": "إعادة الدم من الركبة اليمنى",
+    "descEn": "Returns blood from the right knee"
+  },
+  "popliteal vein _r": {
+    "ar": "الوريد المأبضي _R",
+    "descAr": "إعادة الدم من الركبة اليمنى",
+    "descEn": "Returns blood from the right knee"
+  },
+  "Popliteal vein (Right)": {
+    "ar": "الوريد المأبضي _R",
+    "descAr": "إعادة الدم من الركبة اليمنى",
+    "descEn": "Returns blood from the right knee"
+  },
+  "Popliteal vein.r": {
+    "ar": "الوريد المأبضي _R",
+    "descAr": "إعادة الدم من الركبة اليمنى",
+    "descEn": "Returns blood from the right knee"
+  },
+  "Great saphenous vein _L": {
+    "ar": "الوريد الصافن الكبير _L",
+    "descAr": "إعادة الدم السطحي من الساق اليسرى",
+    "descEn": "Returns superficial blood from the left leg"
+  },
+  "great saphenous vein _l": {
+    "ar": "الوريد الصافن الكبير _L",
+    "descAr": "إعادة الدم السطحي من الساق اليسرى",
+    "descEn": "Returns superficial blood from the left leg"
+  },
+  "Great saphenous vein (Left)": {
+    "ar": "الوريد الصافن الكبير _L",
+    "descAr": "إعادة الدم السطحي من الساق اليسرى",
+    "descEn": "Returns superficial blood from the left leg"
+  },
+  "Great saphenous vein.l": {
+    "ar": "الوريد الصافن الكبير _L",
+    "descAr": "إعادة الدم السطحي من الساق اليسرى",
+    "descEn": "Returns superficial blood from the left leg"
+  },
+  "Great saphenous vein _R": {
+    "ar": "الوريد الصافن الكبير _R",
+    "descAr": "إعادة الدم السطحي من الساق اليمنى",
+    "descEn": "Returns superficial blood from the right leg"
+  },
+  "great saphenous vein _r": {
+    "ar": "الوريد الصافن الكبير _R",
+    "descAr": "إعادة الدم السطحي من الساق اليمنى",
+    "descEn": "Returns superficial blood from the right leg"
+  },
+  "Great saphenous vein (Right)": {
+    "ar": "الوريد الصافن الكبير _R",
+    "descAr": "إعادة الدم السطحي من الساق اليمنى",
+    "descEn": "Returns superficial blood from the right leg"
+  },
+  "Great saphenous vein.r": {
+    "ar": "الوريد الصافن الكبير _R",
+    "descAr": "إعادة الدم السطحي من الساق اليمنى",
+    "descEn": "Returns superficial blood from the right leg"
+  },
+  "Brain": {
+    "ar": "الدماغ",
+    "descAr": "مركز التحكم بالجسم والتفكير",
+    "descEn": "Control center of the body and thought"
+  },
+  "brain": {
+    "ar": "الدماغ",
+    "descAr": "مركز التحكم بالجسم والتفكير",
+    "descEn": "Control center of the body and thought"
+  },
+  "Cerebrum": {
+    "ar": "المخ",
+    "descAr": "التفكير والذاكرة والحركة الإرادية",
+    "descEn": "Thinking, memory and voluntary movement"
+  },
+  "cerebrum": {
+    "ar": "المخ",
+    "descAr": "التفكير والذاكرة والحركة الإرادية",
+    "descEn": "Thinking, memory and voluntary movement"
+  },
+  "Cerebellum": {
+    "ar": "المخيخ",
+    "descAr": "التوازن والتنسيق الحركي",
+    "descEn": "Balance and motor coordination"
+  },
+  "cerebellum": {
+    "ar": "المخيخ",
+    "descAr": "التوازن والتنسيق الحركي",
+    "descEn": "Balance and motor coordination"
+  },
+  "Brainstem": {
+    "ar": "جذع الدماغ",
+    "descAr": "تنظيم التنفس ونبض القلب",
+    "descEn": "Regulates breathing and heart rate"
+  },
+  "brainstem": {
+    "ar": "جذع الدماغ",
+    "descAr": "تنظيم التنفس ونبض القلب",
+    "descEn": "Regulates breathing and heart rate"
+  },
+  "Spinal cord": {
+    "ar": "النخاع الشوكي",
+    "descAr": "نقل الإشارات العصبية بين الدماغ والجسم",
+    "descEn": "Transmits nerve signals between brain and body"
+  },
+  "spinal cord": {
+    "ar": "النخاع الشوكي",
+    "descAr": "نقل الإشارات العصبية بين الدماغ والجسم",
+    "descEn": "Transmits nerve signals between brain and body"
+  },
+  "Spinal dura": {
+    "ar": "الأم الجافية النخاعية",
+    "descAr": "حماية النخاع الشوكي داخل القناة الفقرية",
+    "descEn": "Tough protective outer membrane enclosing the spinal cord"
+  },
+  "spinal dura": {
+    "ar": "الأم الجافية النخاعية",
+    "descAr": "حماية النخاع الشوكي داخل القناة الفقرية",
+    "descEn": "Tough protective outer membrane enclosing the spinal cord"
+  },
+  "Sciatic nerve _L": {
+    "ar": "العصب الوركي _L",
+    "descAr": "تغذية الساق والفخذ الأيسر",
+    "descEn": "Supplies the left leg and thigh"
+  },
+  "sciatic nerve _l": {
+    "ar": "العصب الوركي _L",
+    "descAr": "تغذية الساق والفخذ الأيسر",
+    "descEn": "Supplies the left leg and thigh"
+  },
+  "Sciatic nerve (Left)": {
+    "ar": "العصب الوركي _L",
+    "descAr": "تغذية الساق والفخذ الأيسر",
+    "descEn": "Supplies the left leg and thigh"
+  },
+  "Sciatic nerve.l": {
+    "ar": "العصب الوركي _L",
+    "descAr": "تغذية الساق والفخذ الأيسر",
+    "descEn": "Supplies the left leg and thigh"
+  },
+  "Sciatic nerve _R": {
+    "ar": "العصب الوركي _R",
+    "descAr": "تغذية الساق والفخذ الأيمن",
+    "descEn": "Supplies the right leg and thigh"
+  },
+  "sciatic nerve _r": {
+    "ar": "العصب الوركي _R",
+    "descAr": "تغذية الساق والفخذ الأيمن",
+    "descEn": "Supplies the right leg and thigh"
+  },
+  "Sciatic nerve (Right)": {
+    "ar": "العصب الوركي _R",
+    "descAr": "تغذية الساق والفخذ الأيمن",
+    "descEn": "Supplies the right leg and thigh"
+  },
+  "Sciatic nerve.r": {
+    "ar": "العصب الوركي _R",
+    "descAr": "تغذية الساق والفخذ الأيمن",
+    "descEn": "Supplies the right leg and thigh"
+  },
+  "Brachial plexus _L": {
+    "ar": "الضفيرة العضدية _L",
+    "descAr": "تغذية الذراع الأيسر",
+    "descEn": "Supplies the left arm"
+  },
+  "brachial plexus _l": {
+    "ar": "الضفيرة العضدية _L",
+    "descAr": "تغذية الذراع الأيسر",
+    "descEn": "Supplies the left arm"
+  },
+  "Brachial plexus (Left)": {
+    "ar": "الضفيرة العضدية _L",
+    "descAr": "تغذية الذراع الأيسر",
+    "descEn": "Supplies the left arm"
+  },
+  "Brachial plexus.l": {
+    "ar": "الضفيرة العضدية _L",
+    "descAr": "تغذية الذراع الأيسر",
+    "descEn": "Supplies the left arm"
+  },
+  "Brachial plexus _R": {
+    "ar": "الضفيرة العضدية _R",
+    "descAr": "تغذية الذراع الأيمن",
+    "descEn": "Supplies the right arm"
+  },
+  "brachial plexus _r": {
+    "ar": "الضفيرة العضدية _R",
+    "descAr": "تغذية الذراع الأيمن",
+    "descEn": "Supplies the right arm"
+  },
+  "Brachial plexus (Right)": {
+    "ar": "الضفيرة العضدية _R",
+    "descAr": "تغذية الذراع الأيمن",
+    "descEn": "Supplies the right arm"
+  },
+  "Brachial plexus.r": {
+    "ar": "الضفيرة العضدية _R",
+    "descAr": "تغذية الذراع الأيمن",
+    "descEn": "Supplies the right arm"
+  },
+  "Lumbosacral plexus _L": {
+    "ar": "الضفيرة القطنية العجزية _L",
+    "descAr": "تغذية الحوض والساق اليسرى",
+    "descEn": "Supplies the left pelvis and leg"
+  },
+  "lumbosacral plexus _l": {
+    "ar": "الضفيرة القطنية العجزية _L",
+    "descAr": "تغذية الحوض والساق اليسرى",
+    "descEn": "Supplies the left pelvis and leg"
+  },
+  "Lumbosacral plexus (Left)": {
+    "ar": "الضفيرة القطنية العجزية _L",
+    "descAr": "تغذية الحوض والساق اليسرى",
+    "descEn": "Supplies the left pelvis and leg"
+  },
+  "Lumbosacral plexus.l": {
+    "ar": "الضفيرة القطنية العجزية _L",
+    "descAr": "تغذية الحوض والساق اليسرى",
+    "descEn": "Supplies the left pelvis and leg"
+  },
+  "Lumbosacral plexus _R": {
+    "ar": "الضفيرة القطنية العجزية _R",
+    "descAr": "تغذية الحوض والساق اليمنى",
+    "descEn": "Supplies the right pelvis and leg"
+  },
+  "lumbosacral plexus _r": {
+    "ar": "الضفيرة القطنية العجزية _R",
+    "descAr": "تغذية الحوض والساق اليمنى",
+    "descEn": "Supplies the right pelvis and leg"
+  },
+  "Lumbosacral plexus (Right)": {
+    "ar": "الضفيرة القطنية العجزية _R",
+    "descAr": "تغذية الحوض والساق اليمنى",
+    "descEn": "Supplies the right pelvis and leg"
+  },
+  "Lumbosacral plexus.r": {
+    "ar": "الضفيرة القطنية العجزية _R",
+    "descAr": "تغذية الحوض والساق اليمنى",
+    "descEn": "Supplies the right pelvis and leg"
+  },
+  "Femoral nerve _L": {
+    "ar": "العصب الفخذي _L",
+    "descAr": "تغذية الفخذ الأيسر",
+    "descEn": "Supplies the left thigh"
+  },
+  "femoral nerve _l": {
+    "ar": "العصب الفخذي _L",
+    "descAr": "تغذية الفخذ الأيسر",
+    "descEn": "Supplies the left thigh"
+  },
+  "Femoral nerve (Left)": {
+    "ar": "العصب الفخذي _L",
+    "descAr": "تغذية الفخذ الأيسر",
+    "descEn": "Supplies the left thigh"
+  },
+  "Femoral nerve.l": {
+    "ar": "العصب الفخذي _L",
+    "descAr": "تغذية الفخذ الأيسر",
+    "descEn": "Supplies the left thigh"
+  },
+  "Femoral nerve _R": {
+    "ar": "العصب الفخذي _R",
+    "descAr": "تغذية الفخذ الأيمن",
+    "descEn": "Supplies the right thigh"
+  },
+  "femoral nerve _r": {
+    "ar": "العصب الفخذي _R",
+    "descAr": "تغذية الفخذ الأيمن",
+    "descEn": "Supplies the right thigh"
+  },
+  "Femoral nerve (Right)": {
+    "ar": "العصب الفخذي _R",
+    "descAr": "تغذية الفخذ الأيمن",
+    "descEn": "Supplies the right thigh"
+  },
+  "Femoral nerve.r": {
+    "ar": "العصب الفخذي _R",
+    "descAr": "تغذية الفخذ الأيمن",
+    "descEn": "Supplies the right thigh"
+  },
+  "Tibial nerve _L": {
+    "ar": "العصب الظنبوبي _L",
+    "descAr": "تغذية الساق والقدم اليسرى",
+    "descEn": "Supplies the left leg and foot"
+  },
+  "tibial nerve _l": {
+    "ar": "العصب الظنبوبي _L",
+    "descAr": "تغذية الساق والقدم اليسرى",
+    "descEn": "Supplies the left leg and foot"
+  },
+  "Tibial nerve (Left)": {
+    "ar": "العصب الظنبوبي _L",
+    "descAr": "تغذية الساق والقدم اليسرى",
+    "descEn": "Supplies the left leg and foot"
+  },
+  "Tibial nerve.l": {
+    "ar": "العصب الظنبوبي _L",
+    "descAr": "تغذية الساق والقدم اليسرى",
+    "descEn": "Supplies the left leg and foot"
+  },
+  "Tibial nerve _R": {
+    "ar": "العصب الظنبوبي _R",
+    "descAr": "تغذية الساق والقدم اليمنى",
+    "descEn": "Supplies the right leg and foot"
+  },
+  "tibial nerve _r": {
+    "ar": "العصب الظنبوبي _R",
+    "descAr": "تغذية الساق والقدم اليمنى",
+    "descEn": "Supplies the right leg and foot"
+  },
+  "Tibial nerve (Right)": {
+    "ar": "العصب الظنبوبي _R",
+    "descAr": "تغذية الساق والقدم اليمنى",
+    "descEn": "Supplies the right leg and foot"
+  },
+  "Tibial nerve.r": {
+    "ar": "العصب الظنبوبي _R",
+    "descAr": "تغذية الساق والقدم اليمنى",
+    "descEn": "Supplies the right leg and foot"
+  },
+  "Fibular nerve _L": {
+    "ar": "العصب الشظوي _L",
+    "descAr": "تغذية الساق الأمامية اليسرى",
+    "descEn": "Supplies the left anterior leg"
+  },
+  "fibular nerve _l": {
+    "ar": "العصب الشظوي _L",
+    "descAr": "تغذية الساق الأمامية اليسرى",
+    "descEn": "Supplies the left anterior leg"
+  },
+  "Fibular nerve (Left)": {
+    "ar": "العصب الشظوي _L",
+    "descAr": "تغذية الساق الأمامية اليسرى",
+    "descEn": "Supplies the left anterior leg"
+  },
+  "Fibular nerve.l": {
+    "ar": "العصب الشظوي _L",
+    "descAr": "تغذية الساق الأمامية اليسرى",
+    "descEn": "Supplies the left anterior leg"
+  },
+  "Fibular nerve _R": {
+    "ar": "العصب الشظوي _R",
+    "descAr": "تغذية الساق الأمامية اليمنى",
+    "descEn": "Supplies the right anterior leg"
+  },
+  "fibular nerve _r": {
+    "ar": "العصب الشظوي _R",
+    "descAr": "تغذية الساق الأمامية اليمنى",
+    "descEn": "Supplies the right anterior leg"
+  },
+  "Fibular nerve (Right)": {
+    "ar": "العصب الشظوي _R",
+    "descAr": "تغذية الساق الأمامية اليمنى",
+    "descEn": "Supplies the right anterior leg"
+  },
+  "Fibular nerve.r": {
+    "ar": "العصب الشظوي _R",
+    "descAr": "تغذية الساق الأمامية اليمنى",
+    "descEn": "Supplies the right anterior leg"
+  },
+  "Temporomandibular joint _L": {
+    "ar": "المفصل الصدغي الفكي _L",
+    "descAr": "فتح الفم والمضغ الأيسر",
+    "descEn": "Opens the mouth and chews on the left"
+  },
+  "temporomandibular joint _l": {
+    "ar": "المفصل الصدغي الفكي _L",
+    "descAr": "فتح الفم والمضغ الأيسر",
+    "descEn": "Opens the mouth and chews on the left"
+  },
+  "Temporomandibular joint (Left)": {
+    "ar": "المفصل الصدغي الفكي _L",
+    "descAr": "فتح الفم والمضغ الأيسر",
+    "descEn": "Opens the mouth and chews on the left"
+  },
+  "Temporomandibular joint.l": {
+    "ar": "المفصل الصدغي الفكي _L",
+    "descAr": "فتح الفم والمضغ الأيسر",
+    "descEn": "Opens the mouth and chews on the left"
+  },
+  "Temporomandibular joint _R": {
+    "ar": "المفصل الصدغي الفكي _R",
+    "descAr": "فتح الفم والمضغ الأيمن",
+    "descEn": "Opens the mouth and chews on the right"
+  },
+  "temporomandibular joint _r": {
+    "ar": "المفصل الصدغي الفكي _R",
+    "descAr": "فتح الفم والمضغ الأيمن",
+    "descEn": "Opens the mouth and chews on the right"
+  },
+  "Temporomandibular joint (Right)": {
+    "ar": "المفصل الصدغي الفكي _R",
+    "descAr": "فتح الفم والمضغ الأيمن",
+    "descEn": "Opens the mouth and chews on the right"
+  },
+  "Temporomandibular joint.r": {
+    "ar": "المفصل الصدغي الفكي _R",
+    "descAr": "فتح الفم والمضغ الأيمن",
+    "descEn": "Opens the mouth and chews on the right"
+  },
+  "Articular disc of TMJ _L": {
+    "ar": "الغضروف المفصلي للفك _L",
+    "descAr": "امتصاص الصدمات في الفك الأيسر",
+    "descEn": "Absorbs shocks in the left jaw"
+  },
+  "articular disc of tmj _l": {
+    "ar": "الغضروف المفصلي للفك _L",
+    "descAr": "امتصاص الصدمات في الفك الأيسر",
+    "descEn": "Absorbs shocks in the left jaw"
+  },
+  "Articular disc of TMJ (Left)": {
+    "ar": "الغضروف المفصلي للفك _L",
+    "descAr": "امتصاص الصدمات في الفك الأيسر",
+    "descEn": "Absorbs shocks in the left jaw"
+  },
+  "Articular disc of TMJ.l": {
+    "ar": "الغضروف المفصلي للفك _L",
+    "descAr": "امتصاص الصدمات في الفك الأيسر",
+    "descEn": "Absorbs shocks in the left jaw"
+  },
+  "Articular disc of TMJ _R": {
+    "ar": "الغضروف المفصلي للفك _R",
+    "descAr": "امتصاص الصدمات في الفك الأيمن",
+    "descEn": "Absorbs shocks in the right jaw"
+  },
+  "articular disc of tmj _r": {
+    "ar": "الغضروف المفصلي للفك _R",
+    "descAr": "امتصاص الصدمات في الفك الأيمن",
+    "descEn": "Absorbs shocks in the right jaw"
+  },
+  "Articular disc of TMJ (Right)": {
+    "ar": "الغضروف المفصلي للفك _R",
+    "descAr": "امتصاص الصدمات في الفك الأيمن",
+    "descEn": "Absorbs shocks in the right jaw"
+  },
+  "Articular disc of TMJ.r": {
+    "ar": "الغضروف المفصلي للفك _R",
+    "descAr": "امتصاص الصدمات في الفك الأيمن",
+    "descEn": "Absorbs shocks in the right jaw"
+  },
+  "Atlanto-occipital joint": {
+    "ar": "المفصل الفهقي القذالي",
+    "descAr": "إيماء الرأس",
+    "descEn": "Nodding of the head"
+  },
+  "atlanto-occipital joint": {
+    "ar": "المفصل الفهقي القذالي",
+    "descAr": "إيماء الرأس",
+    "descEn": "Nodding of the head"
+  },
+  "Atlantoaxial joint": {
+    "ar": "المفصل الفهقي المحوري",
+    "descAr": "دوران الرأس",
+    "descEn": "Rotation of the head"
+  },
+  "atlantoaxial joint": {
+    "ar": "المفصل الفهقي المحوري",
+    "descAr": "دوران الرأس",
+    "descEn": "Rotation of the head"
+  },
+  "Intervertebral discs": {
+    "ar": "الأقراص بين الفقرات",
+    "descAr": "امتصاص الصدمات بين الفقرات",
+    "descEn": "Absorb shocks between vertebrae"
+  },
+  "intervertebral discs": {
+    "ar": "الأقراص بين الفقرات",
+    "descAr": "امتصاص الصدمات بين الفقرات",
+    "descEn": "Absorb shocks between vertebrae"
+  },
+  "Annulus fibrosus": {
+    "ar": "الحلقة الليفية",
+    "descAr": "احتواء النواة اللبية وتثبيت القرص",
+    "descEn": "Contains the nucleus pulposus and stabilizes the disc"
+  },
+  "annulus fibrosus": {
+    "ar": "الحلقة الليفية",
+    "descAr": "احتواء النواة اللبية وتثبيت القرص",
+    "descEn": "Contains the nucleus pulposus and stabilizes the disc"
+  },
+  "Nucleus pulposus": {
+    "ar": "النواة اللبية",
+    "descAr": "امتصاص الضغط وتوزيعه",
+    "descEn": "Absorbs and distributes pressure"
+  },
+  "nucleus pulposus": {
+    "ar": "النواة اللبية",
+    "descAr": "امتصاص الضغط وتوزيعه",
+    "descEn": "Absorbs and distributes pressure"
+  },
+  "Anterior longitudinal ligament": {
+    "ar": "الرباط الطولي الأمامي للعمود الفقري",
+    "descAr": "تثبيت الفقرات ومنع فرط بسط العمود الفقري",
+    "descEn": "Stabilizes vertebral bodies and prevents spinal hyperextension"
+  },
+  "anterior longitudinal ligament": {
+    "ar": "الرباط الطولي الأمامي للعمود الفقري",
+    "descAr": "تثبيت الفقرات ومنع فرط بسط العمود الفقري",
+    "descEn": "Stabilizes vertebral bodies and prevents spinal hyperextension"
+  },
+  "Cervical facet joints _L": {
+    "ar": "المفاصل الوجيهية العنقية _L",
+    "descAr": "توجيه حركة الفقرات العنقية اليسرى",
+    "descEn": "Guide left cervical movement"
+  },
+  "cervical facet joints _l": {
+    "ar": "المفاصل الوجيهية العنقية _L",
+    "descAr": "توجيه حركة الفقرات العنقية اليسرى",
+    "descEn": "Guide left cervical movement"
+  },
+  "Cervical facet joints (Left)": {
+    "ar": "المفاصل الوجيهية العنقية _L",
+    "descAr": "توجيه حركة الفقرات العنقية اليسرى",
+    "descEn": "Guide left cervical movement"
+  },
+  "Cervical facet joints.l": {
+    "ar": "المفاصل الوجيهية العنقية _L",
+    "descAr": "توجيه حركة الفقرات العنقية اليسرى",
+    "descEn": "Guide left cervical movement"
+  },
+  "Cervical facet joints _R": {
+    "ar": "المفاصل الوجيهية العنقية _R",
+    "descAr": "توجيه حركة الفقرات العنقية اليمنى",
+    "descEn": "Guide right cervical movement"
+  },
+  "cervical facet joints _r": {
+    "ar": "المفاصل الوجيهية العنقية _R",
+    "descAr": "توجيه حركة الفقرات العنقية اليمنى",
+    "descEn": "Guide right cervical movement"
+  },
+  "Cervical facet joints (Right)": {
+    "ar": "المفاصل الوجيهية العنقية _R",
+    "descAr": "توجيه حركة الفقرات العنقية اليمنى",
+    "descEn": "Guide right cervical movement"
+  },
+  "Cervical facet joints.r": {
+    "ar": "المفاصل الوجيهية العنقية _R",
+    "descAr": "توجيه حركة الفقرات العنقية اليمنى",
+    "descEn": "Guide right cervical movement"
+  },
+  "Thoracic facet joints _L": {
+    "ar": "المفاصل الوجيهية الصدرية _L",
+    "descAr": "توجيه حركة الفقرات الصدرية اليسرى",
+    "descEn": "Guide left thoracic movement"
+  },
+  "thoracic facet joints _l": {
+    "ar": "المفاصل الوجيهية الصدرية _L",
+    "descAr": "توجيه حركة الفقرات الصدرية اليسرى",
+    "descEn": "Guide left thoracic movement"
+  },
+  "Thoracic facet joints (Left)": {
+    "ar": "المفاصل الوجيهية الصدرية _L",
+    "descAr": "توجيه حركة الفقرات الصدرية اليسرى",
+    "descEn": "Guide left thoracic movement"
+  },
+  "Thoracic facet joints.l": {
+    "ar": "المفاصل الوجيهية الصدرية _L",
+    "descAr": "توجيه حركة الفقرات الصدرية اليسرى",
+    "descEn": "Guide left thoracic movement"
+  },
+  "Thoracic facet joints _R": {
+    "ar": "المفاصل الوجيهية الصدرية _R",
+    "descAr": "توجيه حركة الفقرات الصدرية اليمنى",
+    "descEn": "Guide right thoracic movement"
+  },
+  "thoracic facet joints _r": {
+    "ar": "المفاصل الوجيهية الصدرية _R",
+    "descAr": "توجيه حركة الفقرات الصدرية اليمنى",
+    "descEn": "Guide right thoracic movement"
+  },
+  "Thoracic facet joints (Right)": {
+    "ar": "المفاصل الوجيهية الصدرية _R",
+    "descAr": "توجيه حركة الفقرات الصدرية اليمنى",
+    "descEn": "Guide right thoracic movement"
+  },
+  "Thoracic facet joints.r": {
+    "ar": "المفاصل الوجيهية الصدرية _R",
+    "descAr": "توجيه حركة الفقرات الصدرية اليمنى",
+    "descEn": "Guide right thoracic movement"
+  },
+  "Lumbar facet joints _L": {
+    "ar": "المفاصل الوجيهية القطنية _L",
+    "descAr": "توجيه حركة الفقرات القطنية اليسرى",
+    "descEn": "Guide left lumbar movement"
+  },
+  "lumbar facet joints _l": {
+    "ar": "المفاصل الوجيهية القطنية _L",
+    "descAr": "توجيه حركة الفقرات القطنية اليسرى",
+    "descEn": "Guide left lumbar movement"
+  },
+  "Lumbar facet joints (Left)": {
+    "ar": "المفاصل الوجيهية القطنية _L",
+    "descAr": "توجيه حركة الفقرات القطنية اليسرى",
+    "descEn": "Guide left lumbar movement"
+  },
+  "Lumbar facet joints.l": {
+    "ar": "المفاصل الوجيهية القطنية _L",
+    "descAr": "توجيه حركة الفقرات القطنية اليسرى",
+    "descEn": "Guide left lumbar movement"
+  },
+  "Lumbar facet joints _R": {
+    "ar": "المفاصل الوجيهية القطنية _R",
+    "descAr": "توجيه حركة الفقرات القطنية اليمنى",
+    "descEn": "Guide right lumbar movement"
+  },
+  "lumbar facet joints _r": {
+    "ar": "المفاصل الوجيهية القطنية _R",
+    "descAr": "توجيه حركة الفقرات القطنية اليمنى",
+    "descEn": "Guide right lumbar movement"
+  },
+  "Lumbar facet joints (Right)": {
+    "ar": "المفاصل الوجيهية القطنية _R",
+    "descAr": "توجيه حركة الفقرات القطنية اليمنى",
+    "descEn": "Guide right lumbar movement"
+  },
+  "Lumbar facet joints.r": {
+    "ar": "المفاصل الوجيهية القطنية _R",
+    "descAr": "توجيه حركة الفقرات القطنية اليمنى",
+    "descEn": "Guide right lumbar movement"
+  },
+  "Sacroiliac joint _L": {
+    "ar": "المفصل العجزي الحرقفي _L",
+    "descAr": "نقل الوزن للحوض الأيسر",
+    "descEn": "Transfers weight to the left pelvis"
+  },
+  "sacroiliac joint _l": {
+    "ar": "المفصل العجزي الحرقفي _L",
+    "descAr": "نقل الوزن للحوض الأيسر",
+    "descEn": "Transfers weight to the left pelvis"
+  },
+  "Sacroiliac joint (Left)": {
+    "ar": "المفصل العجزي الحرقفي _L",
+    "descAr": "نقل الوزن للحوض الأيسر",
+    "descEn": "Transfers weight to the left pelvis"
+  },
+  "Sacroiliac joint.l": {
+    "ar": "المفصل العجزي الحرقفي _L",
+    "descAr": "نقل الوزن للحوض الأيسر",
+    "descEn": "Transfers weight to the left pelvis"
+  },
+  "Sacroiliac joint _R": {
+    "ar": "المفصل العجزي الحرقفي _R",
+    "descAr": "نقل الوزن للحوض الأيمن",
+    "descEn": "Transfers weight to the right pelvis"
+  },
+  "sacroiliac joint _r": {
+    "ar": "المفصل العجزي الحرقفي _R",
+    "descAr": "نقل الوزن للحوض الأيمن",
+    "descEn": "Transfers weight to the right pelvis"
+  },
+  "Sacroiliac joint (Right)": {
+    "ar": "المفصل العجزي الحرقفي _R",
+    "descAr": "نقل الوزن للحوض الأيمن",
+    "descEn": "Transfers weight to the right pelvis"
+  },
+  "Sacroiliac joint.r": {
+    "ar": "المفصل العجزي الحرقفي _R",
+    "descAr": "نقل الوزن للحوض الأيمن",
+    "descEn": "Transfers weight to the right pelvis"
+  },
+  "Pubic symphysis": {
+    "ar": "الارتفاق العاني",
+    "descAr": "ربط نصفي الحوض والمرونة أثناء الولادة",
+    "descEn": "Connects pelvic halves and allows flexibility during childbirth"
+  },
+  "pubic symphysis": {
+    "ar": "الارتفاق العاني",
+    "descAr": "ربط نصفي الحوض والمرونة أثناء الولادة",
+    "descEn": "Connects pelvic halves and allows flexibility during childbirth"
+  },
+  "Pubic symphysis fibrocartilage": {
+    "ar": "الغضروف الليفي للارتفاق العاني",
+    "descAr": "امتصاص الضغط بين نصفي الحوض",
+    "descEn": "Absorbs pressure between pelvic halves"
+  },
+  "pubic symphysis fibrocartilage": {
+    "ar": "الغضروف الليفي للارتفاق العاني",
+    "descAr": "امتصاص الضغط بين نصفي الحوض",
+    "descEn": "Absorbs pressure between pelvic halves"
+  },
+  "Hip joint _L": {
+    "ar": "المفصل الوركي _L",
+    "descAr": "حركة الفخذ الأيسر وحمل الوزن",
+    "descEn": "Left thigh movement and weight-bearing"
+  },
+  "hip joint _l": {
+    "ar": "المفصل الوركي _L",
+    "descAr": "حركة الفخذ الأيسر وحمل الوزن",
+    "descEn": "Left thigh movement and weight-bearing"
+  },
+  "Hip joint (Left)": {
+    "ar": "المفصل الوركي _L",
+    "descAr": "حركة الفخذ الأيسر وحمل الوزن",
+    "descEn": "Left thigh movement and weight-bearing"
+  },
+  "Hip joint.l": {
+    "ar": "المفصل الوركي _L",
+    "descAr": "حركة الفخذ الأيسر وحمل الوزن",
+    "descEn": "Left thigh movement and weight-bearing"
+  },
+  "Hip joint _R": {
+    "ar": "المفصل الوركي _R",
+    "descAr": "حركة الفخذ الأيمن وحمل الوزن",
+    "descEn": "Right thigh movement and weight-bearing"
+  },
+  "hip joint _r": {
+    "ar": "المفصل الوركي _R",
+    "descAr": "حركة الفخذ الأيمن وحمل الوزن",
+    "descEn": "Right thigh movement and weight-bearing"
+  },
+  "Hip joint (Right)": {
+    "ar": "المفصل الوركي _R",
+    "descAr": "حركة الفخذ الأيمن وحمل الوزن",
+    "descEn": "Right thigh movement and weight-bearing"
+  },
+  "Hip joint.r": {
+    "ar": "المفصل الوركي _R",
+    "descAr": "حركة الفخذ الأيمن وحمل الوزن",
+    "descEn": "Right thigh movement and weight-bearing"
+  },
+  "Acetabular labrum _L": {
+    "ar": "الشفة الحقية _L",
+    "descAr": "تعميق تجويف الحوض الأيسر",
+    "descEn": "Deepens the left hip socket"
+  },
+  "acetabular labrum _l": {
+    "ar": "الشفة الحقية _L",
+    "descAr": "تعميق تجويف الحوض الأيسر",
+    "descEn": "Deepens the left hip socket"
+  },
+  "Acetabular labrum (Left)": {
+    "ar": "الشفة الحقية _L",
+    "descAr": "تعميق تجويف الحوض الأيسر",
+    "descEn": "Deepens the left hip socket"
+  },
+  "Acetabular labrum.l": {
+    "ar": "الشفة الحقية _L",
+    "descAr": "تعميق تجويف الحوض الأيسر",
+    "descEn": "Deepens the left hip socket"
+  },
+  "Acetabular labrum _R": {
+    "ar": "الشفة الحقية _R",
+    "descAr": "تعميق تجويف الحوض الأيمن",
+    "descEn": "Deepens the right hip socket"
+  },
+  "acetabular labrum _r": {
+    "ar": "الشفة الحقية _R",
+    "descAr": "تعميق تجويف الحوض الأيمن",
+    "descEn": "Deepens the right hip socket"
+  },
+  "Acetabular labrum (Right)": {
+    "ar": "الشفة الحقية _R",
+    "descAr": "تعميق تجويف الحوض الأيمن",
+    "descEn": "Deepens the right hip socket"
+  },
+  "Acetabular labrum.r": {
+    "ar": "الشفة الحقية _R",
+    "descAr": "تعميق تجويف الحوض الأيمن",
+    "descEn": "Deepens the right hip socket"
+  },
+  "Hip articular cartilage _L": {
+    "ar": "الغضروف المفصلي للورك _L",
+    "descAr": "تقليل الاحتكاك في الورك الأيسر",
+    "descEn": "Reduces friction in the left hip"
+  },
+  "hip articular cartilage _l": {
+    "ar": "الغضروف المفصلي للورك _L",
+    "descAr": "تقليل الاحتكاك في الورك الأيسر",
+    "descEn": "Reduces friction in the left hip"
+  },
+  "Hip articular cartilage (Left)": {
+    "ar": "الغضروف المفصلي للورك _L",
+    "descAr": "تقليل الاحتكاك في الورك الأيسر",
+    "descEn": "Reduces friction in the left hip"
+  },
+  "Hip articular cartilage.l": {
+    "ar": "الغضروف المفصلي للورك _L",
+    "descAr": "تقليل الاحتكاك في الورك الأيسر",
+    "descEn": "Reduces friction in the left hip"
+  },
+  "Hip articular cartilage _R": {
+    "ar": "الغضروف المفصلي للورك _R",
+    "descAr": "تقليل الاحتكاك في الورك الأيمن",
+    "descEn": "Reduces friction in the right hip"
+  },
+  "hip articular cartilage _r": {
+    "ar": "الغضروف المفصلي للورك _R",
+    "descAr": "تقليل الاحتكاك في الورك الأيمن",
+    "descEn": "Reduces friction in the right hip"
+  },
+  "Hip articular cartilage (Right)": {
+    "ar": "الغضروف المفصلي للورك _R",
+    "descAr": "تقليل الاحتكاك في الورك الأيمن",
+    "descEn": "Reduces friction in the right hip"
+  },
+  "Hip articular cartilage.r": {
+    "ar": "الغضروف المفصلي للورك _R",
+    "descAr": "تقليل الاحتكاك في الورك الأيمن",
+    "descEn": "Reduces friction in the right hip"
+  },
+  "Knee joint _L": {
+    "ar": "المفصل الركبي _L",
+    "descAr": "ثني وفرد الساق اليسرى",
+    "descEn": "Flexes and extends the left leg"
+  },
+  "knee joint _l": {
+    "ar": "المفصل الركبي _L",
+    "descAr": "ثني وفرد الساق اليسرى",
+    "descEn": "Flexes and extends the left leg"
+  },
+  "Knee joint (Left)": {
+    "ar": "المفصل الركبي _L",
+    "descAr": "ثني وفرد الساق اليسرى",
+    "descEn": "Flexes and extends the left leg"
+  },
+  "Knee joint.l": {
+    "ar": "المفصل الركبي _L",
+    "descAr": "ثني وفرد الساق اليسرى",
+    "descEn": "Flexes and extends the left leg"
+  },
+  "Knee joint _R": {
+    "ar": "المفصل الركبي _R",
+    "descAr": "ثني وفرد الساق اليمنى",
+    "descEn": "Flexes and extends the right leg"
+  },
+  "knee joint _r": {
+    "ar": "المفصل الركبي _R",
+    "descAr": "ثني وفرد الساق اليمنى",
+    "descEn": "Flexes and extends the right leg"
+  },
+  "Knee joint (Right)": {
+    "ar": "المفصل الركبي _R",
+    "descAr": "ثني وفرد الساق اليمنى",
+    "descEn": "Flexes and extends the right leg"
+  },
+  "Knee joint.r": {
+    "ar": "المفصل الركبي _R",
+    "descAr": "ثني وفرد الساق اليمنى",
+    "descEn": "Flexes and extends the right leg"
+  },
+  "Medial meniscus _L": {
+    "ar": "الغضروف الهلالي الإنسي _L",
+    "descAr": "امتصاص الصدمات في الركبة اليسرى",
+    "descEn": "Absorbs shocks in the left knee"
+  },
+  "medial meniscus _l": {
+    "ar": "الغضروف الهلالي الإنسي _L",
+    "descAr": "امتصاص الصدمات في الركبة اليسرى",
+    "descEn": "Absorbs shocks in the left knee"
+  },
+  "Medial meniscus (Left)": {
+    "ar": "الغضروف الهلالي الإنسي _L",
+    "descAr": "امتصاص الصدمات في الركبة اليسرى",
+    "descEn": "Absorbs shocks in the left knee"
+  },
+  "Medial meniscus.l": {
+    "ar": "الغضروف الهلالي الإنسي _L",
+    "descAr": "امتصاص الصدمات في الركبة اليسرى",
+    "descEn": "Absorbs shocks in the left knee"
+  },
+  "Medial meniscus _R": {
+    "ar": "الغضروف الهلالي الإنسي _R",
+    "descAr": "امتصاص الصدمات في الركبة اليمنى",
+    "descEn": "Absorbs shocks in the right knee"
+  },
+  "medial meniscus _r": {
+    "ar": "الغضروف الهلالي الإنسي _R",
+    "descAr": "امتصاص الصدمات في الركبة اليمنى",
+    "descEn": "Absorbs shocks in the right knee"
+  },
+  "Medial meniscus (Right)": {
+    "ar": "الغضروف الهلالي الإنسي _R",
+    "descAr": "امتصاص الصدمات في الركبة اليمنى",
+    "descEn": "Absorbs shocks in the right knee"
+  },
+  "Medial meniscus.r": {
+    "ar": "الغضروف الهلالي الإنسي _R",
+    "descAr": "امتصاص الصدمات في الركبة اليمنى",
+    "descEn": "Absorbs shocks in the right knee"
+  },
+  "Lateral meniscus _L": {
+    "ar": "الغضروف الهلالي الوحشي _L",
+    "descAr": "امتصاص الصدمات في الركبة اليسرى",
+    "descEn": "Absorbs shocks in the left knee"
+  },
+  "lateral meniscus _l": {
+    "ar": "الغضروف الهلالي الوحشي _L",
+    "descAr": "امتصاص الصدمات في الركبة اليسرى",
+    "descEn": "Absorbs shocks in the left knee"
+  },
+  "Lateral meniscus (Left)": {
+    "ar": "الغضروف الهلالي الوحشي _L",
+    "descAr": "امتصاص الصدمات في الركبة اليسرى",
+    "descEn": "Absorbs shocks in the left knee"
+  },
+  "Lateral meniscus.l": {
+    "ar": "الغضروف الهلالي الوحشي _L",
+    "descAr": "امتصاص الصدمات في الركبة اليسرى",
+    "descEn": "Absorbs shocks in the left knee"
+  },
+  "Lateral meniscus _R": {
+    "ar": "الغضروف الهلالي الوحشي _R",
+    "descAr": "امتصاص الصدمات في الركبة اليمنى",
+    "descEn": "Absorbs shocks in the right knee"
+  },
+  "lateral meniscus _r": {
+    "ar": "الغضروف الهلالي الوحشي _R",
+    "descAr": "امتصاص الصدمات في الركبة اليمنى",
+    "descEn": "Absorbs shocks in the right knee"
+  },
+  "Lateral meniscus (Right)": {
+    "ar": "الغضروف الهلالي الوحشي _R",
+    "descAr": "امتصاص الصدمات في الركبة اليمنى",
+    "descEn": "Absorbs shocks in the right knee"
+  },
+  "Lateral meniscus.r": {
+    "ar": "الغضروف الهلالي الوحشي _R",
+    "descAr": "امتصاص الصدمات في الركبة اليمنى",
+    "descEn": "Absorbs shocks in the right knee"
+  },
+  "Knee articular cartilage _L": {
+    "ar": "الغضروف المفصلي للركبة _L",
+    "descAr": "تقليل الاحتكاك في الركبة اليسرى",
+    "descEn": "Reduces friction in the left knee"
+  },
+  "knee articular cartilage _l": {
+    "ar": "الغضروف المفصلي للركبة _L",
+    "descAr": "تقليل الاحتكاك في الركبة اليسرى",
+    "descEn": "Reduces friction in the left knee"
+  },
+  "Knee articular cartilage (Left)": {
+    "ar": "الغضروف المفصلي للركبة _L",
+    "descAr": "تقليل الاحتكاك في الركبة اليسرى",
+    "descEn": "Reduces friction in the left knee"
+  },
+  "Knee articular cartilage.l": {
+    "ar": "الغضروف المفصلي للركبة _L",
+    "descAr": "تقليل الاحتكاك في الركبة اليسرى",
+    "descEn": "Reduces friction in the left knee"
+  },
+  "Knee articular cartilage _R": {
+    "ar": "الغضروف المفصلي للركبة _R",
+    "descAr": "تقليل الاحتكاك في الركبة اليمنى",
+    "descEn": "Reduces friction in the right knee"
+  },
+  "knee articular cartilage _r": {
+    "ar": "الغضروف المفصلي للركبة _R",
+    "descAr": "تقليل الاحتكاك في الركبة اليمنى",
+    "descEn": "Reduces friction in the right knee"
+  },
+  "Knee articular cartilage (Right)": {
+    "ar": "الغضروف المفصلي للركبة _R",
+    "descAr": "تقليل الاحتكاك في الركبة اليمنى",
+    "descEn": "Reduces friction in the right knee"
+  },
+  "Knee articular cartilage.r": {
+    "ar": "الغضروف المفصلي للركبة _R",
+    "descAr": "تقليل الاحتكاك في الركبة اليمنى",
+    "descEn": "Reduces friction in the right knee"
+  },
+  "Ankle joint _L": {
+    "ar": "مفصل الكاحل _L",
+    "descAr": "ثني وفرد القدم اليسرى",
+    "descEn": "Flexes and extends the left foot"
+  },
+  "ankle joint _l": {
+    "ar": "مفصل الكاحل _L",
+    "descAr": "ثني وفرد القدم اليسرى",
+    "descEn": "Flexes and extends the left foot"
+  },
+  "Ankle joint (Left)": {
+    "ar": "مفصل الكاحل _L",
+    "descAr": "ثني وفرد القدم اليسرى",
+    "descEn": "Flexes and extends the left foot"
+  },
+  "Ankle joint.l": {
+    "ar": "مفصل الكاحل _L",
+    "descAr": "ثني وفرد القدم اليسرى",
+    "descEn": "Flexes and extends the left foot"
+  },
+  "Ankle joint _R": {
+    "ar": "مفصل الكاحل _R",
+    "descAr": "ثني وفرد القدم اليمنى",
+    "descEn": "Flexes and extends the right foot"
+  },
+  "ankle joint _r": {
+    "ar": "مفصل الكاحل _R",
+    "descAr": "ثني وفرد القدم اليمنى",
+    "descEn": "Flexes and extends the right foot"
+  },
+  "Ankle joint (Right)": {
+    "ar": "مفصل الكاحل _R",
+    "descAr": "ثني وفرد القدم اليمنى",
+    "descEn": "Flexes and extends the right foot"
+  },
+  "Ankle joint.r": {
+    "ar": "مفصل الكاحل _R",
+    "descAr": "ثني وفرد القدم اليمنى",
+    "descEn": "Flexes and extends the right foot"
+  },
+  "Ankle articular cartilage _L": {
+    "ar": "الغضروف المفصلي للكاحل _L",
+    "descAr": "تقليل الاحتكاك في الكاحل الأيسر",
+    "descEn": "Reduces friction in the left ankle"
+  },
+  "ankle articular cartilage _l": {
+    "ar": "الغضروف المفصلي للكاحل _L",
+    "descAr": "تقليل الاحتكاك في الكاحل الأيسر",
+    "descEn": "Reduces friction in the left ankle"
+  },
+  "Ankle articular cartilage (Left)": {
+    "ar": "الغضروف المفصلي للكاحل _L",
+    "descAr": "تقليل الاحتكاك في الكاحل الأيسر",
+    "descEn": "Reduces friction in the left ankle"
+  },
+  "Ankle articular cartilage.l": {
+    "ar": "الغضروف المفصلي للكاحل _L",
+    "descAr": "تقليل الاحتكاك في الكاحل الأيسر",
+    "descEn": "Reduces friction in the left ankle"
+  },
+  "Ankle articular cartilage _R": {
+    "ar": "الغضروف المفصلي للكاحل _R",
+    "descAr": "تقليل الاحتكاك في الكاحل الأيمن",
+    "descEn": "Reduces friction in the right ankle"
+  },
+  "ankle articular cartilage _r": {
+    "ar": "الغضروف المفصلي للكاحل _R",
+    "descAr": "تقليل الاحتكاك في الكاحل الأيمن",
+    "descEn": "Reduces friction in the right ankle"
+  },
+  "Ankle articular cartilage (Right)": {
+    "ar": "الغضروف المفصلي للكاحل _R",
+    "descAr": "تقليل الاحتكاك في الكاحل الأيمن",
+    "descEn": "Reduces friction in the right ankle"
+  },
+  "Ankle articular cartilage.r": {
+    "ar": "الغضروف المفصلي للكاحل _R",
+    "descAr": "تقليل الاحتكاك في الكاحل الأيمن",
+    "descEn": "Reduces friction in the right ankle"
+  },
+  "Hyaline cartilage": {
+    "ar": "الغضروف الزجاجي",
+    "descAr": "تغطية أسطح المفاصل وتقليل الاحتكاك",
+    "descEn": "Covers joint surfaces and reduces friction"
+  },
+  "hyaline cartilage": {
+    "ar": "الغضروف الزجاجي",
+    "descAr": "تغطية أسطح المفاصل وتقليل الاحتكاك",
+    "descEn": "Covers joint surfaces and reduces friction"
+  },
+  "Fibrocartilage": {
+    "ar": "الغضروف الليفي",
+    "descAr": "امتصاص الصدمات في الأقراص والارتفاقات",
+    "descEn": "Absorbs shocks in discs and symphyses"
+  },
+  "fibrocartilage": {
+    "ar": "الغضروف الليفي",
+    "descAr": "امتصاص الصدمات في الأقراص والارتفاقات",
+    "descEn": "Absorbs shocks in discs and symphyses"
+  },
+  "Elastic cartilage": {
+    "ar": "الغضروف المرن",
+    "descAr": "توفير المرونة في الأذن والأنف",
+    "descEn": "Provides flexibility in the ear and nose"
+  },
+  "elastic cartilage": {
+    "ar": "الغضروف المرن",
+    "descAr": "توفير المرونة في الأذن والأنف",
+    "descEn": "Provides flexibility in the ear and nose"
   }
 }
