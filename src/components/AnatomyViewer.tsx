@@ -46,7 +46,7 @@ interface SystemLayerConfig {
 
 const SYSTEM_LAYERS: SystemLayerConfig[] = [
   { id: 'skeletal', labelEn: 'Skeletal System (Bones)', labelAr: 'الهيكل العظمي', file: 'skeletal.glb', color: 0xe2ded4, icon: Bone, defaultVisible: true },
-  { id: 'muscular', labelEn: 'Muscular Anatomy System', labelAr: 'التشريح العضلي الكامل', file: 'muscular.glb', color: 0xbe123c, icon: Activity, defaultVisible: false },
+  { id: 'muscular', labelEn: 'Full Muscular Anatomy', labelAr: 'التشريح العضلي الكامل', file: 'male_full_body_ecorche.glb', color: 0xbe123c, icon: Activity, defaultVisible: false },
   { id: 'cardiovascular', labelEn: 'Cardiovascular & Heart', labelAr: 'الجهاز الدوري والقلب', file: 'cardiovascular.glb', color: 0xdc2626, icon: Heart, defaultVisible: false },
   { id: 'nervous', labelEn: 'Nervous System & Brain', labelAr: 'الجهاز العصبي والدماغ', file: 'nervous.glb', color: 0xeab308, icon: Brain, defaultVisible: false },
   { id: 'visceral', labelEn: 'Visceral Organs', labelAr: 'الأعضاء الحشوية', file: 'visceral.glb', color: 0xbf6b59, icon: Layers, defaultVisible: false },
@@ -303,6 +303,155 @@ const ANATOMY_DICTIONARY: Record<string, { ar: string; descEn: string; descAr: s
   },
 };
 
+// Spatial 3D anatomical resolver for male_full_body_ecorche.glb to match Excel Sheets 2, 3, and 4
+function resolveMuscleFromHit(hit: THREE.Mesh, hitPoint: THREE.Vector3): { en: string; ar: string } {
+  const y = hitPoint.y;
+  const x = hitPoint.x;
+  const z = hitPoint.z;
+  const absX = Math.abs(x);
+  const side = x > 0 ? '_L' : '_R';
+  const objName = hit.name || '';
+  const parentName = hit.parent?.name || '';
+
+  // Tendons, Ligaments, Fascia (SubTool-0 or SubTool-1 or Object_29/Object_11)
+  if (parentName.includes('SubTool-0') || parentName.includes('SubTool-1') || objName === 'Object_29' || objName === 'Object_11') {
+    if (y < 0.25 && z < 0) {
+      return { en: 'Achilles tendon', ar: 'وتر أخيل (العرقوب)' };
+    }
+    if (y < 0.60 && z > 0) {
+      return { en: 'Patellar tendon', ar: 'الوتر الرضفي' };
+    }
+    if (y > 0.90 && y < 1.30 && absX < 0.05) {
+      return { en: 'Linea alba', ar: 'الخط الأبيض للبطن' };
+    }
+  }
+
+  // 1. Head & Cranium (y > 1.55)
+  if (y > 1.55) {
+    if (z > 0.03 && absX < 0.08) {
+      if (y < 1.62 && absX > 0.03) {
+        return { en: 'Masseter', ar: 'العضلة الماضغة' };
+      }
+      return { en: 'Occipitofrontalis', ar: 'العضلة القذالية الجبهية' };
+    }
+    if (absX >= 0.06 && y > 1.58) {
+      return { en: 'Temporalis', ar: 'العضلة الصدغية' };
+    }
+    return { en: 'Occipitofrontalis', ar: 'العضلة القذالية الجبهية' };
+  }
+
+  // 2. Neck (1.40 <= y <= 1.55)
+  if (y >= 1.40) {
+    if (z >= -0.01) {
+      return { en: `Sternocleidomastoid ${side}`, ar: `العضلة القصية الترقوية الحلمية ${side}` };
+    }
+    return { en: `Trapezius ${side}`, ar: `العضلة الشبه المنحرفة ${side}` };
+  }
+
+  // 3. Shoulders & Upper Chest / Upper Back (1.20 <= y < 1.40)
+  if (y >= 1.20) {
+    if (absX >= 0.16) {
+      return { en: `Deltoid ${side}`, ar: `العضلة الدالية ${side}` };
+    }
+    if (z >= 0.0) {
+      return { en: `Pectoralis major ${side}`, ar: `العضلة الصدرية الكبرى ${side}` };
+    }
+    if (absX >= 0.10) {
+      return { en: `Infraspinatus ${side}`, ar: `العضلة تحت الشوكة ${side}` };
+    }
+    return { en: `Trapezius ${side}`, ar: `العضلة الشبه المنحرفة ${side}` };
+  }
+
+  // 4. Arms & Mid Torso (0.95 <= y < 1.20)
+  if (y >= 0.95) {
+    // Upper Arm
+    if (absX >= 0.17) {
+      if (z >= 0.0) {
+        return { en: `Biceps brachii ${side}`, ar: `العضلة ذات الرأسين العضدية ${side}` };
+      }
+      return { en: 'Triceps brachii', ar: 'العضلة ثلاثية الرؤوس العضدية' };
+    }
+    // Torso
+    if (z >= 0.0) {
+      if (absX < 0.08) {
+        return { en: 'Rectus abdominis', ar: 'العضلة المستقيمة البطنية' };
+      }
+      return { en: `External oblique ${side}`, ar: `العضلة المائلة الخارجية ${side}` };
+    }
+    return { en: 'Latissimus dorsi', ar: 'العضلة الظهرية العريضة' };
+  }
+
+  // 5. Forearms & Pelvis (0.72 <= y < 0.95)
+  if (y >= 0.72) {
+    // Forearms / Hands
+    if (absX >= 0.16) {
+      if (z >= 0.01) {
+        return { en: `Brachioradialis ${side}`, ar: `العضلة العضدية الكعبرية ${side}` };
+      }
+      return { en: `Flexor carpi radialis ${side}`, ar: `العضلة القابضة للرسغ الكعبرية ${side}` };
+    }
+    // Pelvis
+    if (z < -0.01) {
+      if (absX >= 0.11) {
+        return { en: `Gluteus medius ${side}`, ar: `العضلة الألوية المتوسطة ${side}` };
+      }
+      return { en: 'Gluteus maximus', ar: 'العضلة الألوية الكبرى' };
+    }
+    if (absX >= 0.08) {
+      return { en: `External oblique ${side}`, ar: `العضلة المائلة الخارجية ${side}` };
+    }
+    return { en: 'Rectus abdominis', ar: 'العضلة المستقيمة البطنية' };
+  }
+
+  // 6. Thighs (0.42 <= y < 0.72)
+  if (y >= 0.42) {
+    if (z >= -0.01) {
+      if (absX < 0.08 && y < 0.58) {
+        return { en: `Sartorius ${side}`, ar: `العضلة الخياطية ${side}` };
+      }
+      if (absX >= 0.12) {
+        return { en: `Vastus lateralis ${side}`, ar: `العضلة المتسعة الوحشية ${side}` };
+      }
+      if (absX < 0.08) {
+        return { en: `Vastus medialis ${side}`, ar: `العضلة المتسعة الإنسية ${side}` };
+      }
+      return { en: `Rectus femoris ${side}`, ar: `العضلة المستقيمة الفخذية ${side}` };
+    }
+    // Posterior Thigh
+    if (absX >= 0.11) {
+      return { en: 'Biceps femoris', ar: 'العضلة ذات الرأسين الفخذية' };
+    }
+    if (absX < 0.07) {
+      return { en: 'Semimembranosus', ar: 'العضلة نصف الغشائية' };
+    }
+    return { en: 'Semitendinosus', ar: 'العضلة نصف الوترية' };
+  }
+
+  // 7. Calves & Lower Legs (0.10 <= y < 0.42)
+  if (y >= 0.10) {
+    if (z >= -0.01) {
+      if (absX >= 0.10) {
+        return { en: `Fibularis longus ${side}`, ar: `العضلة الشظوية الطويلة ${side}` };
+      }
+      if (y < 0.22) {
+        return { en: `Extensor digitorum longus ${side}`, ar: `العضلة الباسطة الطويلة للأصابع ${side}` };
+      }
+      return { en: `Tibialis anterior ${side}`, ar: `العضلة الظنبوبية الأمامية ${side}` };
+    }
+    // Posterior Calf
+    if (y > 0.28) {
+      return { en: 'Gastrocnemius', ar: 'العضلة التوأمية' };
+    }
+    return { en: 'Soleus', ar: 'العضلة النعلية' };
+  }
+
+  // 8. Feet & Toes (y < 0.10)
+  if (z >= 0.0) {
+    return { en: `Extensor hallucis longus ${side}`, ar: `العضلة الباسطة الطويلة لإبهام القدم ${side}` };
+  }
+  return { en: 'Plantar fascia', ar: 'السفاق الأخمصي (اللفافة الأخمصية)' };
+}
+
 export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode = false }) => {
   const { t, language } = useLanguage();
   const mountRef = useRef<HTMLDivElement | null>(null);
@@ -436,9 +585,15 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
               metalness = 0.02;
             }
 
-            // For models with embedded textures, preserve their original texture map
+            // For models with embedded textures or ecorche, preserve their original texture map and appearance
             const origMat = (Array.isArray(mesh.material) ? mesh.material[0] : mesh.material) as THREE.MeshStandardMaterial;
-            if (origMat && origMat.map) {
+            if (sysConfig.file === 'male_full_body_ecorche.glb' && origMat) {
+              const texturedMat = origMat.clone();
+              texturedMat.roughness = 0.42;
+              texturedMat.metalness = 0.04;
+              mesh.material = texturedMat;
+              originalMaterials.current.set(mesh, texturedMat.clone());
+            } else if (origMat && origMat.map) {
               const texturedMat = origMat.clone();
               texturedMat.roughness = roughness;
               texturedMat.metalness = metalness;
@@ -463,9 +618,16 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           }
         });
 
-        // All authentic Z-Anatomy systems (skeletal, muscular, cardiovascular, nervous, visceral, joints, lymphatic)
-        // are perfectly registered at world origin (0,0,0) in anatomical coordinates
-        root.position.set(0, 0, 0);
+        // Anatomical alignment
+        if (sysConfig.file === 'male_full_body_ecorche.glb') {
+          // Precise anatomical alignment to human skeleton
+          const ecorcheScale = 0.0255;
+          root.scale.set(ecorcheScale, ecorcheScale, ecorcheScale);
+          // Soles at Y = 0.04m matching Calcaneus foot plane, torso depth aligned at Z = 0.015m
+          root.position.set(0, 1.140, 0.015);
+        } else {
+          root.position.set(0, 0, 0);
+        }
 
         root.visible = visibleSystemsRef.current[sysConfig.id] ?? !!sysConfig.defaultVisible;
 
@@ -585,27 +747,13 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         const sysId = (hit.userData.systemId || 'skeletal') as AnatomySystemId;
         const sysConfig = SYSTEM_LAYERS.find(s => s.id === sysId) || SYSTEM_LAYERS[0];
 
-        // Specific anatomical resolution for unnamed meshes when clicking generic mesh objects
-        if (cleanName.includes('Object') || cleanName.includes('Decimation') || cleanName.includes('mesh')) {
-          const worldPos = new THREE.Vector3();
-          hit.getWorldPosition(worldPos);
-          const y = worldPos.y;
+        let resolvedArabicName: string | null = null;
 
-          if (y > 1.55) {
-            cleanName = 'Facial & Cranial Musculature (عضلات الوجه والجمجمة)';
-          } else if (y > 1.40) {
-            cleanName = 'Sternocleidomastoid & Neck Musculature (عضلات الرقبة والعضلة القصية الترقوية)';
-          } else if (y > 1.20) {
-            cleanName = 'Pectoralis Major & Deltoid (عضلات الصدر والكتف)';
-          } else if (y > 0.95) {
-            cleanName = 'Rectus Abdominis & External Obliques (عضلات البطن المستقيمة والمائلة)';
-          } else if (y > 0.75) {
-            cleanName = 'Gluteal & Pelvic Girdle Musculature (عضلات الحوض والأليوية)';
-          } else if (y > 0.45) {
-            cleanName = 'Quadriceps Femoris & Hamstrings (عضلات الفخذ الأمامية والخلفية)';
-          } else {
-            cleanName = 'Gastrocnemius & Tibialis Anterior (عضلات الساق والربلة)';
-          }
+        // Specific anatomical resolution for full body ecorche muscles matching Excel tables
+        if (sysId === 'muscular' || sysConfig.file === 'male_full_body_ecorche.glb' || cleanName.includes('Object') || cleanName.includes('Decimation') || cleanName.includes('SubTool') || cleanName.includes('mesh')) {
+          const muscleRes = resolveMuscleFromHit(hit, intersects[0].point);
+          cleanName = muscleRes.en;
+          resolvedArabicName = muscleRes.ar;
         }
 
         // Comprehensive anatomical lookup
@@ -618,14 +766,14 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
 
         // Match against dictionary or definitions.json
         const matchedDict = directEntry 
-          ? { ar: directEntry.ar + (directEntry.ar.includes('الأيسر') || directEntry.ar.includes('الأيمن') ? '' : sideAr), descEn: directEntry.descEn, descAr: directEntry.descAr }
+          ? { ar: resolvedArabicName || directEntry.ar + (directEntry.ar.includes('الأيسر') || directEntry.ar.includes('الأيمن') ? '' : sideAr), descEn: directEntry.descEn, descAr: directEntry.descAr }
           : Object.entries(dictRecord).find(([k]) => baseKey.toLowerCase() === k.toLowerCase() || baseKey.toLowerCase().includes(k.toLowerCase()))?.[1]
           || Object.entries(ANATOMY_DICTIONARY).find(([k]) => cleanName.toLowerCase().includes(k.toLowerCase()))?.[1];
         
         let descEn = matchedDict ? matchedDict.descEn : '';
-        const nameAr = matchedDict 
+        let nameAr = resolvedArabicName || (matchedDict 
           ? matchedDict.ar 
-          : (cleanName.includes('(') ? cleanName.split('(')[1]?.replace(')', '') : `${cleanName} (${sysConfig.labelAr})`);
+          : (cleanName.includes('(') ? cleanName.split('(')[1]?.replace(')', '') : ''));
         let descAr = matchedDict ? matchedDict.descAr : '';
 
         // If not in curated dictionary, check definitions.json
@@ -642,6 +790,65 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           }
         }
 
+        // Domain-specific scientific intelligence for Brain, Nervous, Cardiovascular, and Joints
+        if (!nameAr || nameAr === cleanName) {
+          const lower = cleanName.toLowerCase();
+          if (sysId === 'nervous') {
+            if (lower.includes('ventricle')) {
+              nameAr = `بطين دماغي (${cleanName})`;
+              descAr = 'تجويف دماغي مبطن بالضفيرة المشيمية مسؤول عن إفراز وتدوير السائل الدماغي الشوكي (CSF) لامتصاص الصدمات وحماية المراكز العصبية.';
+              descEn = 'Cerebral ventricle producing and circulating cerebrospinal fluid (CSF) for mechanical cushioning and metabolic homeostasis.';
+            } else if (lower.includes('nucleus') || lower.includes('nuclei')) {
+              nameAr = `نواة عصبية (${cleanName})`;
+              descAr = 'تجمع عصبي متخصص في الجهاز العصبي المركزي يعمل كمحطة معالجة وترحيل للإشارات الحسية والحركية الدقيقة.';
+              descEn = 'Dedicated central nervous system neuronal cluster serving as a sensorimotor signal integration hub.';
+            } else if (lower.includes('sulcus')) {
+              nameAr = `ثلم قشري مخي (${cleanName})`;
+              descAr = 'أخدود قشري يفصل بين تلافيف الدماغ ويزيد المساحة السطحية للقشرة المخية المنظمة للوظائف العقلية العليا.';
+              descEn = 'Cortical sulcus dividing cerebral gyri and expanding cortical surface area for cognitive processing.';
+            } else if (lower.includes('gyrus')) {
+              nameAr = `تلفيف مخي (${cleanName})`;
+              descAr = 'طية بارزة من القشرة المخية تحتوي على شبكات عصبية مخصصة للمهام المعرفية والحسية والحركية.';
+              descEn = 'Elevated cortical convolution containing dense synaptic networks for neurological and cognitive functions.';
+            } else if (lower.includes('nerve')) {
+              nameAr = `عصب عصبي (${cleanName})`;
+              descAr = 'حزمة ألياف عصبية تنقل السيالات الكهروكيميائية بين الدماغ أو النخاع الشوكي وأعضاء الجسم.';
+              descEn = 'Peripheral nerve bundle transmitting electrochemical signals between the central nervous system and target tissues.';
+            } else if (lower.includes('tract') || lower.includes('fasciculus')) {
+              nameAr = `سبيل عصبي (${cleanName})`;
+              descAr = 'مسار ألياف عصبية بيضاء يربط بين المراكز العصبية المختلفة في الدماغ والنخاع الشوكي.';
+              descEn = 'White matter axonal pathway linking neural centers across the neuroaxis.';
+            } else if (lower.includes('cerebell')) {
+              nameAr = `بنية مخيخية (${cleanName})`;
+              descAr = 'بنية دقيقة تتبع المخيخ، تسهم في التوازن والتنسيق الحركي الدقيق ومعايرة الحركات الإرادية.';
+              descEn = 'Cerebellar anatomical subunit contributing to equilibrium, balance, and motor coordination.';
+            }
+          } else if (sysId === 'cardiovascular') {
+            if (lower.includes('artery') || lower.includes('arterial')) {
+              nameAr = `شريان وعائي (${cleanName})`;
+              descAr = 'وعاء دموي عضلي ينقل الدم المؤكسج تحت ضغط عالٍ من القلب إلى أنسجة وأعضاء الجسم.';
+              descEn = 'Muscular arterial vessel transporting oxygenated blood under systemic pressure to peripheral tissues.';
+            } else if (lower.includes('vein') || lower.includes('venous')) {
+              nameAr = `وريد وعائي (${cleanName})`;
+              descAr = 'وعاء دموي وريدي مزود بصمامات يضمن عودة الدم غير المؤكسج بكفاءة إلى القلب.';
+              descEn = 'Venous capacitance vessel ensuring efficient return of deoxygenated blood to the cardiac chambers.';
+            }
+          } else if (sysId === 'joints') {
+            if (lower.includes('ligament')) {
+              nameAr = `رباط مفصلي (${cleanName})`;
+              descAr = 'شريط ليفي كولاجيني متين يربط العظام ببعضها ويثبت استقرار المفصل ويمنع فرط الحركة.';
+              descEn = 'Dense regular collagenous band connecting bone to bone, maintaining joint stability and kinematics.';
+            } else if (lower.includes('disc') || lower.includes('meniscus')) {
+              nameAr = `غضروف هلالي / قرص مفصلي (${cleanName})`;
+              descAr = 'غضروف ليفي ممتص للصدمات يقلل الاحتكاك ويوزع الأحمال الميكانيكية بالتساوي على أسطح المفصل.';
+              descEn = 'Fibrocartilaginous structure dampening compressive impact and reducing frictional wear in joint articulations.';
+            }
+          }
+        }
+
+        if (!nameAr) {
+          nameAr = `${cleanName} (${sysConfig.labelAr})`;
+        }
         if (!descEn) {
           descEn = `Detailed clinical anatomy specimen belonging to the ${sysConfig.labelEn}.`;
         }

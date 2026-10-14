@@ -6481,8 +6481,8 @@
   },
   "Brain": {
     "ar": "الدماغ",
-    "descAr": "مركز التحكم بالجسم والتفكير",
-    "descEn": "Control center of the body and thought"
+    "descEn": "Control center of the body, sensory processing, cognition, and emotion.",
+    "descAr": "مركز التحكم الرئيسي في الجسم، ومعالجة المدخلات الحسية، والتفكير والذاكرة."
   },
   "brain": {
     "ar": "الدماغ",
@@ -6491,8 +6491,8 @@
   },
   "Cerebrum": {
     "ar": "المخ",
-    "descAr": "التفكير والذاكرة والحركة الإرادية",
-    "descEn": "Thinking, memory and voluntary movement"
+    "descEn": "Thinking, memory, executive planning, and voluntary motor movement.",
+    "descAr": "مركز التفكير والذاكرة والحركة الإرادية ومعالجة الوظائف المعرفية العليا."
   },
   "cerebrum": {
     "ar": "المخ",
@@ -6501,8 +6501,8 @@
   },
   "Cerebellum": {
     "ar": "المخيخ",
-    "descAr": "التوازن والتنسيق الحركي",
-    "descEn": "Balance and motor coordination"
+    "descEn": "Balance, equilibrium, posture, and fine motor coordination.",
+    "descAr": "تنظيم التوازن والتنسيق الحركي الدقيق والحفاظ على وضعية واستقرار الجسم."
   },
   "cerebellum": {
     "ar": "المخيخ",
@@ -6511,8 +6511,8 @@
   },
   "Brainstem": {
     "ar": "جذع الدماغ",
-    "descAr": "تنظيم التنفس ونبض القلب",
-    "descEn": "Regulates breathing and heart rate"
+    "descEn": "Regulates vital autonomous functions: breathing, heart rate, and blood pressure.",
+    "descAr": "تنظيم الوظائف الحيوية اللاإرادية كالتنفس وضغط الدم ونبض القلب وحركات البلع."
   },
   "brainstem": {
     "ar": "جذع الدماغ",
@@ -6521,8 +6521,8 @@
   },
   "Spinal cord": {
     "ar": "النخاع الشوكي",
-    "descAr": "نقل الإشارات العصبية بين الدماغ والجسم",
-    "descEn": "Transmits nerve signals between brain and body"
+    "descEn": "Transmits nerve signals bidirectionally between the brain and peripheral body.",
+    "descAr": "نقل الإشارات العصبية الحسية والحركية ثنائية الاتجاه بين الدماغ وسائر أجزاء الجسم."
   },
   "spinal cord": {
     "ar": "النخاع الشوكي",
@@ -6531,8 +6531,8 @@
   },
   "Spinal dura": {
     "ar": "الأم الجافية النخاعية",
-    "descAr": "حماية النخاع الشوكي داخل القناة الفقرية",
-    "descEn": "Tough protective outer membrane enclosing the spinal cord"
+    "descEn": "Tough protective outer fibrous membrane enclosing the spinal cord and CSF.",
+    "descAr": "الغشاء الليفي الخارجي المتين الذي يحيط بالنخاع الشوكي والسائل الدماغي الشوكي لحمايته داخل القناة الفقرية."
   },
   "spinal dura": {
     "ar": "الأم الجافية النخاعية",
@@ -7488,5 +7488,1300 @@
     "ar": "الغضروف المرن",
     "descAr": "توفير المرونة في الأذن والأنف",
     "descEn": "Provides flexibility in the ear and nose"
+  },
+  "Brain _L": {
+    "ar": "الدماغ الأيسر",
+    "descEn": "Control center of the body, sensory processing, cognition, and emotion.",
+    "descAr": "مركز التحكم الرئيسي في الجسم، ومعالجة المدخلات الحسية، والتفكير والذاكرة."
+  },
+  "Brain _R": {
+    "ar": "الدماغ الأيمن",
+    "descEn": "Control center of the body, sensory processing, cognition, and emotion.",
+    "descAr": "مركز التحكم الرئيسي في الجسم، ومعالجة المدخلات الحسية، والتفكير والذاكرة."
+  },
+  "Brain.l": {
+    "ar": "الدماغ الأيسر",
+    "descEn": "Control center of the body, sensory processing, cognition, and emotion.",
+    "descAr": "مركز التحكم الرئيسي في الجسم، ومعالجة المدخلات الحسية، والتفكير والذاكرة."
+  },
+  "Brain.r": {
+    "ar": "الدماغ الأيمن",
+    "descEn": "Control center of the body, sensory processing, cognition, and emotion.",
+    "descAr": "مركز التحكم الرئيسي في الجسم، ومعالجة المدخلات الحسية، والتفكير والذاكرة."
+  },
+  "Cerebrum _L": {
+    "ar": "المخ الأيسر",
+    "descEn": "Thinking, memory, executive planning, and voluntary motor movement.",
+    "descAr": "مركز التفكير والذاكرة والحركة الإرادية ومعالجة الوظائف المعرفية العليا."
+  },
+  "Cerebrum _R": {
+    "ar": "المخ الأيمن",
+    "descEn": "Thinking, memory, executive planning, and voluntary motor movement.",
+    "descAr": "مركز التفكير والذاكرة والحركة الإرادية ومعالجة الوظائف المعرفية العليا."
+  },
+  "Cerebrum.l": {
+    "ar": "المخ الأيسر",
+    "descEn": "Thinking, memory, executive planning, and voluntary motor movement.",
+    "descAr": "مركز التفكير والذاكرة والحركة الإرادية ومعالجة الوظائف المعرفية العليا."
+  },
+  "Cerebrum.r": {
+    "ar": "المخ الأيمن",
+    "descEn": "Thinking, memory, executive planning, and voluntary motor movement.",
+    "descAr": "مركز التفكير والذاكرة والحركة الإرادية ومعالجة الوظائف المعرفية العليا."
+  },
+  "Cerebellum _L": {
+    "ar": "المخيخ الأيسر",
+    "descEn": "Balance, equilibrium, posture, and fine motor coordination.",
+    "descAr": "تنظيم التوازن والتنسيق الحركي الدقيق والحفاظ على وضعية واستقرار الجسم."
+  },
+  "Cerebellum _R": {
+    "ar": "المخيخ الأيمن",
+    "descEn": "Balance, equilibrium, posture, and fine motor coordination.",
+    "descAr": "تنظيم التوازن والتنسيق الحركي الدقيق والحفاظ على وضعية واستقرار الجسم."
+  },
+  "Cerebellum.l": {
+    "ar": "المخيخ الأيسر",
+    "descEn": "Balance, equilibrium, posture, and fine motor coordination.",
+    "descAr": "تنظيم التوازن والتنسيق الحركي الدقيق والحفاظ على وضعية واستقرار الجسم."
+  },
+  "Cerebellum.r": {
+    "ar": "المخيخ الأيمن",
+    "descEn": "Balance, equilibrium, posture, and fine motor coordination.",
+    "descAr": "تنظيم التوازن والتنسيق الحركي الدقيق والحفاظ على وضعية واستقرار الجسم."
+  },
+  "Brainstem _L": {
+    "ar": "جذع الدماغ الأيسر",
+    "descEn": "Regulates vital autonomous functions: breathing, heart rate, and blood pressure.",
+    "descAr": "تنظيم الوظائف الحيوية اللاإرادية كالتنفس وضغط الدم ونبض القلب وحركات البلع."
+  },
+  "Brainstem _R": {
+    "ar": "جذع الدماغ الأيمن",
+    "descEn": "Regulates vital autonomous functions: breathing, heart rate, and blood pressure.",
+    "descAr": "تنظيم الوظائف الحيوية اللاإرادية كالتنفس وضغط الدم ونبض القلب وحركات البلع."
+  },
+  "Brainstem.l": {
+    "ar": "جذع الدماغ الأيسر",
+    "descEn": "Regulates vital autonomous functions: breathing, heart rate, and blood pressure.",
+    "descAr": "تنظيم الوظائف الحيوية اللاإرادية كالتنفس وضغط الدم ونبض القلب وحركات البلع."
+  },
+  "Brainstem.r": {
+    "ar": "جذع الدماغ الأيمن",
+    "descEn": "Regulates vital autonomous functions: breathing, heart rate, and blood pressure.",
+    "descAr": "تنظيم الوظائف الحيوية اللاإرادية كالتنفس وضغط الدم ونبض القلب وحركات البلع."
+  },
+  "Spinal cord _L": {
+    "ar": "النخاع الشوكي الأيسر",
+    "descEn": "Transmits nerve signals bidirectionally between the brain and peripheral body.",
+    "descAr": "نقل الإشارات العصبية الحسية والحركية ثنائية الاتجاه بين الدماغ وسائر أجزاء الجسم."
+  },
+  "Spinal cord _R": {
+    "ar": "النخاع الشوكي الأيمن",
+    "descEn": "Transmits nerve signals bidirectionally between the brain and peripheral body.",
+    "descAr": "نقل الإشارات العصبية الحسية والحركية ثنائية الاتجاه بين الدماغ وسائر أجزاء الجسم."
+  },
+  "Spinal cord.l": {
+    "ar": "النخاع الشوكي الأيسر",
+    "descEn": "Transmits nerve signals bidirectionally between the brain and peripheral body.",
+    "descAr": "نقل الإشارات العصبية الحسية والحركية ثنائية الاتجاه بين الدماغ وسائر أجزاء الجسم."
+  },
+  "Spinal cord.r": {
+    "ar": "النخاع الشوكي الأيمن",
+    "descEn": "Transmits nerve signals bidirectionally between the brain and peripheral body.",
+    "descAr": "نقل الإشارات العصبية الحسية والحركية ثنائية الاتجاه بين الدماغ وسائر أجزاء الجسم."
+  },
+  "Spinal dura _L": {
+    "ar": "الأم الجافية النخاعية الأيسر",
+    "descEn": "Tough protective outer fibrous membrane enclosing the spinal cord and CSF.",
+    "descAr": "الغشاء الليفي الخارجي المتين الذي يحيط بالنخاع الشوكي والسائل الدماغي الشوكي لحمايته داخل القناة الفقرية."
+  },
+  "Spinal dura _R": {
+    "ar": "الأم الجافية النخاعية الأيمن",
+    "descEn": "Tough protective outer fibrous membrane enclosing the spinal cord and CSF.",
+    "descAr": "الغشاء الليفي الخارجي المتين الذي يحيط بالنخاع الشوكي والسائل الدماغي الشوكي لحمايته داخل القناة الفقرية."
+  },
+  "Spinal dura.l": {
+    "ar": "الأم الجافية النخاعية الأيسر",
+    "descEn": "Tough protective outer fibrous membrane enclosing the spinal cord and CSF.",
+    "descAr": "الغشاء الليفي الخارجي المتين الذي يحيط بالنخاع الشوكي والسائل الدماغي الشوكي لحمايته داخل القناة الفقرية."
+  },
+  "Spinal dura.r": {
+    "ar": "الأم الجافية النخاعية الأيمن",
+    "descEn": "Tough protective outer fibrous membrane enclosing the spinal cord and CSF.",
+    "descAr": "الغشاء الليفي الخارجي المتين الذي يحيط بالنخاع الشوكي والسائل الدماغي الشوكي لحمايته داخل القناة الفقرية."
+  },
+  "Spinal dura mater": {
+    "ar": "الأم الجافية النخاعية",
+    "descEn": "Tough protective outer fibrous membrane enclosing the spinal cord and CSF.",
+    "descAr": "الغشاء الليفي الخارجي المتين الذي يحيط بالنخاع الشوكي والسائل الدماغي الشوكي لحمايته داخل القناة الفقرية."
+  },
+  "Spinal dura mater _L": {
+    "ar": "الأم الجافية النخاعية الأيسر",
+    "descEn": "Tough protective outer fibrous membrane enclosing the spinal cord and CSF.",
+    "descAr": "الغشاء الليفي الخارجي المتين الذي يحيط بالنخاع الشوكي والسائل الدماغي الشوكي لحمايته داخل القناة الفقرية."
+  },
+  "Spinal dura mater _R": {
+    "ar": "الأم الجافية النخاعية الأيمن",
+    "descEn": "Tough protective outer fibrous membrane enclosing the spinal cord and CSF.",
+    "descAr": "الغشاء الليفي الخارجي المتين الذي يحيط بالنخاع الشوكي والسائل الدماغي الشوكي لحمايته داخل القناة الفقرية."
+  },
+  "Spinal dura mater.l": {
+    "ar": "الأم الجافية النخاعية الأيسر",
+    "descEn": "Tough protective outer fibrous membrane enclosing the spinal cord and CSF.",
+    "descAr": "الغشاء الليفي الخارجي المتين الذي يحيط بالنخاع الشوكي والسائل الدماغي الشوكي لحمايته داخل القناة الفقرية."
+  },
+  "Spinal dura mater.r": {
+    "ar": "الأم الجافية النخاعية الأيمن",
+    "descEn": "Tough protective outer fibrous membrane enclosing the spinal cord and CSF.",
+    "descAr": "الغشاء الليفي الخارجي المتين الذي يحيط بالنخاع الشوكي والسائل الدماغي الشوكي لحمايته داخل القناة الفقرية."
+  },
+  "Medulla oblongata": {
+    "ar": "النخاع المستطيل (جذع الدماغ)",
+    "descEn": "Lower half of brainstem containing cardiac, respiratory, vomiting, and vasomotor centers.",
+    "descAr": "الجزء السفلي من جذع الدماغ، يحوي مراكز التنفس وضغط الدم والقلب ومنعكسات القيء والسعال."
+  },
+  "Medulla oblongata _L": {
+    "ar": "النخاع المستطيل (جذع الدماغ) الأيسر",
+    "descEn": "Lower half of brainstem containing cardiac, respiratory, vomiting, and vasomotor centers.",
+    "descAr": "الجزء السفلي من جذع الدماغ، يحوي مراكز التنفس وضغط الدم والقلب ومنعكسات القيء والسعال."
+  },
+  "Medulla oblongata _R": {
+    "ar": "النخاع المستطيل (جذع الدماغ) الأيمن",
+    "descEn": "Lower half of brainstem containing cardiac, respiratory, vomiting, and vasomotor centers.",
+    "descAr": "الجزء السفلي من جذع الدماغ، يحوي مراكز التنفس وضغط الدم والقلب ومنعكسات القيء والسعال."
+  },
+  "Medulla oblongata.l": {
+    "ar": "النخاع المستطيل (جذع الدماغ) الأيسر",
+    "descEn": "Lower half of brainstem containing cardiac, respiratory, vomiting, and vasomotor centers.",
+    "descAr": "الجزء السفلي من جذع الدماغ، يحوي مراكز التنفس وضغط الدم والقلب ومنعكسات القيء والسعال."
+  },
+  "Medulla oblongata.r": {
+    "ar": "النخاع المستطيل (جذع الدماغ) الأيمن",
+    "descEn": "Lower half of brainstem containing cardiac, respiratory, vomiting, and vasomotor centers.",
+    "descAr": "الجزء السفلي من جذع الدماغ، يحوي مراكز التنفس وضغط الدم والقلب ومنعكسات القيء والسعال."
+  },
+  "Pons": {
+    "ar": "الجسر (جذع الدماغ)",
+    "descEn": "Part of brainstem relaying signals between cerebrum and cerebellum; regulates sleep and breathing.",
+    "descAr": "جزء من جذع الدماغ ينقل الإشارات بين المخ والمخيخ، وينظم دورات النوم وإيقاع التنفس."
+  },
+  "Pons _L": {
+    "ar": "الجسر (جذع الدماغ) الأيسر",
+    "descEn": "Part of brainstem relaying signals between cerebrum and cerebellum; regulates sleep and breathing.",
+    "descAr": "جزء من جذع الدماغ ينقل الإشارات بين المخ والمخيخ، وينظم دورات النوم وإيقاع التنفس."
+  },
+  "Pons _R": {
+    "ar": "الجسر (جذع الدماغ) الأيمن",
+    "descEn": "Part of brainstem relaying signals between cerebrum and cerebellum; regulates sleep and breathing.",
+    "descAr": "جزء من جذع الدماغ ينقل الإشارات بين المخ والمخيخ، وينظم دورات النوم وإيقاع التنفس."
+  },
+  "Pons.l": {
+    "ar": "الجسر (جذع الدماغ) الأيسر",
+    "descEn": "Part of brainstem relaying signals between cerebrum and cerebellum; regulates sleep and breathing.",
+    "descAr": "جزء من جذع الدماغ ينقل الإشارات بين المخ والمخيخ، وينظم دورات النوم وإيقاع التنفس."
+  },
+  "Pons.r": {
+    "ar": "الجسر (جذع الدماغ) الأيمن",
+    "descEn": "Part of brainstem relaying signals between cerebrum and cerebellum; regulates sleep and breathing.",
+    "descAr": "جزء من جذع الدماغ ينقل الإشارات بين المخ والمخيخ، وينظم دورات النوم وإيقاع التنفس."
+  },
+  "Midbrain": {
+    "ar": "الدماغ المتوسط (جذع الدماغ)",
+    "descEn": "Associated with vision, hearing, motor control, alertness, and temperature regulation.",
+    "descAr": "جزء من جذع الدماغ مسؤول عن المنعكسات البصرية والسمعية والتحكم الحركي واليقظة."
+  },
+  "Midbrain _L": {
+    "ar": "الدماغ المتوسط (جذع الدماغ) الأيسر",
+    "descEn": "Associated with vision, hearing, motor control, alertness, and temperature regulation.",
+    "descAr": "جزء من جذع الدماغ مسؤول عن المنعكسات البصرية والسمعية والتحكم الحركي واليقظة."
+  },
+  "Midbrain _R": {
+    "ar": "الدماغ المتوسط (جذع الدماغ) الأيمن",
+    "descEn": "Associated with vision, hearing, motor control, alertness, and temperature regulation.",
+    "descAr": "جزء من جذع الدماغ مسؤول عن المنعكسات البصرية والسمعية والتحكم الحركي واليقظة."
+  },
+  "Midbrain.l": {
+    "ar": "الدماغ المتوسط (جذع الدماغ) الأيسر",
+    "descEn": "Associated with vision, hearing, motor control, alertness, and temperature regulation.",
+    "descAr": "جزء من جذع الدماغ مسؤول عن المنعكسات البصرية والسمعية والتحكم الحركي واليقظة."
+  },
+  "Midbrain.r": {
+    "ar": "الدماغ المتوسط (جذع الدماغ) الأيمن",
+    "descEn": "Associated with vision, hearing, motor control, alertness, and temperature regulation.",
+    "descAr": "جزء من جذع الدماغ مسؤول عن المنعكسات البصرية والسمعية والتحكم الحركي واليقظة."
+  },
+  "Thalamus": {
+    "ar": "المهاد (الثلاموس)",
+    "descEn": "Major sensory relay hub routing incoming sensory information to the cerebral cortex.",
+    "descAr": "محطة الترحيل الرئيسية للإشارات الحسية وإعادة توجيهها نحو القشرة المخية المناسبة."
+  },
+  "Thalamus _L": {
+    "ar": "المهاد (الثلاموس) الأيسر",
+    "descEn": "Major sensory relay hub routing incoming sensory information to the cerebral cortex.",
+    "descAr": "محطة الترحيل الرئيسية للإشارات الحسية وإعادة توجيهها نحو القشرة المخية المناسبة."
+  },
+  "Thalamus _R": {
+    "ar": "المهاد (الثلاموس) الأيمن",
+    "descEn": "Major sensory relay hub routing incoming sensory information to the cerebral cortex.",
+    "descAr": "محطة الترحيل الرئيسية للإشارات الحسية وإعادة توجيهها نحو القشرة المخية المناسبة."
+  },
+  "Thalamus.l": {
+    "ar": "المهاد (الثلاموس) الأيسر",
+    "descEn": "Major sensory relay hub routing incoming sensory information to the cerebral cortex.",
+    "descAr": "محطة الترحيل الرئيسية للإشارات الحسية وإعادة توجيهها نحو القشرة المخية المناسبة."
+  },
+  "Thalamus.r": {
+    "ar": "المهاد (الثلاموس) الأيمن",
+    "descEn": "Major sensory relay hub routing incoming sensory information to the cerebral cortex.",
+    "descAr": "محطة الترحيل الرئيسية للإشارات الحسية وإعادة توجيهها نحو القشرة المخية المناسبة."
+  },
+  "Hypothalamus": {
+    "ar": "تحت المهاد (الهيبوثلاموس)",
+    "descEn": "Coordinates the autonomic nervous system, endocrine activity via pituitary, and homeostasis.",
+    "descAr": "مركز ضبط التوازن الداخلي، وحرارة الجسم، والعطش، والجوع، والتحكم في الغدة النخامية."
+  },
+  "Hypothalamus _L": {
+    "ar": "تحت المهاد (الهيبوثلاموس) الأيسر",
+    "descEn": "Coordinates the autonomic nervous system, endocrine activity via pituitary, and homeostasis.",
+    "descAr": "مركز ضبط التوازن الداخلي، وحرارة الجسم، والعطش، والجوع، والتحكم في الغدة النخامية."
+  },
+  "Hypothalamus _R": {
+    "ar": "تحت المهاد (الهيبوثلاموس) الأيمن",
+    "descEn": "Coordinates the autonomic nervous system, endocrine activity via pituitary, and homeostasis.",
+    "descAr": "مركز ضبط التوازن الداخلي، وحرارة الجسم، والعطش، والجوع، والتحكم في الغدة النخامية."
+  },
+  "Hypothalamus.l": {
+    "ar": "تحت المهاد (الهيبوثلاموس) الأيسر",
+    "descEn": "Coordinates the autonomic nervous system, endocrine activity via pituitary, and homeostasis.",
+    "descAr": "مركز ضبط التوازن الداخلي، وحرارة الجسم، والعطش، والجوع، والتحكم في الغدة النخامية."
+  },
+  "Hypothalamus.r": {
+    "ar": "تحت المهاد (الهيبوثلاموس) الأيمن",
+    "descEn": "Coordinates the autonomic nervous system, endocrine activity via pituitary, and homeostasis.",
+    "descAr": "مركز ضبط التوازن الداخلي، وحرارة الجسم، والعطش، والجوع، والتحكم في الغدة النخامية."
+  },
+  "Corpus callosum": {
+    "ar": "الجسم الثفني",
+    "descEn": "Broad, thick nerve fiber tract facilitating interhemispheric communication.",
+    "descAr": "حزمة عصبية سميكة تربط نصفي الكرة المخية وتتيح التواصل والتنسيق الفوري بينهما."
+  },
+  "Corpus callosum _L": {
+    "ar": "الجسم الثفني الأيسر",
+    "descEn": "Broad, thick nerve fiber tract facilitating interhemispheric communication.",
+    "descAr": "حزمة عصبية سميكة تربط نصفي الكرة المخية وتتيح التواصل والتنسيق الفوري بينهما."
+  },
+  "Corpus callosum _R": {
+    "ar": "الجسم الثفني الأيمن",
+    "descEn": "Broad, thick nerve fiber tract facilitating interhemispheric communication.",
+    "descAr": "حزمة عصبية سميكة تربط نصفي الكرة المخية وتتيح التواصل والتنسيق الفوري بينهما."
+  },
+  "Corpus callosum.l": {
+    "ar": "الجسم الثفني الأيسر",
+    "descEn": "Broad, thick nerve fiber tract facilitating interhemispheric communication.",
+    "descAr": "حزمة عصبية سميكة تربط نصفي الكرة المخية وتتيح التواصل والتنسيق الفوري بينهما."
+  },
+  "Corpus callosum.r": {
+    "ar": "الجسم الثفني الأيمن",
+    "descEn": "Broad, thick nerve fiber tract facilitating interhemispheric communication.",
+    "descAr": "حزمة عصبية سميكة تربط نصفي الكرة المخية وتتيح التواصل والتنسيق الفوري بينهما."
+  },
+  "Hippocampus": {
+    "ar": "الحصين (قرن آمون)",
+    "descEn": "Crucial structure for the consolidation of short-term memory into long-term memory.",
+    "descAr": "بنية عصبية محورية لتحويل الذاكرة قصيرة المدى إلى ذاكرة طويلة المدى والملاحة المكانية."
+  },
+  "Hippocampus _L": {
+    "ar": "الحصين (قرن آمون) الأيسر",
+    "descEn": "Crucial structure for the consolidation of short-term memory into long-term memory.",
+    "descAr": "بنية عصبية محورية لتحويل الذاكرة قصيرة المدى إلى ذاكرة طويلة المدى والملاحة المكانية."
+  },
+  "Hippocampus _R": {
+    "ar": "الحصين (قرن آمون) الأيمن",
+    "descEn": "Crucial structure for the consolidation of short-term memory into long-term memory.",
+    "descAr": "بنية عصبية محورية لتحويل الذاكرة قصيرة المدى إلى ذاكرة طويلة المدى والملاحة المكانية."
+  },
+  "Hippocampus.l": {
+    "ar": "الحصين (قرن آمون) الأيسر",
+    "descEn": "Crucial structure for the consolidation of short-term memory into long-term memory.",
+    "descAr": "بنية عصبية محورية لتحويل الذاكرة قصيرة المدى إلى ذاكرة طويلة المدى والملاحة المكانية."
+  },
+  "Hippocampus.r": {
+    "ar": "الحصين (قرن آمون) الأيمن",
+    "descEn": "Crucial structure for the consolidation of short-term memory into long-term memory.",
+    "descAr": "بنية عصبية محورية لتحويل الذاكرة قصيرة المدى إلى ذاكرة طويلة المدى والملاحة المكانية."
+  },
+  "Amygdaloid body": {
+    "ar": "اللوزة العصبية (الأميجدالا)",
+    "descEn": "Integrative center for emotions, emotional behavior, fear response, and motivation.",
+    "descAr": "المركز العصبي لمعالجة المشاعر والانفعالات كاستجابة الخوف والقلق والذاكرة العاطفية."
+  },
+  "Amygdaloid body _L": {
+    "ar": "اللوزة العصبية (الأميجدالا) الأيسر",
+    "descEn": "Integrative center for emotions, emotional behavior, fear response, and motivation.",
+    "descAr": "المركز العصبي لمعالجة المشاعر والانفعالات كاستجابة الخوف والقلق والذاكرة العاطفية."
+  },
+  "Amygdaloid body _R": {
+    "ar": "اللوزة العصبية (الأميجدالا) الأيمن",
+    "descEn": "Integrative center for emotions, emotional behavior, fear response, and motivation.",
+    "descAr": "المركز العصبي لمعالجة المشاعر والانفعالات كاستجابة الخوف والقلق والذاكرة العاطفية."
+  },
+  "Amygdaloid body.l": {
+    "ar": "اللوزة العصبية (الأميجدالا) الأيسر",
+    "descEn": "Integrative center for emotions, emotional behavior, fear response, and motivation.",
+    "descAr": "المركز العصبي لمعالجة المشاعر والانفعالات كاستجابة الخوف والقلق والذاكرة العاطفية."
+  },
+  "Amygdaloid body.r": {
+    "ar": "اللوزة العصبية (الأميجدالا) الأيمن",
+    "descEn": "Integrative center for emotions, emotional behavior, fear response, and motivation.",
+    "descAr": "المركز العصبي لمعالجة المشاعر والانفعالات كاستجابة الخوف والقلق والذاكرة العاطفية."
+  },
+  "Fourth ventricle": {
+    "ar": "البطين الرابع للدماغ",
+    "descEn": "CSF-filled cavity located posterior to pons and medulla and anterior to cerebellum.",
+    "descAr": "تجويف مملوء بالسائل الدماغي الشوكي يقع بين جذع الدماغ والمخيخ ويسهم في حماية الجهاز العصبي."
+  },
+  "Fourth ventricle _L": {
+    "ar": "البطين الرابع للدماغ الأيسر",
+    "descEn": "CSF-filled cavity located posterior to pons and medulla and anterior to cerebellum.",
+    "descAr": "تجويف مملوء بالسائل الدماغي الشوكي يقع بين جذع الدماغ والمخيخ ويسهم في حماية الجهاز العصبي."
+  },
+  "Fourth ventricle _R": {
+    "ar": "البطين الرابع للدماغ الأيمن",
+    "descEn": "CSF-filled cavity located posterior to pons and medulla and anterior to cerebellum.",
+    "descAr": "تجويف مملوء بالسائل الدماغي الشوكي يقع بين جذع الدماغ والمخيخ ويسهم في حماية الجهاز العصبي."
+  },
+  "Fourth ventricle.l": {
+    "ar": "البطين الرابع للدماغ الأيسر",
+    "descEn": "CSF-filled cavity located posterior to pons and medulla and anterior to cerebellum.",
+    "descAr": "تجويف مملوء بالسائل الدماغي الشوكي يقع بين جذع الدماغ والمخيخ ويسهم في حماية الجهاز العصبي."
+  },
+  "Fourth ventricle.r": {
+    "ar": "البطين الرابع للدماغ الأيمن",
+    "descEn": "CSF-filled cavity located posterior to pons and medulla and anterior to cerebellum.",
+    "descAr": "تجويف مملوء بالسائل الدماغي الشوكي يقع بين جذع الدماغ والمخيخ ويسهم في حماية الجهاز العصبي."
+  },
+  "Third ventricle": {
+    "ar": "البطين الثالث للدماغ",
+    "descEn": "Median narrow cleft between the two thalami filled with cerebrospinal fluid.",
+    "descAr": "شق بطيني يتوسط نصفي المهاد ويجري عبره السائل الدماغي الشوكي لامتصاص الصدمات."
+  },
+  "Third ventricle _L": {
+    "ar": "البطين الثالث للدماغ الأيسر",
+    "descEn": "Median narrow cleft between the two thalami filled with cerebrospinal fluid.",
+    "descAr": "شق بطيني يتوسط نصفي المهاد ويجري عبره السائل الدماغي الشوكي لامتصاص الصدمات."
+  },
+  "Third ventricle _R": {
+    "ar": "البطين الثالث للدماغ الأيمن",
+    "descEn": "Median narrow cleft between the two thalami filled with cerebrospinal fluid.",
+    "descAr": "شق بطيني يتوسط نصفي المهاد ويجري عبره السائل الدماغي الشوكي لامتصاص الصدمات."
+  },
+  "Third ventricle.l": {
+    "ar": "البطين الثالث للدماغ الأيسر",
+    "descEn": "Median narrow cleft between the two thalami filled with cerebrospinal fluid.",
+    "descAr": "شق بطيني يتوسط نصفي المهاد ويجري عبره السائل الدماغي الشوكي لامتصاص الصدمات."
+  },
+  "Third ventricle.r": {
+    "ar": "البطين الثالث للدماغ الأيمن",
+    "descEn": "Median narrow cleft between the two thalami filled with cerebrospinal fluid.",
+    "descAr": "شق بطيني يتوسط نصفي المهاد ويجري عبره السائل الدماغي الشوكي لامتصاص الصدمات."
+  },
+  "Lateral ventricle": {
+    "ar": "البطين الجانبي للدماغ",
+    "descEn": "C-shaped paired CSF-filled cavities located deep inside each cerebral hemisphere.",
+    "descAr": "زوج من التجاويف الدماغية الكبيرة ينتج السائل الدماغي الشوكي عبر الضفيرة المشيمية."
+  },
+  "Lateral ventricle _L": {
+    "ar": "البطين الجانبي للدماغ الأيسر",
+    "descEn": "C-shaped paired CSF-filled cavities located deep inside each cerebral hemisphere.",
+    "descAr": "زوج من التجاويف الدماغية الكبيرة ينتج السائل الدماغي الشوكي عبر الضفيرة المشيمية."
+  },
+  "Lateral ventricle _R": {
+    "ar": "البطين الجانبي للدماغ الأيمن",
+    "descEn": "C-shaped paired CSF-filled cavities located deep inside each cerebral hemisphere.",
+    "descAr": "زوج من التجاويف الدماغية الكبيرة ينتج السائل الدماغي الشوكي عبر الضفيرة المشيمية."
+  },
+  "Lateral ventricle.l": {
+    "ar": "البطين الجانبي للدماغ الأيسر",
+    "descEn": "C-shaped paired CSF-filled cavities located deep inside each cerebral hemisphere.",
+    "descAr": "زوج من التجاويف الدماغية الكبيرة ينتج السائل الدماغي الشوكي عبر الضفيرة المشيمية."
+  },
+  "Lateral ventricle.r": {
+    "ar": "البطين الجانبي للدماغ الأيمن",
+    "descEn": "C-shaped paired CSF-filled cavities located deep inside each cerebral hemisphere.",
+    "descAr": "زوج من التجاويف الدماغية الكبيرة ينتج السائل الدماغي الشوكي عبر الضفيرة المشيمية."
+  },
+  "Aqueduct of midbrain": {
+    "ar": "مسال الدماغ المتوسط (مسال سيلفيوس)",
+    "descEn": "Channel connecting the third and fourth ventricles for CSF passage.",
+    "descAr": "قناة ضيقة داخل الدماغ المتوسط تنقل السائل الشوكي من البطين الثالث إلى البطين الرابع."
+  },
+  "Aqueduct of midbrain _L": {
+    "ar": "مسال الدماغ المتوسط (مسال سيلفيوس) الأيسر",
+    "descEn": "Channel connecting the third and fourth ventricles for CSF passage.",
+    "descAr": "قناة ضيقة داخل الدماغ المتوسط تنقل السائل الشوكي من البطين الثالث إلى البطين الرابع."
+  },
+  "Aqueduct of midbrain _R": {
+    "ar": "مسال الدماغ المتوسط (مسال سيلفيوس) الأيمن",
+    "descEn": "Channel connecting the third and fourth ventricles for CSF passage.",
+    "descAr": "قناة ضيقة داخل الدماغ المتوسط تنقل السائل الشوكي من البطين الثالث إلى البطين الرابع."
+  },
+  "Aqueduct of midbrain.l": {
+    "ar": "مسال الدماغ المتوسط (مسال سيلفيوس) الأيسر",
+    "descEn": "Channel connecting the third and fourth ventricles for CSF passage.",
+    "descAr": "قناة ضيقة داخل الدماغ المتوسط تنقل السائل الشوكي من البطين الثالث إلى البطين الرابع."
+  },
+  "Aqueduct of midbrain.r": {
+    "ar": "مسال الدماغ المتوسط (مسال سيلفيوس) الأيمن",
+    "descEn": "Channel connecting the third and fourth ventricles for CSF passage.",
+    "descAr": "قناة ضيقة داخل الدماغ المتوسط تنقل السائل الشوكي من البطين الثالث إلى البطين الرابع."
+  },
+  "Optic chiasm": {
+    "ar": "التصالب البصري",
+    "descEn": "X-shaped space where the two optic nerves partially cross their medial retinal fibers.",
+    "descAr": "منطقة تقاطع ألياف العصبين البصريين تتيح الرؤية المجسمة ثلاثية الأبعاد ودمج المجالين البصريين."
+  },
+  "Optic chiasm _L": {
+    "ar": "التصالب البصري الأيسر",
+    "descEn": "X-shaped space where the two optic nerves partially cross their medial retinal fibers.",
+    "descAr": "منطقة تقاطع ألياف العصبين البصريين تتيح الرؤية المجسمة ثلاثية الأبعاد ودمج المجالين البصريين."
+  },
+  "Optic chiasm _R": {
+    "ar": "التصالب البصري الأيمن",
+    "descEn": "X-shaped space where the two optic nerves partially cross their medial retinal fibers.",
+    "descAr": "منطقة تقاطع ألياف العصبين البصريين تتيح الرؤية المجسمة ثلاثية الأبعاد ودمج المجالين البصريين."
+  },
+  "Optic chiasm.l": {
+    "ar": "التصالب البصري الأيسر",
+    "descEn": "X-shaped space where the two optic nerves partially cross their medial retinal fibers.",
+    "descAr": "منطقة تقاطع ألياف العصبين البصريين تتيح الرؤية المجسمة ثلاثية الأبعاد ودمج المجالين البصريين."
+  },
+  "Optic chiasm.r": {
+    "ar": "التصالب البصري الأيمن",
+    "descEn": "X-shaped space where the two optic nerves partially cross their medial retinal fibers.",
+    "descAr": "منطقة تقاطع ألياف العصبين البصريين تتيح الرؤية المجسمة ثلاثية الأبعاد ودمج المجالين البصريين."
+  },
+  "Optic tract": {
+    "ar": "السبيل البصري",
+    "descEn": "Continuation of the optic nerve carrying visual fibers to lateral geniculate nucleus.",
+    "descAr": "امتداد الألياف العصبية البصرية من التصالب البصري إلى النواة الركبية الوحشية بالمهاد."
+  },
+  "Optic tract _L": {
+    "ar": "السبيل البصري الأيسر",
+    "descEn": "Continuation of the optic nerve carrying visual fibers to lateral geniculate nucleus.",
+    "descAr": "امتداد الألياف العصبية البصرية من التصالب البصري إلى النواة الركبية الوحشية بالمهاد."
+  },
+  "Optic tract _R": {
+    "ar": "السبيل البصري الأيمن",
+    "descEn": "Continuation of the optic nerve carrying visual fibers to lateral geniculate nucleus.",
+    "descAr": "امتداد الألياف العصبية البصرية من التصالب البصري إلى النواة الركبية الوحشية بالمهاد."
+  },
+  "Optic tract.l": {
+    "ar": "السبيل البصري الأيسر",
+    "descEn": "Continuation of the optic nerve carrying visual fibers to lateral geniculate nucleus.",
+    "descAr": "امتداد الألياف العصبية البصرية من التصالب البصري إلى النواة الركبية الوحشية بالمهاد."
+  },
+  "Optic tract.r": {
+    "ar": "السبيل البصري الأيمن",
+    "descEn": "Continuation of the optic nerve carrying visual fibers to lateral geniculate nucleus.",
+    "descAr": "امتداد الألياف العصبية البصرية من التصالب البصري إلى النواة الركبية الوحشية بالمهاد."
+  },
+  "Olive": {
+    "ar": "الزيتونة (النخاع المستطيل)",
+    "descEn": "Prominent oval mass on the anterior surface of medulla involved in cerebellar motor learning.",
+    "descAr": "بروز بيضاوي على النخاع المستطيل يسهم في معالجة الإشارات السمعية والتعلم الحركي الدقيق."
+  },
+  "Olive _L": {
+    "ar": "الزيتونة (النخاع المستطيل) الأيسر",
+    "descEn": "Prominent oval mass on the anterior surface of medulla involved in cerebellar motor learning.",
+    "descAr": "بروز بيضاوي على النخاع المستطيل يسهم في معالجة الإشارات السمعية والتعلم الحركي الدقيق."
+  },
+  "Olive _R": {
+    "ar": "الزيتونة (النخاع المستطيل) الأيمن",
+    "descEn": "Prominent oval mass on the anterior surface of medulla involved in cerebellar motor learning.",
+    "descAr": "بروز بيضاوي على النخاع المستطيل يسهم في معالجة الإشارات السمعية والتعلم الحركي الدقيق."
+  },
+  "Olive.l": {
+    "ar": "الزيتونة (النخاع المستطيل) الأيسر",
+    "descEn": "Prominent oval mass on the anterior surface of medulla involved in cerebellar motor learning.",
+    "descAr": "بروز بيضاوي على النخاع المستطيل يسهم في معالجة الإشارات السمعية والتعلم الحركي الدقيق."
+  },
+  "Olive.r": {
+    "ar": "الزيتونة (النخاع المستطيل) الأيمن",
+    "descEn": "Prominent oval mass on the anterior surface of medulla involved in cerebellar motor learning.",
+    "descAr": "بروز بيضاوي على النخاع المستطيل يسهم في معالجة الإشارات السمعية والتعلم الحركي الدقيق."
+  },
+  "Pyramid of medulla oblongata": {
+    "ar": "هرم النخاع المستطيل",
+    "descEn": "Paired white matter structures containing the corticospinal motor tracts.",
+    "descAr": "بنية هرمية مزدوجة بالنخاع المستطيل تعبرها السبيل الهرمي الحركي المسؤولة عن الحركة الإرادية."
+  },
+  "Pyramid of medulla oblongata _L": {
+    "ar": "هرم النخاع المستطيل الأيسر",
+    "descEn": "Paired white matter structures containing the corticospinal motor tracts.",
+    "descAr": "بنية هرمية مزدوجة بالنخاع المستطيل تعبرها السبيل الهرمي الحركي المسؤولة عن الحركة الإرادية."
+  },
+  "Pyramid of medulla oblongata _R": {
+    "ar": "هرم النخاع المستطيل الأيمن",
+    "descEn": "Paired white matter structures containing the corticospinal motor tracts.",
+    "descAr": "بنية هرمية مزدوجة بالنخاع المستطيل تعبرها السبيل الهرمي الحركي المسؤولة عن الحركة الإرادية."
+  },
+  "Pyramid of medulla oblongata.l": {
+    "ar": "هرم النخاع المستطيل الأيسر",
+    "descEn": "Paired white matter structures containing the corticospinal motor tracts.",
+    "descAr": "بنية هرمية مزدوجة بالنخاع المستطيل تعبرها السبيل الهرمي الحركي المسؤولة عن الحركة الإرادية."
+  },
+  "Pyramid of medulla oblongata.r": {
+    "ar": "هرم النخاع المستطيل الأيمن",
+    "descEn": "Paired white matter structures containing the corticospinal motor tracts.",
+    "descAr": "بنية هرمية مزدوجة بالنخاع المستطيل تعبرها السبيل الهرمي الحركي المسؤولة عن الحركة الإرادية."
+  },
+  "Superior colliculus": {
+    "ar": "الأكيمة العلوية (الدماغ المتوسط)",
+    "descEn": "Layered midbrain structure directing visual attention and saccadic eye movements.",
+    "descAr": "بنية بسقف الدماغ المتوسط مسؤولة عن توجيه الانتباه البصري وحركات العين الانعكاسية السريعة."
+  },
+  "Superior colliculus _L": {
+    "ar": "الأكيمة العلوية (الدماغ المتوسط) الأيسر",
+    "descEn": "Layered midbrain structure directing visual attention and saccadic eye movements.",
+    "descAr": "بنية بسقف الدماغ المتوسط مسؤولة عن توجيه الانتباه البصري وحركات العين الانعكاسية السريعة."
+  },
+  "Superior colliculus _R": {
+    "ar": "الأكيمة العلوية (الدماغ المتوسط) الأيمن",
+    "descEn": "Layered midbrain structure directing visual attention and saccadic eye movements.",
+    "descAr": "بنية بسقف الدماغ المتوسط مسؤولة عن توجيه الانتباه البصري وحركات العين الانعكاسية السريعة."
+  },
+  "Superior colliculus.l": {
+    "ar": "الأكيمة العلوية (الدماغ المتوسط) الأيسر",
+    "descEn": "Layered midbrain structure directing visual attention and saccadic eye movements.",
+    "descAr": "بنية بسقف الدماغ المتوسط مسؤولة عن توجيه الانتباه البصري وحركات العين الانعكاسية السريعة."
+  },
+  "Superior colliculus.r": {
+    "ar": "الأكيمة العلوية (الدماغ المتوسط) الأيمن",
+    "descEn": "Layered midbrain structure directing visual attention and saccadic eye movements.",
+    "descAr": "بنية بسقف الدماغ المتوسط مسؤولة عن توجيه الانتباه البصري وحركات العين الانعكاسية السريعة."
+  },
+  "Inferior colliculus": {
+    "ar": "الأكيمة السفلية (الدماغ المتوسط)",
+    "descEn": "Principal midbrain nucleus of the auditory pathway integrating sound location.",
+    "descAr": "مركز رئيسي في المسار السمعي بالدماغ المتوسط يدمج الإشارات السمعية لتحديد موقع الصوت."
+  },
+  "Inferior colliculus _L": {
+    "ar": "الأكيمة السفلية (الدماغ المتوسط) الأيسر",
+    "descEn": "Principal midbrain nucleus of the auditory pathway integrating sound location.",
+    "descAr": "مركز رئيسي في المسار السمعي بالدماغ المتوسط يدمج الإشارات السمعية لتحديد موقع الصوت."
+  },
+  "Inferior colliculus _R": {
+    "ar": "الأكيمة السفلية (الدماغ المتوسط) الأيمن",
+    "descEn": "Principal midbrain nucleus of the auditory pathway integrating sound location.",
+    "descAr": "مركز رئيسي في المسار السمعي بالدماغ المتوسط يدمج الإشارات السمعية لتحديد موقع الصوت."
+  },
+  "Inferior colliculus.l": {
+    "ar": "الأكيمة السفلية (الدماغ المتوسط) الأيسر",
+    "descEn": "Principal midbrain nucleus of the auditory pathway integrating sound location.",
+    "descAr": "مركز رئيسي في المسار السمعي بالدماغ المتوسط يدمج الإشارات السمعية لتحديد موقع الصوت."
+  },
+  "Inferior colliculus.r": {
+    "ar": "الأكيمة السفلية (الدماغ المتوسط) الأيمن",
+    "descEn": "Principal midbrain nucleus of the auditory pathway integrating sound location.",
+    "descAr": "مركز رئيسي في المسار السمعي بالدماغ المتوسط يدمج الإشارات السمعية لتحديد موقع الصوت."
+  },
+  "Red nucleus": {
+    "ar": "النواة الحمراء",
+    "descEn": "Midbrain motor nucleus coordinating motor tone and locomotion.",
+    "descAr": "نواة حركية بالدماغ المتوسط غنية بالحديد تشارك في تنسيق الحركات الحركية العضلية والوضعية."
+  },
+  "Red nucleus _L": {
+    "ar": "النواة الحمراء الأيسر",
+    "descEn": "Midbrain motor nucleus coordinating motor tone and locomotion.",
+    "descAr": "نواة حركية بالدماغ المتوسط غنية بالحديد تشارك في تنسيق الحركات الحركية العضلية والوضعية."
+  },
+  "Red nucleus _R": {
+    "ar": "النواة الحمراء الأيمن",
+    "descEn": "Midbrain motor nucleus coordinating motor tone and locomotion.",
+    "descAr": "نواة حركية بالدماغ المتوسط غنية بالحديد تشارك في تنسيق الحركات الحركية العضلية والوضعية."
+  },
+  "Red nucleus.l": {
+    "ar": "النواة الحمراء الأيسر",
+    "descEn": "Midbrain motor nucleus coordinating motor tone and locomotion.",
+    "descAr": "نواة حركية بالدماغ المتوسط غنية بالحديد تشارك في تنسيق الحركات الحركية العضلية والوضعية."
+  },
+  "Red nucleus.r": {
+    "ar": "النواة الحمراء الأيمن",
+    "descEn": "Midbrain motor nucleus coordinating motor tone and locomotion.",
+    "descAr": "نواة حركية بالدماغ المتوسط غنية بالحديد تشارك في تنسيق الحركات الحركية العضلية والوضعية."
+  },
+  "Caudate nucleus": {
+    "ar": "النواة المذنبة (العقد القاعدية)",
+    "descEn": "C-shaped basal ganglia component essential for goal-directed action and motor planning.",
+    "descAr": "جزء من العقد القاعدية بالدماغ يسهم في التخطيط الحركي والتعلم والذاكرة الإجرائية."
+  },
+  "Caudate nucleus _L": {
+    "ar": "النواة المذنبة (العقد القاعدية) الأيسر",
+    "descEn": "C-shaped basal ganglia component essential for goal-directed action and motor planning.",
+    "descAr": "جزء من العقد القاعدية بالدماغ يسهم في التخطيط الحركي والتعلم والذاكرة الإجرائية."
+  },
+  "Caudate nucleus _R": {
+    "ar": "النواة المذنبة (العقد القاعدية) الأيمن",
+    "descEn": "C-shaped basal ganglia component essential for goal-directed action and motor planning.",
+    "descAr": "جزء من العقد القاعدية بالدماغ يسهم في التخطيط الحركي والتعلم والذاكرة الإجرائية."
+  },
+  "Caudate nucleus.l": {
+    "ar": "النواة المذنبة (العقد القاعدية) الأيسر",
+    "descEn": "C-shaped basal ganglia component essential for goal-directed action and motor planning.",
+    "descAr": "جزء من العقد القاعدية بالدماغ يسهم في التخطيط الحركي والتعلم والذاكرة الإجرائية."
+  },
+  "Caudate nucleus.r": {
+    "ar": "النواة المذنبة (العقد القاعدية) الأيمن",
+    "descEn": "C-shaped basal ganglia component essential for goal-directed action and motor planning.",
+    "descAr": "جزء من العقد القاعدية بالدماغ يسهم في التخطيط الحركي والتعلم والذاكرة الإجرائية."
+  },
+  "Putamen": {
+    "ar": "اللقمة (العقد القاعدية)",
+    "descEn": "Round basal ganglia structure involved in motor control and reinforcement learning.",
+    "descAr": "نواة قاعدية كبيرة تسهم في تنظيم مهارات الحركة وتثبيط الحركات غير المرغوبة."
+  },
+  "Putamen _L": {
+    "ar": "اللقمة (العقد القاعدية) الأيسر",
+    "descEn": "Round basal ganglia structure involved in motor control and reinforcement learning.",
+    "descAr": "نواة قاعدية كبيرة تسهم في تنظيم مهارات الحركة وتثبيط الحركات غير المرغوبة."
+  },
+  "Putamen _R": {
+    "ar": "اللقمة (العقد القاعدية) الأيمن",
+    "descEn": "Round basal ganglia structure involved in motor control and reinforcement learning.",
+    "descAr": "نواة قاعدية كبيرة تسهم في تنظيم مهارات الحركة وتثبيط الحركات غير المرغوبة."
+  },
+  "Putamen.l": {
+    "ar": "اللقمة (العقد القاعدية) الأيسر",
+    "descEn": "Round basal ganglia structure involved in motor control and reinforcement learning.",
+    "descAr": "نواة قاعدية كبيرة تسهم في تنظيم مهارات الحركة وتثبيط الحركات غير المرغوبة."
+  },
+  "Putamen.r": {
+    "ar": "اللقمة (العقد القاعدية) الأيمن",
+    "descEn": "Round basal ganglia structure involved in motor control and reinforcement learning.",
+    "descAr": "نواة قاعدية كبيرة تسهم في تنظيم مهارات الحركة وتثبيط الحركات غير المرغوبة."
+  },
+  "Globus pallidus": {
+    "ar": "الكرة الشاحبة (العقد القاعدية)",
+    "descEn": "Subcortical structure acting as major output regulator of the basal ganglia system.",
+    "descAr": "منظم رئيسي للمخرجات الحركية من العقد القاعدية إلى المهاد لتنعيم الحركة الإرادية."
+  },
+  "Globus pallidus _L": {
+    "ar": "الكرة الشاحبة (العقد القاعدية) الأيسر",
+    "descEn": "Subcortical structure acting as major output regulator of the basal ganglia system.",
+    "descAr": "منظم رئيسي للمخرجات الحركية من العقد القاعدية إلى المهاد لتنعيم الحركة الإرادية."
+  },
+  "Globus pallidus _R": {
+    "ar": "الكرة الشاحبة (العقد القاعدية) الأيمن",
+    "descEn": "Subcortical structure acting as major output regulator of the basal ganglia system.",
+    "descAr": "منظم رئيسي للمخرجات الحركية من العقد القاعدية إلى المهاد لتنعيم الحركة الإرادية."
+  },
+  "Globus pallidus.l": {
+    "ar": "الكرة الشاحبة (العقد القاعدية) الأيسر",
+    "descEn": "Subcortical structure acting as major output regulator of the basal ganglia system.",
+    "descAr": "منظم رئيسي للمخرجات الحركية من العقد القاعدية إلى المهاد لتنعيم الحركة الإرادية."
+  },
+  "Globus pallidus.r": {
+    "ar": "الكرة الشاحبة (العقد القاعدية) الأيمن",
+    "descEn": "Subcortical structure acting as major output regulator of the basal ganglia system.",
+    "descAr": "منظم رئيسي للمخرجات الحركية من العقد القاعدية إلى المهاد لتنعيم الحركة الإرادية."
+  },
+  "Precentral gyrus": {
+    "ar": "التلفيف أمام المركزي (القشرة الحركية)",
+    "descEn": "Primary motor cortex controlling voluntary somatic movements of the body.",
+    "descAr": "القشرة الحركية الأولية المسؤولة عن إصدار الأوامر العصبية للحركات الإرادية لكافة عضلات الجسم."
+  },
+  "Precentral gyrus _L": {
+    "ar": "التلفيف أمام المركزي (القشرة الحركية) الأيسر",
+    "descEn": "Primary motor cortex controlling voluntary somatic movements of the body.",
+    "descAr": "القشرة الحركية الأولية المسؤولة عن إصدار الأوامر العصبية للحركات الإرادية لكافة عضلات الجسم."
+  },
+  "Precentral gyrus _R": {
+    "ar": "التلفيف أمام المركزي (القشرة الحركية) الأيمن",
+    "descEn": "Primary motor cortex controlling voluntary somatic movements of the body.",
+    "descAr": "القشرة الحركية الأولية المسؤولة عن إصدار الأوامر العصبية للحركات الإرادية لكافة عضلات الجسم."
+  },
+  "Precentral gyrus.l": {
+    "ar": "التلفيف أمام المركزي (القشرة الحركية) الأيسر",
+    "descEn": "Primary motor cortex controlling voluntary somatic movements of the body.",
+    "descAr": "القشرة الحركية الأولية المسؤولة عن إصدار الأوامر العصبية للحركات الإرادية لكافة عضلات الجسم."
+  },
+  "Precentral gyrus.r": {
+    "ar": "التلفيف أمام المركزي (القشرة الحركية) الأيمن",
+    "descEn": "Primary motor cortex controlling voluntary somatic movements of the body.",
+    "descAr": "القشرة الحركية الأولية المسؤولة عن إصدار الأوامر العصبية للحركات الإرادية لكافة عضلات الجسم."
+  },
+  "Postcentral gyrus": {
+    "ar": "التلفيف خلف المركزي (القشرة الحسية)",
+    "descEn": "Primary somatosensory cortex receiving touch, proprioception, pain, and temperature.",
+    "descAr": "القشرة الحسية الأولية التي تستقبل وتفسر أحاسيس اللمس والحرارة والألم وموضع الجسم."
+  },
+  "Postcentral gyrus _L": {
+    "ar": "التلفيف خلف المركزي (القشرة الحسية) الأيسر",
+    "descEn": "Primary somatosensory cortex receiving touch, proprioception, pain, and temperature.",
+    "descAr": "القشرة الحسية الأولية التي تستقبل وتفسر أحاسيس اللمس والحرارة والألم وموضع الجسم."
+  },
+  "Postcentral gyrus _R": {
+    "ar": "التلفيف خلف المركزي (القشرة الحسية) الأيمن",
+    "descEn": "Primary somatosensory cortex receiving touch, proprioception, pain, and temperature.",
+    "descAr": "القشرة الحسية الأولية التي تستقبل وتفسر أحاسيس اللمس والحرارة والألم وموضع الجسم."
+  },
+  "Postcentral gyrus.l": {
+    "ar": "التلفيف خلف المركزي (القشرة الحسية) الأيسر",
+    "descEn": "Primary somatosensory cortex receiving touch, proprioception, pain, and temperature.",
+    "descAr": "القشرة الحسية الأولية التي تستقبل وتفسر أحاسيس اللمس والحرارة والألم وموضع الجسم."
+  },
+  "Postcentral gyrus.r": {
+    "ar": "التلفيف خلف المركزي (القشرة الحسية) الأيمن",
+    "descEn": "Primary somatosensory cortex receiving touch, proprioception, pain, and temperature.",
+    "descAr": "القشرة الحسية الأولية التي تستقبل وتفسر أحاسيس اللمس والحرارة والألم وموضع الجسم."
+  },
+  "Superior frontal gyrus": {
+    "ar": "التلفيف الجبهي العلوي",
+    "descEn": "Frontal lobe cortex involved in working memory, executive function, and motor planning.",
+    "descAr": "تلفيف في الفص الجبهي يشارك في الذاكرة العاملة والوظائف التنفيذية والتخطيط المعرفي."
+  },
+  "Superior frontal gyrus _L": {
+    "ar": "التلفيف الجبهي العلوي الأيسر",
+    "descEn": "Frontal lobe cortex involved in working memory, executive function, and motor planning.",
+    "descAr": "تلفيف في الفص الجبهي يشارك في الذاكرة العاملة والوظائف التنفيذية والتخطيط المعرفي."
+  },
+  "Superior frontal gyrus _R": {
+    "ar": "التلفيف الجبهي العلوي الأيمن",
+    "descEn": "Frontal lobe cortex involved in working memory, executive function, and motor planning.",
+    "descAr": "تلفيف في الفص الجبهي يشارك في الذاكرة العاملة والوظائف التنفيذية والتخطيط المعرفي."
+  },
+  "Superior frontal gyrus.l": {
+    "ar": "التلفيف الجبهي العلوي الأيسر",
+    "descEn": "Frontal lobe cortex involved in working memory, executive function, and motor planning.",
+    "descAr": "تلفيف في الفص الجبهي يشارك في الذاكرة العاملة والوظائف التنفيذية والتخطيط المعرفي."
+  },
+  "Superior frontal gyrus.r": {
+    "ar": "التلفيف الجبهي العلوي الأيمن",
+    "descEn": "Frontal lobe cortex involved in working memory, executive function, and motor planning.",
+    "descAr": "تلفيف في الفص الجبهي يشارك في الذاكرة العاملة والوظائف التنفيذية والتخطيط المعرفي."
+  },
+  "Middle frontal gyrus": {
+    "ar": "التلفيف الجبهي الأوسط",
+    "descEn": "Cortex involved in attention networks, literacy, and calculation.",
+    "descAr": "تلفيف جبهي يسهم في شبكات الانتباه والتركيز والعمليات الحسابية الذهنية."
+  },
+  "Middle frontal gyrus _L": {
+    "ar": "التلفيف الجبهي الأوسط الأيسر",
+    "descEn": "Cortex involved in attention networks, literacy, and calculation.",
+    "descAr": "تلفيف جبهي يسهم في شبكات الانتباه والتركيز والعمليات الحسابية الذهنية."
+  },
+  "Middle frontal gyrus _R": {
+    "ar": "التلفيف الجبهي الأوسط الأيمن",
+    "descEn": "Cortex involved in attention networks, literacy, and calculation.",
+    "descAr": "تلفيف جبهي يسهم في شبكات الانتباه والتركيز والعمليات الحسابية الذهنية."
+  },
+  "Middle frontal gyrus.l": {
+    "ar": "التلفيف الجبهي الأوسط الأيسر",
+    "descEn": "Cortex involved in attention networks, literacy, and calculation.",
+    "descAr": "تلفيف جبهي يسهم في شبكات الانتباه والتركيز والعمليات الحسابية الذهنية."
+  },
+  "Middle frontal gyrus.r": {
+    "ar": "التلفيف الجبهي الأوسط الأيمن",
+    "descEn": "Cortex involved in attention networks, literacy, and calculation.",
+    "descAr": "تلفيف جبهي يسهم في شبكات الانتباه والتركيز والعمليات الحسابية الذهنية."
+  },
+  "Inferior frontal gyrus": {
+    "ar": "التلفيف الجبهي السفلي (منطقة بروكا)",
+    "descEn": "Houses Broca's area on the dominant hemisphere, vital for speech production.",
+    "descAr": "يحوي باحة بروكا المسؤولة عن النطق وتشكيل الكلمات والتعبير اللغوي."
+  },
+  "Inferior frontal gyrus _L": {
+    "ar": "التلفيف الجبهي السفلي (منطقة بروكا) الأيسر",
+    "descEn": "Houses Broca's area on the dominant hemisphere, vital for speech production.",
+    "descAr": "يحوي باحة بروكا المسؤولة عن النطق وتشكيل الكلمات والتعبير اللغوي."
+  },
+  "Inferior frontal gyrus _R": {
+    "ar": "التلفيف الجبهي السفلي (منطقة بروكا) الأيمن",
+    "descEn": "Houses Broca's area on the dominant hemisphere, vital for speech production.",
+    "descAr": "يحوي باحة بروكا المسؤولة عن النطق وتشكيل الكلمات والتعبير اللغوي."
+  },
+  "Inferior frontal gyrus.l": {
+    "ar": "التلفيف الجبهي السفلي (منطقة بروكا) الأيسر",
+    "descEn": "Houses Broca's area on the dominant hemisphere, vital for speech production.",
+    "descAr": "يحوي باحة بروكا المسؤولة عن النطق وتشكيل الكلمات والتعبير اللغوي."
+  },
+  "Inferior frontal gyrus.r": {
+    "ar": "التلفيف الجبهي السفلي (منطقة بروكا) الأيمن",
+    "descEn": "Houses Broca's area on the dominant hemisphere, vital for speech production.",
+    "descAr": "يحوي باحة بروكا المسؤولة عن النطق وتشكيل الكلمات والتعبير اللغوي."
+  },
+  "Superior temporal gyrus": {
+    "ar": "التلفيف الصدغي العلوي (منطقة فيرنيكه)",
+    "descEn": "Primary auditory cortex and Wernicke's area, critical for auditory processing and speech comprehension.",
+    "descAr": "يحوي القشرة السمعية الأولية وباحة فيرنيكه المسؤولة عن فهم وإدراك الكلام المسموع."
+  },
+  "Superior temporal gyrus _L": {
+    "ar": "التلفيف الصدغي العلوي (منطقة فيرنيكه) الأيسر",
+    "descEn": "Primary auditory cortex and Wernicke's area, critical for auditory processing and speech comprehension.",
+    "descAr": "يحوي القشرة السمعية الأولية وباحة فيرنيكه المسؤولة عن فهم وإدراك الكلام المسموع."
+  },
+  "Superior temporal gyrus _R": {
+    "ar": "التلفيف الصدغي العلوي (منطقة فيرنيكه) الأيمن",
+    "descEn": "Primary auditory cortex and Wernicke's area, critical for auditory processing and speech comprehension.",
+    "descAr": "يحوي القشرة السمعية الأولية وباحة فيرنيكه المسؤولة عن فهم وإدراك الكلام المسموع."
+  },
+  "Superior temporal gyrus.l": {
+    "ar": "التلفيف الصدغي العلوي (منطقة فيرنيكه) الأيسر",
+    "descEn": "Primary auditory cortex and Wernicke's area, critical for auditory processing and speech comprehension.",
+    "descAr": "يحوي القشرة السمعية الأولية وباحة فيرنيكه المسؤولة عن فهم وإدراك الكلام المسموع."
+  },
+  "Superior temporal gyrus.r": {
+    "ar": "التلفيف الصدغي العلوي (منطقة فيرنيكه) الأيمن",
+    "descEn": "Primary auditory cortex and Wernicke's area, critical for auditory processing and speech comprehension.",
+    "descAr": "يحوي القشرة السمعية الأولية وباحة فيرنيكه المسؤولة عن فهم وإدراك الكلام المسموع."
+  },
+  "Cingulate gyrus": {
+    "ar": "التلفيف الحزامي",
+    "descEn": "Limbic cortex involved in emotion formation and processing, learning, and memory.",
+    "descAr": "تلفيف ضمن الجهاز النطاقي يربط العواطف بالاستجابات الحركية واتخاذ القرارات."
+  },
+  "Cingulate gyrus _L": {
+    "ar": "التلفيف الحزامي الأيسر",
+    "descEn": "Limbic cortex involved in emotion formation and processing, learning, and memory.",
+    "descAr": "تلفيف ضمن الجهاز النطاقي يربط العواطف بالاستجابات الحركية واتخاذ القرارات."
+  },
+  "Cingulate gyrus _R": {
+    "ar": "التلفيف الحزامي الأيمن",
+    "descEn": "Limbic cortex involved in emotion formation and processing, learning, and memory.",
+    "descAr": "تلفيف ضمن الجهاز النطاقي يربط العواطف بالاستجابات الحركية واتخاذ القرارات."
+  },
+  "Cingulate gyrus.l": {
+    "ar": "التلفيف الحزامي الأيسر",
+    "descEn": "Limbic cortex involved in emotion formation and processing, learning, and memory.",
+    "descAr": "تلفيف ضمن الجهاز النطاقي يربط العواطف بالاستجابات الحركية واتخاذ القرارات."
+  },
+  "Cingulate gyrus.r": {
+    "ar": "التلفيف الحزامي الأيمن",
+    "descEn": "Limbic cortex involved in emotion formation and processing, learning, and memory.",
+    "descAr": "تلفيف ضمن الجهاز النطاقي يربط العواطف بالاستجابات الحركية واتخاذ القرارات."
+  },
+  "Insula": {
+    "ar": "الفص الجزيري (الجزيرة)",
+    "descEn": "Deep cerebral cortex regulating interoception, self-awareness, and taste.",
+    "descAr": "قشرة مخية عميقة مسؤولة عن الإدراك الحسي الجسدي الداخلي، وحاسة التذوق والوعي الذاتي."
+  },
+  "Insula _L": {
+    "ar": "الفص الجزيري (الجزيرة) الأيسر",
+    "descEn": "Deep cerebral cortex regulating interoception, self-awareness, and taste.",
+    "descAr": "قشرة مخية عميقة مسؤولة عن الإدراك الحسي الجسدي الداخلي، وحاسة التذوق والوعي الذاتي."
+  },
+  "Insula _R": {
+    "ar": "الفص الجزيري (الجزيرة) الأيمن",
+    "descEn": "Deep cerebral cortex regulating interoception, self-awareness, and taste.",
+    "descAr": "قشرة مخية عميقة مسؤولة عن الإدراك الحسي الجسدي الداخلي، وحاسة التذوق والوعي الذاتي."
+  },
+  "Insula.l": {
+    "ar": "الفص الجزيري (الجزيرة) الأيسر",
+    "descEn": "Deep cerebral cortex regulating interoception, self-awareness, and taste.",
+    "descAr": "قشرة مخية عميقة مسؤولة عن الإدراك الحسي الجسدي الداخلي، وحاسة التذوق والوعي الذاتي."
+  },
+  "Insula.r": {
+    "ar": "الفص الجزيري (الجزيرة) الأيمن",
+    "descEn": "Deep cerebral cortex regulating interoception, self-awareness, and taste.",
+    "descAr": "قشرة مخية عميقة مسؤولة عن الإدراك الحسي الجسدي الداخلي، وحاسة التذوق والوعي الذاتي."
+  },
+  "Olfactory nerve": {
+    "ar": "العصب الشمي (العصب القحفي I)",
+    "descEn": "Sensory nerve transmitting smell sensations from the nasal cavity to the brain.",
+    "descAr": "العصب القحفي الأول، ينقل إشارات حاسة الشم من التجويف الأنفي إلى الدماغ."
+  },
+  "Olfactory nerve _L": {
+    "ar": "العصب الشمي (العصب القحفي I) الأيسر",
+    "descEn": "Sensory nerve transmitting smell sensations from the nasal cavity to the brain.",
+    "descAr": "العصب القحفي الأول، ينقل إشارات حاسة الشم من التجويف الأنفي إلى الدماغ."
+  },
+  "Olfactory nerve _R": {
+    "ar": "العصب الشمي (العصب القحفي I) الأيمن",
+    "descEn": "Sensory nerve transmitting smell sensations from the nasal cavity to the brain.",
+    "descAr": "العصب القحفي الأول، ينقل إشارات حاسة الشم من التجويف الأنفي إلى الدماغ."
+  },
+  "Olfactory nerve.l": {
+    "ar": "العصب الشمي (العصب القحفي I) الأيسر",
+    "descEn": "Sensory nerve transmitting smell sensations from the nasal cavity to the brain.",
+    "descAr": "العصب القحفي الأول، ينقل إشارات حاسة الشم من التجويف الأنفي إلى الدماغ."
+  },
+  "Olfactory nerve.r": {
+    "ar": "العصب الشمي (العصب القحفي I) الأيمن",
+    "descEn": "Sensory nerve transmitting smell sensations from the nasal cavity to the brain.",
+    "descAr": "العصب القحفي الأول، ينقل إشارات حاسة الشم من التجويف الأنفي إلى الدماغ."
+  },
+  "Optic nerve": {
+    "ar": "العصب البصري (العصب القحفي II)",
+    "descEn": "Sensory nerve transmitting visual information from the retina to the brain.",
+    "descAr": "العصب القحفي الثاني، ينقل الإشارات البصرية من شبكية العين إلى القشرة البصرية."
+  },
+  "Optic nerve _L": {
+    "ar": "العصب البصري (العصب القحفي II) الأيسر",
+    "descEn": "Sensory nerve transmitting visual information from the retina to the brain.",
+    "descAr": "العصب القحفي الثاني، ينقل الإشارات البصرية من شبكية العين إلى القشرة البصرية."
+  },
+  "Optic nerve _R": {
+    "ar": "العصب البصري (العصب القحفي II) الأيمن",
+    "descEn": "Sensory nerve transmitting visual information from the retina to the brain.",
+    "descAr": "العصب القحفي الثاني، ينقل الإشارات البصرية من شبكية العين إلى القشرة البصرية."
+  },
+  "Optic nerve.l": {
+    "ar": "العصب البصري (العصب القحفي II) الأيسر",
+    "descEn": "Sensory nerve transmitting visual information from the retina to the brain.",
+    "descAr": "العصب القحفي الثاني، ينقل الإشارات البصرية من شبكية العين إلى القشرة البصرية."
+  },
+  "Optic nerve.r": {
+    "ar": "العصب البصري (العصب القحفي II) الأيمن",
+    "descEn": "Sensory nerve transmitting visual information from the retina to the brain.",
+    "descAr": "العصب القحفي الثاني، ينقل الإشارات البصرية من شبكية العين إلى القشرة البصرية."
+  },
+  "Oculomotor nerve": {
+    "ar": "العصب محرك العين (العصب القحفي III)",
+    "descEn": "Controls majority of extraocular eye muscles, pupil constriction, and lens accommodation.",
+    "descAr": "العصب القحفي الثالث، يتحكم بمعظم عضلات العين وتضييق بؤبؤ العين وتكيف العدسة."
+  },
+  "Oculomotor nerve _L": {
+    "ar": "العصب محرك العين (العصب القحفي III) الأيسر",
+    "descEn": "Controls majority of extraocular eye muscles, pupil constriction, and lens accommodation.",
+    "descAr": "العصب القحفي الثالث، يتحكم بمعظم عضلات العين وتضييق بؤبؤ العين وتكيف العدسة."
+  },
+  "Oculomotor nerve _R": {
+    "ar": "العصب محرك العين (العصب القحفي III) الأيمن",
+    "descEn": "Controls majority of extraocular eye muscles, pupil constriction, and lens accommodation.",
+    "descAr": "العصب القحفي الثالث، يتحكم بمعظم عضلات العين وتضييق بؤبؤ العين وتكيف العدسة."
+  },
+  "Oculomotor nerve.l": {
+    "ar": "العصب محرك العين (العصب القحفي III) الأيسر",
+    "descEn": "Controls majority of extraocular eye muscles, pupil constriction, and lens accommodation.",
+    "descAr": "العصب القحفي الثالث، يتحكم بمعظم عضلات العين وتضييق بؤبؤ العين وتكيف العدسة."
+  },
+  "Oculomotor nerve.r": {
+    "ar": "العصب محرك العين (العصب القحفي III) الأيمن",
+    "descEn": "Controls majority of extraocular eye muscles, pupil constriction, and lens accommodation.",
+    "descAr": "العصب القحفي الثالث، يتحكم بمعظم عضلات العين وتضييق بؤبؤ العين وتكيف العدسة."
+  },
+  "Trochlear nerve": {
+    "ar": "العصب البكري (العصب القحفي IV)",
+    "descEn": "Innervates superior oblique muscle, controlling downward and outward eye motion.",
+    "descAr": "العصب القحفي الرابع، يغذي العضلة المائلة العلوية لتحريك العين للأسفل والخارج."
+  },
+  "Trochlear nerve _L": {
+    "ar": "العصب البكري (العصب القحفي IV) الأيسر",
+    "descEn": "Innervates superior oblique muscle, controlling downward and outward eye motion.",
+    "descAr": "العصب القحفي الرابع، يغذي العضلة المائلة العلوية لتحريك العين للأسفل والخارج."
+  },
+  "Trochlear nerve _R": {
+    "ar": "العصب البكري (العصب القحفي IV) الأيمن",
+    "descEn": "Innervates superior oblique muscle, controlling downward and outward eye motion.",
+    "descAr": "العصب القحفي الرابع، يغذي العضلة المائلة العلوية لتحريك العين للأسفل والخارج."
+  },
+  "Trochlear nerve.l": {
+    "ar": "العصب البكري (العصب القحفي IV) الأيسر",
+    "descEn": "Innervates superior oblique muscle, controlling downward and outward eye motion.",
+    "descAr": "العصب القحفي الرابع، يغذي العضلة المائلة العلوية لتحريك العين للأسفل والخارج."
+  },
+  "Trochlear nerve.r": {
+    "ar": "العصب البكري (العصب القحفي IV) الأيمن",
+    "descEn": "Innervates superior oblique muscle, controlling downward and outward eye motion.",
+    "descAr": "العصب القحفي الرابع، يغذي العضلة المائلة العلوية لتحريك العين للأسفل والخارج."
+  },
+  "Trigeminal nerve": {
+    "ar": "العصب ثلاثي التوائم (العصب القحفي V)",
+    "descEn": "Major sensory nerve of the face and motor supply to muscles of mastication.",
+    "descAr": "العصب القحفي الخامس، المسؤول عن الإحساس في الوجه والتحكم الحركي بعضلات المضغ."
+  },
+  "Trigeminal nerve _L": {
+    "ar": "العصب ثلاثي التوائم (العصب القحفي V) الأيسر",
+    "descEn": "Major sensory nerve of the face and motor supply to muscles of mastication.",
+    "descAr": "العصب القحفي الخامس، المسؤول عن الإحساس في الوجه والتحكم الحركي بعضلات المضغ."
+  },
+  "Trigeminal nerve _R": {
+    "ar": "العصب ثلاثي التوائم (العصب القحفي V) الأيمن",
+    "descEn": "Major sensory nerve of the face and motor supply to muscles of mastication.",
+    "descAr": "العصب القحفي الخامس، المسؤول عن الإحساس في الوجه والتحكم الحركي بعضلات المضغ."
+  },
+  "Trigeminal nerve.l": {
+    "ar": "العصب ثلاثي التوائم (العصب القحفي V) الأيسر",
+    "descEn": "Major sensory nerve of the face and motor supply to muscles of mastication.",
+    "descAr": "العصب القحفي الخامس، المسؤول عن الإحساس في الوجه والتحكم الحركي بعضلات المضغ."
+  },
+  "Trigeminal nerve.r": {
+    "ar": "العصب ثلاثي التوائم (العصب القحفي V) الأيمن",
+    "descEn": "Major sensory nerve of the face and motor supply to muscles of mastication.",
+    "descAr": "العصب القحفي الخامس، المسؤول عن الإحساس في الوجه والتحكم الحركي بعضلات المضغ."
+  },
+  "Abducens nerve": {
+    "ar": "العصب المبعد (العصب القحفي VI)",
+    "descEn": "Innervates lateral rectus muscle, turning the eye laterally outward.",
+    "descAr": "العصب القحفي السادس، يحرك العين جانبياً للخارج عبر العضلة المستقيمة الوحشية."
+  },
+  "Abducens nerve _L": {
+    "ar": "العصب المبعد (العصب القحفي VI) الأيسر",
+    "descEn": "Innervates lateral rectus muscle, turning the eye laterally outward.",
+    "descAr": "العصب القحفي السادس، يحرك العين جانبياً للخارج عبر العضلة المستقيمة الوحشية."
+  },
+  "Abducens nerve _R": {
+    "ar": "العصب المبعد (العصب القحفي VI) الأيمن",
+    "descEn": "Innervates lateral rectus muscle, turning the eye laterally outward.",
+    "descAr": "العصب القحفي السادس، يحرك العين جانبياً للخارج عبر العضلة المستقيمة الوحشية."
+  },
+  "Abducens nerve.l": {
+    "ar": "العصب المبعد (العصب القحفي VI) الأيسر",
+    "descEn": "Innervates lateral rectus muscle, turning the eye laterally outward.",
+    "descAr": "العصب القحفي السادس، يحرك العين جانبياً للخارج عبر العضلة المستقيمة الوحشية."
+  },
+  "Abducens nerve.r": {
+    "ar": "العصب المبعد (العصب القحفي VI) الأيمن",
+    "descEn": "Innervates lateral rectus muscle, turning the eye laterally outward.",
+    "descAr": "العصب القحفي السادس، يحرك العين جانبياً للخارج عبر العضلة المستقيمة الوحشية."
+  },
+  "Facial nerve": {
+    "ar": "العصب الوجهي (العصب القحفي VII)",
+    "descEn": "Controls muscles of facial expression, taste on anterior 2/3 of tongue, and salivary glands.",
+    "descAr": "العصب القحفي السابع، يتحكم بتعابير الوجه والتذوق في ثلثي اللسان الأماميين والغدد اللعابية."
+  },
+  "Facial nerve _L": {
+    "ar": "العصب الوجهي (العصب القحفي VII) الأيسر",
+    "descEn": "Controls muscles of facial expression, taste on anterior 2/3 of tongue, and salivary glands.",
+    "descAr": "العصب القحفي السابع، يتحكم بتعابير الوجه والتذوق في ثلثي اللسان الأماميين والغدد اللعابية."
+  },
+  "Facial nerve _R": {
+    "ar": "العصب الوجهي (العصب القحفي VII) الأيمن",
+    "descEn": "Controls muscles of facial expression, taste on anterior 2/3 of tongue, and salivary glands.",
+    "descAr": "العصب القحفي السابع، يتحكم بتعابير الوجه والتذوق في ثلثي اللسان الأماميين والغدد اللعابية."
+  },
+  "Facial nerve.l": {
+    "ar": "العصب الوجهي (العصب القحفي VII) الأيسر",
+    "descEn": "Controls muscles of facial expression, taste on anterior 2/3 of tongue, and salivary glands.",
+    "descAr": "العصب القحفي السابع، يتحكم بتعابير الوجه والتذوق في ثلثي اللسان الأماميين والغدد اللعابية."
+  },
+  "Facial nerve.r": {
+    "ar": "العصب الوجهي (العصب القحفي VII) الأيمن",
+    "descEn": "Controls muscles of facial expression, taste on anterior 2/3 of tongue, and salivary glands.",
+    "descAr": "العصب القحفي السابع، يتحكم بتعابير الوجه والتذوق في ثلثي اللسان الأماميين والغدد اللعابية."
+  },
+  "Vestibulocochlear nerve": {
+    "ar": "العصب الدهليزي القوقعي (العصب القحفي VIII)",
+    "descEn": "Responsible for hearing and body balance/equilibrium.",
+    "descAr": "العصب القحفي الثامن، مسؤول عن حاسة السمع وتوازن الجسم والتسارع الزاوي."
+  },
+  "Vestibulocochlear nerve _L": {
+    "ar": "العصب الدهليزي القوقعي (العصب القحفي VIII) الأيسر",
+    "descEn": "Responsible for hearing and body balance/equilibrium.",
+    "descAr": "العصب القحفي الثامن، مسؤول عن حاسة السمع وتوازن الجسم والتسارع الزاوي."
+  },
+  "Vestibulocochlear nerve _R": {
+    "ar": "العصب الدهليزي القوقعي (العصب القحفي VIII) الأيمن",
+    "descEn": "Responsible for hearing and body balance/equilibrium.",
+    "descAr": "العصب القحفي الثامن، مسؤول عن حاسة السمع وتوازن الجسم والتسارع الزاوي."
+  },
+  "Vestibulocochlear nerve.l": {
+    "ar": "العصب الدهليزي القوقعي (العصب القحفي VIII) الأيسر",
+    "descEn": "Responsible for hearing and body balance/equilibrium.",
+    "descAr": "العصب القحفي الثامن، مسؤول عن حاسة السمع وتوازن الجسم والتسارع الزاوي."
+  },
+  "Vestibulocochlear nerve.r": {
+    "ar": "العصب الدهليزي القوقعي (العصب القحفي VIII) الأيمن",
+    "descEn": "Responsible for hearing and body balance/equilibrium.",
+    "descAr": "العصب القحفي الثامن، مسؤول عن حاسة السمع وتوازن الجسم والتسارع الزاوي."
+  },
+  "Glossopharyngeal nerve": {
+    "ar": "العصب البلعومي اللساني (العصب القحفي IX)",
+    "descEn": "Sensory and taste for posterior tongue, swallowing, and carotid body monitoring.",
+    "descAr": "العصب القحفي التاسع، مسؤول عن التذوق بالثلث الخلفي للسان والمساعدة في البلع."
+  },
+  "Glossopharyngeal nerve _L": {
+    "ar": "العصب البلعومي اللساني (العصب القحفي IX) الأيسر",
+    "descEn": "Sensory and taste for posterior tongue, swallowing, and carotid body monitoring.",
+    "descAr": "العصب القحفي التاسع، مسؤول عن التذوق بالثلث الخلفي للسان والمساعدة في البلع."
+  },
+  "Glossopharyngeal nerve _R": {
+    "ar": "العصب البلعومي اللساني (العصب القحفي IX) الأيمن",
+    "descEn": "Sensory and taste for posterior tongue, swallowing, and carotid body monitoring.",
+    "descAr": "العصب القحفي التاسع، مسؤول عن التذوق بالثلث الخلفي للسان والمساعدة في البلع."
+  },
+  "Glossopharyngeal nerve.l": {
+    "ar": "العصب البلعومي اللساني (العصب القحفي IX) الأيسر",
+    "descEn": "Sensory and taste for posterior tongue, swallowing, and carotid body monitoring.",
+    "descAr": "العصب القحفي التاسع، مسؤول عن التذوق بالثلث الخلفي للسان والمساعدة في البلع."
+  },
+  "Glossopharyngeal nerve.r": {
+    "ar": "العصب البلعومي اللساني (العصب القحفي IX) الأيمن",
+    "descEn": "Sensory and taste for posterior tongue, swallowing, and carotid body monitoring.",
+    "descAr": "العصب القحفي التاسع، مسؤول عن التذوق بالثلث الخلفي للسان والمساعدة في البلع."
+  },
+  "Vagus nerve": {
+    "ar": "العصب الحائر / المبهم (العصب القحفي X)",
+    "descEn": "Major parasympathetic nerve regulating heart rate, digestive tract, and vocal cords.",
+    "descAr": "العصب القحفي العاشر، العصب نظير الودي الرئيسي الذي يبطئ نبضات القلب وينظم الهضم."
+  },
+  "Vagus nerve _L": {
+    "ar": "العصب الحائر / المبهم (العصب القحفي X) الأيسر",
+    "descEn": "Major parasympathetic nerve regulating heart rate, digestive tract, and vocal cords.",
+    "descAr": "العصب القحفي العاشر، العصب نظير الودي الرئيسي الذي يبطئ نبضات القلب وينظم الهضم."
+  },
+  "Vagus nerve _R": {
+    "ar": "العصب الحائر / المبهم (العصب القحفي X) الأيمن",
+    "descEn": "Major parasympathetic nerve regulating heart rate, digestive tract, and vocal cords.",
+    "descAr": "العصب القحفي العاشر، العصب نظير الودي الرئيسي الذي يبطئ نبضات القلب وينظم الهضم."
+  },
+  "Vagus nerve.l": {
+    "ar": "العصب الحائر / المبهم (العصب القحفي X) الأيسر",
+    "descEn": "Major parasympathetic nerve regulating heart rate, digestive tract, and vocal cords.",
+    "descAr": "العصب القحفي العاشر، العصب نظير الودي الرئيسي الذي يبطئ نبضات القلب وينظم الهضم."
+  },
+  "Vagus nerve.r": {
+    "ar": "العصب الحائر / المبهم (العصب القحفي X) الأيمن",
+    "descEn": "Major parasympathetic nerve regulating heart rate, digestive tract, and vocal cords.",
+    "descAr": "العصب القحفي العاشر، العصب نظير الودي الرئيسي الذي يبطئ نبضات القلب وينظم الهضم."
+  },
+  "Accessory nerve": {
+    "ar": "العصب الإضافي (العصب القحفي XI)",
+    "descEn": "Motor innervation to sternocleidomastoid and trapezius muscles.",
+    "descAr": "العصب القحفي الحادي عشر، يغذي العضلة القصية الترقوية والعضلة شبه المنحرفة لرفع الكتف وإدارة الرأس."
+  },
+  "Accessory nerve _L": {
+    "ar": "العصب الإضافي (العصب القحفي XI) الأيسر",
+    "descEn": "Motor innervation to sternocleidomastoid and trapezius muscles.",
+    "descAr": "العصب القحفي الحادي عشر، يغذي العضلة القصية الترقوية والعضلة شبه المنحرفة لرفع الكتف وإدارة الرأس."
+  },
+  "Accessory nerve _R": {
+    "ar": "العصب الإضافي (العصب القحفي XI) الأيمن",
+    "descEn": "Motor innervation to sternocleidomastoid and trapezius muscles.",
+    "descAr": "العصب القحفي الحادي عشر، يغذي العضلة القصية الترقوية والعضلة شبه المنحرفة لرفع الكتف وإدارة الرأس."
+  },
+  "Accessory nerve.l": {
+    "ar": "العصب الإضافي (العصب القحفي XI) الأيسر",
+    "descEn": "Motor innervation to sternocleidomastoid and trapezius muscles.",
+    "descAr": "العصب القحفي الحادي عشر، يغذي العضلة القصية الترقوية والعضلة شبه المنحرفة لرفع الكتف وإدارة الرأس."
+  },
+  "Accessory nerve.r": {
+    "ar": "العصب الإضافي (العصب القحفي XI) الأيمن",
+    "descEn": "Motor innervation to sternocleidomastoid and trapezius muscles.",
+    "descAr": "العصب القحفي الحادي عشر، يغذي العضلة القصية الترقوية والعضلة شبه المنحرفة لرفع الكتف وإدارة الرأس."
+  },
+  "Hypoglossal nerve": {
+    "ar": "العصب تحت اللساني (العصب القحفي XII)",
+    "descEn": "Motor innervation to intrinsic and extrinsic muscles of the tongue.",
+    "descAr": "العصب القحفي الثاني عشر، يتحكم بكافة الحركات الحركية للسان أثناء الكلام والبلع."
+  },
+  "Hypoglossal nerve _L": {
+    "ar": "العصب تحت اللساني (العصب القحفي XII) الأيسر",
+    "descEn": "Motor innervation to intrinsic and extrinsic muscles of the tongue.",
+    "descAr": "العصب القحفي الثاني عشر، يتحكم بكافة الحركات الحركية للسان أثناء الكلام والبلع."
+  },
+  "Hypoglossal nerve _R": {
+    "ar": "العصب تحت اللساني (العصب القحفي XII) الأيمن",
+    "descEn": "Motor innervation to intrinsic and extrinsic muscles of the tongue.",
+    "descAr": "العصب القحفي الثاني عشر، يتحكم بكافة الحركات الحركية للسان أثناء الكلام والبلع."
+  },
+  "Hypoglossal nerve.l": {
+    "ar": "العصب تحت اللساني (العصب القحفي XII) الأيسر",
+    "descEn": "Motor innervation to intrinsic and extrinsic muscles of the tongue.",
+    "descAr": "العصب القحفي الثاني عشر، يتحكم بكافة الحركات الحركية للسان أثناء الكلام والبلع."
+  },
+  "Hypoglossal nerve.r": {
+    "ar": "العصب تحت اللساني (العصب القحفي XII) الأيمن",
+    "descEn": "Motor innervation to intrinsic and extrinsic muscles of the tongue.",
+    "descAr": "العصب القحفي الثاني عشر، يتحكم بكافة الحركات الحركية للسان أثناء الكلام والبلع."
+  },
+  "Achilles tendon": {
+    "ar": "وتر أخيل (العرقوب)",
+    "descEn": "Strongest tendon connecting calf muscles to calcaneus, crucial for walking and jumping.",
+    "descAr": "أقوى أوتار الجسم يربط عضلات الساق الخلفية بعظم العقب، وهو ضروري للمشي والقفز والجري."
+  },
+  "Achilles tendon _L": {
+    "ar": "وتر أخيل (العرقوب) الأيسر",
+    "descEn": "Strongest tendon connecting calf muscles to calcaneus, crucial for walking and jumping.",
+    "descAr": "أقوى أوتار الجسم يربط عضلات الساق الخلفية بعظم العقب، وهو ضروري للمشي والقفز والجري."
+  },
+  "Achilles tendon _R": {
+    "ar": "وتر أخيل (العرقوب) الأيمن",
+    "descEn": "Strongest tendon connecting calf muscles to calcaneus, crucial for walking and jumping.",
+    "descAr": "أقوى أوتار الجسم يربط عضلات الساق الخلفية بعظم العقب، وهو ضروري للمشي والقفز والجري."
+  },
+  "Achilles tendon.l": {
+    "ar": "وتر أخيل (العرقوب) الأيسر",
+    "descEn": "Strongest tendon connecting calf muscles to calcaneus, crucial for walking and jumping.",
+    "descAr": "أقوى أوتار الجسم يربط عضلات الساق الخلفية بعظم العقب، وهو ضروري للمشي والقفز والجري."
+  },
+  "Achilles tendon.r": {
+    "ar": "وتر أخيل (العرقوب) الأيمن",
+    "descEn": "Strongest tendon connecting calf muscles to calcaneus, crucial for walking and jumping.",
+    "descAr": "أقوى أوتار الجسم يربط عضلات الساق الخلفية بعظم العقب، وهو ضروري للمشي والقفز والجري."
+  },
+  "Patellar tendon": {
+    "ar": "الوتر الرضفي",
+    "descEn": "Connects quadriceps and patella to tibial tuberosity to extend the leg.",
+    "descAr": "وتر سميك يربط عظمة الرضفة بحديبة عظم الظنبوب لينقل قوة عضلات الفخذ لفرد الساق."
+  },
+  "Patellar tendon _L": {
+    "ar": "الوتر الرضفي الأيسر",
+    "descEn": "Connects quadriceps and patella to tibial tuberosity to extend the leg.",
+    "descAr": "وتر سميك يربط عظمة الرضفة بحديبة عظم الظنبوب لينقل قوة عضلات الفخذ لفرد الساق."
+  },
+  "Patellar tendon _R": {
+    "ar": "الوتر الرضفي الأيمن",
+    "descEn": "Connects quadriceps and patella to tibial tuberosity to extend the leg.",
+    "descAr": "وتر سميك يربط عظمة الرضفة بحديبة عظم الظنبوب لينقل قوة عضلات الفخذ لفرد الساق."
+  },
+  "Patellar tendon.l": {
+    "ar": "الوتر الرضفي الأيسر",
+    "descEn": "Connects quadriceps and patella to tibial tuberosity to extend the leg.",
+    "descAr": "وتر سميك يربط عظمة الرضفة بحديبة عظم الظنبوب لينقل قوة عضلات الفخذ لفرد الساق."
+  },
+  "Patellar tendon.r": {
+    "ar": "الوتر الرضفي الأيمن",
+    "descEn": "Connects quadriceps and patella to tibial tuberosity to extend the leg.",
+    "descAr": "وتر سميك يربط عظمة الرضفة بحديبة عظم الظنبوب لينقل قوة عضلات الفخذ لفرد الساق."
+  },
+  "Plantar fascia": {
+    "ar": "السفاق الأخمصي (اللفافة الأخمصية)",
+    "descEn": "Thick connective tissue supporting the longitudinal arch of the foot.",
+    "descAr": "نسيج ضام ليفي سميك يدعم قوس القدم الطولي ويمتص الصدمات أثناء الوقوف والمشي."
+  },
+  "Plantar fascia _L": {
+    "ar": "السفاق الأخمصي (اللفافة الأخمصية) الأيسر",
+    "descEn": "Thick connective tissue supporting the longitudinal arch of the foot.",
+    "descAr": "نسيج ضام ليفي سميك يدعم قوس القدم الطولي ويمتص الصدمات أثناء الوقوف والمشي."
+  },
+  "Plantar fascia _R": {
+    "ar": "السفاق الأخمصي (اللفافة الأخمصية) الأيمن",
+    "descEn": "Thick connective tissue supporting the longitudinal arch of the foot.",
+    "descAr": "نسيج ضام ليفي سميك يدعم قوس القدم الطولي ويمتص الصدمات أثناء الوقوف والمشي."
+  },
+  "Plantar fascia.l": {
+    "ar": "السفاق الأخمصي (اللفافة الأخمصية) الأيسر",
+    "descEn": "Thick connective tissue supporting the longitudinal arch of the foot.",
+    "descAr": "نسيج ضام ليفي سميك يدعم قوس القدم الطولي ويمتص الصدمات أثناء الوقوف والمشي."
+  },
+  "Plantar fascia.r": {
+    "ar": "السفاق الأخمصي (اللفافة الأخمصية) الأيمن",
+    "descEn": "Thick connective tissue supporting the longitudinal arch of the foot.",
+    "descAr": "نسيج ضام ليفي سميك يدعم قوس القدم الطولي ويمتص الصدمات أثناء الوقوف والمشي."
+  },
+  "Linea alba": {
+    "ar": "الخط الأبيض للبطن",
+    "descEn": "Fibrous structure running down the midline of the abdomen between rectus abdominis muscles.",
+    "descAr": "شريط ليفي يمتد في منتصف البطن بين العضلتين المستقيمتين البطنيتين ويثبت جدار البطن."
+  },
+  "Linea alba _L": {
+    "ar": "الخط الأبيض للبطن الأيسر",
+    "descEn": "Fibrous structure running down the midline of the abdomen between rectus abdominis muscles.",
+    "descAr": "شريط ليفي يمتد في منتصف البطن بين العضلتين المستقيمتين البطنيتين ويثبت جدار البطن."
+  },
+  "Linea alba _R": {
+    "ar": "الخط الأبيض للبطن الأيمن",
+    "descEn": "Fibrous structure running down the midline of the abdomen between rectus abdominis muscles.",
+    "descAr": "شريط ليفي يمتد في منتصف البطن بين العضلتين المستقيمتين البطنيتين ويثبت جدار البطن."
+  },
+  "Linea alba.l": {
+    "ar": "الخط الأبيض للبطن الأيسر",
+    "descEn": "Fibrous structure running down the midline of the abdomen between rectus abdominis muscles.",
+    "descAr": "شريط ليفي يمتد في منتصف البطن بين العضلتين المستقيمتين البطنيتين ويثبت جدار البطن."
+  },
+  "Linea alba.r": {
+    "ar": "الخط الأبيض للبطن الأيمن",
+    "descEn": "Fibrous structure running down the midline of the abdomen between rectus abdominis muscles.",
+    "descAr": "شريط ليفي يمتد في منتصف البطن بين العضلتين المستقيمتين البطنيتين ويثبت جدار البطن."
   }
 }
