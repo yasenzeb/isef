@@ -44,22 +44,22 @@ export const ClassroomMode: React.FC<ClassroomModeProps> = ({ onExit }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col justify-between">
+    <div className="min-h-screen bg-[var(--bg-void)] text-white flex flex-col justify-between">
       
       {/* Top Classroom Control Bar */}
-      <header className="bg-slate-900 border-b border-slate-800 px-6 py-4 flex items-center justify-between shadow-2xl">
+      <header className="glass-card !rounded-none !border-x-0 !border-t-0 px-6 py-4 flex items-center justify-between shadow-2xl sticky top-0 z-50">
         <div className="flex items-center space-x-3">
           <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400">
             <Presentation className="w-6 h-6" />
           </div>
           <div className={isRTL ? "mr-3 text-right" : ""}>
-            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest block">Classroom & Whiteboard Mode</span>
-            <h2 className="text-lg font-black text-white">{t.classroom.title}</h2>
+            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest block font-mono">Classroom & Whiteboard Mode</span>
+            <h2 className="text-lg font-black text-white" style={{ fontFamily: 'var(--font-display)' }}>{t.classroom.title}</h2>
           </div>
         </div>
 
         {/* Center Module Selectors */}
-        <div className="hidden md:flex items-center space-x-2 bg-slate-950 p-1 rounded-2xl border border-slate-800">
+        <div className="hidden md:flex items-center space-x-2 bg-slate-950/80 p-1 rounded-2xl border border-white/10">
           {modules.map((m) => {
             const Icon = m.icon;
             const isActive = activeModule === m.id;
@@ -68,7 +68,7 @@ export const ClassroomMode: React.FC<ClassroomModeProps> = ({ onExit }) => {
                 key={m.id}
                 onClick={() => setActiveModule(m.id as any)}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                  isActive ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-slate-900'
+                  isActive ? 'bg-gradient-to-r from-indigo-500 to-cyan-500 text-white shadow-lg shadow-indigo-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -82,7 +82,7 @@ export const ClassroomMode: React.FC<ClassroomModeProps> = ({ onExit }) => {
         <div className="flex items-center space-x-3">
           <button
             onClick={toggleFullscreen}
-            className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+            className="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 transition-colors border border-white/5"
             title={t.classroom.fullscreen}
           >
             {isFullscreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
@@ -90,7 +90,7 @@ export const ClassroomMode: React.FC<ClassroomModeProps> = ({ onExit }) => {
           
           <button
             onClick={onExit}
-            className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-lg transition-colors"
+            className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-lg shadow-rose-600/30 transition-colors"
           >
             <X className="w-4 h-4" />
             <span className="hidden sm:inline">{t.classroom.exitPresentation}</span>

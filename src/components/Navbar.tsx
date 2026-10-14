@@ -1,14 +1,14 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { Language } from '../i18n/translations';
-import { 
-  Atom, 
-  Dna, 
-  Activity, 
-  Globe2, 
-  Presentation, 
-  Home, 
-  Languages, 
+import {
+  Atom,
+  Dna,
+  Activity,
+  Globe2,
+  Presentation,
+  Home,
+  Languages,
   MapPin,
   Menu,
   X,
@@ -40,32 +40,32 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-[#030712]/90 backdrop-blur-md border-b border-sky-500/15">
+    <header className="sticky top-0 z-50" style={{ background: 'rgba(5,10,26,0.85)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          
-          {/* Logo & Platform Name */}
-          <div 
-            className="flex items-center space-x-3 cursor-pointer group"
+
+          {/* Logo */}
+          <div
+            className="flex items-center gap-3 cursor-pointer group"
             onClick={() => setCurrentTab('home')}
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 via-indigo-500 to-teal-400 p-0.5 shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-transform">
-              <div className="w-full h-full bg-[#030712] rounded-[10px] flex items-center justify-center">
-                <Atom className="w-6 h-6 text-sky-400" />
+            <div style={{ background: 'linear-gradient(135deg, #6366f1, #06b6d4)', borderRadius: '14px', padding: '2px', boxShadow: '0 0 16px rgba(99,102,241,0.4)' }}>
+              <div style={{ background: '#050a1a', borderRadius: '12px', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Atom className="w-5 h-5" style={{ color: '#818cf8' }} />
               </div>
             </div>
-            <div className={isRTL ? "mr-3 text-right" : ""}>
-              <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-white via-slate-100 to-sky-400 bg-clip-text text-transparent block">
+            <div className={isRTL ? 'text-right' : ''}>
+              <span className="text-base font-bold tracking-tight block" style={{ fontFamily: 'var(--font-display)', background: 'linear-gradient(135deg, #fff, #818cf8, #22d3ee)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
                 {t.appName}
               </span>
-              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">
+              <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: '#475569' }}>
                 {t.hero.badge}
               </span>
             </div>
           </div>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-1 lg:space-x-1.5">
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentTab === item.id;
@@ -73,107 +73,99 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
                 <button
                   key={item.id}
                   onClick={() => setCurrentTab(item.id)}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
-                    isActive 
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                    isActive
                       ? item.highlight
-                        ? 'bg-amber-500 text-slate-950 font-bold shadow-lg shadow-amber-500/20'
-                        : 'bg-sky-600 text-white shadow-md shadow-sky-600/30' 
+                        ? 'text-white'
+                        : 'text-white'
                       : item.highlight
-                        ? 'text-amber-400 hover:bg-amber-500/10 border border-amber-500/30'
-                        : 'text-slate-300 hover:text-white hover:bg-slate-900'
+                        ? 'text-amber-400 hover:bg-white/5'
+                        : 'text-slate-400 hover:text-white hover:bg-white/5'
                   }`}
+                  style={isActive && !item.highlight ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)', boxShadow: '0 0 12px rgba(99,102,241,0.4)' } : isActive && item.highlight ? { background: 'linear-gradient(135deg, #f59e0b, #f43f5e)', boxShadow: '0 0 12px rgba(245,158,11,0.4)' } : undefined}
                 >
-                  <Icon className="w-4 h-4" />
-                  <span className={isRTL ? "mr-2" : ""}>{item.label}</span>
+                  <Icon className="w-3.5 h-3.5" />
+                  <span>{item.label}</span>
                 </button>
               );
             })}
           </nav>
 
-          {/* Right Action Controls: Egypt Location & Language Selector */}
-          <div className="hidden sm:flex items-center space-x-3">
-            {/* Egyptian Location Helper */}
+          {/* Right Controls */}
+          <div className="hidden sm:flex items-center gap-2">
             <button
               onClick={onOpenLocationModal}
               title={t.egyptLocation.title}
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 sci-surface hover:bg-slate-800 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors hover:bg-white/5"
+              style={{ color: '#34d399', border: '1px solid rgba(16,185,129,0.2)' }}
             >
-              <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+              <MapPin className="w-3.5 h-3.5" />
               <span className="hidden lg:inline">{t.egyptLocation.detectedGovernorate}</span>
             </button>
 
-            {/* Language Selector */}
-            <div className="flex items-center space-x-1.5 sci-surface rounded-xl px-2.5 py-1.5">
-              <Languages className="w-4 h-4 text-sky-400" />
+            <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+              <Languages className="w-4 h-4" style={{ color: '#818cf8' }} />
               <select
                 value={language}
                 onChange={handleLanguageChange}
                 aria-label="Select language"
-                className="bg-transparent text-xs font-semibold text-slate-200 focus:outline-none cursor-pointer pr-1"
+                style={{ background: 'transparent', border: 'none', color: '#e2e8f0', fontSize: '0.75rem', fontWeight: '600', cursor: 'pointer', outline: 'none' }}
               >
-                <option value="en" className="bg-slate-900 text-white">English (EN)</option>
-                <option value="ar" className="bg-slate-900 text-white">العربية (AR)</option>
-                <option value="fr" className="bg-slate-900 text-white">Français (FR)</option>
-                <option value="de" className="bg-slate-900 text-white">Deutsch (DE)</option>
+                <option value="en" style={{ background: '#111827' }}>English (EN)</option>
+                <option value="ar" style={{ background: '#111827' }}>العربية (AR)</option>
+                <option value="fr" style={{ background: '#111827' }}>Français (FR)</option>
+                <option value="de" style={{ background: '#111827' }}>Deutsch (DE)</option>
               </select>
             </div>
           </div>
 
-          {/* Mobile menu button */}
-          <div className="flex md:hidden items-center space-x-2">
+          {/* Mobile Menu Button */}
+          <div className="flex md:hidden items-center gap-2">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-900 focus:outline-none"
+              className="p-2 rounded-xl transition-colors hover:bg-white/5"
+              style={{ color: '#94a3b8' }}
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
-
         </div>
       </div>
 
-      {/* Mobile navigation drawer */}
+      {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-sky-500/15 bg-[#030712] px-4 pt-2 pb-4 space-y-2">
+        <div className="md:hidden px-4 pt-2 pb-4 space-y-1.5" style={{ background: 'rgba(5,10,26,0.98)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = currentTab === item.id;
             return (
               <button
                 key={item.id}
-                onClick={() => {
-                  setCurrentTab(item.id);
-                  setMobileMenuOpen(false);
-                }}
-                className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold ${
-                  isActive 
-                    ? 'bg-sky-600 text-white' 
-                    : 'text-slate-300 hover:bg-slate-900'
-                }`}
+                onClick={() => { setCurrentTab(item.id); setMobileMenuOpen(false); }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all"
+                style={isActive ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)', color: 'white' } : { color: '#94a3b8' }}
               >
-                <Icon className="w-5 h-5 text-sky-400" />
-                <span className={isRTL ? "mr-3" : ""}>{item.label}</span>
+                <Icon className="w-5 h-5" style={{ color: isActive ? 'white' : '#818cf8' }} />
+                <span>{item.label}</span>
               </button>
             );
           })}
 
-          <div className="pt-3 border-t border-sky-500/15 flex items-center justify-between">
+          <div className="pt-3 flex items-center justify-between" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
             <button
-              onClick={() => {
-                onOpenLocationModal();
-                setMobileMenuOpen(false);
-              }}
-              className="flex items-center space-x-2 text-xs text-emerald-400 py-1"
+              onClick={() => { onOpenLocationModal(); setMobileMenuOpen(false); }}
+              className="flex items-center gap-2 text-xs py-1"
+              style={{ color: '#34d399' }}
             >
               <MapPin className="w-4 h-4" />
               <span>{t.egyptLocation.title}</span>
             </button>
-
             <select
               value={language}
               onChange={handleLanguageChange}
               aria-label="Select mobile language"
-              className="bg-slate-900 text-xs text-white rounded-lg px-2.5 py-1.5 border border-sky-500/20"
+              className="text-xs rounded-lg px-2.5 py-1.5"
+              style={{ background: '#111827', color: 'white', border: '1px solid rgba(99,102,241,0.3)' }}
             >
               <option value="en">English (EN)</option>
               <option value="ar">العربية (AR)</option>

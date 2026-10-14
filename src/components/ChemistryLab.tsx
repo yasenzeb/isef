@@ -244,13 +244,12 @@ export const ChemistryLab: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 space-y-6">
       
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-sky-500/15 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
         <div>
           <span className="sci-badge">
             {language === 'ar' ? 'الكيمياء الجزيئية ومعايير IUPAC' : 'IUPAC Standard & 3D Molecular Chemistry'}
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-1" style={{ fontFamily: 'var(--font-display)' }}>
             {language === 'ar' ? 'مختبر الكيمياء والجدول الدوري والجزيئات' : 'Chemistry & Molecular Visualization Lab'}
           </h1>
           <p className="text-xs text-slate-400 mt-0.5">{t.chemistry.subtitle}</p>
@@ -261,16 +260,18 @@ export const ChemistryLab: React.FC = () => {
           <button
             onClick={() => setActiveTab('periodic')}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              activeTab === 'periodic' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              activeTab === 'periodic' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
+            style={activeTab === 'periodic' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
           >
             {language === 'ar' ? 'الجدول الدوري (118 عنصراً)' : '118 Periodic Elements'}
           </button>
           <button
             onClick={() => setActiveTab('molecular')}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'molecular' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              activeTab === 'molecular' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
+            style={activeTab === 'molecular' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
           >
             <Box className="w-3.5 h-3.5" />
             <span>{language === 'ar' ? 'المتطابقات الجزيئية 3D' : '3D Molecular Viewer'}</span>
@@ -278,8 +279,9 @@ export const ChemistryLab: React.FC = () => {
           <button
             onClick={() => setActiveTab('reactions')}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'reactions' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              activeTab === 'reactions' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
+            style={activeTab === 'reactions' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
           >
             <Flame className="w-3.5 h-3.5" />
             <span>{language === 'ar' ? 'المعادلات والتفاعلات' : 'Reaction Dynamics'}</span>

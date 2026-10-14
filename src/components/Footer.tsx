@@ -6,16 +6,16 @@ export const Footer: React.FC = () => {
   const { t, isRTL } = useLanguage();
 
   return (
-    <footer className="bg-slate-950 border-t border-slate-900 text-slate-400 py-12">
+    <footer className="border-t border-white/5 bg-[var(--bg-void)]/80 backdrop-blur-xl text-slate-400 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 border-b border-slate-900 pb-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 border-b border-white/5 pb-8">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25">
               <Atom className="w-5 h-5" />
             </div>
             <div className={isRTL ? "mr-3 text-right" : ""}>
-              <span className="text-base font-bold text-white block">{t.appName}</span>
+              <span className="text-base font-bold text-white block" style={{ fontFamily: 'var(--font-display)' }}>{t.appName}</span>
               <span className="text-xs text-slate-500 block">{t.appTagline}</span>
             </div>
           </div>

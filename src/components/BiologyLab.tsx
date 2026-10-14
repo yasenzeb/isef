@@ -544,12 +544,12 @@ export const BiologyLab: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 space-y-6">
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-sky-500/15 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
         <div>
           <span className="sci-badge">
             {language === 'ar' ? 'المجسمات الخلوية ثلاثية الأبعاد والوراثة' : 'Interactive 3D Cytology & Molecular Genetics'}
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-1" style={{ fontFamily: 'var(--font-display)' }}>
             {language === 'ar' ? 'مختبر العلوم الحيوية والخلية والوراثة' : 'Biological Sciences & Genetics Laboratory'}
           </h1>
           <p className="text-xs text-slate-400 mt-0.5">{t.biology.subtitle}</p>
@@ -560,25 +560,28 @@ export const BiologyLab: React.FC = () => {
           <button
             onClick={() => setActiveTab('cell_3d')}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              activeTab === 'cell_3d' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              activeTab === 'cell_3d' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
+            style={activeTab === 'cell_3d' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
           >
             {language === 'ar' ? 'مجسم الخلية ثلاثي الأبعاد' : '3D Cell Ultrastructure'}
           </button>
           <button
             onClick={() => setActiveTab('sketchfab_cell')}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'sketchfab_cell' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              activeTab === 'sketchfab_cell' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
+            style={activeTab === 'sketchfab_cell' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
           >
-            <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+            <Sparkles className="w-3.5 h-3.5" style={{ color: activeTab === 'sketchfab_cell' ? 'white' : '#818cf8' }} />
             <span>{language === 'ar' ? 'مجسم الخلية الحقيقي الكامل (3D تفاعلي)' : 'Realistic 3D Animal Cell Specimen'}</span>
           </button>
           <button
             onClick={() => setActiveTab('dna')}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'dna' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              activeTab === 'dna' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
+            style={activeTab === 'dna' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
           >
             <Dna className="w-3.5 h-3.5" />
             <span>{language === 'ar' ? 'الحمض النووي DNA والوراثة الجزيئية' : '3D DNA & Molecular Genetics'}</span>
@@ -586,25 +589,26 @@ export const BiologyLab: React.FC = () => {
         </div>
       </div>
 
-      {/* VIEW 1: 3D INTERACTIVE CELL */}
       {activeTab === 'cell_3d' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 sci-card overflow-hidden flex flex-col h-[540px]">
-            <div className="bg-slate-950/80 px-4 py-3 border-b border-sky-500/15 flex flex-wrap items-center justify-between gap-2 z-10">
+            <div className="px-4 py-3 flex flex-wrap items-center justify-between gap-2 z-10" style={{ background: 'rgba(17,24,39,0.8)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setCellType('plant')}
                   className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                    cellType === 'plant' ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-400'
+                    cellType === 'plant' ? 'text-white' : 'text-slate-400'
                   }`}
+                  style={cellType === 'plant' ? { background: 'linear-gradient(135deg, #10b981, #06b6d4)' } : { background: 'rgba(255,255,255,0.05)' }}
                 >
                   {t.biology.plantCell}
                 </button>
                 <button
                   onClick={() => setCellType('animal')}
                   className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                    cellType === 'animal' ? 'bg-sky-600 text-white' : 'bg-slate-800 text-slate-400'
+                    cellType === 'animal' ? 'text-white' : 'text-slate-400'
                   }`}
+                  style={cellType === 'animal' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : { background: 'rgba(255,255,255,0.05)' }}
                 >
                   {t.biology.animalCell}
                 </button>
@@ -613,9 +617,8 @@ export const BiologyLab: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setIsCrossSection(!isCrossSection)}
-                  className={`flex items-center space-x-1.5 px-3 py-1 rounded-lg text-xs font-semibold border transition-all ${
-                    isCrossSection ? 'bg-sky-500/10 text-sky-400 border-sky-500/30' : 'bg-slate-800 text-slate-300 border-slate-700'
-                  }`}
+                  className={`flex items-center space-x-1.5 px-3 py-1 rounded-lg text-xs font-semibold border transition-all`}
+                  style={isCrossSection ? { background: 'rgba(99,102,241,0.1)', color: '#818cf8', border: '1px solid rgba(99,102,241,0.3)' } : { background: 'rgba(255,255,255,0.05)', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.07)' }}
                 >
                   <Scissors className="w-3.5 h-3.5" />
                   <span>{language === 'ar' ? 'الوضع المقطعي (Cross-Section)' : 'Cross-Section Mode'}</span>
@@ -625,15 +628,15 @@ export const BiologyLab: React.FC = () => {
 
             <div ref={cellMountRef} className="w-full flex-1 cursor-grab active:cursor-grabbing" />
 
-            <div className="bg-slate-950/90 px-4 py-2 border-t border-sky-500/10 flex items-center justify-between text-[11px] text-slate-400">
+            <div className="px-4 py-2 flex items-center justify-between text-[11px] text-slate-400" style={{ background: 'rgba(17,24,39,0.9)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
               <span>{language === 'ar' ? 'انقر على أي عضية ثلاثية الأبعاد لفحصها' : 'Click on any 3D organelle to inspect biological role'}</span>
-              <span className="text-sky-400 font-mono">Zoom / Orbit Enabled</span>
+              <span className="font-mono" style={{ color: '#818cf8' }}>Zoom / Orbit Enabled</span>
             </div>
           </div>
 
           <div className="space-y-6">
             <div className="sci-card p-6 space-y-4">
-              <div className="border-b border-sky-500/15 pb-3">
+              <div className="pb-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
                 <span className="text-xs text-slate-400 block uppercase tracking-wider">
                   {language === 'ar' ? 'فحص العضية الخلوية' : 'Inspected Organelle'}
                 </span>
@@ -646,17 +649,17 @@ export const BiologyLab: React.FC = () => {
                 <span className="text-xs font-semibold text-slate-400 block mb-1">
                   {language === 'ar' ? 'الوظيفة الحيوية والتخليق' : 'Biological Function'}
                 </span>
-                <p className="text-xs text-slate-200 leading-relaxed bg-slate-950/70 p-3.5 rounded-xl border border-sky-500/15">
+                <p className="text-xs text-slate-200 leading-relaxed p-3.5 rounded-xl" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.07)' }}>
                   {language === 'ar' ? selectedOrganelle.roleAr : selectedOrganelle.roleEn}
                 </p>
               </div>
 
               <div className="space-y-2 text-xs">
-                <div className="flex justify-between py-1.5 border-b border-sky-500/10">
+                <div className="flex justify-between py-1.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                   <span className="text-slate-400">{language === 'ar' ? 'الأبعاد المجهرية' : 'Scale'}</span>
-                  <span className="font-mono text-sky-400">{selectedOrganelle.sizeNm}</span>
+                  <span className="font-mono" style={{ color: '#818cf8' }}>{selectedOrganelle.sizeNm}</span>
                 </div>
-                <div className="flex justify-between py-1.5 border-b border-sky-500/10">
+                <div className="flex justify-between py-1.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                   <span className="text-slate-400">{language === 'ar' ? 'التواجد' : 'Distribution'}</span>
                   <span className="text-white">
                     {selectedOrganelle.foundIn === 'both' 

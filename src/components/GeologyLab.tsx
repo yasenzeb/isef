@@ -90,13 +90,12 @@ export const GeologyLab: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 space-y-6">
       
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-sky-500/15 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
         <div>
           <span className="sci-badge">
             {language === 'ar' ? 'الجيوديناميكا وعلم الزلازل وهندسة المنشآت' : 'Geodynamics, Seismology & Earthquake Engineering'}
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">{t.geology.title}</h1>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-1" style={{ fontFamily: 'var(--font-display)' }}>{t.geology.title}</h1>
           <p className="text-xs text-slate-400 mt-0.5">{t.geology.subtitle}</p>
         </div>
 
@@ -105,16 +104,18 @@ export const GeologyLab: React.FC = () => {
           <button
             onClick={() => setActiveModule('layers')}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              activeModule === 'layers' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              activeModule === 'layers' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
+            style={activeModule === 'layers' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
           >
             {t.geology.earthLayers}
           </button>
           <button
             onClick={() => setActiveModule('tsunami')}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 ${
-              activeModule === 'tsunami' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              activeModule === 'tsunami' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
+            style={activeModule === 'tsunami' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
           >
             <Waves className="w-3.5 h-3.5" />
             <span>{language === 'ar' ? 'موجات تسونامي' : 'Tsunami Simulator'}</span>
@@ -122,8 +123,9 @@ export const GeologyLab: React.FC = () => {
           <button
             onClick={() => setActiveModule('earthquake')}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 ${
-              activeModule === 'earthquake' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              activeModule === 'earthquake' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
+            style={activeModule === 'earthquake' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
           >
             <AlertTriangle className="w-3.5 h-3.5" />
             <span>{language === 'ar' ? 'الموجات الزلزالية' : 'Seismic Waves'}</span>
@@ -131,8 +133,9 @@ export const GeologyLab: React.FC = () => {
           <button
             onClick={() => setActiveModule('structural')}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 ${
-              activeModule === 'structural' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              activeModule === 'structural' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
+            style={activeModule === 'structural' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
           >
             <Building2 className="w-3.5 h-3.5" />
             <span>{language === 'ar' ? 'مقاومة الزلازل للمنشآت' : 'Seismic Base Isolation'}</span>
