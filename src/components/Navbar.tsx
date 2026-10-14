@@ -3,16 +3,16 @@ import { useLanguage } from '../context/LanguageContext';
 import { Language } from '../i18n/translations';
 import {
   Atom,
-  Dna,
-  Activity,
-  Globe2,
-  Presentation,
-  Home,
   Languages,
   MapPin,
   Menu,
   X,
-  Sparkles
+  Radio,
+  Sliders,
+  BarChart3,
+  Layers,
+  Sparkles,
+  Volume2
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -26,13 +26,13 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   const navItems = [
-    { id: 'home', label: t.nav.home, icon: Home },
-    { id: 'anatomy', label: t.nav.anatomy, icon: Activity },
-    { id: 'physics', label: t.nav.physics, icon: Atom },
-    { id: 'chemistry', label: t.nav.chemistry, icon: Atom },
-    { id: 'biology', label: t.nav.biology, icon: Dna },
-    { id: 'geology', label: t.nav.geology, icon: Globe2 },
-    { id: 'classroom', label: t.nav.classroom, icon: Presentation, highlight: true },
+    { id: 'home', num: '01', label: t.nav.home },
+    { id: 'anatomy', num: '02', label: t.nav.anatomy },
+    { id: 'physics', num: '03', label: t.nav.physics },
+    { id: 'chemistry', num: '04', label: t.nav.chemistry },
+    { id: 'biology', num: '05', label: t.nav.biology },
+    { id: 'geology', num: '06', label: t.nav.geology },
+    { id: 'classroom', num: '07', label: t.nav.classroom, highlight: true },
   ];
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -40,93 +40,97 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
   };
 
   return (
-    <header className="sticky top-0 z-50" style={{ background: 'rgba(5,10,26,0.85)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <header className="sticky top-0 z-50 bg-[#000000]/95 backdrop-blur-md border-b border-white/[0.08]">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14">
 
-          {/* Logo */}
+          {/* Left: Brand Identity in Industrial Silver */}
           <div
             className="flex items-center gap-3 cursor-pointer group"
             onClick={() => setCurrentTab('home')}
           >
-            <div style={{ background: 'linear-gradient(135deg, #6366f1, #06b6d4)', borderRadius: '14px', padding: '2px', boxShadow: '0 0 16px rgba(99,102,241,0.4)' }}>
-              <div style={{ background: '#050a1a', borderRadius: '12px', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Atom className="w-5 h-5" style={{ color: '#818cf8' }} />
-              </div>
+            <div className="w-8 h-8 rounded-lg bg-[#0e1015] border border-white/20 flex items-center justify-center text-white shadow-inner group-hover:border-white/40 transition-colors">
+              <Atom className="w-4 h-4 text-white" />
             </div>
             <div className={isRTL ? 'text-right' : ''}>
-              <span className="text-base font-bold tracking-tight block" style={{ fontFamily: 'var(--font-display)', background: 'linear-gradient(135deg, #fff, #818cf8, #22d3ee)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-                {t.appName}
-              </span>
-              <span className="text-[10px] font-semibold uppercase tracking-widest block" style={{ color: '#475569' }}>
-                {t.hero.badge}
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-extrabold tracking-wider text-white font-mono uppercase">
+                  {t.appName}
+                </span>
+                <span className="hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-mono rounded bg-white/[0.06] border border-white/10 text-slate-400">
+                  v3.0
+                </span>
+              </div>
+              <span className="text-[10px] text-slate-500 font-mono tracking-tight block -mt-0.5">
+                SCIENTIFIC SIMULATION MATRIX
               </span>
             </div>
           </div>
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-1">
+          {/* Center: Industrial Pill Navigation (Identical to 01 Overview, 02 Input Data, 03 Analytics in reference) */}
+          <nav className="hidden lg:flex items-center p-1 bg-[#090a0d] border border-white/[0.08] rounded-full gap-0.5">
             {navItems.map((item) => {
-              const Icon = item.icon;
               const isActive = currentTab === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => setCurrentTab(item.id)}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
-                    isActive
-                      ? item.highlight
-                        ? 'text-white'
-                        : 'text-white'
-                      : item.highlight
-                        ? 'text-amber-400 hover:bg-white/5'
-                        : 'text-slate-400 hover:text-white hover:bg-white/5'
-                  }`}
-                  style={isActive && !item.highlight ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)', boxShadow: '0 0 12px rgba(99,102,241,0.4)' } : isActive && item.highlight ? { background: 'linear-gradient(135deg, #f59e0b, #f43f5e)', boxShadow: '0 0 12px rgba(245,158,11,0.4)' } : undefined}
+                  className={`tech-tab-pill ${isActive ? 'active' : ''}`}
                 >
-                  <Icon className="w-3.5 h-3.5" />
+                  <span className={`font-mono text-[10px] opacity-60 ${isActive ? 'text-black' : 'text-slate-400'}`}>
+                    {item.num}
+                  </span>
                   <span>{item.label}</span>
                 </button>
               );
             })}
           </nav>
 
-          {/* Right Controls */}
-          <div className="hidden sm:flex items-center gap-2">
+          {/* Right: Telemetry & Controls (Source, Sync Status, Location, Lang) */}
+          <div className="hidden sm:flex items-center gap-3">
+            {/* Status Telemetry (like SOURCE: Simulator | SYNC: BOT SYNC | NOMINAL in reference) */}
+            <div className="hidden xl:flex items-center gap-2 font-mono text-[11px] text-slate-400 border-r border-white/10 pr-3">
+              <span className="text-slate-500 text-[10px]">ENGINE:</span>
+              <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                HIL PHYS-60FPS
+              </span>
+            </div>
+
+            {/* Region / Governorate */}
             <button
               onClick={onOpenLocationModal}
               title={t.egyptLocation.title}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors hover:bg-white/5"
-              style={{ color: '#34d399', border: '1px solid rgba(16,185,129,0.2)' }}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono text-slate-300 bg-white/[0.03] border border-white/[0.08] hover:border-white/25 transition-all"
             >
-              <MapPin className="w-3.5 h-3.5" />
-              <span className="hidden lg:inline">{t.egyptLocation.detectedGovernorate}</span>
+              <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="hidden md:inline">{t.egyptLocation.detectedGovernorate}</span>
             </button>
 
-            <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-              <Languages className="w-4 h-4" style={{ color: '#818cf8' }} />
+            {/* Language Selector */}
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/[0.03] border border-white/[0.08]">
+              <Languages className="w-3.5 h-3.5 text-slate-400" />
               <select
                 value={language}
                 onChange={handleLanguageChange}
                 aria-label="Select language"
-                style={{ background: 'transparent', border: 'none', color: '#e2e8f0', fontSize: '0.75rem', fontWeight: '600', cursor: 'pointer', outline: 'none' }}
+                className="bg-transparent text-slate-200 text-xs font-mono font-medium outline-none cursor-pointer border-none p-0"
               >
-                <option value="en" style={{ background: '#111827' }}>English (EN)</option>
-                <option value="ar" style={{ background: '#111827' }}>العربية (AR)</option>
-                <option value="fr" style={{ background: '#111827' }}>Français (FR)</option>
-                <option value="de" style={{ background: '#111827' }}>Deutsch (DE)</option>
+                <option value="en" className="bg-[#090a0d] text-white">EN</option>
+                <option value="ar" className="bg-[#090a0d] text-white">العربية</option>
+                <option value="fr" className="bg-[#090a0d] text-white">FR</option>
+                <option value="de" className="bg-[#090a0d] text-white">DE</option>
               </select>
             </div>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex md:hidden items-center gap-2">
+          {/* Mobile Menu Toggle */}
+          <div className="flex lg:hidden items-center gap-2">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl transition-colors hover:bg-white/5"
-              style={{ color: '#94a3b8' }}
+              className="p-1.5 rounded-md bg-white/[0.05] border border-white/10 text-slate-300 hover:text-white"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
@@ -134,44 +138,47 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden px-4 pt-2 pb-4 space-y-1.5" style={{ background: 'rgba(5,10,26,0.98)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = currentTab === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => { setCurrentTab(item.id); setMobileMenuOpen(false); }}
-                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all"
-                style={isActive ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)', color: 'white' } : { color: '#94a3b8' }}
-              >
-                <Icon className="w-5 h-5" style={{ color: isActive ? 'white' : '#818cf8' }} />
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
+        <div className="lg:hidden px-4 py-4 space-y-2 bg-[#050608] border-b border-white/10">
+          <div className="grid grid-cols-2 gap-1.5 pb-3">
+            {navItems.map((item) => {
+              const isActive = currentTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => { setCurrentTab(item.id); setMobileMenuOpen(false); }}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-mono text-left ${
+                    isActive ? 'bg-white text-black font-bold' : 'bg-white/[0.03] text-slate-300 border border-white/[0.07]'
+                  }`}
+                >
+                  <span className="opacity-50 text-[10px]">{item.num}</span>
+                  <span className="truncate">{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
 
-          <div className="pt-3 flex items-center justify-between" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+          <div className="flex items-center justify-between pt-3 border-t border-white/[0.08] text-xs">
             <button
               onClick={() => { onOpenLocationModal(); setMobileMenuOpen(false); }}
-              className="flex items-center gap-2 text-xs py-1"
-              style={{ color: '#34d399' }}
+              className="flex items-center gap-1.5 text-emerald-400 font-mono"
             >
-              <MapPin className="w-4 h-4" />
+              <MapPin className="w-3.5 h-3.5" />
               <span>{t.egyptLocation.title}</span>
             </button>
-            <select
-              value={language}
-              onChange={handleLanguageChange}
-              aria-label="Select mobile language"
-              className="text-xs rounded-lg px-2.5 py-1.5"
-              style={{ background: '#111827', color: 'white', border: '1px solid rgba(99,102,241,0.3)' }}
-            >
-              <option value="en">English (EN)</option>
-              <option value="ar">العربية (AR)</option>
-              <option value="fr">Français (FR)</option>
-              <option value="de">Deutsch (DE)</option>
-            </select>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-mono text-slate-500">LANG:</span>
+              <select
+                value={language}
+                onChange={handleLanguageChange}
+                aria-label="Select mobile language"
+                className="bg-[#101217] text-white border border-white/20 rounded px-2 py-1 text-xs font-mono"
+              >
+                <option value="en">English (EN)</option>
+                <option value="ar">العربية (AR)</option>
+                <option value="fr">Français (FR)</option>
+                <option value="de">Deutsch (DE)</option>
+              </select>
+            </div>
           </div>
         </div>
       )}

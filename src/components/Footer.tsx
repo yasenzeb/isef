@@ -6,21 +6,21 @@ export const Footer: React.FC = () => {
   const { t, isRTL } = useLanguage();
 
   return (
-    <footer className="border-t border-white/5 bg-[var(--bg-void)]/80 backdrop-blur-xl text-slate-400 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    <footer className="border-t border-white/[0.08] bg-[#000000] text-slate-400 py-10">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 border-b border-white/5 pb-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 border-b border-white/[0.06] pb-6">
           <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25">
-              <Atom className="w-5 h-5" />
+            <div className="w-8 h-8 rounded-lg bg-[#0e1015] border border-white/20 flex items-center justify-center text-white">
+              <Atom className="w-4 h-4 text-white" />
             </div>
             <div className={isRTL ? "mr-3 text-right" : ""}>
-              <span className="text-base font-bold text-white block" style={{ fontFamily: 'var(--font-display)' }}>{t.appName}</span>
-              <span className="text-xs text-slate-500 block">{t.appTagline}</span>
+              <span className="text-sm font-mono font-bold text-white block uppercase tracking-wider">{t.appName}</span>
+              <span className="text-xs text-slate-500 font-mono block">{t.appTagline}</span>
             </div>
           </div>
 
-          <div className="text-xs text-slate-400 max-w-md">
+          <div className="text-xs text-slate-400 font-mono max-w-md">
             {t.footer.tagline}
           </div>
         </div>
@@ -28,21 +28,21 @@ export const Footer: React.FC = () => {
         {/* Attribution & Legal Notice */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-400">
           <div>
-            <h4 className="font-semibold text-slate-300 mb-1 flex items-center space-x-1.5">
-              <FileText className="w-4 h-4 text-sky-400" />
+            <h4 className="font-mono font-semibold text-slate-300 mb-1 flex items-center space-x-1.5">
+              <FileText className="w-3.5 h-3.5 text-white" />
               <span>Scientific Data & Assets Attribution</span>
             </h4>
             <p className="leading-relaxed text-slate-400">
               {t.footer.credits}
             </p>
-            <p className="mt-1 text-[11px] text-slate-500">
+            <p className="mt-1 text-[11px] font-mono text-slate-500">
               {t.footer.sources}
             </p>
           </div>
 
           <div>
-            <h4 className="font-semibold text-slate-300 mb-1 flex items-center space-x-1.5">
-              <Shield className="w-4 h-4 text-emerald-400" />
+            <h4 className="font-mono font-semibold text-slate-300 mb-1 flex items-center space-x-1.5">
+              <Shield className="w-3.5 h-3.5 text-emerald-400" />
               <span>Licensing & Pedagogical Scope</span>
             </h4>
             <p className="leading-relaxed text-slate-400">
@@ -51,8 +51,8 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="text-center text-[11px] text-slate-600 pt-4 border-t border-slate-900">
-          SciNexa &bull; Interactive Science Learning Platform &amp; Virtual Laboratory
+        <div className="text-center font-mono text-[11px] text-slate-600 pt-3 border-t border-white/[0.04]">
+          SciNexa &bull; Interactive Science Learning Platform &amp; Virtual Laboratory Matrix v3.0
         </div>
 
       </div>

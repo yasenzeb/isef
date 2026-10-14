@@ -21,7 +21,7 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-black text-slate-100 flex flex-col justify-between selection:bg-white selection:text-black">
       <div>
         <Navbar
           currentTab={currentTab}

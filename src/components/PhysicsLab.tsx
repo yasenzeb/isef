@@ -50,11 +50,11 @@ function WaveSimulator({ language }: { language: string }) {
       ctx.clearRect(0, 0, W, H);
 
       // Background
-      ctx.fillStyle = 'rgba(3,7,18,0.95)';
+      ctx.fillStyle = '#050608';
       ctx.fillRect(0, 0, W, H);
 
       // Grid lines
-      ctx.strokeStyle = 'rgba(99,102,241,0.08)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
       ctx.lineWidth = 1;
       for (let x = 0; x <= W; x += 40) {
         ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
@@ -64,7 +64,7 @@ function WaveSimulator({ language }: { language: string }) {
       }
 
       // Center line
-      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
       ctx.lineWidth = 1;
       ctx.setLineDash([4, 4]);
       ctx.beginPath(); ctx.moveTo(0, cx); ctx.lineTo(W, cx); ctx.stroke();
@@ -76,10 +76,10 @@ function WaveSimulator({ language }: { language: string }) {
       const ω = 2 * Math.PI * frequency;
 
       // Glow pass
-      ctx.shadowColor = '#6366f1';
-      ctx.shadowBlur = 16;
-      ctx.strokeStyle = 'rgba(99,102,241,0.5)';
-      ctx.lineWidth = 4;
+      ctx.shadowColor = '#ffffff';
+      ctx.shadowBlur = 10;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.lineWidth = 3;
       ctx.beginPath();
       for (let px = 0; px <= W; px += 1) {
         const y = cx + amplitude * Math.sin(k * px - ω * t);
@@ -89,8 +89,8 @@ function WaveSimulator({ language }: { language: string }) {
 
       // Main wave
       ctx.shadowBlur = 0;
-      ctx.strokeStyle = '#818cf8';
-      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
       ctx.beginPath();
       for (let px = 0; px <= W; px += 1) {
         const y = cx + amplitude * Math.sin(k * px - ω * t);
@@ -99,8 +99,8 @@ function WaveSimulator({ language }: { language: string }) {
       ctx.stroke();
 
       // Wave crest markers
-      ctx.fillStyle = '#22d3ee';
-      ctx.shadowColor = '#22d3ee';
+      ctx.fillStyle = '#10b981';
+      ctx.shadowColor = '#10b981';
       ctx.shadowBlur = 8;
       const phaseOffset = (ω * t) % (2 * Math.PI);
       for (let px = 0; px <= W; px += 2) {
@@ -115,7 +115,7 @@ function WaveSimulator({ language }: { language: string }) {
       ctx.shadowBlur = 0;
 
       // Labels
-      ctx.fillStyle = 'rgba(99,102,241,0.7)';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
       ctx.font = '11px JetBrains Mono, monospace';
       ctx.fillText(`λ = ${(λ).toFixed(0)} px`, 12, 20);
       ctx.fillText(`v = ${waveSpeed.toFixed(0)} px/s`, 12, 36);
@@ -332,7 +332,7 @@ export const PhysicsLab: React.FC = () => {
     }
   };
 
-  const activeTabStyle = { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' };
+  const activeTabStyle = { background: '#ffffff', color: '#000000', fontWeight: 'bold' };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 space-y-6">
