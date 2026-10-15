@@ -46,7 +46,7 @@ interface SystemLayerConfig {
 
 const SYSTEM_LAYERS: SystemLayerConfig[] = [
   { id: 'skeletal', labelEn: 'Skeletal System (Bones)', labelAr: 'الهيكل العظمي', file: 'skeletal.glb', color: 0xe2ded4, icon: Bone, defaultVisible: true },
-  { id: 'muscular', labelEn: 'Full Muscular Anatomy', labelAr: 'التشريح العضلي الكامل', file: 'male_full_body_ecorche.glb', color: 0xbe123c, icon: Activity, defaultVisible: false },
+  { id: 'muscular', labelEn: 'Full Muscular Anatomy', labelAr: 'التشريح العضلي المفصل', file: 'muscular.glb', color: 0xbe123c, icon: Activity, defaultVisible: false },
   { id: 'cardiovascular', labelEn: 'Cardiovascular & Heart', labelAr: 'الجهاز الدوري والقلب', file: 'cardiovascular.glb', color: 0xdc2626, icon: Heart, defaultVisible: false },
   { id: 'nervous', labelEn: 'Nervous System & Brain', labelAr: 'الجهاز العصبي والدماغ', file: 'nervous.glb', color: 0xeab308, icon: Brain, defaultVisible: false },
   { id: 'visceral', labelEn: 'Visceral Organs', labelAr: 'الأعضاء الحشوية', file: 'visceral.glb', color: 0xbf6b59, icon: Layers, defaultVisible: false },
@@ -686,6 +686,12 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
   const systemGroups = useRef<Map<AnatomySystemId, THREE.Group>>(new Map());
   const selectedMeshRef = useRef<THREE.Mesh | null>(null);
   const originalMaterials = useRef<Map<THREE.Mesh, THREE.Material>>(new Map());
+  const highlightMaterialRef = useRef<THREE.MeshStandardMaterial>(new THREE.MeshStandardMaterial({
+    color: 0x38bdf8,
+    emissive: 0x0284c7,
+    emissiveIntensity: 0.5,
+    roughness: 0.25,
+  }));
   const dracoLoaderRef = useRef<DRACOLoader | null>(null);
 
   // Search & Inspection state
@@ -772,6 +778,10 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
             } else if (name.includes('vein') || name.includes('cava')) {
               matColor = 0x2563eb; // Deoxygenated venous royal blue
               roughness = 0.3;
+            } else if (sysConfig.id === 'muscular') {
+              matColor = 0xa82020; // Deep realistic striated muscle red
+              roughness = 0.45;
+              metalness = 0.02;
             } else if (sysConfig.id === 'visceral') {
               matColor = 0xbf6b59; // Natural visceral warm organ tone instead of purple
               roughness = 0.4;
@@ -783,13 +793,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
 
             // For models with embedded textures or ecorche, preserve their original texture map and appearance
             const origMat = (Array.isArray(mesh.material) ? mesh.material[0] : mesh.material) as THREE.MeshStandardMaterial;
-            if (sysConfig.file === 'male_full_body_ecorche.glb' && origMat) {
-              const texturedMat = origMat.clone();
-              texturedMat.roughness = 0.42;
-              texturedMat.metalness = 0.04;
-              mesh.material = texturedMat;
-              originalMaterials.current.set(mesh, texturedMat.clone());
-            } else if (origMat && origMat.map) {
+            if (origMat && origMat.map) {
               const texturedMat = origMat.clone();
               texturedMat.roughness = roughness;
               texturedMat.metalness = metalness;
@@ -814,16 +818,8 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           }
         });
 
-        // Anatomical alignment
-        if (sysConfig.file === 'male_full_body_ecorche.glb') {
-          // Precise anatomical alignment to human skeleton
-          const ecorcheScale = 0.0255;
-          root.scale.set(ecorcheScale, ecorcheScale, ecorcheScale);
-          // Soles at Y = 0.04m matching Calcaneus foot plane, torso depth aligned at Z = 0.015m
-          root.position.set(0, 1.140, 0.015);
-        } else {
-          root.position.set(0, 0, 0);
-        }
+        // Anatomical alignment (all Z-Anatomy models share origin and scale)
+        root.position.set(0, 0, 0);
 
         root.visible = visibleSystemsRef.current[sysConfig.id] ?? !!sysConfig.defaultVisible;
 
@@ -922,12 +918,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         }
 
         selectedMeshRef.current = hit;
-        hit.material = new THREE.MeshStandardMaterial({
-          color: 0x38bdf8,
-          emissive: 0x0284c7,
-          emissiveIntensity: 0.5,
-          roughness: 0.25,
-        });
+        hit.material = highlightMaterialRef.current;
 
         // Clean raw mesh name and remove glTF artifacts like Frontal_bone_1, Mesh_002, etc.
         let rawClean = hit.name
@@ -945,8 +936,8 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
 
         let resolvedArabicName: string | null = null;
 
-        // Specific anatomical resolution for full body ecorche muscles matching Excel tables
-        if (sysId === 'muscular' || sysConfig.file === 'male_full_body_ecorche.glb' || cleanName.includes('Object') || cleanName.includes('Decimation') || cleanName.includes('SubTool') || cleanName.includes('mesh')) {
+        // Fallback spatial resolution ONLY for models with generic placeholder names (Object_3, SubTool, Decimation)
+        if (cleanName.includes('Object') || cleanName.includes('Decimation') || cleanName.includes('SubTool') || cleanName.startsWith('mesh_')) {
           const muscleRes = resolveMuscleFromHit(hit, intersects[0].point);
           cleanName = muscleRes.en;
           resolvedArabicName = muscleRes.ar;
@@ -1313,7 +1304,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
 
         {/* Specimen Inspector & Scientific Pioneer (1 column) */}
         <div className="space-y-6">
-          <div className="sci-card p-5 space-y-4">
+          <div className="sci-card p-5 space-y-4 relative" style={{ transform: 'translateZ(0)', isolation: 'isolate', backfaceVisibility: 'hidden' }}>
             <div className="border-b border-sky-500/15 pb-3">
               <span className="text-xs text-slate-400 block uppercase tracking-wider">
                 {language === 'ar' ? 'فحص البنية التشريحية' : 'Specimen Inspection'}
@@ -1396,9 +1387,9 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
                 return (
                   <button
                     onClick={() => setActiveSketchfabModel(matchedModel)}
-                    className="w-full mt-2 py-2.5 px-4 rounded-xl bg-white text-black hover:bg-slate-200 font-mono font-bold text-xs flex items-center justify-center space-x-2 shadow-lg transition-all cursor-pointer"
+                    className="w-full mt-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-indigo-500 via-cyan-500 to-emerald-500 hover:opacity-95 text-white font-bold text-xs flex items-center justify-center space-x-2 shadow-lg shadow-cyan-500/20 transition-all cursor-pointer"
                   >
-                    <Sparkles className="w-4 h-4 text-emerald-600" />
+                    <Sparkles className="w-4 h-4 text-white" />
                     <span>
                       {language === 'ar' 
                         ? `فتح تشريح ${selectedStructure?.nameAr || 'البنية'} مجسماً 3D` 
@@ -1412,9 +1403,9 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
               return (
                 <button
                   onClick={toggleIsolate}
-                  className="w-full mt-2 py-2 px-3 rounded-xl bg-white/[0.05] border border-white/20 hover:border-white/50 text-white font-mono font-semibold text-xs flex items-center justify-center space-x-2 transition-all cursor-pointer"
+                  className="w-full mt-2 py-2 px-3 rounded-xl bg-slate-900 border border-slate-700 hover:border-cyan-500 text-slate-100 font-semibold text-xs flex items-center justify-center space-x-2 transition-all cursor-pointer"
                 >
-                  <Eye className="w-3.5 h-3.5 text-emerald-400" />
+                  <Eye className="w-3.5 h-3.5 text-cyan-400" />
                   <span>
                     {isIsolated 
                       ? (language === 'ar' ? 'إلغاء العزل وإظهار الكل' : 'Exit Focus / Show All')

@@ -1,0 +1,374 @@
+العربية,English,Français,Deutsch,الوظيفة (عربي),Function (EN),Fonction (FR),Funktion (DE)
+الرئة اليسرى,Left lung,Poumon gauche,Linke Lunge,تبادل الأكسجين وثاني أكسيد الكربون,Exchanges oxygen and carbon dioxide,Échange l'oxygène et le dioxyde de carbone,Tauscht Sauerstoff und Kohlendioxid aus
+الرئة اليمنى,Right lung,Poumon droit,Rechte Lunge,تبادل الأكسجين وثاني أكسيد الكربون,Exchanges oxygen and carbon dioxide,Échange l'oxygène et le dioxyde de carbone,Tauscht Sauerstoff und Kohlendioxid aus
+القصبة الهوائية,Trachea,Trachée,Luftröhre,نقل الهواء إلى الرئتين,Transports air to the lungs,Transporte l'air aux poumons,Transportiert Luft zu den Lungen
+الكبد,Liver,Foie,Leber,تنقية الدم وإنتاج الصفراء,Filters blood and produces bile,Filtre le sang et produit la bile,Filtert Blut und produziert Galle
+المعدة,Stomach,Estomac,Magen,هضم الطعام,Digests food,Digère les aliments,Verdaut Nahrung
+الأمعاء الدقيقة,Small intestine,Intestin grêle,Dünndarm,امتصاص الغذاء,Absorbs nutrients,Absorbe les nutriments,Nimmt Nährstoffe auf
+الأمعاء الغليظة,Large intestine,Gros intestin,Dickdarm,امتصاص الماء وتكوين البراز,Absorbs water and forms feces,Absorbe l'eau et forme les selles,Nimmt Wasser auf und bildet Stuhl
+المثانة,Bladder,Vessie,Blase,تخزين البول,Stores urine,Stocke l'urine,Speichert Urin
+العربية,English,Français,Deutsch,الوظيفة (عربي),Function (EN),Fonction (FR),Funktion (DE)
+العضلة القصية الترقوية الحلمية _L,Sternocleidomastoid _L,Sterno-cléido-mastoïdien _L,Kopfnicker _L,تدوير الرقبة وثنيها,Rotates and flexes the neck,Fait tourner et fléchit le cou,Dreht und beugt den Hals
+العضلة القصية الترقوية الحلمية _R,Sternocleidomastoid _R,Sterno-cléido-mastoïdien _R,Kopfnicker _R,تدوير الرقبة وثنيها,Rotates and flexes the neck,Fait tourner et fléchit le cou,Dreht und beugt den Hals
+العضلة الدالية _L,Deltoid _L,Deltoïde _L,Deltamuskel _L,رفع الذراع للجانب,Raises the arm to the side,Élève le bras sur le côté,Hebt den Arm zur Seite
+العضلة الدالية _R,Deltoid _R,Deltoïde _R,Deltamuskel _R,رفع الذراع للجانب,Raises the arm to the side,Élève le bras sur le côté,Hebt den Arm zur Seite
+العضلة الصدرية الكبرى _L,Pectoralis major _L,Grand pectoral _L,Großer Brustmuskel _L,تحريك الذراع للأمام والداخل,Moves the arm forward and inward,Déplace le bras vers l'avant et l'intérieur,Bewegt den Arm nach vorne und innen
+العضلة الصدرية الكبرى _R,Pectoralis major _R,Grand pectoral _R,Großer Brustmuskel _R,تحريك الذراع للأمام والداخل,Moves the arm forward and inward,Déplace le bras vers l'avant et l'intérieur,Bewegt den Arm nach vorne und innen
+العضلة ذات الرأسين العضدية _L,Biceps brachii _L,Biceps brachial _L,Zweiköpfiger Armmuskel _L,ثني الكوع,Flexes the elbow,Fléchit le coude,Beugt den Ellenbogen
+العضلة ذات الرأسين العضدية _R,Biceps brachii _R,Biceps brachial _R,Zweiköpfiger Armmuskel _R,ثني الكوع,Flexes the elbow,Fléchit le coude,Beugt den Ellenbogen
+العضلة المستقيمة البطنية,Rectus abdominis,Droit de l'abdomen,Gerader Bauchmuskel,ثني الجذع وتثبيت الحوض,Flexes the trunk and stabilizes the pelvis,Fléchit le tronc et stabilise le bassin,Beugt den Rumpf und stabilisiert das Becken
+العضلة المائلة الخارجية _L,External oblique _L,Oblique externe _L,Äußerer schräger Bauchmuskel _L,تدوير الجذع,Rotates the trunk,Fait tourner le tronc,Dreht den Rumpf
+العضلة المائلة الخارجية _R,External oblique _R,Oblique externe _R,Äußerer schräger Bauchmuskel _R,تدوير الجذع,Rotates the trunk,Fait tourner le tronc,Dreht den Rumpf
+العضلة العضدية الكعبرية _L,Brachioradialis _L,Brachio-radial _L,Oberarmspeichenmuskel _L,ثني الكوع,Flexes the elbow,Fléchit le coude,Beugt den Ellenbogen
+العضلة العضدية الكعبرية _R,Brachioradialis _R,Brachio-radial _R,Oberarmspeichenmuskel _R,ثني الكوع,Flexes the elbow,Fléchit le coude,Beugt den Ellenbogen
+العضلة القابضة للرسغ الكعبرية _L,Flexor carpi radialis _L,Fléchisseur radial du carpe _L,Radiale Handbeuger _L,ثني الرسغ,Flexes the wrist,Fléchit le poignet,Beugt das Handgelenk
+العضلة القابضة للرسغ الكعبرية _R,Flexor carpi radialis _R,Fléchisseur radial du carpe _R,Radiale Handbeuger _R,ثني الرسغ,Flexes the wrist,Fléchit le poignet,Beugt das Handgelenk
+العضلة المستقيمة الفخذية _L,Rectus femoris _L,Droit fémoral _L,Gerader Schenkelmuskel _L,فرد الركبة,Extends the knee,Étend le genou,Streckt das Knie
+العضلة المستقيمة الفخذية _R,Rectus femoris _R,Droit fémoral _R,Gerader Schenkelmuskel _R,فرد الركبة,Extends the knee,Étend le genou,Streckt das Knie
+العضلة المتسعة الوحشية _L,Vastus lateralis _L,Vaste latéral _L,Äußerer Schenkelmuskel _L,فرد الركبة,Extends the knee,Étend le genou,Streckt das Knie
+العضلة المتسعة الوحشية _R,Vastus lateralis _R,Vaste latéral _R,Äußerer Schenkelmuskel _R,فرد الركبة,Extends the knee,Étend le genou,Streckt das Knie
+العضلة المتسعة الإنسية _L,Vastus medialis _L,Vaste médial _L,Innerer Schenkelmuskel _L,فرد الركبة,Extends the knee,Étend le genou,Streckt das Knie
+العضلة المتسعة الإنسية _R,Vastus medialis _R,Vaste médial _R,Innerer Schenkelmuskel _R,فرد الركبة,Extends the knee,Étend le genou,Streckt das Knie
+العضلة الخياطية _L,Sartorius _L,Sartorius _L,Schneidermuskel _L,ثني الفخذ والركبة,Flexes the hip and knee,Fléchit la hanche et le genou,Beugt Hüfte und Knie
+العضلة الخياطية _R,Sartorius _R,Sartorius _R,Schneidermuskel _R,ثني الفخذ والركبة,Flexes the hip and knee,Fléchit la hanche et le genou,Beugt Hüfte und Knie
+العضلة الظنبوبية الأمامية _L,Tibialis anterior _L,Tibial antérieur _L,Vorderer Schienbeinmuskel _L,رفع القدم للأعلى,Lifts the foot upward,Élève le pied,Hebt den Fuß
+العضلة الظنبوبية الأمامية _R,Tibialis anterior _R,Tibial antérieur _R,Vorderer Schienbeinmuskel _R,رفع القدم للأعلى,Lifts the foot upward,Élève le pied,Hebt den Fuß
+العضلة الشظوية الطويلة _L,Fibularis longus _L,Long fibulaire _L,Langer Wadenbeinmuskel _L,تثبيت قوس القدم,Stabilizes the foot arch,Stabilise la voûte plantaire,Stabilisiert das Fußgewölbe
+العضلة الشظوية الطويلة _R,Fibularis longus _R,Long fibulaire _R,Langer Wadenbeinmuskel _R,تثبيت قوس القدم,Stabilizes the foot arch,Stabilise la voûte plantaire,Stabilisiert das Fußgewölbe
+العضلة الشظوية القصيرة _L,Fibularis brevis _L,Court fibulaire _L,Kurzer Wadenbeinmuskel _L,ثني القدم للخارج,Everts the foot,Éverse le pied,Evertiert den Fuß
+العضلة الشظوية القصيرة _R,Fibularis brevis _R,Court fibulaire _R,Kurzer Wadenbeinmuskel _R,ثني القدم للخارج,Everts the foot,Éverse le pied,Evertiert den Fuß
+العضلة الباسطة الطويلة للأصابع _L,Extensor digitorum longus _L,Long extenseur des orteils _L,Langer Zehenstrecker _L,فرد أصابع القدم,Extends the toes,Étend les orteils,Streckt die Zehen
+العضلة الباسطة الطويلة للأصابع _R,Extensor digitorum longus _R,Long extenseur des orteils _R,Langer Zehenstrecker _R,فرد أصابع القدم,Extends the toes,Étend les orteils,Streckt die Zehen
+العضلة الباسطة الطويلة لإبهام القدم _L,Extensor hallucis longus _L,Long extenseur de l'hallux _L,Langer Großzehenstrecker _L,فرد إبهام القدم,Extends the big toe,Étend le gros orteil,Streckt die Großzehe
+العضلة الباسطة الطويلة لإبهام القدم _R,Extensor hallucis longus _R,Long extenseur de l'hallux _R,Langer Großzehenstrecker _R,فرد إبهام القدم,Extends the big toe,Étend le gros orteil,Streckt die Großzehe
+العربية,English,Français,Deutsch,الوظيفة (عربي),Function (EN),Fonction (FR),Funktion (DE)
+العضلة الصدغية,Temporalis,Temporal,Schläfenmuskel,رفع الفك السفلي,Elevates the mandible,Élève la mandibule,Hebt den Unterkiefer
+العضلة الماضغة,Masseter,Masséter,Kaumuskel,مضغ الطعام,Chews food,Mâche les aliments,Kaut Nahrung
+العضلة ثلاثية الرؤوس العضدية,Triceps brachii,Triceps brachial,Dreiköpfiger Armmuskel,فرد الكوع,Extends the elbow,Étend le coude,Streckt den Ellenbogen
+العضلة الظهرية العريضة,Latissimus dorsi,Grand dorsal,Breiter Rückenmuskel,تحريك الذراع للخلف والأسفل,Moves the arm backward and downward,Déplace le bras vers l'arrière et le bas,Bewegt den Arm nach hinten und unten
+العضلة الألوية الكبرى,Gluteus maximus,Grand fessier,Großer Gesäßmuskel,فرد الفخذ ورفع الجسم,Extends the hip and raises the body,Étend la hanche et élève le corps,Streckt die Hüfte und hebt den Körper
+العضلة ذات الرأسين الفخذية,Biceps femoris,Biceps fémoral,Zweiköpfiger Schenkelmuskel,ثني الركبة,Flexes the knee,Fléchit le genou,Beugt das Knie
+العضلة نصف الوترية,Semitendinosus,Semi-tendineux,Halbsehnenmuskel,ثني الركبة,Flexes the knee,Fléchit le genou,Beugt das Knie
+العضلة نصف الغشائية,Semimembranosus,Semi-membraneux,Halbmembranmuskel,ثني الركبة,Flexes the knee,Fléchit le genou,Beugt das Knie
+العضلة التوأمية,Gastrocnemius,Gastrocnémien,Zwillingsmuskel,دفع القدم للأسفل,Pushes the foot downward,Pousse le pied vers le bas,Drückt den Fuß nach unten
+العضلة النعلية,Soleus,Soléaire,Schollenmuskel,دعم الوقوف,Supports standing,Soutient la station debout,Unterstützt das Stehen
+العضلة القابضة الطويلة لإبهام القدم,Flexor hallucis longus,Long fléchisseur de l'hallux,Langer Großzehenbeuger,ثني إبهام القدم,Flexes the big toe,Fléchit le gros orteil,Beugt die Großzehe
+العضلة القابضة الطويلة للأصابع,Flexor digitorum longus,Long fléchisseur des orteils,Langer Zehenbeuger,ثني أصابع القدم,Flexes the toes,Fléchit les orteils,Beugt die Zehen
+العربية,English,Français,Deutsch,الوظيفة (عربي),Function (EN),Fonction (FR),Funktion (DE)
+العضلة القذالية الجبهية,Occipitofrontalis,Occipito-frontal,Hinterhaupt-Stirnmuskel,تحريك فروة الرأس,Moves the scalp,Déplace le cuir chevelu,Bewegt die Kopfhaut
+العضلة الشبه المنحرفة _L,Trapezius _L,Trapèze _L,Trapezmuskel _L,رفع الكتف,Elevates the shoulder,Élève l'épaule,Hebt die Schulter
+العضلة الشبه المنحرفة _R,Trapezius _R,Trapèze _R,Trapezmuskel _R,رفع الكتف,Elevates the shoulder,Élève l'épaule,Hebt die Schulter
+العضلة تحت الشوكة _L,Infraspinatus _L,Sous-épineux _L,Untergrätenmuskel _L,تدوير الذراع للخارج,Rotates the arm outward,Fait tourner le bras vers l'extérieur,Dreht den Arm nach außen
+العضلة تحت الشوكة _R,Infraspinatus _R,Sous-épineux _R,Untergrätenmuskel _R,تدوير الذراع للخارج,Rotates the arm outward,Fait tourner le bras vers l'extérieur,Dreht den Arm nach außen
+العضلة المدورة الكبرى _L,Teres major _L,Grand rond _L,Großer Rundmuskel _L,تقريب الذراع وتدويرها للداخل,Adducts and internally rotates the arm,Adduit et fait tourner le bras vers l'intérieur,Führt den Arm heran und dreht ihn nach innen
+العضلة المدورة الكبرى _R,Teres major _R,Grand rond _R,Großer Rundmuskel _R,تقريب الذراع وتدويرها للداخل,Adducts and internally rotates the arm,Adduit et fait tourner le bras vers l'intérieur,Führt den Arm heran und dreht ihn nach innen
+العضلة المدورة الصغرى _L,Teres minor _L,Petit rond _L,Kleiner Rundmuskel _L,تدوير الذراع للخارج,Rotates the arm outward,Fait tourner le bras vers l'extérieur,Dreht den Arm nach außen
+العضلة المدورة الصغرى _R,Teres minor _R,Petit rond _R,Kleiner Rundmuskel _R,تدوير الذراع للخارج,Rotates the arm outward,Fait tourner le bras vers l'extérieur,Dreht den Arm nach außen
+العضلة الألوية المتوسطة _L,Gluteus medius _L,Moyen fessier _L,Mittlerer Gesäßmuskel _L,تثبيت الحوض,Stabilizes the pelvis,Stabilise le bassin,Stabilisiert das Becken
+العضلة الألوية المتوسطة _R,Gluteus medius _R,Moyen fessier _R,Mittlerer Gesäßmuskel _R,تثبيت الحوض,Stabilizes the pelvis,Stabilise le bassin,Stabilisiert das Becken
+العضلة الأخمصية _L,Plantaris _L,Plantaire _L,Plantarmuskel _L,مساعدة ثني الركبة والكاحل,Assists in flexing the knee and ankle,Aide à fléchir le genou et la cheville,Unterstützt die Beugung von Knie und Knöchel
+العضلة الأخمصية _R,Plantaris _R,Plantaire _R,Plantarmuskel _R,مساعدة ثني الركبة والكاحل,Assists in flexing the knee and ankle,Aide à fléchir le genou et la cheville,Unterstützt die Beugung von Knie und Knöchel
+العربية,English,Français,Deutsch,الوظيفة (عربي),Function (EN),Fonction (FR),Funktion (DE)
+القلب,Heart,Cœur,Herz,ضخ الدم لكل الجسم,Pumps blood throughout the body,Pompe le sang dans tout le corps,Pumpt Blut durch den Körper
+الأبهر,Aorta,Aorte,Aorta,نقل الدم من القلب للجسم,Carries blood from the heart to the body,Transporte le sang du cœur au corps,Transportiert Blut vom Herzen zum Körper
+الشريان الرئوي,Pulmonary artery,Artère pulmonaire,Lungenarterie,نقل الدم إلى الرئتين,Carries blood to the lungs,Transporte le sang aux poumons,Transportiert Blut zur Lunge
+الوريد الرئوي,Pulmonary vein,Veine pulmonaire,Lungenvene,إعادة الدم من الرئتين للقلب,Returns blood from the lungs to the heart,Ramène le sang des poumons au cœur,Führt Blut von der Lunge zum Herzen zurück
+الوريد الأجوف العلوي,Superior vena cava,Veine cave supérieure,Obere Hohlvene,إعادة الدم من الجزء العلوي,Returns blood from the upper body,Ramène le sang du haut du corps,Führt Blut aus dem Oberkörper zurück
+الوريد الأجوف السفلي,Inferior vena cava,Veine cave inférieure,Untere Hohlvene,إعادة الدم من الجزء السفلي,Returns blood from the lower body,Ramène le sang du bas du corps,Führt Blut aus dem Unterkörper zurück
+الشريان السباتي _L,Carotid artery _L,Artère carotide _L,Halsschlagader _L,تغذية الرأس والرقبة الأيسر,Supplies the left head and neck,Approvisionne la tête et le cou gauches,Versorgt Kopf und Hals links
+الشريان السباتي _R,Carotid artery _R,Artère carotide _R,Halsschlagader _R,تغذية الرأس والرقبة الأيمن,Supplies the right head and neck,Approvisionne la tête et le cou droits,Versorgt Kopf und Hals rechts
+الشريان تحت الترقوة _L,Subclavian artery _L,Artère subclavière _L,Unterschlüsselbeinarterie _L,تغذية الذراع والكتف الأيسر,Supplies the left arm and shoulder,Approvisionne le bras et l'épaule gauches,Versorgt Arm und Schulter links
+الشريان تحت الترقوة _R,Subclavian artery _R,Artère subclavière _R,Unterschlüsselbeinarterie _R,تغذية الذراع والكتف الأيمن,Supplies the right arm and shoulder,Approvisionne le bras et l'épaule droits,Versorgt Arm und Schulter rechts
+الشريان العضدي _L,Brachial artery _L,Artère brachiale _L,Oberarmarterie _L,تغذية الذراع الأيسر,Supplies the left arm,Approvisionne le bras gauche,Versorgt den linken Arm
+الشريان العضدي _R,Brachial artery _R,Artère brachiale _R,Oberarmarterie _R,تغذية الذراع الأيمن,Supplies the right arm,Approvisionne le bras droit,Versorgt den rechten Arm
+الشريان الكعبري _L,Radial artery _L,Artère radiale _L,Speichenarterie _L,تغذية الساعد واليد اليسرى,Supplies the left forearm and hand,Approvisionne l'avant-bras et la main gauches,Versorgt Unterarm und Hand links
+الشريان الكعبري _R,Radial artery _R,Artère radiale _R,Speichenarterie _R,تغذية الساعد واليد اليمنى,Supplies the right forearm and hand,Approvisionne l'avant-bras et la main droits,Versorgt Unterarm und Hand rechts
+الشريان الزندي _L,Ulnar artery _L,Artère ulnaire _L,Ellenarterie _L,تغذية الساعد واليد اليسرى,Supplies the left forearm and hand,Approvisionne l'avant-bras et la main gauches,Versorgt Unterarm und Hand links
+الشريان الزندي _R,Ulnar artery _R,Artère ulnaire _R,Ellenarterie _R,تغذية الساعد واليد اليمنى,Supplies the right forearm and hand,Approvisionne l'avant-bras et la main droits,Versorgt Unterarm und Hand rechts
+الشريان الفخذي _L,Femoral artery _L,Artère fémorale _L,Oberschenkelarterie _L,تغذية الفخذ الأيسر,Supplies the left thigh,Approvisionne la cuisse gauche,Versorgt den linken Oberschenkel
+الشريان الفخذي _R,Femoral artery _R,Artère fémorale _R,Oberschenkelarterie _R,تغذية الفخذ الأيمن,Supplies the right thigh,Approvisionne la cuisse droite,Versorgt den rechten Oberschenkel
+الشريان المأبضي _L,Popliteal artery _L,Artère poplitée _L,Kniekehlenarterie _L,تغذية الركبة والساق اليسرى,Supplies the left knee and leg,Approvisionne le genou et la jambe gauches,Versorgt Knie und Bein links
+الشريان المأبضي _R,Popliteal artery _R,Artère poplitée _R,Kniekehlenarterie _R,تغذية الركبة والساق اليمنى,Supplies the right knee and leg,Approvisionne le genou et la jambe droits,Versorgt Knie und Bein rechts
+الشريان الظنبوبي الأمامي _L,Anterior tibial artery _L,Artère tibiale antérieure _L,Vordere Schienbeinarterie _L,تغذية الساق الأمامية اليسرى,Supplies the left anterior leg,Approvisionne la jambe antérieure gauche,Versorgt den vorderen Unterschenkel links
+الشريان الظنبوبي الأمامي _R,Anterior tibial artery _R,Artère tibiale antérieure _R,Vordere Schienbeinarterie _R,تغذية الساق الأمامية اليمنى,Supplies the right anterior leg,Approvisionne la jambe antérieure droite,Versorgt den vorderen Unterschenkel rechts
+الشريان الظنبوبي الخلفي _L,Posterior tibial artery _L,Artère tibiale postérieure _L,Hintere Schienbeinarterie _L,تغذية الساق الخلفية اليسرى,Supplies the left posterior leg,Approvisionne la jambe postérieure gauche,Versorgt den hinteren Unterschenkel links
+الشريان الظنبوبي الخلفي _R,Posterior tibial artery _R,Artère tibiale postérieure _R,Hintere Schienbeinarterie _R,تغذية الساق الخلفية اليمنى,Supplies the right posterior leg,Approvisionne la jambe postérieure droite,Versorgt den hinteren Unterschenkel rechts
+الوريد الفخذي _L,Femoral vein _L,Veine fémorale _L,Oberschenkelvene _L,إعادة الدم من الساق اليسرى,Returns blood from the left leg,Ramène le sang de la jambe gauche,Führt Blut aus dem linken Bein zurück
+الوريد الفخذي _R,Femoral vein _R,Veine fémorale _R,Oberschenkelvene _R,إعادة الدم من الساق اليمنى,Returns blood from the right leg,Ramène le sang de la jambe droite,Führt Blut aus dem rechten Bein zurück
+الوريد المأبضي _L,Popliteal vein _L,Veine poplitée _L,Kniekehlenvene _L,إعادة الدم من الركبة اليسرى,Returns blood from the left knee,Ramène le sang du genou gauche,Führt Blut aus dem linken Knie zurück
+الوريد المأبضي _R,Popliteal vein _R,Veine poplitée _R,Kniekehlenvene _R,إعادة الدم من الركبة اليمنى,Returns blood from the right knee,Ramène le sang du genou droit,Führt Blut aus dem rechten Knie zurück
+الوريد الصافن الكبير _L,Great saphenous vein _L,Grande veine saphène _L,Große Rosenvene _L,إعادة الدم السطحي من الساق اليسرى,Returns superficial blood from the left leg,Ramène le sang superficiel de la jambe gauche,Führt oberflächliches Blut aus dem linken Bein zurück
+الوريد الصافن الكبير _R,Great saphenous vein _R,Grande veine saphène _R,Große Rosenvene _R,إعادة الدم السطحي من الساق اليمنى,Returns superficial blood from the right leg,Ramène le sang superficiel de la jambe droite,Führt oberflächliches Blut aus dem rechten Bein zurück
+العربية,English,Français,Deutsch,الوظيفة (عربي),Function (EN),Fonction (FR),Funktion (DE)
+الدماغ,Brain,Cerveau,Gehirn,مركز التحكم بالجسم والتفكير,Control center of the body and thought,Centre de contrôle du corps et de la pensée,Kontrollzentrum des Körpers und Denkens
+المخ,Cerebrum,Cerveau,Großhirn,التفكير والذاكرة والحركة الإرادية,"Thinking, memory and voluntary movement","Pensée, mémoire et mouvement volontaire","Denken, Gedächtnis und willkürliche Bewegung"
+المخيخ,Cerebellum,Cervelet,Kleinhirn,التوازن والتنسيق الحركي,Balance and motor coordination,Équilibre et coordination motrice,Gleichgewicht und motorische Koordination
+جذع الدماغ,Brainstem,Tronc cérébral,Hirnstamm,تنظيم التنفس ونبض القلب,Regulates breathing and heart rate,Régule la respiration et le rythme cardiaque,Reguliert Atmung und Herzfrequenz
+النخاع الشوكي,Spinal cord,Moelle épinière,Rückenmark,نقل الإشارات العصبية بين الدماغ والجسم,Transmits nerve signals between brain and body,Transmet les signaux nerveux entre le cerveau et le corps,Überträgt Nervensignale zwischen Gehirn und Körper
+العصب الوركي _L,Sciatic nerve _L,Nerf sciatique _L,Ischiasnerv _L,تغذية الساق والفخذ الأيسر,Supplies the left leg and thigh,Approvisionne la jambe et la cuisse gauches,Versorgt Bein und Oberschenkel links
+العصب الوركي _R,Sciatic nerve _R,Nerf sciatique _R,Ischiasnerv _R,تغذية الساق والفخذ الأيمن,Supplies the right leg and thigh,Approvisionne la jambe et la cuisse droites,Versorgt Bein und Oberschenkel rechts
+الضفيرة العضدية _L,Brachial plexus _L,Plexus brachial _L,Armgeflecht _L,تغذية الذراع الأيسر,Supplies the left arm,Approvisionne le bras gauche,Versorgt den linken Arm
+الضفيرة العضدية _R,Brachial plexus _R,Plexus brachial _R,Armgeflecht _R,تغذية الذراع الأيمن,Supplies the right arm,Approvisionne le bras droit,Versorgt den rechten Arm
+الضفيرة القطنية العجزية _L,Lumbosacral plexus _L,Plexus lombo-sacré _L,Lenden-Kreuz-Geflecht _L,تغذية الحوض والساق اليسرى,Supplies the left pelvis and leg,Approvisionne le bassin et la jambe gauches,Versorgt Becken und Bein links
+الضفيرة القطنية العجزية _R,Lumbosacral plexus _R,Plexus lombo-sacré _R,Lenden-Kreuz-Geflecht _R,تغذية الحوض والساق اليمنى,Supplies the right pelvis and leg,Approvisionne le bassin et la jambe droites,Versorgt Becken und Bein rechts
+العصب الفخذي _L,Femoral nerve _L,Nerf fémoral _L,Oberschenkelnerv _L,تغذية الفخذ الأيسر,Supplies the left thigh,Approvisionne la cuisse gauche,Versorgt den linken Oberschenkel
+العصب الفخذي _R,Femoral nerve _R,Nerf fémoral _R,Oberschenkelnerv _R,تغذية الفخذ الأيمن,Supplies the right thigh,Approvisionne la cuisse droite,Versorgt den rechten Oberschenkel
+العصب الظنبوبي _L,Tibial nerve _L,Nerf tibial _L,Schienbeinnerv _L,تغذية الساق والقدم اليسرى,Supplies the left leg and foot,Approvisionne la jambe et le pied gauches,Versorgt Bein und Fuß links
+العصب الظنبوبي _R,Tibial nerve _R,Nerf tibial _R,Schienbeinnerv _R,تغذية الساق والقدم اليمنى,Supplies the right leg and foot,Approvisionne la jambe et le pied droites,Versorgt Bein und Fuß rechts
+العصب الشظوي _L,Fibular nerve _L,Nerf fibulaire _L,Wadenbeinnerv _L,تغذية الساق الأمامية اليسرى,Supplies the left anterior leg,Approvisionne la jambe antérieure gauche,Versorgt den vorderen Unterschenkel links
+العصب الشظوي _R,Fibular nerve _R,Nerf fibulaire _R,Wadenbeinnerv _R,تغذية الساق الأمامية اليمنى,Supplies the right anterior leg,Approvisionne la jambe antérieure droite,Versorgt den vorderen Unterschenkel rechts
+العربية,English,Français,Deutsch,الوظيفة (عربي),Function (EN),Fonction (FR),Funktion (DE)
+المفصل الصدغي الفكي _L,Temporomandibular joint _L,Articulation temporo-mandibulaire _L,Kiefergelenk _L,فتح الفم والمضغ الأيسر,Opens the mouth and chews on the left,Ouvre la bouche et mâche à gauche,Öffnet den Mund und kaut links
+المفصل الصدغي الفكي _R,Temporomandibular joint _R,Articulation temporo-mandibulaire _R,Kiefergelenk _R,فتح الفم والمضغ الأيمن,Opens the mouth and chews on the right,Ouvre la bouche et mâche à droite,Öffnet den Mund und kaut rechts
+الغضروف المفصلي للفك _L,Articular disc of TMJ _L,Disque articulaire de l'ATM _L,Gelenkscheibe des Kiefergelenks _L,امتصاص الصدمات في الفك الأيسر,Absorbs shocks in the left jaw,Absorbe les chocs dans la mâchoire gauche,Dämpft Stöße im linken Kiefer
+الغضروف المفصلي للفك _R,Articular disc of TMJ _R,Disque articulaire de l'ATM _R,Gelenkscheibe des Kiefergelenks _R,امتصاص الصدمات في الفك الأيمن,Absorbs shocks in the right jaw,Absorbe les chocs dans la mâchoire droite,Dämpft Stöße im rechten Kiefer
+المفصل الفهقي القذالي,Atlanto-occipital joint,Articulation atlanto-occipitale,Atlantookzipitalgelenk,إيماء الرأس,Nodding of the head,Hochement de la tête,Nicken des Kopfes
+المفصل الفهقي المحوري,Atlantoaxial joint,Articulation atlanto-axoïdienne,Atlantoaxialgelenk,دوران الرأس,Rotation of the head,Rotation de la tête,Drehung des Kopfes
+الأقراص بين الفقرات,Intervertebral discs,Disques intervertébraux,Bandscheiben,امتصاص الصدمات بين الفقرات,Absorb shocks between vertebrae,Absorbent les chocs entre les vertèbres,Dämpfen Stöße zwischen den Wirbeln
+الحلقة الليفية,Annulus fibrosus,Anneau fibreux,Faserring,احتواء النواة اللبية وتثبيت القرص,Contains the nucleus pulposus and stabilizes the disc,Contient le nucleus pulposus et stabilise le disque,Enthält den Nucleus pulposus und stabilisiert die Bandscheibe
+النواة اللبية,Nucleus pulposus,Noyau pulpeux,Gallertkern,امتصاص الضغط وتوزيعه,Absorbs and distributes pressure,Absorbe et répartit la pression,Absorbiert und verteilt den Druck
+المفاصل الوجيهية العنقية _L,Cervical facet joints _L,Articulations facettaires cervicales _L,Zervikale Facettengelenke _L,توجيه حركة الفقرات العنقية اليسرى,Guide left cervical movement,Guident le mouvement cervical gauche,Führen die linke Halsbewegung
+المفاصل الوجيهية العنقية _R,Cervical facet joints _R,Articulations facettaires cervicales _R,Zervikale Facettengelenke _R,توجيه حركة الفقرات العنقية اليمنى,Guide right cervical movement,Guident le mouvement cervical droit,Führen die rechte Halsbewegung
+المفاصل الوجيهية الصدرية _L,Thoracic facet joints _L,Articulations facettaires thoraciques _L,Thorakale Facettengelenke _L,توجيه حركة الفقرات الصدرية اليسرى,Guide left thoracic movement,Guident le mouvement thoracique gauche,Führen die linke Brustbewegung
+المفاصل الوجيهية الصدرية _R,Thoracic facet joints _R,Articulations facettaires thoraciques _R,Thorakale Facettengelenke _R,توجيه حركة الفقرات الصدرية اليمنى,Guide right thoracic movement,Guident le mouvement thoracique droit,Führen die rechte Brustbewegung
+المفاصل الوجيهية القطنية _L,Lumbar facet joints _L,Articulations facettaires lombaires _L,Lumbale Facettengelenke _L,توجيه حركة الفقرات القطنية اليسرى,Guide left lumbar movement,Guident le mouvement lombaire gauche,Führen die linke Lendenbewegung
+المفاصل الوجيهية القطنية _R,Lumbar facet joints _R,Articulations facettaires lombaires _R,Lumbale Facettengelenke _R,توجيه حركة الفقرات القطنية اليمنى,Guide right lumbar movement,Guident le mouvement lombaire droit,Führen die rechte Lendenbewegung
+المفصل العجزي الحرقفي _L,Sacroiliac joint _L,Articulation sacro-iliaque _L,Kreuz-Darmbein-Gelenk _L,نقل الوزن للحوض الأيسر,Transfers weight to the left pelvis,Transfère le poids au bassin gauche,Überträgt das Gewicht auf das linke Becken
+المفصل العجزي الحرقفي _R,Sacroiliac joint _R,Articulation sacro-iliaque _R,Kreuz-Darmbein-Gelenk _R,نقل الوزن للحوض الأيمن,Transfers weight to the right pelvis,Transfère le poids au bassin droit,Überträgt das Gewicht auf das rechte Becken
+الارتفاق العاني,Pubic symphysis,Symphyse pubienne,Schambeinfuge,ربط نصفي الحوض والمرونة أثناء الولادة,Connects pelvic halves and allows flexibility during childbirth,Relie les moitiés du bassin et permet la flexibilité lors de l'accouchement,Verbindet die Beckenhälften und ermöglicht Flexibilität bei der Geburt
+الغضروف الليفي للارتفاق العاني,Pubic symphysis fibrocartilage,Fibrocartilage de la symphyse pubienne,Faserknorpel der Schambeinfuge,امتصاص الضغط بين نصفي الحوض,Absorbs pressure between pelvic halves,Absorbe la pression entre les moitiés du bassin,Dämpft den Druck بين نصفي الحوض
+المفصل الوركي _L,Hip joint _L,Articulation de la hanche _L,Hüftgelenk _L,حركة الفخذ الأيسر وحمل الوزن,Left thigh movement and weight-bearing,Mouvement de la cuisse gauche et support du poids,Bewegung des linken Oberschenkels und Gewichtstragung
+المفصل الوركي _R,Hip joint _R,Articulation de la hanche _R,Hüftgelenk _R,حركة الفخذ الأيمن وحمل الوزن,Right thigh movement and weight-bearing,Mouvement de la cuisse droite et support du poids,Bewegung des rechten Oberschenkels und Gewichtstragung
+الشفة الحقية _L,Acetabular labrum _L,Labrum acétabulaire _L,Hüftpfannenlippe _L,تعميق تجويف الحوض الأيسر,Deepens the left hip socket,Approfondit la cavité de la hanche gauche,Vertieft die linke Hüftpfanne
+الشفة الحقية _R,Acetabular labrum _R,Labrum acétabulaire _R,Hüftpfannenlippe _R,تعميق تجويف الحوض الأيمن,Deepens the right hip socket,Approfondit la cavité de la hanche droite,Vertieft die rechte Hüftpfanne
+الغضروف المفصلي للورك _L,Hip articular cartilage _L,Cartilage articulaire de la hanche _L,Hüftgelenkknorpel _L,تقليل الاحتكاك في الورك الأيسر,Reduces friction in the left hip,Réduit la friction dans la hanche gauche,Reduziert die Reibung in der linken Hüfte
+الغضروف المفصلي للورك _R,Hip articular cartilage _R,Cartilage articulaire de la hanche _R,Hüftgelenkknorpel _R,تقليل الاحتكاك في الورك الأيمن,Reduces friction in the right hip,Réduit la friction dans la hanche droite,Reduziert die Reibung in der rechten Hüfte
+المفصل الركبي _L,Knee joint _L,Articulation du genou _L,Kniegelenk _L,ثني وفرد الساق اليسرى,Flexes and extends the left leg,Fléchit et étend la jambe gauche,Beugt und streckt das linke Bein
+المفصل الركبي _R,Knee joint _R,Articulation du genou _R,Kniegelenk _R,ثني وفرد الساق اليمنى,Flexes and extends the right leg,Fléchit et étend la jambe droite,Beugt und streckt das rechte Bein
+الغضروف الهلالي الإنسي _L,Medial meniscus _L,Ménisque médial _L,Innenmeniskus _L,امتصاص الصدمات في الركبة اليسرى,Absorbs shocks in the left knee,Absorbe les chocs dans le genou gauche,Dämpft Stöße im linken Knie
+الغضروف الهلالي الإنسي _R,Medial meniscus _R,Ménisque médial _R,Innenmeniskus _R,امتصاص الصدمات في الركبة اليمنى,Absorbs shocks in the right knee,Absorbe les chocs dans le genou droit,Dämpft Stöße im rechten Knie
+الغضروف الهلالي الوحشي _L,Lateral meniscus _L,Ménisque latéral _L,Außenmeniskus _L,امتصاص الصدمات في الركبة اليسرى,Absorbs shocks in the left knee,Absorbe les chocs dans le genou gauche,Dämpft Stöße im linken Knie
+الغضروف الهلالي الوحشي _R,Lateral meniscus _R,Ménisque latéral _R,Außenmeniskus _R,امتصاص الصدمات في الركبة اليمنى,Absorbs shocks in the right knee,Absorbe les chocs dans le genou droit,Dämpft Stöße im rechten Knie
+الغضروف المفصلي للركبة _L,Knee articular cartilage _L,Cartilage articulaire du genou _L,Kniegelenkknorpel _L,تقليل الاحتكاك في الركبة اليسرى,Reduces friction in the left knee,Réduit la friction dans le genou gauche,Reduziert die Reibung im linken Knie
+الغضروف المفصلي للركبة _R,Knee articular cartilage _R,Cartilage articulaire du genou _R,Kniegelenkknorpel _R,تقليل الاحتكاك في الركبة اليمنى,Reduces friction in the right knee,Réduit la friction dans le genou droit,Reduziert die Reibung im rechten Knie
+مفصل الكاحل _L,Ankle joint _L,Articulation de la cheville _L,Sprunggelenk _L,ثني وفرد القدم اليسرى,Flexes and extends the left foot,Fléchit et étend le pied gauche,Beugt und streckt den linken Fuß
+مفصل الكاحل _R,Ankle joint _R,Articulation de la cheville _R,Sprunggelenk _R,ثني وفرد القدم اليمنى,Flexes and extends the right foot,Fléchit et étend le pied droit,Beugt und streckt den rechten Fuß
+الغضروف المفصلي للكاحل _L,Ankle articular cartilage _L,Cartilage articulaire de la cheville _L,Sprunggelenkknorpel _L,تقليل الاحتكاك في الكاحل الأيسر,Reduces friction in the left ankle,Réduit la friction dans la cheville gauche,Reduziert die Reibung im linken Knöchel
+الغضروف المفصلي للكاحل _R,Ankle articular cartilage _R,Cartilage articulaire de la cheville _R,Sprunggelenkknorpel _R,تقليل الاحتكاك في الكاحل الأيمن,Reduces friction in the right ankle,Réduit la friction dans la cheville droite,Reduziert die Reibung im rechten Knöchel
+الغضروف الزجاجي,Hyaline cartilage,Cartilage hyalin,Hyaliner Knorpel,تغطية أسطح المفاصل وتقليل الاحتكاك,Covers joint surfaces and reduces friction,Recouvre les surfaces articulaires et réduit la friction,Bedeckt Gelenkflächen und reduziert Reibung
+الغضروف الليفي,Fibrocartilage,Fibrocartilage,Faserknorpel,امتصاص الصدمات في الأقراص والارتفاقات,Absorbs shocks in discs and symphyses,Absorbe les chocs dans les disques et les symphyses,Dämpft Stöße in Bandscheiben und Symphysen
+الغضروف المرن,Elastic cartilage,Cartilage élastique,Elastischer Knorpel,توفير المرونة في الأذن والأنف,Provides flexibility in the ear and nose,Offre une flexibilité dans l'oreille et le nez,Bietet Flexibilität in Ohr und Nase
+العربية,English,Français,Deutsch,الوظيفة (عربي),Function (EN),Fonction (FR),Funktion (DE)
+العضلة الصدغية _L,Temporalis _L,Temporal _L,Schläfenmuskel _L,رفع الفك السفلي,Elevates the mandible,Élève la mandibule,Hebt den Unterkiefer
+العضلة الصدغية _R,Temporalis _R,Temporal _R,Schläfenmuskel _R,رفع الفك السفلي,Elevates the mandible,Élève la mandibule,Hebt den Unterkiefer
+العضلة الماضغة _L,Masseter _L,Masséter _L,Kaumuskel _L,مضغ الطعام,Chews food,Mâche les aliments,Kaut Nahrung
+العضلة الماضغة _R,Masseter _R,Masséter _R,Kaumuskel _R,مضغ الطعام,Chews food,Mâche les aliments,Kaut Nahrung
+العضلة الظهرية العريضة _L,Latissimus dorsi _L,Grand dorsal _L,Breiter Rückenmuskel _L,تحريك الذراع للخلف والأسفل,Moves the arm backward and downward,Déplace le bras vers l'arrière et le bas,Bewegt den Arm nach hinten und unten
+العضلة الظهرية العريضة _R,Latissimus dorsi _R,Grand dorsal _R,Breiter Rückenmuskel _R,تحريك الذراع للخلف والأسفل,Moves the arm backward and downward,Déplace le bras vers l'arrière et le bas,Bewegt den Arm nach hinten und unten
+العضلة ثلاثية الرؤوس العضدية _L,Triceps brachii _L,Triceps brachial _L,Dreiköpfiger Armmuskel _L,فرد الكوع,Extends the elbow,Étend le coude,Streckt den Ellenbogen
+العضلة ثلاثية الرؤوس العضدية _R,Triceps brachii _R,Triceps brachial _R,Dreiköpfiger Armmuskel _R,فرد الكوع,Extends the elbow,Étend le coude,Streckt den Ellenbogen
+العضلة الألوية الكبرى _L,Gluteus maximus _L,Grand fessier _L,Großer Gesäßmuskel _L,فرد الفخذ ورفع الجسم,Extends the hip and raises the body,Étend la hanche et élève le corps,Streckt die Hüfte und hebt den Körper
+العضلة الألوية الكبرى _R,Gluteus maximus _R,Grand fessier _R,Großer Gesäßmuskel _R,فرد الفخذ ورفع الجسم,Extends the hip and raises the body,Étend la hanche et élève le corps,Streckt die Hüfte und hebt den Körper
+العضلة ذات الرأسين الفخذية _L,Biceps femoris _L,Biceps fémoral _L,Zweiköpfiger Schenkelmuskel _L,ثني الركبة,Flexes the knee,Fléchit le genou,Beugt das Knie
+العضلة ذات الرأسين الفخذية _R,Biceps femoris _R,Biceps fémoral _R,Zweiköpfiger Schenkelmuskel _R,ثني الركبة,Flexes the knee,Fléchit le genou,Beugt das Knie
+العضلة نصف الوترية _L,Semitendinosus _L,Semi-tendineux _L,Halbsehnenmuskel _L,ثني الركبة,Flexes the knee,Fléchit le genou,Beugt das Knie
+العضلة نصف الوترية _R,Semitendinosus _R,Semi-tendineux _R,Halbsehnenmuskel _R,ثني الركبة,Flexes the knee,Fléchit le genou,Beugt das Knie
+العضلة نصف الغشائية _L,Semimembranosus _L,Semi-membraneux _L,Halbmembranmuskel _L,ثني الركبة,Flexes the knee,Fléchit le genou,Beugt das Knie
+العضلة نصف الغشائية _R,Semimembranosus _R,Semi-membraneux _R,Halbmembranmuskel _R,ثني الركبة,Flexes the knee,Fléchit le genou,Beugt das Knie
+العضلة التوأمية _L,Gastrocnemius _L,Gastrocnémien _L,Zwillingsmuskel _L,دفع القدم للأسفل,Pushes the foot downward,Pousse le pied vers le bas,Drückt den Fuß nach unten
+العضلة التوأمية _R,Gastrocnemius _R,Gastrocnémien _R,Zwillingsmuskel _R,دفع القدم للأسفل,Pushes the foot downward,Pousse le pied vers le bas,Drückt den Fuß nach unten
+العضلة النعلية _L,Soleus _L,Soléaire _L,Schollenmuskel _L,دعم الوقوف,Supports standing,Soutient la station debout,Unterstützt das Stehen
+العضلة النعلية _R,Soleus _R,Soléaire _R,Schollenmuskel _R,دعم الوقوف,Supports standing,Soutient la station debout,Unterstützt das Stehen
+العضلة القابضة الطويلة للأصابع _L,Flexor digitorum longus _L,Long fléchisseur des orteils _L,Langer Zehenbeuger _L,ثني أصابع القدم,Flexes the toes,Fléchit les orteils,Beugt die Zehen
+العضلة القابضة الطويلة للأصابع _R,Flexor digitorum longus _R,Long fléchisseur des orteils _R,Langer Zehenbeuger _R,ثني أصابع القدم,Flexes the toes,Fléchit les orteils,Beugt die Zehen
+العضلة القابضة الطويلة لإبهام القدم _L,Flexor hallucis longus _L,Long fléchisseur de l'hallux _L,Langer Großzehenbeuger _L,ثني إبهام القدم,Flexes the big toe,Fléchit le gros orteil,Beugt die Großzehe
+العضلة القابضة الطويلة لإبهام القدم _R,Flexor hallucis longus _R,Long fléchisseur de l'hallux _R,Langer Großzehenbeuger _R,ثني إبهام القدم,Flexes the big toe,Fléchit le gros orteil,Beugt die Großzehe
+العضلة تحت الكتف _L,Subscapularis _L,Subscapulaire _L,Unterschulterblattmuskel _L,تدوير الذراع للداخل,Rotates the arm inward,Fait tourner le bras vers l'intérieur,Dreht den Arm nach innen
+العضلة تحت الكتف _R,Subscapularis _R,Subscapulaire _R,Unterschulterblattmuskel _R,تدوير الذراع للداخل,Rotates the arm inward,Fait tourner le bras vers l'intérieur,Dreht den Arm nach innen
+العضلة فوق الشوكة _L,Supraspinatus _L,Sus-épineux _L,Obergrätenmuskel _L,بدء رفع الذراع للجانب,Initiates lifting the arm to the side,Initie l'élévation du bras sur le côté,Initiiert das Heben des Arms zur Seite
+العضلة فوق الشوكة _R,Supraspinatus _R,Sus-épineux _R,Obergrätenmuskel _R,بدء رفع الذراع للجانب,Initiates lifting the arm to the side,Initie l'élévation du bras sur le côté,Initiiert das Heben des Arms zur Seite
+العضلة المعينية الكبرى _L,Rhomboid major _L,Grand rhomboïde _L,Großer Rautenmuskel _L,سحب لوح الكتف للداخل,Retracts the scapula,Rétracte l'omoplate,Zieht das Schulterblatt zurück
+العضلة المعينية الكبرى _R,Rhomboid major _R,Grand rhomboïde _R,Großer Rautenmuskel _R,سحب لوح الكتف للداخل,Retracts the scapula,Rétracte l'omoplate,Zieht das Schulterblatt zurück
+العضلة المعينية الصغرى _L,Rhomboid minor _L,Petit rhomboïde _L,Kleiner Rautenmuskel _L,تثبيت لوح الكتف,Stabilizes the scapula,Stabilise l'omoplate,Stabilisiert das Schulterblatt
+العضلة المعينية الصغرى _R,Rhomboid minor _R,Petit rhomboïde _R,Kleiner Rautenmuskel _R,تثبيت لوح الكتف,Stabilizes the scapula,Stabilise l'omoplate,Stabilisiert das Schulterblatt
+العضلة رافعة الكتف _L,Levator scapulae _L,Élévateur de la scapula _L,Schulterblattheber _L,رفع لوح الكتف,Elevates the scapula,Élève l'omoplate,Hebt das Schulterblatt
+العضلة رافعة الكتف _R,Levator scapulae _R,Élévateur de la scapula _R,Schulterblattheber _R,رفع لوح الكتف,Elevates the scapula,Élève l'omoplate,Hebt das Schulterblatt
+العضلة الصدرية الصغرى _L,Pectoralis minor _L,Petit pectoral _L,Kleiner Brustmuskel _L,سحب لوح الكتف للأمام والأسفل,Pulls the scapula forward and down,Tire l'omoplate vers l'avant et le bas,Zieht das Schulterblatt nach vorne und unten
+العضلة الصدرية الصغرى _R,Pectoralis minor _R,Petit pectoral _R,Kleiner Brustmuskel _R,سحب لوح الكتف للأمام والأسفل,Pulls the scapula forward and down,Tire l'omoplate vers l'avant et le bas,Zieht das Schulterblatt nach vorne und unten
+العضلة المنشارية الأمامية _L,Serratus anterior _L,Dentelé antérieur _L,Vorderer Sägemuskel _L,دفع لوح الكتف للأمام,Protracts the scapula,Projette l'omoplate vers l'avant,Schiebt das Schulterblatt nach vorne
+العضلة المنشارية الأمامية _R,Serratus anterior _R,Dentelé antérieur _R,Vorderer Sägemuskel _R,دفع لوح الكتف للأمام,Protracts the scapula,Projette l'omoplate vers l'avant,Schiebt das Schulterblatt nach vorne
+العضلة الغرابية العضدية _L,Coracobrachialis _L,Coraco-brachial _L,Rabenschnabel-Armmuskel _L,رفع الذراع للأمام وتقريبها,Raises and adducts the arm,Élève et adduit le bras,Hebt und führt den Arm heran
+العضلة الغرابية العضدية _R,Coracobrachialis _R,Coraco-brachial _R,Rabenschnabel-Armmuskel _R,رفع الذراع للأمام وتقريبها,Raises and adducts the arm,Élève et adduit le bras,Hebt und führt den Arm heran
+العضلة العضدية _L,Brachialis _L,Brachial antérieur _L,Oberarmmuskel _L,ثني الكوع,Flexes the elbow,Fléchit le coude,Beugt den Ellenbogen
+العضلة العضدية _R,Brachialis _R,Brachial antérieur _R,Oberarmmuskel _R,ثني الكوع,Flexes the elbow,Fléchit le coude,Beugt den Ellenbogen
+العضلة المرفقية _L,Anconeus _L,Anconé _L,Ellenbogenmuskel _L,مساعدة فرد الكوع,Assists in extending the elbow,Aide à étendre le coude,Unterstützt das Strecken des Ellenbogens
+العضلة المرفقية _R,Anconeus _R,Anconé _R,Ellenbogenmuskel _R,مساعدة فرد الكوع,Assists in extending the elbow,Aide à étendre le coude,Unterstützt das Strecken des Ellenbogens
+العضلة الراحية الطويلة _L,Palmaris longus _L,Long palmaire _L,Langer Handflächenmuskel _L,شد اللفافة الراحية وثني الرسغ,Tenses the palmar fascia and flexes the wrist,Tend la fascia palmaire et fléchit le poignet,Spannt die Handfaszie und beugt das Handgelenk
+العضلة الراحية الطويلة _R,Palmaris longus _R,Long palmaire _R,Langer Handflächenmuskel _R,شد اللفافة الراحية وثني الرسغ,Tenses the palmar fascia and flexes the wrist,Tend la fascia palmaire et fléchit le poignet,Spannt die Handfaszie und beugt das Handgelenk
+العضلة القابضة للرسغ الزندية _L,Flexor carpi ulnaris _L,Fléchisseur ulnaire du carpe _L,Ulnaer Handbeuger _L,ثني الرسغ وتقريبه للخارج,Flexes and adducts the wrist,Fléchit et adduit le poignet,Beugt und führt das Handgelenk nach außen
+العضلة القابضة للرسغ الزندية _R,Flexor carpi ulnaris _R,Fléchisseur ulnaire du carpe _R,Ulnaer Handbeuger _R,ثني الرسغ وتقريبه للخارج,Flexes and adducts the wrist,Fléchit et adduit le poignet,Beugt und führt das Handgelenk nach außen
+العضلة السطحية القابضة للأصابع _L,Flexor digitorum superficialis _L,Fléchisseur superficiel des doigts _L,Oberflächlicher Fingerbeuger _L,ثني السلاميات الوسطى,Flexes the middle phalanges,Fléchit les phalanges moyennes,Beugt die mittleren Phalangen
+العضلة السطحية القابضة للأصابع _R,Flexor digitorum superficialis _R,Fléchisseur superficiel des doigts _R,Oberflächlicher Fingerbeuger _R,ثني السلاميات الوسطى,Flexes the middle phalanges,Fléchit les phalanges moyennes,Beugt die mittleren Phalangen
+العضلة العميقة القابضة للأصابع _L,Flexor digitorum profundus _L,Fléchisseur profond des doigts _L,Tiefe Fingerbeuger _L,ثني السلاميات البعيدة,Flexes the distal phalanges,Fléchit les phalanges distales,Beugt die distalen Phalangen
+العضلة العميقة القابضة للأصابع _R,Flexor digitorum profundus _R,Fléchisseur profond des doigts _R,Tiefe Fingerbeuger _R,ثني السلاميات البعيدة,Flexes the distal phalanges,Fléchit les phalanges distales,Beugt die distalen Phalangen
+العضلة الطويلة القابضة للإبهام _L,Flexor pollicis longus _L,Long fléchisseur du pouce _L,Langer Daumenbeuger _L,ثني الإبهام,Flexes the thumb,Fléchit le pouce,Beugt den Daumen
+العضلة الطويلة القابضة للإبهام _R,Flexor pollicis longus _R,Long fléchisseur du pouce _R,Langer Daumenbeuger _R,ثني الإبهام,Flexes the thumb,Fléchit le pouce,Beugt den Daumen
+العضلة الكابة المدورة _L,Pronator teres _L,Pronateur rond _L,Runder Pronator _L,كب الساعد,Pronates the forearm,Pronation de l'avant-bras,Proniert den Unterarm
+العضلة الكابة المدورة _R,Pronator teres _R,Pronateur rond _R,Runder Pronator _R,كب الساعد,Pronates the forearm,Pronation de l'avant-bras,Proniert den Unterarm
+العضلة الكابة المربعة _L,Pronator quadratus _L,Carré pronateur _L,Viereckiger Pronator _L,كب الساعد وتثبيته,Pronates and stabilizes the forearm,Pronation et stabilisation de l'avant-bras,Proniert und stabilisiert den Unterarm
+العضلة الكابة المربعة _R,Pronator quadratus _R,Carré pronateur _R,Viereckiger Pronator _R,كب الساعد وتثبيته,Pronates and stabilizes the forearm,Pronation et stabilisation de l'avant-bras,Proniert und stabilisiert den Unterarm
+العضلة الباسطة للرسغ الكعبرية الطويلة _L,Extensor carpi radialis longus _L,Long extenseur radial du carpe _L,Langer radiale Handstrecker _L,فرد الرسغ وتقريبه للداخل,Extends and abducts the wrist,Étend et abduit le poignet,Streckt und führt das Handgelenk heran
+العضلة الباسطة للرسغ الكعبرية الطويلة _R,Extensor carpi radialis longus _R,Long extenseur radial du carpe _R,Langer radiale Handstrecker _R,فرد الرسغ وتقريبه للداخل,Extends and abducts the wrist,Étend et abduit le poignet,Streckt und führt das Handgelenk heran
+العضلة الباسطة للرسغ الكعبرية القصيرة _L,Extensor carpi radialis brevis _L,Court extenseur radial du carpe _L,Kurzer radiale Handstrecker _L,فرد الرسغ,Extends the wrist,Étend le poignet,Streckt das Handgelenk
+العضلة الباسطة للرسغ الكعبرية القصيرة _R,Extensor carpi radialis brevis _R,Court extenseur radial du carpe _R,Kurzer radiale Handstrecker _R,فرد الرسغ,Extends the wrist,Étend le poignet,Streckt das Handgelenk
+العضلة الباسطة للرسغ الزندية _L,Extensor carpi ulnaris _L,Extenseur ulnaire du carpe _L,Ulnaer Handstrecker _L,فرد الرسغ وتقريبه للخارج,Extends and adducts the wrist,Étend et adduit le poignet,Streckt und führt das Handgelenk nach außen
+العضلة الباسطة للرسغ الزندية _R,Extensor carpi ulnaris _R,Extenseur ulnaire du carpe _R,Ulnaer Handstrecker _R,فرد الرسغ وتقريبه للخارج,Extends and adducts the wrist,Étend et adduit le poignet,Streckt und führt das Handgelenk nach außen
+العضلة الباسطة للأصابع _L,Extensor digitorum _L,Extenseur des doigts _L,Fingerstrecker _L,فرد أصابع اليد,Extends the fingers,Étend les doigts,Streckt die Finger
+العضلة الباسطة للأصابع _R,Extensor digitorum _R,Extenseur des doigts _R,Fingerstrecker _R,فرد أصابع اليد,Extends the fingers,Étend les doigts,Streckt die Finger
+العضلة الباسطة للسبابة _L,Extensor indicis _L,Extenseur de l'index _L,Zeigefingerstrecker _L,فرد السبابة,Extends the index finger,Étend l'index,Streckt den Zeigefinger
+العضلة الباسطة للسبابة _R,Extensor indicis _R,Extenseur de l'index _R,Zeigefingerstrecker _R,فرد السبابة,Extends the index finger,Étend l'index,Streckt den Zeigefinger
+العضلة الباسطة للخنصر _L,Extensor digiti minimi _L,Extenseur du petit doigt _L,Kleinfingerstrecker _L,فرد الخنصر,Extends the little finger,Étend le petit doigt,Streckt den kleinen Finger
+العضلة الباسطة للخنصر _R,Extensor digiti minimi _R,Extenseur du petit doigt _R,Kleinfingerstrecker _R,فرد الخنصر,Extends the little finger,Étend le petit doigt,Streckt den kleinen Finger
+العضلة الباسطة الطويلة للإبهام _L,Extensor pollicis longus _L,Long extenseur du pouce _L,Langer Daumenstrecker _L,فرد الإبهام,Extends the thumb,Étend le pouce,Streckt den Daumen
+العضلة الباسطة الطويلة للإبهام _R,Extensor pollicis longus _R,Long extenseur du pouce _R,Langer Daumenstrecker _R,فرد الإبهام,Extends the thumb,Étend le pouce,Streckt den Daumen
+العضلة الباسطة القصيرة للإبهام _L,Extensor pollicis brevis _L,Court extenseur du pouce _L,Kurzer Daumenstrecker _L,فرد الإبهام وتمديده,Extends and abducts the thumb,Étend et abduit le pouce,Streckt und führt den Daumen ab
+العضلة الباسطة القصيرة للإبهام _R,Extensor pollicis brevis _R,Court extenseur du pouce _R,Kurzer Daumenstrecker _R,فرد الإبهام وتمديده,Extends and abducts the thumb,Étend et abduit le pouce,Streckt und führt den Daumen ab
+العضلة الباسطة للسبابة الطويلة _L,Abductor pollicis longus _L,Long abducteur du pouce _L,Langer Daumenabzieher _L,تبعيد الإبهام,Abducts the thumb,Abduit le pouce,Führt den Daumen ab
+العضلة الباسطة للسبابة الطويلة _R,Abductor pollicis longus _R,Long abducteur du pouce _R,Langer Daumenabzieher _R,تبعيد الإبهام,Abducts the thumb,Abduit le pouce,Führt den Daumen ab
+العضلة الباسطة _L,Supinator _L,Supinateur _L,Aufwärtsdreher _L,بطح الساعد,Supinates the forearm,Supination de l'avant-bras,Supiniert den Unterarm
+العضلة الباسطة _R,Supinator _R,Supinateur _R,Aufwärtsdreher _R,بطح الساعد,Supinates the forearm,Supination de l'avant-bras,Supiniert den Unterarm
+العضلة القطنية الكبرى _L,Psoas major _L,Grand psoas _L,Großer Lendenmuskel _L,ثني الفخذ والجذع,Flexes the hip and trunk,Fléchit la hanche et le tronc,Beugt Hüfte und Rumpf
+العضلة القطنية الكبرى _R,Psoas major _R,Grand psoas _R,Großer Lendenmuskel _R,ثني الفخذ والجذع,Flexes the hip and trunk,Fléchit la hanche et le tronc,Beugt Hüfte und Rumpf
+العضلة الحرقفية _L,Iliacus _L,Iliaque _L,Darmbeinmuskel _L,ثني الفخذ,Flexes the hip,Fléchit la hanche,Beugt die Hüfte
+العضلة الحرقفية _R,Iliacus _R,Iliaque _R,Darmbeinmuskel _R,ثني الفخذ,Flexes the hip,Fléchit la hanche,Beugt die Hüfte
+العضلة موترة اللفافة العريضة _L,Tensor fasciae latae _L,Tenseur du fascia lata _L,Schenkelbindenspanner _L,شد اللفافة العريضة وتقريب الفخذ,Tenses the fascia lata and abducts the thigh,Tend le fascia lata et abduit la cuisse,Spannt die Oberschenkelfaszie und führt den Oberschenkel ab
+العضلة موترة اللفافة العريضة _R,Tensor fasciae latae _R,Tenseur du fascia lata _R,Schenkelbindenspanner _R,شد اللفافة العريضة وتقريب الفخذ,Tenses the fascia lata and abducts the thigh,Tend le fascia lata et abduit la cuisse,Spannt die Oberschenkelfaszie und führt den Oberschenkel ab
+العضلة الكمثرية _L,Piriformis _L,Piriforme _L,Birnenmuskel _L,تدوير الفخذ للخارج,Rotates the thigh outward,Fait tourner la cuisse vers l'extérieur,Dreht den Oberschenkel nach außen
+العضلة الكمثرية _R,Piriformis _R,Piriforme _R,Birnenmuskel _R,تدوير الفخذ للخارج,Rotates the thigh outward,Fait tourner la cuisse vers l'extérieur,Dreht den Oberschenkel nach außen
+العضلة السدادية الداخلية _L,Obturator internus _L,Obturateur interne _L,Innerer Hüftlochmuskel _L,تدوير الفخذ للخارج,Rotates the thigh outward,Fait tourner la cuisse vers l'extérieur,Dreht den Oberschenkel nach außen
+العضلة السدادية الداخلية _R,Obturator internus _R,Obturateur interne _R,Innerer Hüftlochmuskel _R,تدوير الفخذ للخارج,Rotates the thigh outward,Fait tourner la cuisse vers l'extérieur,Dreht den Oberschenkel nach außen
+العضلة السدادية الخارجية _L,Obturator externus _L,Obturateur externe _L,Äußerer Hüftlochmuskel _L,تدوير الفخذ للخارج,Rotates the thigh outward,Fait tourner la cuisse vers l'extérieur,Dreht den Oberschenkel nach außen
+العضلة السدادية الخارجية _R,Obturator externus _R,Obturateur externe _R,Äußerer Hüftlochmuskel _R,تدوير الفخذ للخارج,Rotates the thigh outward,Fait tourner la cuisse vers l'extérieur,Dreht den Oberschenkel nach außen
+العضلة التوأمية العلوية _L,Gemellus superior _L,Jumeau supérieur _L,Oberer Zwillingsmuskel _L,تدوير الفخذ للخارج,Rotates the thigh outward,Fait tourner la cuisse vers l'extérieur,Dreht den Oberschenkel nach außen
+العضلة التوأمية العلوية _R,Gemellus superior _R,Jumeau supérieur _R,Oberer Zwillingsmuskel _R,تدوير الفخذ للخارج,Rotates the thigh outward,Fait tourner la cuisse vers l'extérieur,Dreht den Oberschenkel nach außen
+العضلة التوأمية السفلية _L,Gemellus inferior _L,Jumeau inférieur _L,Unterer Zwillingsmuskel _L,تدوير الفخذ للخارج,Rotates the thigh outward,Fait tourner la cuisse vers l'extérieur,Dreht den Oberschenkel nach außen
+العضلة التوأمية السفلية _R,Gemellus inferior _R,Jumeau inférieur _R,Unterer Zwillingsmuskel _R,تدوير الفخذ للخارج,Rotates the thigh outward,Fait tourner la cuisse vers l'extérieur,Dreht den Oberschenkel nach außen
+العضلة المربعة الفخذية _L,Quadratus femoris _L,Carré fémoral _L,Viereckiger Schenkelmuskel _L,تدوير الفخذ للخارج,Rotates the thigh outward,Fait tourner la cuisse vers l'extérieur,Dreht den Oberschenkel nach außen
+العضلة المربعة الفخذية _R,Quadratus femoris _R,Carré fémoral _R,Viereckiger Schenkelmuskel _R,تدوير الفخذ للخارج,Rotates the thigh outward,Fait tourner la cuisse vers l'extérieur,Dreht den Oberschenkel nach außen
+العضلة المقربة الكبرى _L,Adductor magnus _L,Grand adducteur _L,Großer Adduktor _L,تقريب الفخذ,Adducts the thigh,Adduit la cuisse,Führt den Oberschenkel heran
+العضلة المقربة الكبرى _R,Adductor magnus _R,Grand adducteur _R,Großer Adduktor _R,تقريب الفخذ,Adducts the thigh,Adduit la cuisse,Führt den Oberschenkel heran
+العضلة المقربة الطويلة _L,Adductor longus _L,Long adducteur _L,Langer Adduktor _L,تقريب الفخذ,Adducts the thigh,Adduit la cuisse,Führt den Oberschenkel heran
+العضلة المقربة الطويلة _R,Adductor longus _R,Long adducteur _R,Langer Adduktor _R,تقريب الفخذ,Adducts the thigh,Adduit la cuisse,Führt den Oberschenkel heran
+العضلة المقربة القصيرة _L,Adductor brevis _L,Court adducteur _L,Kurzer Adduktor _L,تقريب الفخذ,Adducts the thigh,Adduit la cuisse,Führt den Oberschenkel heran
+العضلة المقربة القصيرة _R,Adductor brevis _R,Court adducteur _R,Kurzer Adduktor _R,تقريب الفخذ,Adducts the thigh,Adduit la cuisse,Führt den Oberschenkel heran
+العضلة الرشيقة _L,Gracilis _L,Gracile _L,Schlanker Muskel _L,تقريب الفخذ وثني الركبة,Adducts the thigh and flexes the knee,Adduit la cuisse et fléchit le genou,Führt den Oberschenkel heran und beugt das Knie
+العضلة الرشيقة _R,Gracilis _R,Gracile _R,Schlanker Muskel _R,تقريب الفخذ وثني الركبة,Adducts the thigh and flexes the knee,Adduit la cuisse et fléchit le genou,Führt den Oberschenkel heran und beugt das Knie
+العضلة المشطية _L,Pectineus _L,Pectiné _L,Kammmuskel _L,تقريب الفخذ وثنيه,Adducts and flexes the thigh,Adduit et fléchit la cuisse,Führt den Oberschenkel heran und beugt ihn
+العضلة المشطية _R,Pectineus _R,Pectiné _R,Kammmuskel _R,تقريب الفخذ وثنيه,Adducts and flexes the thigh,Adduit et fléchit la cuisse,Führt den Oberschenkel heran und beugt ihn
+العضلة المتسعة الوسطية _L,Vastus intermedius _L,Vaste intermédiaire _L,Mittlerer Schenkelmuskel _L,فرد الركبة,Extends the knee,Étend le genou,Streckt das Knie
+العضلة المتسعة الوسطية _R,Vastus intermedius _R,Vaste intermédiaire _R,Mittlerer Schenkelmuskel _R,فرد الركبة,Extends the knee,Étend le genou,Streckt das Knie
+العضلة المأبضية _L,Popliteus _L,Poplité _L,Kniekehlenmuskel _L,فتح الركبة من الثني,Unlocks the knee from flexion,Déverrouille le genou de la flexion,Entriegelt das Knie aus der Beugung
+العضلة المأبضية _R,Popliteus _R,Poplité _R,Kniekehlenmuskel _R,فتح الركبة من الثني,Unlocks the knee from flexion,Déverrouille le genou de la flexion,Entriegelt das Knie aus der Beugung
+العضلة الظنبوبية الخلفية _L,Tibialis posterior _L,Tibial postérieur _L,Hinterer Schienbeinmuskel _L,دعم قوس القدم وثني الكاحل,Supports the foot arch and flexes the ankle,Supporte la voûte plantaire et fléchit la cheville,Stützt das Fußgewölbe und beugt den Knöchel
+العضلة الظنبوبية الخلفية _R,Tibialis posterior _R,Tibial postérieur _R,Hinterer Schienbeinmuskel _R,دعم قوس القدم وثني الكاحل,Supports the foot arch and flexes the ankle,Supporte la voûte plantaire et fléchit la cheville,Stützt das Fußgewölbe und beugt den Knöchel
+العضلة الباسطة القصيرة للأصابع _L,Extensor digitorum brevis _L,Court extenseur des orteils _L,Kurzer Zehenstrecker _L,فرد أصابع القدم,Extends the toes,Étend les orteils,Streckt die Zehen
+العضلة الباسطة القصيرة للأصابع _R,Extensor digitorum brevis _R,Court extenseur des orteils _R,Kurzer Zehenstrecker _R,فرد أصابع القدم,Extends the toes,Étend les orteils,Streckt die Zehen
+العضلة الباسطة القصيرة لإبهام القدم _L,Extensor hallucis brevis _L,Court extenseur de l'hallux _L,Kurzer Großzehenstrecker _L,فرد إبهام القدم,Extends the big toe,Étend le gros orteil,Streckt die Großzehe
+العضلة الباسطة القصيرة لإبهام القدم _R,Extensor hallucis brevis _R,Court extenseur de l'hallux _R,Kurzer Großzehenstrecker _R,فرد إبهام القدم,Extends the big toe,Étend le gros orteil,Streckt die Großzehe
+العضلة المبعدة لإبهام القدم _L,Abductor hallucis _L,Abducteur de l'hallux _L,Großzehenabzieher _L,تبعيد إبهام القدم,Abducts the big toe,Abduit le gros orteil,Führt die Großzehe ab
+العضلة المبعدة لإبهام القدم _R,Abductor hallucis _R,Abducteur de l'hallux _R,Großzehenabzieher _R,تبعيد إبهام القدم,Abducts the big toe,Abduit le gros orteil,Führt die Großzehe ab
+العضلة القابضة القصيرة للأصابع _L,Flexor digitorum brevis _L,Court fléchisseur des orteils _L,Kurzer Zehenbeuger _L,ثني أصابع القدم,Flexes the toes,Fléchit les orteils,Beugt die Zehen
+العضلة القابضة القصيرة للأصابع _R,Flexor digitorum brevis _R,Court fléchisseur des orteils _R,Kurzer Zehenbeuger _R,ثني أصابع القدم,Flexes the toes,Fléchit les orteils,Beugt die Zehen
+العضلة المبعدة للخنصر _L,Abductor digiti minimi _L,Abducteur du petit doigt _L,Kleinzehenabzieher _L,تبعيد الخنصر,Abducts the little finger,Abduit le petit doigt,Führt den kleinen Finger ab
+العضلة المبعدة للخنصر _R,Abductor digiti minimi _R,Abducteur du petit doigt _R,Kleinzehenabzieher _R,تبعيد الخنصر,Abducts the little finger,Abduit le petit doigt,Führt den kleinen Finger ab
+العضلة المربعة الأخمصية _L,Quadratus plantae _L,Carré plantaire _L,Viereckiger Sohlenmuskel _L,مساعدة ثني أصابع القدم,Assists in flexing the toes,Aide à fléchir les orteils,Unterstützt die Beugung der Zehen
+العضلة المربعة الأخمصية _R,Quadratus plantae _R,Carré plantaire _R,Viereckiger Sohlenmuskel _R,مساعدة ثني أصابع القدم,Assists in flexing the toes,Aide à fléchir les orteils,Unterstützt die Beugung der Zehen
+العضلة الدودية _L,Lumbricals _L,Lombricaux _L,Wurmförmige Muskeln _L,ثني السلاميات القريبة وفرد البعيدة,Flexes proximal phalanges and extends distal,Fléchit les phalanges proximales et étend les distales,Beugt die proximalen Phalangen und streckt die distalen
+العضلة الدودية _R,Lumbricals _R,Lombricaux _R,Wurmförmige Muskeln _R,ثني السلاميات القريبة وفرد البعيدة,Flexes proximal phalanges and extends distal,Fléchit les phalanges proximales et étend les distales,Beugt die proximalen Phalangen und streckt die distalen
+العضلة بين العظمية الظهرية _L,Dorsal interossei _L,Interosseux dorsaux _L,Dorsale Zwischenknochenmuskeln _L,تبعيد الأصابع,Abducts the fingers,Abduit les doigts,Führt die Finger ab
+العضلة بين العظمية الظهرية _R,Dorsal interossei _R,Interosseux dorsaux _R,Dorsale Zwischenknochenmuskeln _R,تبعيد الأصابع,Abducts the fingers,Abduit les doigts,Führt die Finger ab
+العضلة بين العظمية الراحية _L,Palmar interossei _L,Interosseux palmaires _L,Palmare Zwischenknochenmuskeln _L,تقريب الأصابع,Adducts the fingers,Adduit les doigts,Führt die Finger heran
+العضلة بين العظمية الراحية _R,Palmar interossei _R,Interosseux palmaires _R,Palmare Zwischenknochenmuskeln _R,تقريب الأصابع,Adducts the fingers,Adduit les doigts,Führt die Finger heran
+العربية,English,Français,Deutsch,الوظيفة (عربي),Function (EN),Fonction (FR),Funktion (DE)
+العضلة الضحكية _L,Zygomaticus major _L,Grand zygomatique _L,Großer Jochbeinmuskel _L,رفع زوايا الفم عند الابتسام,Raises the corners of the mouth when smiling,Élève les commissures des lèvres lors du sourire,Hebt die Mundwinkel beim Lächeln
+العضلة الضحكية _R,Zygomaticus major _R,Grand zygomatique _R,Großer Jochbeinmuskel _R,رفع زوايا الفم عند الابتسام,Raises the corners of the mouth when smiling,Élève les commissures des lèvres lors du sourire,Hebt die Mundwinkel beim Lächeln
+العضلة الجبهية _L,Frontalis _L,Frontal _L,Stirnmuskel _L,رفع الحاجب الأيسر وتجعيد الجبهة,Raises the left eyebrow and wrinkles the forehead,Élève le sourcil gauche et plisse le front,Hebt die linke Augenbraue und runzelt die Stirn
+العضلة الجبهية _R,Frontalis _R,Frontal _R,Stirnmuskel _R,رفع الحاجب الأيمن وتجعيد الجبهة,Raises the right eyebrow and wrinkles the forehead,Élève le sourcil droit et plisse le front,Hebt die rechte Augenbraue und runzelt die Stirn
+العضلة البكية _L,Buccinator _L,Buccinateur _L,Wangenmuskel _L,ضغط الخد الأيسر ومساعدة المضغ,Compresses the left cheek and assists chewing,Comprime la joue gauche et aide à mâcher,Drückt die linke Wange und unterstützt das Kauen
+العضلة البكية _R,Buccinator _R,Buccinateur _R,Wangenmuskel _R,ضغط الخد الأيمن ومساعدة المضغ,Compresses the right cheek and assists chewing,Comprime la joue droite et aide à mâcher,Drückt die rechte Wange und unterstützt das Kauen
+العضلة الجلدية الرقبية _L,Platysma _L,Platysma _L,Platysma _L,شد جلد الرقبة وخفض الفك,Tenses neck skin and depresses the jaw,Tend la peau du cou et abaisse la mâchoire,Spannt die Halshaut und senkt den Kiefer
+العضلة الجلدية الرقبية _R,Platysma _R,Platysma _R,Platysma _R,شد جلد الرقبة وخفض الفك,Tenses neck skin and depresses the jaw,Tend la peau du cou et abaisse la mâchoire,Spannt die Halshaut und senkt den Kiefer
+العضلة اللامية الغضروفية _L,Sternohyoid _L,Sterno-hyoïdien _L,Sternohyoideus _L,خفض عظمة اللامي,Depresses the hyoid bone,Abaisse l'os hyoïde,Senkt das Zungenbein
+العضلة اللامية الغضروفية _R,Sternohyoid _R,Sterno-hyoïdien _R,Sternohyoideus _R,خفض عظمة اللامي,Depresses the hyoid bone,Abaisse l'os hyoïde,Senkt das Zungenbein
+العضلة الأخمعية الأمامية _L,Scalenus anterior _L,Scalène antérieur _L,Vorderer Treppenmuskel _L,ثني العنق ورفع الضلع الأول,Flexes the neck and raises the first rib,Fléchit le cou et élève la première côte,Beugt den Hals und hebt die erste Rippe
+العضلة الأخمعية الأمامية _R,Scalenus anterior _R,Scalène antérieur _R,Vorderer Treppenmuskel _R,ثني العنق ورفع الضلع الأول,Flexes the neck and raises the first rib,Fléchit le cou et élève la première côte,Beugt den Hals und hebt die erste Rippe
+العضلة الأخمعية المتوسطة _L,Scalenus medius _L,Scalène moyen _L,Mittlerer Treppenmuskel _L,رفع الضلع الأول وثني العنق,Raises the first rib and flexes the neck,Élève la première côte et fléchit le cou,Hebt die erste Rippe und beugt den Hals
+العضلة الأخمعية المتوسطة _R,Scalenus medius _R,Scalène moyen _R,Mittlerer Treppenmuskel _R,رفع الضلع الأول وثني العنق,Raises the first rib and flexes the neck,Élève la première côte et fléchit le cou,Hebt die erste Rippe und beugt den Hals
+العربية,English,Français,Deutsch,الوظيفة (عربي),Function (EN),Fonction (FR),Funktion (DE)
+العضلة بين الضلعية الخارجية _L,External intercostals _L,Intercostaux externes _L,Äußere Zwischenrippenmuskeln _L,رفع الأضلاع عند الشهيق الأيسر,Raises the left ribs during inhalation,Élève les côtes gauches lors de l'inspiration,Hebt die linken Rippen beim Einatmen
+العضلة بين الضلعية الخارجية _R,External intercostals _R,Intercostaux externes _R,Äußere Zwischenrippenmuskeln _R,رفع الأضلاع عند الشهيق الأيمن,Raises the right ribs during inhalation,Élève les côtes droites lors de l'inspiration,Hebt die rechten Rippen beim Einatmen
+العضلة بين الضلعية الداخلية _L,Internal intercostals _L,Intercostaux internes _L,Innere Zwischenrippenmuskeln _L,خفض الأضلاع عند الزفير الأيسر,Lowers the left ribs during exhalation,Abaisse les côtes gauches lors de l'expiration,Senkt die linken Rippen beim Ausatmen
+العضلة بين الضلعية الداخلية _R,Internal intercostals _R,Intercostaux internes _R,Innere Zwischenrippenmuskeln _R,خفض الأضلاع عند الزفير الأيمن,Lowers the right ribs during exhalation,Abaisse les côtes droites lors de l'expiration,Senkt die rechten Rippen beim Ausatmen
+الحجاب الحاجز,Diaphragm,Diaphragme,Zwerchfell,العضلة الرئيسية للتنفس,Primary muscle of breathing,Muscle principal de la respiration,Hauptmuskel der Atmung
+العضلة المائلة الداخلية _L,Internal oblique _L,Oblique interne _L,Innerer schräger Bauchmuskel _L,تدوير الجذع وضغط البطن,Rotates the trunk and compresses the abdomen,Fait tourner le tronc et comprime l'abdomen,Dreht den Rumpf und komprimiert den Bauch
+العضلة المائلة الداخلية _R,Internal oblique _R,Oblique interne _R,Innerer schräger Bauchmuskel _R,تدوير الجذع وضغط البطن,Rotates the trunk and compresses the abdomen,Fait tourner le tronc et comprime l'abdomen,Dreht den Rumpf und komprimiert den Bauch
+العضلة المستعرضة البطنية _L,Transversus abdominis _L,Transverse de l'abdomen _L,Querer Bauchmuskel _L,ضغط البطن وتثبيت العمود الفقري,Compresses the abdomen and stabilizes the spine,Comprime l'abdomen et stabilise la colonne vertébrale,Komprimiert den Bauch und stabilisiert die Wirbelsäule
+العضلة المستعرضة البطنية _R,Transversus abdominis _R,Transverse de l'abdomen _R,Querer Bauchmuskel _R,ضغط البطن وتثبيت العمود الفقري,Compresses the abdomen and stabilizes the spine,Comprime l'abdomen et stabilise la colonne vertébrale,Komprimiert den Bauch und stabilisiert die Wirbelsäule
+العضلة المربعة القطنية _L,Quadratus lumborum _L,Carré des lombes _L,Quadratus lumborum _L,ثني الجذع للجانب ورفع الحوض,Laterally flexes the trunk and raises the pelvis,Fléchit le tronc latéralement et élève le bassin,Beugt den Rumpf seitlich und hebt das Becken
+العضلة المربعة القطنية _R,Quadratus lumborum _R,Carré des lombes _R,Quadratus lumborum _R,ثني الجذع للجانب ورفع الحوض,Laterally flexes the trunk and raises the pelvis,Fléchit le tronc latéralement et élève le bassin,Beugt den Rumpf seitlich und hebt das Becken
+العضلة الشوكية _L,Spinalis _L,Spinal _L,Dornmuskel _L,فرد العمود الفقري,Extends the spine,Étend la colonne vertébrale,Streckt die Wirbelsäule
+العضلة الشوكية _R,Spinalis _R,Spinal _R,Dornmuskel _R,فرد العمود الفقري,Extends the spine,Étend la colonne vertébrale,Streckt die Wirbelsäule
+العضلة الطولية الطويلة _L,Longissimus _L,Longissimus _L,Longissimus _L,فرد الظهر والرقبة,Extends the back and neck,Étend le dos et le cou,Streckt Rücken und Hals
+العضلة الطولية الطويلة _R,Longissimus _R,Longissimus _R,Longissimus _R,فرد الظهر والرقبة,Extends the back and neck,Étend le dos et le cou,Streckt Rücken und Hals
+العضلة الحرقفية الضلعية _L,Iliocostalis _L,Iliocostal _L,Iliokostalis _L,فرد العمود الفقري وتثبيته,Extends and stabilizes the spine,Étend et stabilise la colonne vertébrale,Streckt und stabilisiert die Wirbelsäule
+العضلة الحرقفية الضلعية _R,Iliocostalis _R,Iliocostal _R,Iliokostalis _R,فرد العمود الفقري وتثبيته,Extends and stabilizes the spine,Étend et stabilise la colonne vertébrale,Streckt und stabilisiert die Wirbelsäule
+العضلات المتعددة الشعب _L,Multifidus _L,Multifide _L,Multifidus _L,تثبيت الفقرات وتدوير العمود الفقري,Stabilizes vertebrae and rotates the spine,Stabilise les vertèbres et fait tourner la colonne,Stabilisiert Wirbel und dreht die Wirbelsäule
+العضلات المتعددة الشعب _R,Multifidus _R,Multifide _R,Multifidus _R,تثبيت الفقرات وتدوير العمود الفقري,Stabilizes vertebrae and rotates the spine,Stabilise les vertèbres et fait tourner la colonne,Stabilisiert Wirbel und dreht die Wirbelsäule
+العضلة شبه المنحرفة السفلية _L,Trapezius lower _L,Trapèze inférieur _L,Unterer Trapezmuskel _L,خفض لوح الكتف وإدارته للأسفل,Depresses and downwardly rotates the scapula,Abaisse et fait tourner l'omoplate vers le bas,Senkt und rotiert das Schulterblatt nach unten
+العضلة شبه المنحرفة السفلية _R,Trapezius lower _R,Trapèze inférieur _R,Unterer Trapezmuskel _R,خفض لوح الكتف وإدارته للأسفل,Depresses and downwardly rotates the scapula,Abaisse et fait tourner l'omoplate vers le bas,Senkt und rotiert das Schulterblatt nach unten
+العربية,English,Français,Deutsch,الوظيفة (عربي),Function (EN),Fonction (FR),Funktion (DE)
+المفصل الأخرمي الترقوي _L,Acromioclavicular joint _L,Articulation acromio-claviculaire _L,Akromioklavikulargelenk _L,تثبيت الكتف الأيسر وحركته,Stabilizes and moves the left shoulder,Stabilise et déplace l'épaule gauche,Stabilisiert und bewegt die linke Schulter
+المفصل الأخرمي الترقوي _R,Acromioclavicular joint _R,Articulation acromio-claviculaire _R,Akromioklavikulargelenk _R,تثبيت الكتف الأيمن وحركته,Stabilizes and moves the right shoulder,Stabilise et déplace l'épaule droite,Stabilisiert und bewegt die rechte Schulter
+المفصل القصي الترقوي _L,Sternoclavicular joint _L,Articulation sterno-claviculaire _L,Sternoklavikulargelenk _L,ربط الترقوة بالقص الأيسر,Connects the left clavicle to the sternum,Relie la clavicule gauche au sternum,Verbindet das linke Schlüsselbein mit dem Brustbein
+المفصل القصي الترقوي _R,Sternoclavicular joint _R,Articulation sterno-claviculaire _R,Sternoklavikulargelenk _R,ربط الترقوة بالقص الأيمن,Connects the right clavicle to the sternum,Relie la clavicule droite au sternum,Verbindet das rechte Schlüsselbein mit dem Brustbein
+المفصل الكتفي الحقي _L,Glenohumeral joint _L,Articulation gléno-humérale _L,Glenohumeralgelenk _L,حركة الكتف الأيسر بكل الاتجاهات,Moves the left shoulder in all directions,Déplace l'épaule gauche dans toutes les directions,Bewegt die linke Schulter in alle Richtungen
+المفصل الكتفي الحقي _R,Glenohumeral joint _R,Articulation gléno-humérale _R,Glenohumeralgelenk _R,حركة الكتف الأيمن بكل الاتجاهات,Moves the right shoulder in all directions,Déplace l'épaule droite dans toutes les directions,Bewegt die rechte Schulter in alle Richtungen
+مفصل الكوع _L,Elbow joint _L,Articulation du coude _L,Ellenbogengelenk _L,ثني وفرد الكوع الأيسر,Flexes and extends the left elbow,Fléchit et étend le coude gauche,Beugt und streckt den linken Ellenbogen
+مفصل الكوع _R,Elbow joint _R,Articulation du coude _R,Ellenbogengelenk _R,ثني وفرد الكوع الأيمن,Flexes and extends the right elbow,Fléchit et étend le coude droit,Beugt und streckt den rechten Ellenbogen
+مفصل الرسغ _L,Wrist joint _L,Articulation du poignet _L,Handgelenk _L,حركة الرسغ الأيسر,Moves the left wrist,Déplace le poignet gauche,Bewegt das linke Handgelenk
+مفصل الرسغ _R,Wrist joint _R,Articulation du poignet _R,Handgelenk _R,حركة الرسغ الأيمن,Moves the right wrist,Déplace le poignet droit,Bewegt das rechte Handgelenk
+العضلة الأخمعية المتوسطة _L,Scalenus medius _L,Scalène moyen _L,Mittlerer Treppenmuskel _L,رفع الضلع الأول وثني العنق,Raises the first rib and flexes the neck,Élève la première côte et fléchit le cou,Hebt die erste Rippe und beugt den Hals
+العضلة الأخمعية المتوسطة _R,Scalenus medius _R,Scalène moyen _R,Mittlerer Treppenmuskel _R,رفع الضلع الأول وثني العنق,Raises the first rib and flexes the neck,Élève la première côte et fléchit le cou,Hebt die erste Rippe und beugt den Hals
+العصب الكعبري _L,Radial nerve _L,Nerf radial _L,Speichennerv _L,تغذية الذراع الخلفية والساعد الأيسر,Supplies the posterior arm and left forearm,Approvisionne le bras postérieur et l'avant-bras gauche,Versorgt den hinteren Arm und linken Unterarm
+العصب الكعبري _R,Radial nerve _R,Nerf radial _R,Speichennerv _R,تغذية الذراع الخلفية والساعد الأيمن,Supplies the posterior arm and right forearm,Approvisionne le bras postérieur et l'avant-bras droit,Versorgt den hinteren Arm und rechten Unterarm
+العصب الزندي _L,Ulnar nerve _L,Nerf ulnaire _L,Ellennerv _L,تغذية الجانب الإنسي لليد اليسرى,Supplies the medial side of the left hand,Approvisionne le côté médial de la main gauche,Versorgt die Innenseite der linken Hand
+العصب الزندي _R,Ulnar nerve _R,Nerf ulnaire _R,Ellennerv _R,تغذية الجانب الإنسي لليد اليمنى,Supplies the medial side of the right hand,Approvisionne le côté médial de la main droite,Versorgt die Innenseite der rechten Hand
+العصب المتوسط _L,Median nerve _L,Nerf médian _L,Mittelnerv _L,تغذية راحة اليد الأيسرى وأصابعها,Supplies the left palm and fingers,Approvisionne la paume et les doigts gauches,Versorgt die linke Handfläche und Finger
+العصب المتوسط _R,Median nerve _R,Nerf médian _R,Mittelnerv _R,تغذية راحة اليد اليمنى وأصابعها,Supplies the right palm and fingers,Approvisionne la paume et les doigts droits,Versorgt die rechte Handfläche und Finger
+العصب البصري _L,Optic nerve _L,Nerf optique _L,Sehnerv _L,نقل الإشارات البصرية من العين اليسرى,Transmits visual signals from the left eye,Transmet les signaux visuels de l'œil gauche,Überträgt Sehsignale vom linken Auge
+العصب البصري _R,Optic nerve _R,Nerf optique _R,Sehnerv _R,نقل الإشارات البصرية من العين اليمنى,Transmits visual signals from the right eye,Transmet les signaux visuels de l'œil droit,Überträgt Sehsignale vom rechten Auge
+الطحال,Spleen,Rate,Milz,تنقية الدم وتخزين الصفائح الدموية,Filters blood and stores platelets,Filtre le sang et stocke les plaquettes,Filtert Blut und speichert Blutplättchen
+الكلية اليسرى,Left kidney,Rein gauche,Linke Niere,تصفية الدم وإنتاج البول,Filters blood and produces urine,Filtre le sang et produit l'urine,Filtert Blut und produziert Urin
+الكلية اليمنى,Right kidney,Rein droit,Rechte Niere,تصفية الدم وإنتاج البول,Filters blood and produces urine,Filtre le sang et produit l'urine,Filtert Blut und produziert Urin
+البنكرياس,Pancreas,Pancréas,Bauchspeicheldrüse,إنتاج الأنسولين والإنزيمات الهاضمة,Produces insulin and digestive enzymes,Produit l'insuline et les enzymes digestives,Produziert Insulin und Verdauungsenzyme
+الغدة الدرقية,Thyroid gland,Glande thyroïde,Schilddrüse,تنظيم الأيض والنمو,Regulates metabolism and growth,Régule le métabolisme et la croissance,Reguliert Stoffwechsel und Wachstum
+الغدة الكظرية اليسرى,Left adrenal gland,Glande surrénale gauche,Linke Nebenniere,إفراز الأدرينالين والكورتيزول,Secretes adrenaline and cortisol,Sécrète l'adrénaline et le cortisol,Sezerniert Adrenalin und Kortisol
+الغدة الكظرية اليمنى,Right adrenal gland,Glande surrénale droite,Rechte Nebenniere,إفراز الأدرينالين والكورتيزول,Secretes adrenaline and cortisol,Sécrète l'adrénaline et le cortisol,Sezerniert Adrenalin und Kortisol
+العضلة المستعرضة البطنية _L,Transversus abdominis _L,Transverse de l'abdomen _L,Querer Bauchmuskel _L,ضغط البطن وتثبيت العمود الفقري,Compresses the abdomen and stabilizes the spine,Comprime l'abdomen et stabilise la colonne vertébrale,Komprimiert den Bauch und stabilisiert die Wirbelsäule
+العضلة المستعرضة البطنية _R,Transversus abdominis _R,Transverse de l'abdomen _R,Querer Bauchmuskel _R,ضغط البطن وتثبيت العمود الفقري,Compresses the abdomen and stabilizes the spine,Comprime l'abdomen et stabilise la colonne vertébrale,Komprimiert den Bauch und stabilisiert die Wirbelsäule
+الشريان الأبهر الصدري,Thoracic aorta,Aorte thoracique,Thorakale Aorta,إمداد الصدر بالدم المؤكسج,Supplies the thorax with oxygenated blood,Approvisionne le thorax en sang oxygéné,Versorgt den Thorax mit sauerstoffreichem Blut
+الشريان الأبهر البطني,Abdominal aorta,Aorte abdominale,Abdominale Aorta,إمداد أعضاء البطن بالدم,Supplies abdominal organs with blood,Approvisionne les organes abdominaux en sang,Versorgt Bauchorgane mit Blut
+الشريان المساريقي العلوي,Superior mesenteric artery,Artère mésentérique supérieure,Obere Mesenterialarterie,إمداد الأمعاء الدقيقة بالدم,Supplies the small intestine with blood,Approvisionne l'intestin grêle en sang,Versorgt den Dünndarm mit Blut
+الوريد البابي,Portal vein,Veine porte,Pfortader,نقل الدم من الجهاز الهضمي إلى الكبد,Carries blood from the digestive system to the liver,Transporte le sang du système digestif au foie,Transportiert Blut vom Verdauungssystem zur Leber
+الشريان التاجي الأيسر,Left coronary artery,Artère coronaire gauche,Linke Koronararterie,إمداد الجانب الأيسر من القلب بالدم,Supplies the left side of the heart with blood,Approvisionne le côté gauche du cœur en sang,Versorgt die linke Herzseite mit Blut
+الشريان التاجي الأيمن,Right coronary artery,Artère coronaire droite,Rechte Koronararterie,إمداد الجانب الأيمن من القلب بالدم,Supplies the right side of the heart with blood,Approvisionne le côté droit du cœur en sang,Versorgt die rechte Herzseite mit Blut
+العضلة الكابة المرفقية,Pronator teres (deep head),Pronateur rond (chef profond),Runder Pronator (tiefer Kopf),كب الساعد بعمق,Deep pronation of the forearm,Pronation profonde de l'avant-bras,Tiefe Pronation des Unterarms
+عضلات الإبهام الكفية _L,Thenar muscles _L,Muscles thénariens _L,Daumenballenmuskeln _L,حركة الإبهام اليسرى,Move the left thumb,Déplacent le pouce gauche,Bewegen den linken Daumen
+عضلات الإبهام الكفية _R,Thenar muscles _R,Muscles thénariens _R,Daumenballenmuskeln _R,حركة الإبهام اليمنى,Move the right thumb,Déplacent le pouce droit,Bewegen den rechten Daumen
+عضلات الخنصر الكفية _L,Hypothenar muscles _L,Muscles hypothénariens _L,Kleinfingerballen _L,حركة الخنصر الأيسر,Move the left little finger,Déplacent le petit doigt gauche,Bewegen den linken kleinen Finger
+عضلات الخنصر الكفية _R,Hypothenar muscles _R,Muscles hypothénariens _R,Kleinfingerballen _R,حركة الخنصر الأيمن,Move the right little finger,Déplacent le petit doigt droit,Bewegen den rechten kleinen Finger
+العضلة الحلقية للعين _L,Orbicularis oculi _L,Orbiculaire de l'œil _L,Augenringmuskel _L,إغلاق الجفن الأيسر,Closes the left eyelid,Ferme la paupière gauche,Schließt das linke Augenlid
+العضلة الحلقية للعين _R,Orbicularis oculi _R,Orbiculaire de l'œil _R,Augenringmuskel _R,إغلاق الجفن الأيمن,Closes the right eyelid,Ferme la paupière droite,Schließt das rechte Augenlid
+العضلة الحلقية للفم,Orbicularis oris,Orbiculaire de la bouche,Mundringmuskel,إغلاق الفم وتقطيب الشفتين,Closes the mouth and purses the lips,Ferme la bouche et plisse les lèvres,Schließt den Mund und spitzt die Lippen
+العضلة الطويلة للرأس _L,Longus capitis _L,Long de la tête _L,Langer Kopfmuskel _L,ثني الرأس للأمام,Flexes the head forward,Fléchit la tête vers l'avant,Beugt den Kopf nach vorne
+العضلة الطويلة للرأس _R,Longus capitis _R,Long de la tête _R,Langer Kopfmuskel _R,ثني الرأس للأمام,Flexes the head forward,Fléchit la tête vers l'avant,Beugt den Kopf nach vorne
