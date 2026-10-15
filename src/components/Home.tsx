@@ -45,7 +45,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       title: t.features.physicsTitle,
       desc: t.features.physicsDesc,
       icon: Atom,
-      spec: 'Modified Nodal Analysis + PhET Wave String',
+      spec: 'Interactive Circuits · Forces & Motion · Ballistics · Optics',
       status: 'ONLINE',
     },
     {
