@@ -233,6 +233,11 @@ export const PhysicsLab: React.FC = () => {
   const { t, isRTL, language } = useLanguage();
   const [activeModule, setActiveModule] = useState<'circuits' | 'forces' | 'projectiles' | 'optics' | 'waves'>('circuits');
 
+  // Sub-screens for multi-screen simulations
+  const [forcesScreen, setForcesScreen] = useState<number>(1);
+  const [pmScreen, setPmScreen] = useState<number>(3); // 3 = Drag (حركة المقذوفات ومقاومة الهواء) default
+  const [opticsScreen, setOpticsScreen] = useState<number>(1);
+
   const circuitsIframeRef = useRef<HTMLIFrameElement>(null);
   const forcesIframeRef = useRef<HTMLIFrameElement>(null);
   const projectilesIframeRef = useRef<HTMLIFrameElement>(null);
@@ -240,7 +245,7 @@ export const PhysicsLab: React.FC = () => {
 
   const handleReload = (ref: React.RefObject<HTMLIFrameElement | null>, defaultSrc: string) => {
     if (ref.current) {
-      ref.current.src = defaultSrc + '?r=' + Date.now();
+      ref.current.src = defaultSrc + (defaultSrc.includes('?') ? '&' : '?') + 'r=' + Date.now();
     }
   };
 
@@ -323,7 +328,7 @@ export const PhysicsLab: React.FC = () => {
         </div>
       </div>
 
-      {/* MODULE 1: INTERACTIVE CIRCUIT LAB (PHET DC LAB ONLY) */}
+      {/* MODULE 1: INTERACTIVE CIRCUIT LAB (DC LAB ONLY, ZERO BOTTOM BAR) */}
       {activeModule === 'circuits' && (
         <div className="space-y-6">
           {/* Controls Bar */}
@@ -433,21 +438,32 @@ export const PhysicsLab: React.FC = () => {
       {/* MODULE 2: FORCES AND MOTION LAB */}
       {activeModule === 'forces' && (
         <div className="space-y-6">
-          {/* Controls Bar */}
+          {/* Controls Bar with Screen Switcher */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-2xl sci-surface">
-            <div className="flex items-center gap-2">
-              <Move className="w-4 h-4" style={{ color: '#34d399' }} />
-              <span className="text-xs font-bold text-white">
-                {language === 'ar' ? 'مختبر القوى والحركة (قوانين نيوتن)' : 'Forces and Motion Laboratory'}
-              </span>
-              <span className="text-[10px] px-2 py-0.5 rounded-md" style={{ background: 'rgba(16,185,129,0.15)', color: '#34d399', border: '1px solid rgba(16,185,129,0.3)' }}>
-                {language === 'ar' ? 'المحصلة · الاحتكاك · التسارع' : 'Net Force · Friction · Acceleration'}
-              </span>
+            {/* Screen Selector Pills */}
+            <div className="flex items-center flex-wrap gap-1.5">
+              {[
+                { id: 1, ar: '⚖️ محصلة القوى', en: '⚖️ Net Force' },
+                { id: 2, ar: '🏃 الحركة', en: '🏃 Motion' },
+                { id: 3, ar: '🧱 الاحتكاك', en: '🧱 Friction' },
+                { id: 4, ar: '⚡ التسارع', en: '⚡ Acceleration' },
+              ].map(s => (
+                <button
+                  key={s.id}
+                  onClick={() => setForcesScreen(s.id)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    forcesScreen === s.id ? 'text-white shadow-lg' : 'text-slate-400 hover:text-white'
+                  }`}
+                  style={forcesScreen === s.id ? { background: 'linear-gradient(135deg, #10b981, #06b6d4)' } : undefined}
+                >
+                  {language === 'ar' ? s.ar : s.en}
+                </button>
+              ))}
             </div>
 
             <div className="flex items-center gap-2">
               <button
-                onClick={() => handleReload(forcesIframeRef, '/simulations/forces-and-motion-basics_ar.html')}
+                onClick={() => handleReload(forcesIframeRef, `/simulations/forces-and-motion-basics_ar.html?screens=${forcesScreen}`)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-colors"
                 style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                 title={language === 'ar' ? 'إعادة ضبط المختبر' : 'Reset Simulation'}
@@ -465,7 +481,7 @@ export const PhysicsLab: React.FC = () => {
                 <span>{language === 'ar' ? 'ملء الشاشة' : 'Fullscreen'}</span>
               </button>
               <button
-                onClick={() => window.open('/simulations/forces-and-motion-basics_ar.html', '_blank')}
+                onClick={() => window.open(`/simulations/forces-and-motion-basics_ar.html?screens=${forcesScreen}`, '_blank')}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-colors"
                 style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                 title={language === 'ar' ? 'فتح في نافذة مستقلة' : 'Open in New Window'}
@@ -480,7 +496,8 @@ export const PhysicsLab: React.FC = () => {
             <div className="relative w-full rounded-xl overflow-hidden bg-[#030712] border border-white/10" style={{ height: '720px' }}>
               <iframe
                 ref={forcesIframeRef}
-                src="/simulations/forces-and-motion-basics_ar.html"
+                key={`forces-${forcesScreen}`}
+                src={`/simulations/forces-and-motion-basics_ar.html?screens=${forcesScreen}`}
                 title={language === 'ar' ? 'محاكي القوى والحركة' : 'Forces and Motion Simulation'}
                 className="w-full h-full border-0 block"
                 allow="fullscreen; autoplay"
@@ -537,24 +554,35 @@ export const PhysicsLab: React.FC = () => {
         </div>
       )}
 
-      {/* MODULE 3: PROJECTILE MOTION LAB */}
+      {/* MODULE 3: PROJECTILE MOTION & AIR RESISTANCE LAB */}
       {activeModule === 'projectiles' && (
         <div className="space-y-6">
-          {/* Controls Bar */}
+          {/* Controls Bar with Screen Switcher */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-2xl sci-surface">
-            <div className="flex items-center gap-2">
-              <Target className="w-4 h-4" style={{ color: '#f43f5e' }} />
-              <span className="text-xs font-bold text-white">
-                {language === 'ar' ? 'مختبر حركة المقذوفات ومقاومة الهواء' : 'Projectile Motion & Air Resistance Lab'}
-              </span>
-              <span className="text-[10px] px-2 py-0.5 rounded-md" style={{ background: 'rgba(244,63,94,0.15)', color: '#f43f5e', border: '1px solid rgba(244,63,94,0.3)' }}>
-                {language === 'ar' ? 'المدفع · زاوية الإطلاق · مقاومة الهواء' : 'Cannon · Vectors · Air Drag'}
-              </span>
+            {/* Screen Selector Pills */}
+            <div className="flex items-center flex-wrap gap-1.5">
+              {[
+                { id: 3, ar: '🚀 مقاومة الهواء (Drag)', en: '🚀 Air Drag' },
+                { id: 4, ar: '🎯 المختبر الشامل (Lab)', en: '🎯 Full Lab' },
+                { id: 2, ar: '📐 متجهات السرعة والقوة', en: '📐 Vectors' },
+                { id: 1, ar: '🔭 حركة المقذوفات البسيطة', en: '🔭 Intro' },
+              ].map(s => (
+                <button
+                  key={s.id}
+                  onClick={() => setPmScreen(s.id)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    pmScreen === s.id ? 'text-white shadow-lg' : 'text-slate-400 hover:text-white'
+                  }`}
+                  style={pmScreen === s.id ? { background: 'linear-gradient(135deg, #f43f5e, #f59e0b)' } : undefined}
+                >
+                  {language === 'ar' ? s.ar : s.en}
+                </button>
+              ))}
             </div>
 
             <div className="flex items-center gap-2">
               <button
-                onClick={() => handleReload(projectilesIframeRef, '/simulations/projectile-motion_ar.html')}
+                onClick={() => handleReload(projectilesIframeRef, `/simulations/projectile-motion_ar.html?screens=${pmScreen}`)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-colors"
                 style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                 title={language === 'ar' ? 'إعادة ضبط المختبر' : 'Reset Simulation'}
@@ -572,7 +600,7 @@ export const PhysicsLab: React.FC = () => {
                 <span>{language === 'ar' ? 'ملء الشاشة' : 'Fullscreen'}</span>
               </button>
               <button
-                onClick={() => window.open('/simulations/projectile-motion_ar.html', '_blank')}
+                onClick={() => window.open(`/simulations/projectile-motion_ar.html?screens=${pmScreen}`, '_blank')}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-colors"
                 style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                 title={language === 'ar' ? 'فتح في نافذة مستقلة' : 'Open in New Window'}
@@ -587,7 +615,8 @@ export const PhysicsLab: React.FC = () => {
             <div className="relative w-full rounded-xl overflow-hidden bg-[#030712] border border-white/10" style={{ height: '720px' }}>
               <iframe
                 ref={projectilesIframeRef}
-                src="/simulations/projectile-motion_ar.html"
+                key={`pm-${pmScreen}`}
+                src={`/simulations/projectile-motion_ar.html?screens=${pmScreen}`}
                 title={language === 'ar' ? 'محاكي حركة المقذوفات ومقاومة الهواء' : 'Projectile Motion Simulation'}
                 className="w-full h-full border-0 block"
                 allow="fullscreen; autoplay"
@@ -647,21 +676,31 @@ export const PhysicsLab: React.FC = () => {
       {/* MODULE 4: OPTICS & LIGHT BENDING LAB */}
       {activeModule === 'optics' && (
         <div className="space-y-6">
-          {/* Controls Bar */}
+          {/* Controls Bar with Screen Switcher */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-2xl sci-surface">
-            <div className="flex items-center gap-2">
-              <Compass className="w-4 h-4" style={{ color: '#a855f7' }} />
-              <span className="text-xs font-bold text-white">
-                {language === 'ar' ? 'مختبر انكسار وبصريات الضوء (قانون سنيل والمناشير)' : 'Bending Light & Optics Laboratory'}
-              </span>
-              <span className="text-[10px] px-2 py-0.5 rounded-md" style={{ background: 'rgba(168,85,247,0.15)', color: '#a855f7', border: '1px solid rgba(168,85,247,0.3)' }}>
-                {language === 'ar' ? 'الانكسار · الانعكاس الكلي · المناشير' : 'Refraction · Reflection · Prisms'}
-              </span>
+            {/* Screen Selector Pills */}
+            <div className="flex items-center flex-wrap gap-1.5">
+              {[
+                { id: 1, ar: '🔦 انكسار وانعكاس الضوء', en: '🔦 Refraction' },
+                { id: 2, ar: '🌈 المناشير وتشتت الألوان', en: '🌈 Prisms' },
+                { id: 3, ar: '📐 أدوات القياس والأمواج', en: '📐 More Tools' },
+              ].map(s => (
+                <button
+                  key={s.id}
+                  onClick={() => setOpticsScreen(s.id)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    opticsScreen === s.id ? 'text-white shadow-lg' : 'text-slate-400 hover:text-white'
+                  }`}
+                  style={opticsScreen === s.id ? { background: 'linear-gradient(135deg, #a855f7, #6366f1)' } : undefined}
+                >
+                  {language === 'ar' ? s.ar : s.en}
+                </button>
+              ))}
             </div>
 
             <div className="flex items-center gap-2">
               <button
-                onClick={() => handleReload(opticsIframeRef, '/simulations/bending-light_ar.html')}
+                onClick={() => handleReload(opticsIframeRef, `/simulations/bending-light_ar.html?screens=${opticsScreen}`)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-colors"
                 style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                 title={language === 'ar' ? 'إعادة ضبط المختبر' : 'Reset Simulation'}
@@ -679,7 +718,7 @@ export const PhysicsLab: React.FC = () => {
                 <span>{language === 'ar' ? 'ملء الشاشة' : 'Fullscreen'}</span>
               </button>
               <button
-                onClick={() => window.open('/simulations/bending-light_ar.html', '_blank')}
+                onClick={() => window.open(`/simulations/bending-light_ar.html?screens=${opticsScreen}`, '_blank')}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-colors"
                 style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                 title={language === 'ar' ? 'فتح في نافذة مستقلة' : 'Open in New Window'}
@@ -694,7 +733,8 @@ export const PhysicsLab: React.FC = () => {
             <div className="relative w-full rounded-xl overflow-hidden bg-[#030712] border border-white/10" style={{ height: '720px' }}>
               <iframe
                 ref={opticsIframeRef}
-                src="/simulations/bending-light_ar.html"
+                key={`optics-${opticsScreen}`}
+                src={`/simulations/bending-light_ar.html?screens=${opticsScreen}`}
                 title={language === 'ar' ? 'محاكي انكسار الضوء والمناشير' : 'Bending Light Simulation'}
                 className="w-full h-full border-0 block"
                 allow="fullscreen; autoplay"
