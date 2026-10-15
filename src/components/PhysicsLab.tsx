@@ -16,7 +16,9 @@ import {
   Battery,
   Gauge,
   Activity,
-  Layers
+  Layers,
+  Maximize2,
+  ExternalLink
 } from 'lucide-react';
 
 // ============================================================
@@ -238,6 +240,22 @@ function WaveSimulator({ language }: { language: string }) {
 export const PhysicsLab: React.FC = () => {
   const { t, isRTL, language } = useLanguage();
   const [activeModule, setActiveModule] = useState<'circuits' | 'mechanics' | 'optics' | 'waves'>('circuits');
+  const [circuitMode, setCircuitMode] = useState<'phet' | 'mna'>('phet');
+  const phetIframeRef = useRef<HTMLIFrameElement>(null);
+
+  const handleReloadPhet = () => {
+    if (phetIframeRef.current) {
+      phetIframeRef.current.src = '/simulations/circuit-construction-kit-dc_ar.html?r=' + Date.now();
+    }
+  };
+
+  const handleFullscreenPhet = () => {
+    if (phetIframeRef.current) {
+      if (phetIframeRef.current.requestFullscreen) {
+        phetIframeRef.current.requestFullscreen();
+      }
+    }
+  };
 
   // CIRCUIT LAB STATE (Dynamic Interactive MNA Breadboard)
   const [circuitComponents, setCircuitComponents] = useState<CircuitComponent[]>([
@@ -358,7 +376,7 @@ export const PhysicsLab: React.FC = () => {
             }`}
             style={activeModule === 'circuits' ? activeTabStyle : undefined}
           >
-            {t.physics.circuits} (MNA Engine)
+            {t.physics.circuits}
           </button>
           <button
             onClick={() => setActiveModule('mechanics')}
@@ -390,9 +408,129 @@ export const PhysicsLab: React.FC = () => {
         </div>
       </div>
 
-      {/* MODULE 1: REAL CIRCUIT LAB WITH MODIFIED NODAL ANALYSIS */}
+      {/* MODULE 1: CIRCUIT LAB (PHET INTERACTIVE DC LAB + MNA SOLVER) */}
       {activeModule === 'circuits' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="space-y-6">
+          {/* Circuit Sub-mode Switcher */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-2xl sci-surface">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCircuitMode('phet')}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                  circuitMode === 'phet' ? 'text-white shadow-lg' : 'text-slate-400 hover:text-white'
+                }`}
+                style={circuitMode === 'phet' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
+              >
+                {language === 'ar' ? '⚡ مختبر الدوائر التفاعلي (PhET Lab DC)' : '⚡ Interactive Circuit Kit (PhET DC Lab)'}
+              </button>
+              <button
+                onClick={() => setCircuitMode('mna')}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                  circuitMode === 'mna' ? 'text-white shadow-lg' : 'text-slate-400 hover:text-white'
+                }`}
+                style={circuitMode === 'mna' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
+              >
+                {language === 'ar' ? '📐 محلل الدوائر العقدي (MNA Solver)' : '📐 Nodal MNA Solver'}
+              </button>
+            </div>
+
+            {circuitMode === 'phet' && (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleReloadPhet}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-colors"
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  title={language === 'ar' ? 'إعادة ضبط المختبر' : 'Reset Simulation'}
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>{language === 'ar' ? 'إعادة ضبط' : 'Reset'}</span>
+                </button>
+                <button
+                  onClick={handleFullscreenPhet}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-white transition-colors"
+                  style={{ background: 'linear-gradient(135deg, #6366f1, #06b6d4)' }}
+                  title={language === 'ar' ? 'ملء الشاشة' : 'Fullscreen'}
+                >
+                  <Maximize2 className="w-3.5 h-3.5" />
+                  <span>{language === 'ar' ? 'ملء الشاشة' : 'Fullscreen'}</span>
+                </button>
+                <button
+                  onClick={() => window.open('/simulations/circuit-construction-kit-dc_ar.html', '_blank')}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-colors"
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  title={language === 'ar' ? 'فتح في نافذة مستقلة' : 'Open in New Window'}
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* PhET DC Lab Mode */}
+          {circuitMode === 'phet' && (
+            <div className="space-y-6">
+              <div className="sci-card p-2 sm:p-3 overflow-hidden shadow-2xl">
+                <div className="relative w-full rounded-xl overflow-hidden bg-[#030712] border border-white/10" style={{ height: '700px' }}>
+                  <iframe
+                    ref={phetIframeRef}
+                    src="/simulations/circuit-construction-kit-dc_ar.html"
+                    title={language === 'ar' ? 'محاكي بناء الدوائر الكهربائية PhET' : 'PhET Circuit Construction Kit DC'}
+                    className="w-full h-full border-0 block"
+                    allow="fullscreen; autoplay"
+                  />
+                </div>
+              </div>
+
+              {/* Lab Insights and Physics Features */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="sci-card p-4 space-y-2">
+                  <div className="flex items-center gap-2" style={{ color: '#fbbf24' }}>
+                    <Zap className="w-4 h-4" />
+                    <h4 className="text-xs font-bold uppercase tracking-wider">
+                      {language === 'ar' ? 'مختبر التيار المستمر (DC Lab)' : 'DC Circuit Lab'}
+                    </h4>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    {language === 'ar'
+                      ? 'مختبر PhET التفاعلي الكامل المباشر (شاشة المختبر فقط بدون واجهة البداية)، يمكنك سحب البطاريات والمصابيح والمقاومات والأسلاك لتركيب دوائر حقيقية وتجربة التوصيل على التوالي والتوازي.'
+                      : 'Full interactive PhET DC circuit workbench (Lab screen only, splash screen omitted), allowing assembly of batteries, lightbulbs, resistors, and switches.'}
+                  </p>
+                </div>
+
+                <div className="sci-card p-4 space-y-2">
+                  <div className="flex items-center gap-2" style={{ color: '#34d399' }}>
+                    <Gauge className="w-4 h-4" />
+                    <h4 className="text-xs font-bold uppercase tracking-wider">
+                      {language === 'ar' ? 'أجهزة القياس الدقيقة' : 'Measurement Tools'}
+                    </h4>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    {language === 'ar'
+                      ? 'استخدم الفولتميتر الرقمي لقياس فروق الجهد، والأميتر لقياس شدة التيار المار في الفروع، وتتبع حركة الإلكترونات الحقيقية أو اتجاه التيار الاصطلاحي.'
+                      : 'Deploy digital voltmeters, probe ammeters, and clamp ammeters to measure potential drops, branch currents, and visualize real-time electron drift.'}
+                  </p>
+                </div>
+
+                <div className="sci-card p-4 space-y-2">
+                  <div className="flex items-center gap-2" style={{ color: '#818cf8' }}>
+                    <Award className="w-4 h-4" />
+                    <h4 className="text-xs font-bold uppercase tracking-wider">
+                      {language === 'ar' ? 'القوانين الفيزيائية المطبقة' : 'Physical Laws'}
+                    </h4>
+                  </div>
+                  <div className="text-xs font-mono space-y-1 text-slate-300">
+                    <div>V = I · R &nbsp;(قانون أوم)</div>
+                    <div>∑ I_in = ∑ I_out &nbsp;(كيرشوف للتيار)</div>
+                    <div>∑ V = 0 &nbsp;(كيرشوف للجهد)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* MNA Nodal Solver Mode */}
+          {circuitMode === 'mna' && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 sci-card p-6 flex flex-col justify-between space-y-6">
             <div>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-5 gap-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
@@ -607,6 +745,8 @@ export const PhysicsLab: React.FC = () => {
           </div>
         </div>
       )}
+    </div>
+  )}
 
       {/* MODULE 2: MECHANICS & FORCES */}
       {activeModule === 'mechanics' && (

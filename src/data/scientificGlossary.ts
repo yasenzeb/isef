@@ -24,7 +24,7 @@ export const SCIENTIFIC_GLOSSARY: GlossaryEntry[] = [
   { id: 'tendon', en: 'Tendon', ar: 'وَتَر عضلي', fr: 'Tendon', de: 'Sehne', field: 'anatomy' },
   { id: 'skeletal_muscle', en: 'Skeletal Muscle', ar: 'عضلة هيكلية إرادية', fr: 'Muscle squelettique', de: 'Skelettmuskel', field: 'anatomy' },
   { id: 'muscular_system', en: 'Muscular System', ar: 'الجهاز العضلي', fr: 'Système musculaire', de: 'Muskelsystem', field: 'anatomy' },
-  { id: 'cardiovascular_system', en: 'Cardiovascular System', ar: 'جهاز الدوران (القلب والأوعية الدموية)', fr: 'Système cardiovasculaire', de: 'Herz-Kreislauf-System', field: 'anatomy' },
+  { id: 'cardiovascular_system', en: 'Cardiovascular System', ar: ' الجهاز الدوري (القلب والأوعية الدموية)', fr: 'Système cardiovasculaire', de: 'Herz-Kreislauf-System', field: 'anatomy' },
   { id: 'nervous_system', en: 'Nervous System', ar: 'الجهاز العصبي', fr: 'Système nerveux', de: 'Nervensystem', field: 'anatomy' },
   { id: 'visceral_system', en: 'Visceral Organs', ar: 'الأعضاء الحشوية', fr: 'Organes viscéraux', de: 'Eingeweide', field: 'anatomy' },
   { id: 'lymphatic_system', en: 'Lymphatic System', ar: 'الجهاز اللمفاوي والمناعي', fr: 'Système lymphatique', de: 'Lymphsystem', field: 'anatomy' },
