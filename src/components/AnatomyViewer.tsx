@@ -1038,19 +1038,30 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         // Comprehensive anatomical lookup
         const baseKey = cleanName.replace(/\s*\((Left|Right)\)/i, '').trim();
         const sideSuffix = cleanName.match(/\((Left|Right)\)/i)?.[1];
-        const sideAr = sideSuffix === 'Left' ? ' الأيسر' : sideSuffix === 'Right' ? ' الأيمن' : '';
 
         const dictRecord = SKELETAL_BONE_DICTIONARY as Record<string, { ar: string; descEn: string; descAr: string }>;
-        const directEntry = dictRecord[cleanName] || dictRecord[baseKey] || dictRecord[baseKey.toLowerCase()];
+        const directEntry = dictRecord[hit.name] || dictRecord[cleanName] || dictRecord[baseKey] || dictRecord[baseKey.toLowerCase()];
+
+        let resolvedAr = resolvedArabicName;
+        if (!resolvedAr && directEntry) {
+          const alreadyHasSide = directEntry.ar.includes('الأيسر') || directEntry.ar.includes('الأيمن') || directEntry.ar.includes('اليسرى') || directEntry.ar.includes('اليمنى');
+          if (alreadyHasSide || !sideSuffix) {
+            resolvedAr = directEntry.ar;
+          } else {
+            const isFem = directEntry.ar.includes('العضلة') || directEntry.ar.includes('الرئة') || directEntry.ar.includes('الكلية') || directEntry.ar.endsWith('ة') || directEntry.ar.endsWith('ية');
+            const sideStr = sideSuffix === 'Left' ? (isFem ? ' اليسرى' : ' الأيسر') : (isFem ? ' اليمنى' : ' الأيمن');
+            resolvedAr = `${directEntry.ar}${sideStr}`;
+          }
+        }
 
         // Match against dictionary or definitions.json
         const matchedDict = directEntry 
-          ? { ar: resolvedArabicName || directEntry.ar + (directEntry.ar.includes('الأيسر') || directEntry.ar.includes('الأيمن') ? '' : sideAr), descEn: directEntry.descEn, descAr: directEntry.descAr }
+          ? { ar: resolvedAr || directEntry.ar, descEn: directEntry.descEn, descAr: directEntry.descAr }
           : Object.entries(dictRecord).find(([k]) => baseKey.toLowerCase() === k.toLowerCase() || baseKey.toLowerCase().includes(k.toLowerCase()))?.[1]
           || Object.entries(ANATOMY_DICTIONARY).find(([k]) => cleanName.toLowerCase().includes(k.toLowerCase()))?.[1];
         
         let descEn = matchedDict ? matchedDict.descEn : '';
-        let nameAr = resolvedArabicName || (matchedDict 
+        let nameAr = resolvedAr || (matchedDict 
           ? matchedDict.ar 
           : (cleanName.includes('(') ? cleanName.split('(')[1]?.replace(')', '') : ''));
         let descAr = matchedDict ? matchedDict.descAr : '';
