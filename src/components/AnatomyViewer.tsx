@@ -46,7 +46,7 @@ interface SystemLayerConfig {
 
 const SYSTEM_LAYERS: SystemLayerConfig[] = [
   { id: 'skeletal', labelEn: 'Skeletal System (Bones)', labelAr: 'الهيكل العظمي', file: 'skeletal.glb', color: 0xe2ded4, icon: Bone, defaultVisible: true },
-  { id: 'muscular', labelEn: 'Full Muscular Anatomy', labelAr: 'التشريح العضلي المفصل', file: 'muscular.glb', color: 0xbe123c, icon: Activity, defaultVisible: false },
+  { id: 'muscular', labelEn: 'Full Muscular Anatomy', labelAr: 'التشريح العضلي الكامل', file: 'male_full_body_ecorche.glb', color: 0xbe123c, icon: Activity, defaultVisible: false },
   { id: 'cardiovascular', labelEn: 'Cardiovascular & Heart', labelAr: 'الجهاز الدوري والقلب', file: 'cardiovascular.glb', color: 0xdc2626, icon: Heart, defaultVisible: false },
   { id: 'nervous', labelEn: 'Nervous System & Brain', labelAr: 'الجهاز العصبي والدماغ', file: 'nervous.glb', color: 0xeab308, icon: Brain, defaultVisible: false },
   { id: 'visceral', labelEn: 'Visceral Organs', labelAr: 'الأعضاء الحشوية', file: 'visceral.glb', color: 0xbf6b59, icon: Layers, defaultVisible: false },
@@ -693,6 +693,8 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     roughness: 0.25,
   }));
   const dracoLoaderRef = useRef<DRACOLoader | null>(null);
+  const targetPinpointRef = useRef<THREE.Group | null>(null);
+  const lastHitPointRef = useRef<THREE.Vector3>(new THREE.Vector3(0, 1.0, 0));
 
   // Search & Inspection state
   const [searchQuery, setSearchQuery] = useState('');
@@ -741,6 +743,13 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
             let roughness = 0.38;
             let metalness = 0.04;
 
+            // Completely hide pleura membrane covering lungs so lung lobes are directly visible & inspectable
+            if (name.includes('pleura')) {
+              mesh.visible = false;
+              mesh.raycast = () => {};
+              return;
+            }
+
             // Specialized authentic organ color shading (No weird purple defaults)
             if (name.includes('liver')) {
               matColor = 0x78281f; // Deep rich hepatic reddish-brown
@@ -778,10 +787,6 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
             } else if (name.includes('vein') || name.includes('cava')) {
               matColor = 0x2563eb; // Deoxygenated venous royal blue
               roughness = 0.3;
-            } else if (sysConfig.id === 'muscular') {
-              matColor = 0xa82020; // Deep realistic striated muscle red
-              roughness = 0.45;
-              metalness = 0.02;
             } else if (sysConfig.id === 'visceral') {
               matColor = 0xbf6b59; // Natural visceral warm organ tone instead of purple
               roughness = 0.4;
@@ -793,7 +798,13 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
 
             // For models with embedded textures or ecorche, preserve their original texture map and appearance
             const origMat = (Array.isArray(mesh.material) ? mesh.material[0] : mesh.material) as THREE.MeshStandardMaterial;
-            if (origMat && origMat.map) {
+            if (sysConfig.file === 'male_full_body_ecorche.glb' && origMat) {
+              const texturedMat = origMat.clone();
+              texturedMat.roughness = 0.42;
+              texturedMat.metalness = 0.04;
+              mesh.material = texturedMat;
+              originalMaterials.current.set(mesh, texturedMat.clone());
+            } else if (origMat && origMat.map) {
               const texturedMat = origMat.clone();
               texturedMat.roughness = roughness;
               texturedMat.metalness = metalness;
@@ -818,8 +829,16 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           }
         });
 
-        // Anatomical alignment (all Z-Anatomy models share origin and scale)
-        root.position.set(0, 0, 0);
+        // Anatomical alignment
+        if (sysConfig.file === 'male_full_body_ecorche.glb') {
+          // Precise anatomical alignment to human skeleton
+          const ecorcheScale = 0.0255;
+          root.scale.set(ecorcheScale, ecorcheScale, ecorcheScale);
+          // Soles at Y = 0.04m matching Calcaneus foot plane, torso depth aligned at Z = 0.015m
+          root.position.set(0, 1.140, 0.015);
+        } else {
+          root.position.set(0, 0, 0);
+        }
 
         root.visible = visibleSystemsRef.current[sysConfig.id] ?? !!sysConfig.defaultVisible;
 
@@ -885,6 +904,47 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
       .then(d => { definitionsRef.current = d; })
       .catch(() => {});
 
+    // 3D Pinpoint Holographic Target Reticle
+    const targetGroup = new THREE.Group();
+    targetGroup.name = 'targetPinpoint';
+    targetGroup.visible = false;
+
+    // Inner glowing ring
+    const innerRingGeo = new THREE.RingGeometry(0.012, 0.018, 32);
+    const innerRingMat = new THREE.MeshBasicMaterial({
+      color: 0x06b6d4,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.9,
+      depthTest: false,
+    });
+    const innerRing = new THREE.Mesh(innerRingGeo, innerRingMat);
+    targetGroup.add(innerRing);
+
+    // Outer reticle ring
+    const outerRingGeo = new THREE.RingGeometry(0.026, 0.029, 32);
+    const outerRingMat = new THREE.MeshBasicMaterial({
+      color: 0x38bdf8,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.7,
+      depthTest: false,
+    });
+    const outerRing = new THREE.Mesh(outerRingGeo, outerRingMat);
+    targetGroup.add(outerRing);
+
+    // Center focal dot
+    const dotGeo = new THREE.SphereGeometry(0.004, 16, 16);
+    const dotMat = new THREE.MeshBasicMaterial({
+      color: 0x22d3ee,
+      depthTest: false,
+    });
+    const dot = new THREE.Mesh(dotGeo, dotMat);
+    targetGroup.add(dot);
+
+    scene.add(targetGroup);
+    targetPinpointRef.current = targetGroup;
+
     // Initial load: Skeletal layer (first item in SYSTEM_LAYERS)
     loadSystemLayer(SYSTEM_LAYERS[0], scene);
 
@@ -908,17 +968,45 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         }
       });
 
-      const intersects = raycaster.intersectObjects(visibleMeshes, false);
-      if (intersects.length > 0) {
-        const hit = intersects[0].object as THREE.Mesh;
+      // Filter out pleura membrane so lung lobes and thoracic organs are directly clicked
+      const intersects = raycaster.intersectObjects(visibleMeshes, false)
+        .filter(i => !(i.object as THREE.Mesh).name.toLowerCase().includes('pleura'));
 
-        if (selectedMeshRef.current) {
+      if (intersects.length > 0) {
+        const hitIntersection = intersects[0];
+        const hit = hitIntersection.object as THREE.Mesh;
+        const hitPoint = hitIntersection.point;
+        lastHitPointRef.current.copy(hitPoint);
+
+        // Position & orient 3D holographic pinpoint target ring on the exact surface hit
+        if (targetPinpointRef.current) {
+          targetPinpointRef.current.position.copy(hitPoint);
+          if (hitIntersection.face) {
+            const normal = hitIntersection.face.normal.clone();
+            normal.transformDirection(hit.matrixWorld);
+            targetPinpointRef.current.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal);
+            targetPinpointRef.current.position.addScaledVector(normal, 0.003);
+          }
+          targetPinpointRef.current.visible = true;
+        }
+
+        if (selectedMeshRef.current && selectedMeshRef.current !== hit) {
           const prevMat = originalMaterials.current.get(selectedMeshRef.current);
           if (prevMat) selectedMeshRef.current.material = prevMat.clone();
         }
 
         selectedMeshRef.current = hit;
-        hit.material = highlightMaterialRef.current;
+
+        const sysId = (hit.userData.systemId || 'skeletal') as AnatomySystemId;
+        const sysConfig = SYSTEM_LAYERS.find(s => s.id === sysId) || SYSTEM_LAYERS[0];
+
+        // For muscular ecorche: keep photorealistic muscle texture intact, do not wash with flat cyan!
+        if (sysId !== 'muscular') {
+          hit.material = highlightMaterialRef.current;
+        } else {
+          const origMat = originalMaterials.current.get(hit);
+          if (origMat) hit.material = origMat.clone();
+        }
 
         // Clean raw mesh name and remove glTF artifacts like Frontal_bone_1, Mesh_002, etc.
         let rawClean = hit.name
@@ -931,14 +1019,11 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           .trim();
 
         let cleanName = rawClean;
-        const sysId = (hit.userData.systemId || 'skeletal') as AnatomySystemId;
-        const sysConfig = SYSTEM_LAYERS.find(s => s.id === sysId) || SYSTEM_LAYERS[0];
-
         let resolvedArabicName: string | null = null;
 
         // Fallback spatial resolution ONLY for models with generic placeholder names (Object_3, SubTool, Decimation)
         if (cleanName.includes('Object') || cleanName.includes('Decimation') || cleanName.includes('SubTool') || cleanName.startsWith('mesh_')) {
-          const muscleRes = resolveMuscleFromHit(hit, intersects[0].point);
+          const muscleRes = resolveMuscleFromHit(hit, hitPoint);
           cleanName = muscleRes.en;
           resolvedArabicName = muscleRes.ar;
         }
@@ -1062,6 +1147,11 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     let animId: number;
     const animate = () => {
       animId = requestAnimationFrame(animate);
+      if (targetPinpointRef.current && targetPinpointRef.current.visible) {
+        const t = performance.now() * 0.003;
+        const s = 1.0 + Math.sin(t * 3.5) * 0.12;
+        targetPinpointRef.current.scale.set(s, s, s);
+      }
       controls.update();
       renderer.render(scene, camera);
     };
@@ -1122,33 +1212,43 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     setIsIsolated(newIsolate);
 
     const hit = selectedMeshRef.current;
+    const isMuscle = hit.userData.systemId === 'muscular';
 
-    // When focusing/isolating, restore natural realistic material (removing the cyan selection tint)
+    // When focusing/isolating, restore natural realistic material (removing any selection tint)
     if (newIsolate) {
       const origMat = originalMaterials.current.get(hit);
       if (origMat) {
         hit.material = origMat.clone();
       }
 
-      // Smoothly focus camera onto the selected specimen
+      // Smoothly focus camera onto the selected specimen or pinpoint muscle location
       if (cameraRef.current && controlsRef.current) {
-        const box = new THREE.Box3().setFromObject(hit);
-        const center = box.getCenter(new THREE.Vector3());
-        const size = box.getSize(new THREE.Vector3());
-        const maxDim = Math.max(size.x, size.y, size.z, 0.15);
+        if (isMuscle) {
+          const focal = lastHitPointRef.current;
+          controlsRef.current.target.copy(focal);
+          cameraRef.current.position.set(focal.x, focal.y + 0.03, focal.z + 0.35);
+          controlsRef.current.update();
+        } else {
+          const box = new THREE.Box3().setFromObject(hit);
+          const center = box.getCenter(new THREE.Vector3());
+          const size = box.getSize(new THREE.Vector3());
+          const maxDim = Math.max(size.x, size.y, size.z, 0.15);
 
-        controlsRef.current.target.copy(center);
-        cameraRef.current.position.set(center.x, center.y + maxDim * 0.4, center.z + maxDim * 2.2);
-        controlsRef.current.update();
+          controlsRef.current.target.copy(center);
+          cameraRef.current.position.set(center.x, center.y + maxDim * 0.4, center.z + maxDim * 2.2);
+          controlsRef.current.update();
+        }
       }
     } else {
-      // When exiting isolation, restore selection highlight on active mesh
-      hit.material = new THREE.MeshStandardMaterial({
-        color: 0x38bdf8,
-        emissive: 0x0284c7,
-        emissiveIntensity: 0.5,
-        roughness: 0.25,
-      });
+      // When exiting isolation, restore selection highlight on active mesh (except muscular)
+      if (!isMuscle) {
+        hit.material = new THREE.MeshStandardMaterial({
+          color: 0x38bdf8,
+          emissive: 0x0284c7,
+          emissiveIntensity: 0.5,
+          roughness: 0.25,
+        });
+      }
     }
 
     systemGroups.current.forEach((grp) => {

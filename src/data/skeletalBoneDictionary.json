@@ -4528,14 +4528,16 @@
     "descAr": "أنبوب دقيق متصل بالأعور يعمل كمستودع للبكتيريا المعوية النافعة والمناعة."
   },
   "Free taenia": {
-    "ar": "الشريطة القولونية الحرة",
-    "descEn": "Longitudinal muscular bands of the large intestine facilitating peristalsis.",
-    "descAr": "حزم عضلية طولية على جدار القولون تسهم في الحركة الدودية."
+    "ar": "أشرطة القولون العضلية (التينيا)",
+    "descAr": "ثلاث حزم عضلية طولية سميكة على طول القولون تحدث التقلصات الجيبية (القعور القولونية) لنقل الفضلات.",
+    "descEn": "Three narrow longitudinal muscular bands tonic contraction creates characteristic haustra of colon.",
+    "system": "visceral"
   },
   "free taenia": {
-    "ar": "الشريطة القولونية الحرة",
-    "descEn": "Longitudinal muscular bands of the large intestine facilitating peristalsis.",
-    "descAr": "حزم عضلية طولية على جدار القولون تسهم في الحركة الدودية."
+    "ar": "أشرطة القولون العضلية (التينيا)",
+    "descAr": "ثلاث حزم عضلية طولية سميكة على طول القولون تحدث التقلصات الجيبية (القعور القولونية) لنقل الفضلات.",
+    "descEn": "Three narrow longitudinal muscular bands tonic contraction creates characteristic haustra of colon.",
+    "system": "visceral"
   },
   "Gallbladder": {
     "ar": "المرارة (الحويصلة الصفراوية)",
@@ -34642,13 +34644,10 @@
     "descDe": "Reguliert Stoffwechsel und Wachstum"
   },
   "Left adrenal gland": {
-    "ar": "الغدة الكظرية اليسرى",
-    "descEn": "Secretes adrenaline and cortisol",
-    "descAr": "إفراز الأدرينالين والكورتيزول",
-    "fr": "Glande surrénale gauche",
-    "de": "Linke Nebenniere",
-    "descFr": "Sécrète l'adrénaline et le cortisol",
-    "descDe": "Sezerniert Adrenalin und Kortisol"
+    "ar": "الغدة الكظرية اليسرى (فوق الكلوية)",
+    "descAr": "غدة صماء هامة فوق الكلية اليسرى، تفرز هرمونات الأدرينالين والكورتيزول والألدوستيرون لتنظيم الضغط والاستجابة للتوتر.",
+    "descEn": "Endocrine gland secreting catecholamines, aldosterone, and cortisol to modulate stress responses and electrolytes.",
+    "system": "visceral"
   },
   "الغدة الكظرية اليسرى": {
     "ar": "الغدة الكظرية اليسرى",
@@ -34660,22 +34659,16 @@
     "descDe": "Sezerniert Adrenalin und Kortisol"
   },
   "left adrenal gland": {
-    "ar": "الغدة الكظرية اليسرى",
-    "descEn": "Secretes adrenaline and cortisol",
-    "descAr": "إفراز الأدرينالين والكورتيزول",
-    "fr": "Glande surrénale gauche",
-    "de": "Linke Nebenniere",
-    "descFr": "Sécrète l'adrénaline et le cortisol",
-    "descDe": "Sezerniert Adrenalin und Kortisol"
+    "ar": "الغدة الكظرية اليسرى (فوق الكلوية)",
+    "descAr": "غدة صماء هامة فوق الكلية اليسرى، تفرز هرمونات الأدرينالين والكورتيزول والألدوستيرون لتنظيم الضغط والاستجابة للتوتر.",
+    "descEn": "Endocrine gland secreting catecholamines, aldosterone, and cortisol to modulate stress responses and electrolytes.",
+    "system": "visceral"
   },
   "Right adrenal gland": {
-    "ar": "الغدة الكظرية اليمنى",
-    "descEn": "Secretes adrenaline and cortisol",
-    "descAr": "إفراز الأدرينالين والكورتيزول",
-    "fr": "Glande surrénale droite",
-    "de": "Rechte Nebenniere",
-    "descFr": "Sécrète l'adrénaline et le cortisol",
-    "descDe": "Sezerniert Adrenalin und Kortisol"
+    "ar": "الغدة الكظرية اليمنى (فوق الكلوية)",
+    "descAr": "غدة صماء فوق الكلية اليمنى تفرز هرمونات الكورتيكوستيرويد لتنظيم ضغط الدم والتمثيل الغذائي وتوازن الأملاح.",
+    "descEn": "Right pyramidal endocrine gland synthesizing mineralocorticoids and glucocorticoids for blood pressure homeostasis.",
+    "system": "visceral"
   },
   "الغدة الكظرية اليمنى": {
     "ar": "الغدة الكظرية اليمنى",
@@ -34687,13 +34680,10 @@
     "descDe": "Sezerniert Adrenalin und Kortisol"
   },
   "right adrenal gland": {
-    "ar": "الغدة الكظرية اليمنى",
-    "descEn": "Secretes adrenaline and cortisol",
-    "descAr": "إفراز الأدرينالين والكورتيزول",
-    "fr": "Glande surrénale droite",
-    "de": "Rechte Nebenniere",
-    "descFr": "Sécrète l'adrénaline et le cortisol",
-    "descDe": "Sezerniert Adrenalin und Kortisol"
+    "ar": "الغدة الكظرية اليمنى (فوق الكلوية)",
+    "descAr": "غدة صماء فوق الكلية اليمنى تفرز هرمونات الكورتيكوستيرويد لتنظيم ضغط الدم والتمثيل الغذائي وتوازن الأملاح.",
+    "descEn": "Right pyramidal endocrine gland synthesizing mineralocorticoids and glucocorticoids for blood pressure homeostasis.",
+    "system": "visceral"
   },
   "Thoracic aorta": {
     "ar": "الشريان الأبهر الصدري",
@@ -39459,5 +39449,953 @@
     "descAr": "عضلة متخصصة تتبع الجهاز العضلي تسهم في الحركة الدقيقة والتوازن وتثبيت المفاصل.",
     "descEn": "Specialized anatomical muscle contributing to biomechanical movement, posture, and articulation stability.",
     "system": "muscular"
+  },
+  "Inferior lobe of left lung": {
+    "ar": "الرئة اليسرى (الفص السفلي)",
+    "descAr": "الفص السفلي للرئة اليسرى، يشارك في تبادل الأكسجين وثاني أكسيد الكربون عبر الحويصلات الهوائية وتروية الدم بالأكسجين.",
+    "descEn": "Inferior lobe of the left lung facilitating alveolar gas exchange and oxygenation of systemic blood.",
+    "system": "visceral"
+  },
+  "inferior lobe of left lung": {
+    "ar": "الرئة اليسرى (الفص السفلي)",
+    "descAr": "الفص السفلي للرئة اليسرى، يشارك في تبادل الأكسجين وثاني أكسيد الكربون عبر الحويصلات الهوائية وتروية الدم بالأكسجين.",
+    "descEn": "Inferior lobe of the left lung facilitating alveolar gas exchange and oxygenation of systemic blood.",
+    "system": "visceral"
+  },
+  "Left inferior lobe of lung": {
+    "ar": "الرئة اليسرى (الفص السفلي)",
+    "descAr": "الفص السفلي للرئة اليسرى، يشارك في تبادل الأكسجين وثاني أكسيد الكربون عبر الحويصلات الهوائية وتروية الدم بالأكسجين.",
+    "descEn": "Inferior lobe of the left lung facilitating alveolar gas exchange and oxygenation of systemic blood.",
+    "system": "visceral"
+  },
+  "left inferior lobe of lung": {
+    "ar": "الرئة اليسرى (الفص السفلي)",
+    "descAr": "الفص السفلي للرئة اليسرى، يشارك في تبادل الأكسجين وثاني أكسيد الكربون عبر الحويصلات الهوائية وتروية الدم بالأكسجين.",
+    "descEn": "Inferior lobe of the left lung facilitating alveolar gas exchange and oxygenation of systemic blood.",
+    "system": "visceral"
+  },
+  "Superior lobe of left lung": {
+    "ar": "الرئة اليسرى (الفص العلوي)",
+    "descAr": "الفص العلوي للرئة اليسرى، يحتوي على اللسينة وثلمة القلب ويقوم بالتبادل الغازي التنفسي.",
+    "descEn": "Superior lobe of the left lung featuring the cardiac notch and lingula, providing vital pulmonary gas exchange.",
+    "system": "visceral"
+  },
+  "superior lobe of left lung": {
+    "ar": "الرئة اليسرى (الفص العلوي)",
+    "descAr": "الفص العلوي للرئة اليسرى، يحتوي على اللسينة وثلمة القلب ويقوم بالتبادل الغازي التنفسي.",
+    "descEn": "Superior lobe of the left lung featuring the cardiac notch and lingula, providing vital pulmonary gas exchange.",
+    "system": "visceral"
+  },
+  "Left superior lobe of lung": {
+    "ar": "الرئة اليسرى (الفص العلوي)",
+    "descAr": "الفص العلوي للرئة اليسرى، يحتوي على اللسينة وثلمة القلب ويقوم بالتبادل الغازي التنفسي.",
+    "descEn": "Superior lobe of the left lung featuring the cardiac notch and lingula, providing vital pulmonary gas exchange.",
+    "system": "visceral"
+  },
+  "left superior lobe of lung": {
+    "ar": "الرئة اليسرى (الفص العلوي)",
+    "descAr": "الفص العلوي للرئة اليسرى، يحتوي على اللسينة وثلمة القلب ويقوم بالتبادل الغازي التنفسي.",
+    "descEn": "Superior lobe of the left lung featuring the cardiac notch and lingula, providing vital pulmonary gas exchange.",
+    "system": "visceral"
+  },
+  "Inferior lobe of right lung": {
+    "ar": "الرئة اليمنى (الفص السفلي)",
+    "descAr": "الفص السفلي الأكبر للرئة اليمنى، يستقبل حجماً كبيراً من الهواء المستنشق ويؤمن تبادل الغازات.",
+    "descEn": "Largest inferior lobe of the right lung accommodating substantial ventilation and alveolar perfusion.",
+    "system": "visceral"
+  },
+  "inferior lobe of right lung": {
+    "ar": "الرئة اليمنى (الفص السفلي)",
+    "descAr": "الفص السفلي الأكبر للرئة اليمنى، يستقبل حجماً كبيراً من الهواء المستنشق ويؤمن تبادل الغازات.",
+    "descEn": "Largest inferior lobe of the right lung accommodating substantial ventilation and alveolar perfusion.",
+    "system": "visceral"
+  },
+  "Right inferior lobe of lung": {
+    "ar": "الرئة اليمنى (الفص السفلي)",
+    "descAr": "الفص السفلي الأكبر للرئة اليمنى، يستقبل حجماً كبيراً من الهواء المستنشق ويؤمن تبادل الغازات.",
+    "descEn": "Largest inferior lobe of the right lung accommodating substantial ventilation and alveolar perfusion.",
+    "system": "visceral"
+  },
+  "right inferior lobe of lung": {
+    "ar": "الرئة اليمنى (الفص السفلي)",
+    "descAr": "الفص السفلي الأكبر للرئة اليمنى، يستقبل حجماً كبيراً من الهواء المستنشق ويؤمن تبادل الغازات.",
+    "descEn": "Largest inferior lobe of the right lung accommodating substantial ventilation and alveolar perfusion.",
+    "system": "visceral"
+  },
+  "Middle lobe of right lung": {
+    "ar": "الرئة اليمنى (الفص الأوسط)",
+    "descAr": "الفص الأوسط الوتدي المميز للرئة اليمنى، يقع بين الشقين الأفقي والمائل ويسهم في كفاءة التهوية.",
+    "descEn": "Wedge-shaped middle lobe unique to the right lung, positioned between horizontal and oblique fissures.",
+    "system": "visceral"
+  },
+  "middle lobe of right lung": {
+    "ar": "الرئة اليمنى (الفص الأوسط)",
+    "descAr": "الفص الأوسط الوتدي المميز للرئة اليمنى، يقع بين الشقين الأفقي والمائل ويسهم في كفاءة التهوية.",
+    "descEn": "Wedge-shaped middle lobe unique to the right lung, positioned between horizontal and oblique fissures.",
+    "system": "visceral"
+  },
+  "Right middle lobe of lung": {
+    "ar": "الرئة اليمنى (الفص الأوسط)",
+    "descAr": "الفص الأوسط الوتدي المميز للرئة اليمنى، يقع بين الشقين الأفقي والمائل ويسهم في كفاءة التهوية.",
+    "descEn": "Wedge-shaped middle lobe unique to the right lung, positioned between horizontal and oblique fissures.",
+    "system": "visceral"
+  },
+  "right middle lobe of lung": {
+    "ar": "الرئة اليمنى (الفص الأوسط)",
+    "descAr": "الفص الأوسط الوتدي المميز للرئة اليمنى، يقع بين الشقين الأفقي والمائل ويسهم في كفاءة التهوية.",
+    "descEn": "Wedge-shaped middle lobe unique to the right lung, positioned between horizontal and oblique fissures.",
+    "system": "visceral"
+  },
+  "Superior lobe of right lung": {
+    "ar": "الرئة اليمنى (الفص العلوي)",
+    "descAr": "الفص العلوي القمي للرئة اليمنى، يمتد فوق الضلع الأول ويؤمن تهوية القمم الرئوية.",
+    "descEn": "Apical superior lobe of the right lung extending above the first rib for upper airway gas exchange.",
+    "system": "visceral"
+  },
+  "superior lobe of right lung": {
+    "ar": "الرئة اليمنى (الفص العلوي)",
+    "descAr": "الفص العلوي القمي للرئة اليمنى، يمتد فوق الضلع الأول ويؤمن تهوية القمم الرئوية.",
+    "descEn": "Apical superior lobe of the right lung extending above the first rib for upper airway gas exchange.",
+    "system": "visceral"
+  },
+  "Right superior lobe of lung": {
+    "ar": "الرئة اليمنى (الفص العلوي)",
+    "descAr": "الفص العلوي القمي للرئة اليمنى، يمتد فوق الضلع الأول ويؤمن تهوية القمم الرئوية.",
+    "descEn": "Apical superior lobe of the right lung extending above the first rib for upper airway gas exchange.",
+    "system": "visceral"
+  },
+  "right superior lobe of lung": {
+    "ar": "الرئة اليمنى (الفص العلوي)",
+    "descAr": "الفص العلوي القمي للرئة اليمنى، يمتد فوق الضلع الأول ويؤمن تهوية القمم الرئوية.",
+    "descEn": "Apical superior lobe of the right lung extending above the first rib for upper airway gas exchange.",
+    "system": "visceral"
+  },
+  "Anterior lateral segment of liver (VI)": {
+    "ar": "الكبد (قطاع تشريحي وظيفي)",
+    "descAr": "قطاع كبدي وظيفي مستقل جراحياً بفرعه الخاص من الشريان الكبدي ووريد الباب والقناة الصفراوية، ينقي الدم ويفرز الصفراء.",
+    "descEn": "Functionally independent Couinaud hepatic segment with dedicated vascular and biliary pedicle for metabolic detoxification.",
+    "system": "visceral"
+  },
+  "anterior lateral segment of liver (vi)": {
+    "ar": "الكبد (قطاع تشريحي وظيفي)",
+    "descAr": "قطاع كبدي وظيفي مستقل جراحياً بفرعه الخاص من الشريان الكبدي ووريد الباب والقناة الصفراوية، ينقي الدم ويفرز الصفراء.",
+    "descEn": "Functionally independent Couinaud hepatic segment with dedicated vascular and biliary pedicle for metabolic detoxification.",
+    "system": "visceral"
+  },
+  "Anterior medial segment of liver (V)": {
+    "ar": "الكبد (قطاع تشريحي وظيفي)",
+    "descAr": "قطاع كبدي وظيفي مستقل جراحياً بفرعه الخاص من الشريان الكبدي ووريد الباب والقناة الصفراوية، ينقي الدم ويفرز الصفراء.",
+    "descEn": "Functionally independent Couinaud hepatic segment with dedicated vascular and biliary pedicle for metabolic detoxification.",
+    "system": "visceral"
+  },
+  "anterior medial segment of liver (v)": {
+    "ar": "الكبد (قطاع تشريحي وظيفي)",
+    "descAr": "قطاع كبدي وظيفي مستقل جراحياً بفرعه الخاص من الشريان الكبدي ووريد الباب والقناة الصفراوية، ينقي الدم ويفرز الصفراء.",
+    "descEn": "Functionally independent Couinaud hepatic segment with dedicated vascular and biliary pedicle for metabolic detoxification.",
+    "system": "visceral"
+  },
+  "Left anterior lateral segment of liver (III)": {
+    "ar": "الكبد (قطاع تشريحي وظيفي)",
+    "descAr": "قطاع كبدي وظيفي مستقل جراحياً بفرعه الخاص من الشريان الكبدي ووريد الباب والقناة الصفراوية، ينقي الدم ويفرز الصفراء.",
+    "descEn": "Functionally independent Couinaud hepatic segment with dedicated vascular and biliary pedicle for metabolic detoxification.",
+    "system": "visceral"
+  },
+  "left anterior lateral segment of liver (iii)": {
+    "ar": "الكبد (قطاع تشريحي وظيفي)",
+    "descAr": "قطاع كبدي وظيفي مستقل جراحياً بفرعه الخاص من الشريان الكبدي ووريد الباب والقناة الصفراوية، ينقي الدم ويفرز الصفراء.",
+    "descEn": "Functionally independent Couinaud hepatic segment with dedicated vascular and biliary pedicle for metabolic detoxification.",
+    "system": "visceral"
+  },
+  "Left medial segment of liver (IV)": {
+    "ar": "الكبد (قطاع تشريحي وظيفي)",
+    "descAr": "قطاع كبدي وظيفي مستقل جراحياً بفرعه الخاص من الشريان الكبدي ووريد الباب والقناة الصفراوية، ينقي الدم ويفرز الصفراء.",
+    "descEn": "Functionally independent Couinaud hepatic segment with dedicated vascular and biliary pedicle for metabolic detoxification.",
+    "system": "visceral"
+  },
+  "left medial segment of liver (iv)": {
+    "ar": "الكبد (قطاع تشريحي وظيفي)",
+    "descAr": "قطاع كبدي وظيفي مستقل جراحياً بفرعه الخاص من الشريان الكبدي ووريد الباب والقناة الصفراوية، ينقي الدم ويفرز الصفراء.",
+    "descEn": "Functionally independent Couinaud hepatic segment with dedicated vascular and biliary pedicle for metabolic detoxification.",
+    "system": "visceral"
+  },
+  "Left posterior lateral segment of liver (II)": {
+    "ar": "الكبد (قطاع تشريحي وظيفي)",
+    "descAr": "قطاع كبدي وظيفي مستقل جراحياً بفرعه الخاص من الشريان الكبدي ووريد الباب والقناة الصفراوية، ينقي الدم ويفرز الصفراء.",
+    "descEn": "Functionally independent Couinaud hepatic segment with dedicated vascular and biliary pedicle for metabolic detoxification.",
+    "system": "visceral"
+  },
+  "left posterior lateral segment of liver (ii)": {
+    "ar": "الكبد (قطاع تشريحي وظيفي)",
+    "descAr": "قطاع كبدي وظيفي مستقل جراحياً بفرعه الخاص من الشريان الكبدي ووريد الباب والقناة الصفراوية، ينقي الدم ويفرز الصفراء.",
+    "descEn": "Functionally independent Couinaud hepatic segment with dedicated vascular and biliary pedicle for metabolic detoxification.",
+    "system": "visceral"
+  },
+  "Posterior lateral segment of liver (VII)": {
+    "ar": "الكبد (قطاع تشريحي وظيفي)",
+    "descAr": "قطاع كبدي وظيفي مستقل جراحياً بفرعه الخاص من الشريان الكبدي ووريد الباب والقناة الصفراوية، ينقي الدم ويفرز الصفراء.",
+    "descEn": "Functionally independent Couinaud hepatic segment with dedicated vascular and biliary pedicle for metabolic detoxification.",
+    "system": "visceral"
+  },
+  "posterior lateral segment of liver (vii)": {
+    "ar": "الكبد (قطاع تشريحي وظيفي)",
+    "descAr": "قطاع كبدي وظيفي مستقل جراحياً بفرعه الخاص من الشريان الكبدي ووريد الباب والقناة الصفراوية، ينقي الدم ويفرز الصفراء.",
+    "descEn": "Functionally independent Couinaud hepatic segment with dedicated vascular and biliary pedicle for metabolic detoxification.",
+    "system": "visceral"
+  },
+  "Posterior medial segment of liver (VIII)": {
+    "ar": "الكبد (قطاع تشريحي وظيفي)",
+    "descAr": "قطاع كبدي وظيفي مستقل جراحياً بفرعه الخاص من الشريان الكبدي ووريد الباب والقناة الصفراوية، ينقي الدم ويفرز الصفراء.",
+    "descEn": "Functionally independent Couinaud hepatic segment with dedicated vascular and biliary pedicle for metabolic detoxification.",
+    "system": "visceral"
+  },
+  "posterior medial segment of liver (viii)": {
+    "ar": "الكبد (قطاع تشريحي وظيفي)",
+    "descAr": "قطاع كبدي وظيفي مستقل جراحياً بفرعه الخاص من الشريان الكبدي ووريد الباب والقناة الصفراوية، ينقي الدم ويفرز الصفراء.",
+    "descEn": "Functionally independent Couinaud hepatic segment with dedicated vascular and biliary pedicle for metabolic detoxification.",
+    "system": "visceral"
+  },
+  "Posterior segment of liver (I)": {
+    "ar": "الكبد (قطاع تشريحي وظيفي)",
+    "descAr": "قطاع كبدي وظيفي مستقل جراحياً بفرعه الخاص من الشريان الكبدي ووريد الباب والقناة الصفراوية، ينقي الدم ويفرز الصفراء.",
+    "descEn": "Functionally independent Couinaud hepatic segment with dedicated vascular and biliary pedicle for metabolic detoxification.",
+    "system": "visceral"
+  },
+  "posterior segment of liver (i)": {
+    "ar": "الكبد (قطاع تشريحي وظيفي)",
+    "descAr": "قطاع كبدي وظيفي مستقل جراحياً بفرعه الخاص من الشريان الكبدي ووريد الباب والقناة الصفراوية، ينقي الدم ويفرز الصفراء.",
+    "descEn": "Functionally independent Couinaud hepatic segment with dedicated vascular and biliary pedicle for metabolic detoxification.",
+    "system": "visceral"
+  },
+  "Left main bronchus": {
+    "ar": "شعبة هوائية رئيسية / فصية",
+    "descAr": "مجرى هوائي غضروفي مبطن بنسيج طلائي مهدب، يوصل الهواء المرشح والرطب من القصبة الهوائية إلى فصوص الرئة.",
+    "descEn": "Cartilaginous ciliated airway conduit channeling humidified air from the trachea into pulmonary lobes.",
+    "system": "visceral"
+  },
+  "left main bronchus": {
+    "ar": "شعبة هوائية رئيسية / فصية",
+    "descAr": "مجرى هوائي غضروفي مبطن بنسيج طلائي مهدب، يوصل الهواء المرشح والرطب من القصبة الهوائية إلى فصوص الرئة.",
+    "descEn": "Cartilaginous ciliated airway conduit channeling humidified air from the trachea into pulmonary lobes.",
+    "system": "visceral"
+  },
+  "Right main bronchus": {
+    "ar": "شعبة هوائية رئيسية / فصية",
+    "descAr": "مجرى هوائي غضروفي مبطن بنسيج طلائي مهدب، يوصل الهواء المرشح والرطب من القصبة الهوائية إلى فصوص الرئة.",
+    "descEn": "Cartilaginous ciliated airway conduit channeling humidified air from the trachea into pulmonary lobes.",
+    "system": "visceral"
+  },
+  "right main bronchus": {
+    "ar": "شعبة هوائية رئيسية / فصية",
+    "descAr": "مجرى هوائي غضروفي مبطن بنسيج طلائي مهدب، يوصل الهواء المرشح والرطب من القصبة الهوائية إلى فصوص الرئة.",
+    "descEn": "Cartilaginous ciliated airway conduit channeling humidified air from the trachea into pulmonary lobes.",
+    "system": "visceral"
+  },
+  "Left superior lobar bronchus": {
+    "ar": "شعبة هوائية رئيسية / فصية",
+    "descAr": "مجرى هوائي غضروفي مبطن بنسيج طلائي مهدب، يوصل الهواء المرشح والرطب من القصبة الهوائية إلى فصوص الرئة.",
+    "descEn": "Cartilaginous ciliated airway conduit channeling humidified air from the trachea into pulmonary lobes.",
+    "system": "visceral"
+  },
+  "left superior lobar bronchus": {
+    "ar": "شعبة هوائية رئيسية / فصية",
+    "descAr": "مجرى هوائي غضروفي مبطن بنسيج طلائي مهدب، يوصل الهواء المرشح والرطب من القصبة الهوائية إلى فصوص الرئة.",
+    "descEn": "Cartilaginous ciliated airway conduit channeling humidified air from the trachea into pulmonary lobes.",
+    "system": "visceral"
+  },
+  "Left inferior lobar bronchus": {
+    "ar": "شعبة هوائية رئيسية / فصية",
+    "descAr": "مجرى هوائي غضروفي مبطن بنسيج طلائي مهدب، يوصل الهواء المرشح والرطب من القصبة الهوائية إلى فصوص الرئة.",
+    "descEn": "Cartilaginous ciliated airway conduit channeling humidified air from the trachea into pulmonary lobes.",
+    "system": "visceral"
+  },
+  "left inferior lobar bronchus": {
+    "ar": "شعبة هوائية رئيسية / فصية",
+    "descAr": "مجرى هوائي غضروفي مبطن بنسيج طلائي مهدب، يوصل الهواء المرشح والرطب من القصبة الهوائية إلى فصوص الرئة.",
+    "descEn": "Cartilaginous ciliated airway conduit channeling humidified air from the trachea into pulmonary lobes.",
+    "system": "visceral"
+  },
+  "Right superior lobar bronchus": {
+    "ar": "شعبة هوائية رئيسية / فصية",
+    "descAr": "مجرى هوائي غضروفي مبطن بنسيج طلائي مهدب، يوصل الهواء المرشح والرطب من القصبة الهوائية إلى فصوص الرئة.",
+    "descEn": "Cartilaginous ciliated airway conduit channeling humidified air from the trachea into pulmonary lobes.",
+    "system": "visceral"
+  },
+  "right superior lobar bronchus": {
+    "ar": "شعبة هوائية رئيسية / فصية",
+    "descAr": "مجرى هوائي غضروفي مبطن بنسيج طلائي مهدب، يوصل الهواء المرشح والرطب من القصبة الهوائية إلى فصوص الرئة.",
+    "descEn": "Cartilaginous ciliated airway conduit channeling humidified air from the trachea into pulmonary lobes.",
+    "system": "visceral"
+  },
+  "Middle lobar bronchus": {
+    "ar": "شعبة هوائية رئيسية / فصية",
+    "descAr": "مجرى هوائي غضروفي مبطن بنسيج طلائي مهدب، يوصل الهواء المرشح والرطب من القصبة الهوائية إلى فصوص الرئة.",
+    "descEn": "Cartilaginous ciliated airway conduit channeling humidified air from the trachea into pulmonary lobes.",
+    "system": "visceral"
+  },
+  "middle lobar bronchus": {
+    "ar": "شعبة هوائية رئيسية / فصية",
+    "descAr": "مجرى هوائي غضروفي مبطن بنسيج طلائي مهدب، يوصل الهواء المرشح والرطب من القصبة الهوائية إلى فصوص الرئة.",
+    "descEn": "Cartilaginous ciliated airway conduit channeling humidified air from the trachea into pulmonary lobes.",
+    "system": "visceral"
+  },
+  "Right inferior lobar bronchus": {
+    "ar": "شعبة هوائية رئيسية / فصية",
+    "descAr": "مجرى هوائي غضروفي مبطن بنسيج طلائي مهدب، يوصل الهواء المرشح والرطب من القصبة الهوائية إلى فصوص الرئة.",
+    "descEn": "Cartilaginous ciliated airway conduit channeling humidified air from the trachea into pulmonary lobes.",
+    "system": "visceral"
+  },
+  "right inferior lobar bronchus": {
+    "ar": "شعبة هوائية رئيسية / فصية",
+    "descAr": "مجرى هوائي غضروفي مبطن بنسيج طلائي مهدب، يوصل الهواء المرشح والرطب من القصبة الهوائية إلى فصوص الرئة.",
+    "descEn": "Cartilaginous ciliated airway conduit channeling humidified air from the trachea into pulmonary lobes.",
+    "system": "visceral"
+  },
+  "Intermediate bronchus": {
+    "ar": "شعبة هوائية رئيسية / فصية",
+    "descAr": "مجرى هوائي غضروفي مبطن بنسيج طلائي مهدب، يوصل الهواء المرشح والرطب من القصبة الهوائية إلى فصوص الرئة.",
+    "descEn": "Cartilaginous ciliated airway conduit channeling humidified air from the trachea into pulmonary lobes.",
+    "system": "visceral"
+  },
+  "intermediate bronchus": {
+    "ar": "شعبة هوائية رئيسية / فصية",
+    "descAr": "مجرى هوائي غضروفي مبطن بنسيج طلائي مهدب، يوصل الهواء المرشح والرطب من القصبة الهوائية إلى فصوص الرئة.",
+    "descEn": "Cartilaginous ciliated airway conduit channeling humidified air from the trachea into pulmonary lobes.",
+    "system": "visceral"
+  },
+  "(Anteromedial basal segmental bronchus of left lung)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "(anteromedial basal segmental bronchus of left lung)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Anterior basal segmental bronchus of left lung (BVIII)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "anterior basal segmental bronchus of left lung (bviii)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Lateral basal segmental bronchus of left lung": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "lateral basal segmental bronchus of left lung": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Medial basal segmental bronchus of left lung (BVII)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "medial basal segmental bronchus of left lung (bvii)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Posterior basal segmental bronchus of left lung (BX)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "posterior basal segmental bronchus of left lung (bx)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Superior segmental bronchus of left lung (BVI)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "superior segmental bronchus of left lung (bvi)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Anterior segmental bronchus of left lung (BIII)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "anterior segmental bronchus of left lung (biii)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Apicoposterior segmental bronchus of left lung (BI+BII)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "apicoposterior segmental bronchus of left lung (bi+bii)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Inferior lingular segmental bronchus of left lung (BV)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "inferior lingular segmental bronchus of left lung (bv)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Superior lingular segmental bronchus of left lung (BIV)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "superior lingular segmental bronchus of left lung (biv)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Lateral segmental bronchus of right lung (BIV)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "lateral segmental bronchus of right lung (biv)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Medial segmental bronchus of right lung (BV)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "medial segmental bronchus of right lung (bv)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Anterior basal segmental bronchus of right lung (BVIII)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "anterior basal segmental bronchus of right lung (bviii)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Lateral basal segmental bronchus of right lung (BIX)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "lateral basal segmental bronchus of right lung (bix)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Medial basal segmental bronchus of right lung": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "medial basal segmental bronchus of right lung": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Posterior basal segmental bronchus of right lung (BX)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "posterior basal segmental bronchus of right lung (bx)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Superior segmental bronchus of right lung (BVI)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "superior segmental bronchus of right lung (bvi)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Anterior segmental bronchus of right lung (BIII)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "anterior segmental bronchus of right lung (biii)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Apical segmental bronchus of right lung (BI)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "apical segmental bronchus of right lung (bi)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Posterior segmental bronchus of right lung (BII)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "posterior segmental bronchus of right lung (bii)": {
+    "ar": "قصبة هوائية قطعية رئوية",
+    "descAr": "تفرع قصبي دقيق يزود قطاعاً رئوياً مخصصاً بالهواء ويضمن التوزيع المنتظم للأكسجين نحو القصيبات والحويصلات.",
+    "descEn": "Tertiary airway branch aerating a dedicated bronchopulmonary segment for targeted alveolar ventilation.",
+    "system": "visceral"
+  },
+  "Suprarenal gland.l": {
+    "ar": "الغدة الكظرية اليسرى (فوق الكلوية)",
+    "descAr": "غدة صماء هامة فوق الكلية اليسرى، تفرز هرمونات الأدرينالين والكورتيزول والألدوستيرون لتنظيم الضغط والاستجابة للتوتر.",
+    "descEn": "Endocrine gland secreting catecholamines, aldosterone, and cortisol to modulate stress responses and electrolytes.",
+    "system": "visceral"
+  },
+  "suprarenal gland.l": {
+    "ar": "الغدة الكظرية اليسرى (فوق الكلوية)",
+    "descAr": "غدة صماء هامة فوق الكلية اليسرى، تفرز هرمونات الأدرينالين والكورتيزول والألدوستيرون لتنظيم الضغط والاستجابة للتوتر.",
+    "descEn": "Endocrine gland secreting catecholamines, aldosterone, and cortisol to modulate stress responses and electrolytes.",
+    "system": "visceral"
+  },
+  "Suprarenal gland": {
+    "ar": "الغدة الكظرية اليسرى (فوق الكلوية)",
+    "descAr": "غدة صماء هامة فوق الكلية اليسرى، تفرز هرمونات الأدرينالين والكورتيزول والألدوستيرون لتنظيم الضغط والاستجابة للتوتر.",
+    "descEn": "Endocrine gland secreting catecholamines, aldosterone, and cortisol to modulate stress responses and electrolytes.",
+    "system": "visceral"
+  },
+  "suprarenal gland": {
+    "ar": "الغدة الكظرية اليسرى (فوق الكلوية)",
+    "descAr": "غدة صماء هامة فوق الكلية اليسرى، تفرز هرمونات الأدرينالين والكورتيزول والألدوستيرون لتنظيم الضغط والاستجابة للتوتر.",
+    "descEn": "Endocrine gland secreting catecholamines, aldosterone, and cortisol to modulate stress responses and electrolytes.",
+    "system": "visceral"
+  },
+  "Left suprarenal gland": {
+    "ar": "الغدة الكظرية اليسرى (فوق الكلوية)",
+    "descAr": "غدة صماء هامة فوق الكلية اليسرى، تفرز هرمونات الأدرينالين والكورتيزول والألدوستيرون لتنظيم الضغط والاستجابة للتوتر.",
+    "descEn": "Endocrine gland secreting catecholamines, aldosterone, and cortisol to modulate stress responses and electrolytes.",
+    "system": "visceral"
+  },
+  "left suprarenal gland": {
+    "ar": "الغدة الكظرية اليسرى (فوق الكلوية)",
+    "descAr": "غدة صماء هامة فوق الكلية اليسرى، تفرز هرمونات الأدرينالين والكورتيزول والألدوستيرون لتنظيم الضغط والاستجابة للتوتر.",
+    "descEn": "Endocrine gland secreting catecholamines, aldosterone, and cortisol to modulate stress responses and electrolytes.",
+    "system": "visceral"
+  },
+  "Suprarenal gland.r": {
+    "ar": "الغدة الكظرية اليمنى (فوق الكلوية)",
+    "descAr": "غدة صماء فوق الكلية اليمنى تفرز هرمونات الكورتيكوستيرويد لتنظيم ضغط الدم والتمثيل الغذائي وتوازن الأملاح.",
+    "descEn": "Right pyramidal endocrine gland synthesizing mineralocorticoids and glucocorticoids for blood pressure homeostasis.",
+    "system": "visceral"
+  },
+  "suprarenal gland.r": {
+    "ar": "الغدة الكظرية اليمنى (فوق الكلوية)",
+    "descAr": "غدة صماء فوق الكلية اليمنى تفرز هرمونات الكورتيكوستيرويد لتنظيم ضغط الدم والتمثيل الغذائي وتوازن الأملاح.",
+    "descEn": "Right pyramidal endocrine gland synthesizing mineralocorticoids and glucocorticoids for blood pressure homeostasis.",
+    "system": "visceral"
+  },
+  "Right suprarenal gland": {
+    "ar": "الغدة الكظرية اليمنى (فوق الكلوية)",
+    "descAr": "غدة صماء فوق الكلية اليمنى تفرز هرمونات الكورتيكوستيرويد لتنظيم ضغط الدم والتمثيل الغذائي وتوازن الأملاح.",
+    "descEn": "Right pyramidal endocrine gland synthesizing mineralocorticoids and glucocorticoids for blood pressure homeostasis.",
+    "system": "visceral"
+  },
+  "right suprarenal gland": {
+    "ar": "الغدة الكظرية اليمنى (فوق الكلوية)",
+    "descAr": "غدة صماء فوق الكلية اليمنى تفرز هرمونات الكورتيكوستيرويد لتنظيم ضغط الدم والتمثيل الغذائي وتوازن الأملاح.",
+    "descEn": "Right pyramidal endocrine gland synthesizing mineralocorticoids and glucocorticoids for blood pressure homeostasis.",
+    "system": "visceral"
+  },
+  "Adenohypophysis": {
+    "ar": "الغدة النخامية (الفص الأمامي)",
+    "descAr": "سيدة الغدد الصماء، تفرز هرمون النمو (GH) والهرمونات المنشطة للدرقية (TSH) وقشرة الكظر (ACTH) والغدد التناسلية.",
+    "descEn": "Master endocrine glandular lobe secreting growth hormone, TSH, ACTH, and gonadotropins.",
+    "system": "visceral"
+  },
+  "adenohypophysis": {
+    "ar": "الغدة النخامية (الفص الأمامي)",
+    "descAr": "سيدة الغدد الصماء، تفرز هرمون النمو (GH) والهرمونات المنشطة للدرقية (TSH) وقشرة الكظر (ACTH) والغدد التناسلية.",
+    "descEn": "Master endocrine glandular lobe secreting growth hormone, TSH, ACTH, and gonadotropins.",
+    "system": "visceral"
+  },
+  "Neurohypophysis": {
+    "ar": "الغدة النخامية (الفص الخلفي)",
+    "descAr": "الفص العصبي للنخامية، يخزن ويفرز هرموني الأوكسيتوسين والفازوبريسين (المضاد لإدرار البول ADH) المنظم للماء.",
+    "descEn": "Neural lobe releasing hypothalamic antidiuretic hormone (ADH/vasopressin) and oxytocin.",
+    "system": "visceral"
+  },
+  "neurohypophysis": {
+    "ar": "الغدة النخامية (الفص الخلفي)",
+    "descAr": "الفص العصبي للنخامية، يخزن ويفرز هرموني الأوكسيتوسين والفازوبريسين (المضاد لإدرار البول ADH) المنظم للماء.",
+    "descEn": "Neural lobe releasing hypothalamic antidiuretic hormone (ADH/vasopressin) and oxytocin.",
+    "system": "visceral"
+  },
+  "Pineal gland": {
+    "ar": "الغدة الصنوبرية",
+    "descAr": "غدة صماء صغيرة في عمق الدماغ تفرز هرمون الميلاتونين لتنظيم دورة النوم والاستيقاظ والإيقاع الحيوي اليومي.",
+    "descEn": "Epithalamic neuroendocrine gland secreting melatonin to synchronize circadian rhythms and sleep cycles.",
+    "system": "visceral"
+  },
+  "pineal gland": {
+    "ar": "الغدة الصنوبرية",
+    "descAr": "غدة صماء صغيرة في عمق الدماغ تفرز هرمون الميلاتونين لتنظيم دورة النوم والاستيقاظ والإيقاع الحيوي اليومي.",
+    "descEn": "Epithalamic neuroendocrine gland secreting melatonin to synchronize circadian rhythms and sleep cycles.",
+    "system": "visceral"
+  },
+  "Inferior parathyroid gland": {
+    "ar": "الغدة الجار درقية",
+    "descAr": "غدة صماء مجهرية تنظم تركيز الكالسيوم والفوسفات في الدم عبر إفراز هرمون الباراثورمون (PTH).",
+    "descEn": "Endocrine gland producing parathyroid hormone (PTH) to tightly regulate serum calcium and bone remodeling.",
+    "system": "visceral"
+  },
+  "inferior parathyroid gland": {
+    "ar": "الغدة الجار درقية",
+    "descAr": "غدة صماء مجهرية تنظم تركيز الكالسيوم والفوسفات في الدم عبر إفراز هرمون الباراثورمون (PTH).",
+    "descEn": "Endocrine gland producing parathyroid hormone (PTH) to tightly regulate serum calcium and bone remodeling.",
+    "system": "visceral"
+  },
+  "Superior parathyroid gland": {
+    "ar": "الغدة الجار درقية",
+    "descAr": "غدة صماء مجهرية تنظم تركيز الكالسيوم والفوسفات في الدم عبر إفراز هرمون الباراثورمون (PTH).",
+    "descEn": "Endocrine gland producing parathyroid hormone (PTH) to tightly regulate serum calcium and bone remodeling.",
+    "system": "visceral"
+  },
+  "superior parathyroid gland": {
+    "ar": "الغدة الجار درقية",
+    "descAr": "غدة صماء مجهرية تنظم تركيز الكالسيوم والفوسفات في الدم عبر إفراز هرمون الباراثورمون (PTH).",
+    "descEn": "Endocrine gland producing parathyroid hormone (PTH) to tightly regulate serum calcium and bone remodeling.",
+    "system": "visceral"
+  },
+  "Parotid gland": {
+    "ar": "الغدة النكفية وقناتها",
+    "descAr": "أكبر الغدد اللعابية، تفرز اللعاب المصلي الغني بإنزيم الأميليز لتسهيل بلع وهضم النشويات في الفم.",
+    "descEn": "Largest salivary gland secreting serous saliva rich in amylase via Stensen duct into oral cavity.",
+    "system": "visceral"
+  },
+  "parotid gland": {
+    "ar": "الغدة النكفية وقناتها",
+    "descAr": "أكبر الغدد اللعابية، تفرز اللعاب المصلي الغني بإنزيم الأميليز لتسهيل بلع وهضم النشويات في الفم.",
+    "descEn": "Largest salivary gland secreting serous saliva rich in amylase via Stensen duct into oral cavity.",
+    "system": "visceral"
+  },
+  "Parotid duct": {
+    "ar": "الغدة النكفية وقناتها",
+    "descAr": "أكبر الغدد اللعابية، تفرز اللعاب المصلي الغني بإنزيم الأميليز لتسهيل بلع وهضم النشويات في الفم.",
+    "descEn": "Largest salivary gland secreting serous saliva rich in amylase via Stensen duct into oral cavity.",
+    "system": "visceral"
+  },
+  "parotid duct": {
+    "ar": "الغدة النكفية وقناتها",
+    "descAr": "أكبر الغدد اللعابية، تفرز اللعاب المصلي الغني بإنزيم الأميليز لتسهيل بلع وهضم النشويات في الفم.",
+    "descEn": "Largest salivary gland secreting serous saliva rich in amylase via Stensen duct into oral cavity.",
+    "system": "visceral"
+  },
+  "(Accessory parotid gland)": {
+    "ar": "الغدة النكفية وقناتها",
+    "descAr": "أكبر الغدد اللعابية، تفرز اللعاب المصلي الغني بإنزيم الأميليز لتسهيل بلع وهضم النشويات في الفم.",
+    "descEn": "Largest salivary gland secreting serous saliva rich in amylase via Stensen duct into oral cavity.",
+    "system": "visceral"
+  },
+  "(accessory parotid gland)": {
+    "ar": "الغدة النكفية وقناتها",
+    "descAr": "أكبر الغدد اللعابية، تفرز اللعاب المصلي الغني بإنزيم الأميليز لتسهيل بلع وهضم النشويات في الفم.",
+    "descEn": "Largest salivary gland secreting serous saliva rich in amylase via Stensen duct into oral cavity.",
+    "system": "visceral"
+  },
+  "Submandibular gland": {
+    "ar": "الغدة اللعابية تحت الفك السفلي",
+    "descAr": "غدة لعابية تقع تحت الفك السفلي، تفرز خليطاً من اللعاب المصلي والمخاطي لترطيب الفم وهضم الطعام.",
+    "descEn": "Major salivary gland producing the majority of resting saliva output through Wharton duct.",
+    "system": "visceral"
+  },
+  "submandibular gland": {
+    "ar": "الغدة اللعابية تحت الفك السفلي",
+    "descAr": "غدة لعابية تقع تحت الفك السفلي، تفرز خليطاً من اللعاب المصلي والمخاطي لترطيب الفم وهضم الطعام.",
+    "descEn": "Major salivary gland producing the majority of resting saliva output through Wharton duct.",
+    "system": "visceral"
+  },
+  "Submandibular duct": {
+    "ar": "الغدة اللعابية تحت الفك السفلي",
+    "descAr": "غدة لعابية تقع تحت الفك السفلي، تفرز خليطاً من اللعاب المصلي والمخاطي لترطيب الفم وهضم الطعام.",
+    "descEn": "Major salivary gland producing the majority of resting saliva output through Wharton duct.",
+    "system": "visceral"
+  },
+  "submandibular duct": {
+    "ar": "الغدة اللعابية تحت الفك السفلي",
+    "descAr": "غدة لعابية تقع تحت الفك السفلي، تفرز خليطاً من اللعاب المصلي والمخاطي لترطيب الفم وهضم الطعام.",
+    "descEn": "Major salivary gland producing the majority of resting saliva output through Wharton duct.",
+    "system": "visceral"
+  },
+  "Sublingual gland": {
+    "ar": "الغدة اللعابية تحت اللسان",
+    "descAr": "أصغر الغدد اللعابية الكبرى، تفرز لعاباً مخاطياً لزجاً يحمي الغشاء المخاطي لقاع الفم ويسهل التذوق والكلام.",
+    "descEn": "Smallest major salivary gland producing predominantly mucinous lubricating saliva in the oral floor.",
+    "system": "visceral"
+  },
+  "sublingual gland": {
+    "ar": "الغدة اللعابية تحت اللسان",
+    "descAr": "أصغر الغدد اللعابية الكبرى، تفرز لعاباً مخاطياً لزجاً يحمي الغشاء المخاطي لقاع الفم ويسهل التذوق والكلام.",
+    "descEn": "Smallest major salivary gland producing predominantly mucinous lubricating saliva in the oral floor.",
+    "system": "visceral"
+  },
+  "Tongue": {
+    "ar": "اللسان",
+    "descAr": "عضو عضلي حركي متعدد الوظائف مغطى بالحليمات الذوقية، يسهم في التذوق والمضغ وتحريك اللقمة والكلام والنطق.",
+    "descEn": "Muscular hydrostat organ lined with taste buds facilitating mastication, deglutition, taste, and phonation.",
+    "system": "visceral"
+  },
+  "tongue": {
+    "ar": "اللسان",
+    "descAr": "عضو عضلي حركي متعدد الوظائف مغطى بالحليمات الذوقية، يسهم في التذوق والمضغ وتحريك اللقمة والكلام والنطق.",
+    "descEn": "Muscular hydrostat organ lined with taste buds facilitating mastication, deglutition, taste, and phonation.",
+    "system": "visceral"
+  },
+  "Epiglottis": {
+    "ar": "لسان المزمار",
+    "descAr": "غضروف مرن على شكل ورقة شجر يغلق مدخل القصبة الهوائية والحنجرة أثناء البلع لمنع دخول الطعام إلى مجرى التنفس.",
+    "descEn": "Elastic cartilaginous flap folding over the laryngeal inlet during swallowing to prevent aspiration.",
+    "system": "visceral"
+  },
+  "epiglottis": {
+    "ar": "لسان المزمار",
+    "descAr": "غضروف مرن على شكل ورقة شجر يغلق مدخل القصبة الهوائية والحنجرة أثناء البلع لمنع دخول الطعام إلى مجرى التنفس.",
+    "descEn": "Elastic cartilaginous flap folding over the laryngeal inlet during swallowing to prevent aspiration.",
+    "system": "visceral"
+  },
+  "Renal pelvis.l": {
+    "ar": "حوض الكلية الأيسر",
+    "descAr": "تجويف قمعي في الكلية اليسرى يجمع البول المتدفق من الكؤوس الكلوية ويوجهه نحو الحالب.",
+    "descEn": "Funnel-shaped renal conduit funneling collected urine from major calyces into the left ureter.",
+    "system": "visceral"
+  },
+  "renal pelvis.l": {
+    "ar": "حوض الكلية الأيسر",
+    "descAr": "تجويف قمعي في الكلية اليسرى يجمع البول المتدفق من الكؤوس الكلوية ويوجهه نحو الحالب.",
+    "descEn": "Funnel-shaped renal conduit funneling collected urine from major calyces into the left ureter.",
+    "system": "visceral"
+  },
+  "Renal pelvis": {
+    "ar": "حوض الكلية الأيسر",
+    "descAr": "تجويف قمعي في الكلية اليسرى يجمع البول المتدفق من الكؤوس الكلوية ويوجهه نحو الحالب.",
+    "descEn": "Funnel-shaped renal conduit funneling collected urine from major calyces into the left ureter.",
+    "system": "visceral"
+  },
+  "renal pelvis": {
+    "ar": "حوض الكلية الأيسر",
+    "descAr": "تجويف قمعي في الكلية اليسرى يجمع البول المتدفق من الكؤوس الكلوية ويوجهه نحو الحالب.",
+    "descEn": "Funnel-shaped renal conduit funneling collected urine from major calyces into the left ureter.",
+    "system": "visceral"
+  },
+  "Left renal pelvis": {
+    "ar": "حوض الكلية الأيسر",
+    "descAr": "تجويف قمعي في الكلية اليسرى يجمع البول المتدفق من الكؤوس الكلوية ويوجهه نحو الحالب.",
+    "descEn": "Funnel-shaped renal conduit funneling collected urine from major calyces into the left ureter.",
+    "system": "visceral"
+  },
+  "left renal pelvis": {
+    "ar": "حوض الكلية الأيسر",
+    "descAr": "تجويف قمعي في الكلية اليسرى يجمع البول المتدفق من الكؤوس الكلوية ويوجهه نحو الحالب.",
+    "descEn": "Funnel-shaped renal conduit funneling collected urine from major calyces into the left ureter.",
+    "system": "visceral"
+  },
+  "Renal pelvis.r": {
+    "ar": "حوض الكلية الأيمن",
+    "descAr": "تجويف قمعي في الكلية اليمنى يستقبل البول المرشح وينقله عبر الحالب إلى المثانة.",
+    "descEn": "Funnel-shaped upper expansion of the right ureter conveying filtered urine toward the bladder.",
+    "system": "visceral"
+  },
+  "renal pelvis.r": {
+    "ar": "حوض الكلية الأيمن",
+    "descAr": "تجويف قمعي في الكلية اليمنى يستقبل البول المرشح وينقله عبر الحالب إلى المثانة.",
+    "descEn": "Funnel-shaped upper expansion of the right ureter conveying filtered urine toward the bladder.",
+    "system": "visceral"
+  },
+  "Right renal pelvis": {
+    "ar": "حوض الكلية الأيمن",
+    "descAr": "تجويف قمعي في الكلية اليمنى يستقبل البول المرشح وينقله عبر الحالب إلى المثانة.",
+    "descEn": "Funnel-shaped upper expansion of the right ureter conveying filtered urine toward the bladder.",
+    "system": "visceral"
+  },
+  "right renal pelvis": {
+    "ar": "حوض الكلية الأيمن",
+    "descAr": "تجويف قمعي في الكلية اليمنى يستقبل البول المرشح وينقله عبر الحالب إلى المثانة.",
+    "descEn": "Funnel-shaped upper expansion of the right ureter conveying filtered urine toward the bladder.",
+    "system": "visceral"
+  },
+  "Ureter.l": {
+    "ar": "الحالب الأيسر",
+    "descAr": "أنبوب عضلي ممتد من الكلية اليسرى ينقل البول عبر تقلصات تمعجية متتابعة إلى المثانة البولية.",
+    "descEn": "Thick-walled muscular tube propelling urine from left renal pelvis to urinary bladder by peristalsis.",
+    "system": "visceral"
+  },
+  "ureter.l": {
+    "ar": "الحالب الأيسر",
+    "descAr": "أنبوب عضلي ممتد من الكلية اليسرى ينقل البول عبر تقلصات تمعجية متتابعة إلى المثانة البولية.",
+    "descEn": "Thick-walled muscular tube propelling urine from left renal pelvis to urinary bladder by peristalsis.",
+    "system": "visceral"
+  },
+  "Ureter": {
+    "ar": "الحالب الأيسر",
+    "descAr": "أنبوب عضلي ممتد من الكلية اليسرى ينقل البول عبر تقلصات تمعجية متتابعة إلى المثانة البولية.",
+    "descEn": "Thick-walled muscular tube propelling urine from left renal pelvis to urinary bladder by peristalsis.",
+    "system": "visceral"
+  },
+  "ureter": {
+    "ar": "الحالب الأيسر",
+    "descAr": "أنبوب عضلي ممتد من الكلية اليسرى ينقل البول عبر تقلصات تمعجية متتابعة إلى المثانة البولية.",
+    "descEn": "Thick-walled muscular tube propelling urine from left renal pelvis to urinary bladder by peristalsis.",
+    "system": "visceral"
+  },
+  "Left ureter": {
+    "ar": "الحالب الأيسر",
+    "descAr": "أنبوب عضلي ممتد من الكلية اليسرى ينقل البول عبر تقلصات تمعجية متتابعة إلى المثانة البولية.",
+    "descEn": "Thick-walled muscular tube propelling urine from left renal pelvis to urinary bladder by peristalsis.",
+    "system": "visceral"
+  },
+  "left ureter": {
+    "ar": "الحالب الأيسر",
+    "descAr": "أنبوب عضلي ممتد من الكلية اليسرى ينقل البول عبر تقلصات تمعجية متتابعة إلى المثانة البولية.",
+    "descEn": "Thick-walled muscular tube propelling urine from left renal pelvis to urinary bladder by peristalsis.",
+    "system": "visceral"
+  },
+  "Ureter.r": {
+    "ar": "الحالب الأيمن",
+    "descAr": "أنبوب عضلي ينقل البول من الكلية اليمنى إلى المثانة ويمنع الارتجاع البولي عبر صمام وريدي طبيعي.",
+    "descEn": "Right muscular duct transporting urine peristaltically to prevent vesicoureteral reflux.",
+    "system": "visceral"
+  },
+  "ureter.r": {
+    "ar": "الحالب الأيمن",
+    "descAr": "أنبوب عضلي ينقل البول من الكلية اليمنى إلى المثانة ويمنع الارتجاع البولي عبر صمام وريدي طبيعي.",
+    "descEn": "Right muscular duct transporting urine peristaltically to prevent vesicoureteral reflux.",
+    "system": "visceral"
+  },
+  "Right ureter": {
+    "ar": "الحالب الأيمن",
+    "descAr": "أنبوب عضلي ينقل البول من الكلية اليمنى إلى المثانة ويمنع الارتجاع البولي عبر صمام وريدي طبيعي.",
+    "descEn": "Right muscular duct transporting urine peristaltically to prevent vesicoureteral reflux.",
+    "system": "visceral"
+  },
+  "right ureter": {
+    "ar": "الحالب الأيمن",
+    "descAr": "أنبوب عضلي ينقل البول من الكلية اليمنى إلى المثانة ويمنع الارتجاع البولي عبر صمام وريدي طبيعي.",
+    "descEn": "Right muscular duct transporting urine peristaltically to prevent vesicoureteral reflux.",
+    "system": "visceral"
+  },
+  "Urethra": {
+    "ar": "الإحليل (مجرى البول)",
+    "descAr": "القناة النهائية للجهاز البولي المسؤولة عن إخراج وتصريف البول خارج الجسم.",
+    "descEn": "Fibromuscular terminal urinary tract discharging urine from the bladder to the exterior.",
+    "system": "visceral"
+  },
+  "urethra": {
+    "ar": "الإحليل (مجرى البول)",
+    "descAr": "القناة النهائية للجهاز البولي المسؤولة عن إخراج وتصريف البول خارج الجسم.",
+    "descEn": "Fibromuscular terminal urinary tract discharging urine from the bladder to the exterior.",
+    "system": "visceral"
+  },
+  "Meso-appendix": {
+    "ar": "مساريقا الزائدة الدودية",
+    "descAr": "طية بريتونية مثلثة تحمل الأوعية الدموية المغذية للزائدة الدودية وتربطها بالمعي الدقيق.",
+    "descEn": "Peritoneal fold suspending the vermiform appendix and carrying appendicular vessels.",
+    "system": "visceral"
+  },
+  "meso-appendix": {
+    "ar": "مساريقا الزائدة الدودية",
+    "descAr": "طية بريتونية مثلثة تحمل الأوعية الدموية المغذية للزائدة الدودية وتربطها بالمعي الدقيق.",
+    "descEn": "Peritoneal fold suspending the vermiform appendix and carrying appendicular vessels.",
+    "system": "visceral"
+  },
+  "Mesocolic taenia": {
+    "ar": "أشرطة القولون العضلية (التينيا)",
+    "descAr": "ثلاث حزم عضلية طولية سميكة على طول القولون تحدث التقلصات الجيبية (القعور القولونية) لنقل الفضلات.",
+    "descEn": "Three narrow longitudinal muscular bands tonic contraction creates characteristic haustra of colon.",
+    "system": "visceral"
+  },
+  "mesocolic taenia": {
+    "ar": "أشرطة القولون العضلية (التينيا)",
+    "descAr": "ثلاث حزم عضلية طولية سميكة على طول القولون تحدث التقلصات الجيبية (القعور القولونية) لنقل الفضلات.",
+    "descEn": "Three narrow longitudinal muscular bands tonic contraction creates characteristic haustra of colon.",
+    "system": "visceral"
+  },
+  "Omental taenia": {
+    "ar": "أشرطة القولون العضلية (التينيا)",
+    "descAr": "ثلاث حزم عضلية طولية سميكة على طول القولون تحدث التقلصات الجيبية (القعور القولونية) لنقل الفضلات.",
+    "descEn": "Three narrow longitudinal muscular bands tonic contraction creates characteristic haustra of colon.",
+    "system": "visceral"
+  },
+  "omental taenia": {
+    "ar": "أشرطة القولون العضلية (التينيا)",
+    "descAr": "ثلاث حزم عضلية طولية سميكة على طول القولون تحدث التقلصات الجيبية (القعور القولونية) لنقل الفضلات.",
+    "descEn": "Three narrow longitudinal muscular bands tonic contraction creates characteristic haustra of colon.",
+    "system": "visceral"
+  },
+  "Pleura": {
+    "ar": "غشاء الجنب (غشاء الرئة المصلي)",
+    "descAr": "غشاء مصلي مزدوج يغلف الرئتين ويبطن القفص الصدري، يحتوي سائلاً مزيتاً يمنع الاحتكاك أثناء التنفس.",
+    "descEn": "Serous double-layered membrane encasing the lungs and secreting pleural fluid to reduce respiratory friction.",
+    "system": "visceral"
+  },
+  "pleura": {
+    "ar": "غشاء الجنب (غشاء الرئة المصلي)",
+    "descAr": "غشاء مصلي مزدوج يغلف الرئتين ويبطن القفص الصدري، يحتوي سائلاً مزيتاً يمنع الاحتكاك أثناء التنفس.",
+    "descEn": "Serous double-layered membrane encasing the lungs and secreting pleural fluid to reduce respiratory friction.",
+    "system": "visceral"
   }
 }
