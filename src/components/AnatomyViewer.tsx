@@ -304,6 +304,23 @@ const ANATOMY_DICTIONARY: Record<string, { ar: string; descEn: string; descAr: s
 };
 
 // Spatial 3D anatomical resolver for male_full_body_ecorche.glb to match Excel Sheets 2, 3, and 4
+// Real world-space bounds per SubTool (scale=0.0255, posY=1.140, posZ=0.015, GLB Y-up=Z-forward):
+// SubTool-0/Object_29: Tendons/Fascia (full body)
+// SubTool-1/Object_11: Tendons/Ligaments (full body)
+// SubTool-2/Object_15: Head & Face    Y[1.54→1.78]
+// SubTool-3/Object_19: Neck           Y[1.39→1.64]
+// SubTool-4/Object_13: Shoulder       Y[0.98→1.63]
+// SubTool-5/Object_5:  Anterior Thorax Y[1.28→1.47]
+// SubTool-6/Object_23: Posterior Back  Y[0.90→1.47]
+// SubTool-7/Object_33: Abdomen        Y[1.11→1.45]
+// SubTool-8/Object_31: Anterior Arm   Y[0.68→1.21]
+// SubTool-9/Object_21: Posterior Arm  Y[0.70→1.05]
+// SubTool-10/Object_3: Gluteal/Pelvis Y[0.79→1.08]
+// SubTool-11/Object_17: Anterior Thigh Y[0.44→1.02]
+// SubTool-12/Object_9:  Medial Thigh  Y[0.46→0.91]
+// SubTool-13/Object_27: Posterior Thigh Y[0.47→0.95]
+// SubTool-14/Object_7:  Posterior Calf Y[0.05→0.57]
+// SubTool-15/Object_25: Anterior Leg+Foot Y[0.04→0.52]
 function resolveMuscleFromHit(hit: THREE.Mesh, hitPoint: THREE.Vector3): { en: string; ar: string } {
   const y = hitPoint.y;
   const x = hitPoint.x;
@@ -311,148 +328,327 @@ function resolveMuscleFromHit(hit: THREE.Mesh, hitPoint: THREE.Vector3): { en: s
   const absX = Math.abs(x);
   const side = x > 0 ? '_L' : '_R';
   const objName = hit.name || '';
-  const parentName = hit.parent?.name || '';
-
-  // Tendons, Ligaments, Fascia (SubTool-0 or SubTool-1 or Object_29/Object_11)
-  if (parentName.includes('SubTool-0') || parentName.includes('SubTool-1') || objName === 'Object_29' || objName === 'Object_11') {
-    if (y < 0.25 && z < 0) {
-      return { en: 'Achilles tendon', ar: 'وتر أخيل (العرقوب)' };
-    }
-    if (y < 0.60 && z > 0) {
-      return { en: 'Patellar tendon', ar: 'الوتر الرضفي' };
-    }
-    if (y > 0.90 && y < 1.30 && absX < 0.05) {
-      return { en: 'Linea alba', ar: 'الخط الأبيض للبطن' };
-    }
+  // Walk up the parent chain to find the SubTool node name
+  let parentName = hit.parent?.name || '';
+  let cursor: THREE.Object3D | null = hit.parent || null;
+  while (cursor && !parentName.includes('SubTool')) {
+    cursor = cursor.parent;
+    parentName = cursor?.name || '';
   }
 
-  // 1. Head & Cranium (y > 1.55)
-  if (y > 1.55) {
-    if (z > 0.03 && absX < 0.08) {
-      if (y < 1.62 && absX > 0.03) {
-        return { en: 'Masseter', ar: 'العضلة الماضغة' };
-      }
-      return { en: 'Occipitofrontalis', ar: 'العضلة القذالية الجبهية' };
-    }
-    if (absX >= 0.06 && y > 1.58) {
-      return { en: 'Temporalis', ar: 'العضلة الصدغية' };
-    }
-    return { en: 'Occipitofrontalis', ar: 'العضلة القذالية الجبهية' };
+  // ─── SubTool-0/SubTool-1: Tendons, Ligaments, Fascia ───────────────────
+  if (parentName.includes('SubTool-0') || parentName.includes('SubTool-1') ||
+      objName === 'Object_29' || objName === 'Object_11') {
+    if (y < 0.25 && z < -0.02) return { en: 'Achilles tendon', ar: 'وتر أخيل (العرقوب)' };
+    if (y < 0.60 && z > 0.05) return { en: 'Patellar tendon', ar: 'الوتر الرضفي' };
+    if (y > 0.90 && y < 1.30 && absX < 0.05) return { en: 'Linea alba', ar: 'الخط الأبيض للبطن' };
+    if (y < 0.10) return { en: 'Plantar fascia', ar: 'السفاق الأخمصي (اللفافة الأخمصية)' };
+    return { en: 'Achilles tendon', ar: 'وتر أخيل (العرقوب)' };
   }
 
-  // 2. Neck (1.40 <= y <= 1.55)
-  if (y >= 1.40) {
-    if (z >= -0.01) {
-      return { en: `Sternocleidomastoid ${side}`, ar: `العضلة القصية الترقوية الحلمية ${side}` };
+  // ─── SubTool-2 (Object_15): Head & Face — Y: 1.54 → 1.78 ─────────────
+  if (objName === 'Object_15' || parentName.includes('SubTool-2')) {
+    if (y > 1.70) {
+      if (absX < 0.03) return { en: 'Occipitofrontalis', ar: 'العضلة القذالية الجبهية' };
+      return { en: `Frontalis ${side}`, ar: `العضلة الجبهية ${side}` };
     }
-    return { en: `Trapezius ${side}`, ar: `العضلة الشبه المنحرفة ${side}` };
+    if (y > 1.63) {
+      if (absX > 0.06) return { en: `Temporalis ${side}`, ar: `العضلة الصدغية ${side}` };
+      return { en: `Orbicularis oculi ${side}`, ar: `العضلة الحلقية للعين ${side}` };
+    }
+    if (y > 1.59) {
+      if (absX > 0.055) return { en: `Zygomaticus major ${side}`, ar: `العضلة الضحكية ${side}` };
+      if (absX < 0.02) return { en: 'Orbicularis oris', ar: 'العضلة الحلقية للفم' };
+      return { en: `Buccinator ${side}`, ar: `العضلة البكية ${side}` };
+    }
+    if (absX > 0.05) return { en: `Masseter ${side}`, ar: `العضلة الماضغة ${side}` };
+    if (absX < 0.02) return { en: 'Orbicularis oris', ar: 'العضلة الحلقية للفم' };
+    return { en: `Buccinator ${side}`, ar: `العضلة البكية ${side}` };
   }
 
-  // 3. Shoulders & Upper Chest / Upper Back (1.20 <= y < 1.40)
-  if (y >= 1.20) {
-    if (absX >= 0.16) {
-      return { en: `Deltoid ${side}`, ar: `العضلة الدالية ${side}` };
+  // ─── SubTool-3 (Object_19): Neck — Y: 1.39 → 1.64 ──────────────────────
+  if (objName === 'Object_19' || parentName.includes('SubTool-3')) {
+    if (z > 0.02) {
+      if (absX > 0.06) return { en: `Sternocleidomastoid ${side}`, ar: `العضلة القصية الترقوية الحلمية ${side}` };
+      return { en: `Sternohyoid ${side}`, ar: `العضلة اللامية الغضروفية ${side}` };
     }
-    if (z >= 0.0) {
-      return { en: `Pectoralis major ${side}`, ar: `العضلة الصدرية الكبرى ${side}` };
+    if (absX > 0.07) {
+      if (y > 1.55) return { en: `Scalenus anterior ${side}`, ar: `العضلة الأخمعية الأمامية ${side}` };
+      return { en: `Scalenus medius ${side}`, ar: `العضلة الأخمعية المتوسطة ${side}` };
     }
-    if (absX >= 0.10) {
-      return { en: `Infraspinatus ${side}`, ar: `العضلة تحت الشوكة ${side}` };
-    }
-    return { en: `Trapezius ${side}`, ar: `العضلة الشبه المنحرفة ${side}` };
+    if (y < 1.48) return { en: `Platysma ${side}`, ar: `العضلة الجلدية الرقبية ${side}` };
+    return { en: `Longus capitis ${side}`, ar: `العضلة الطويلة للرأس ${side}` };
   }
 
-  // 4. Arms & Mid Torso (0.95 <= y < 1.20)
-  if (y >= 0.95) {
-    // Upper Arm
-    if (absX >= 0.17) {
-      if (z >= 0.0) {
-        return { en: `Biceps brachii ${side}`, ar: `العضلة ذات الرأسين العضدية ${side}` };
-      }
-      return { en: 'Triceps brachii', ar: 'العضلة ثلاثية الرؤوس العضدية' };
+  // ─── SubTool-4 (Object_13): Shoulder & Scapula — Y: 0.98 → 1.63 ────────
+  if (objName === 'Object_13' || parentName.includes('SubTool-4')) {
+    if (absX > 0.14) return { en: `Deltoid ${side}`, ar: `العضلة الدالية ${side}` };
+    if (z < -0.05) {
+      if (y > 1.30) return { en: `Supraspinatus ${side}`, ar: `العضلة فوق الشوكة ${side}` };
+      if (y > 1.18) return { en: `Infraspinatus ${side}`, ar: `العضلة تحت الشوكة ${side}` };
+      if (absX > 0.08) return { en: `Teres minor ${side}`, ar: `العضلة المدورة الصغرى ${side}` };
+      return { en: `Teres major ${side}`, ar: `العضلة المدورة الكبرى ${side}` };
     }
-    // Torso
-    if (z >= 0.0) {
-      if (absX < 0.08) {
-        return { en: 'Rectus abdominis', ar: 'العضلة المستقيمة البطنية' };
-      }
-      return { en: `External oblique ${side}`, ar: `العضلة المائلة الخارجية ${side}` };
-    }
-    return { en: 'Latissimus dorsi', ar: 'العضلة الظهرية العريضة' };
+    return { en: `Subscapularis ${side}`, ar: `العضلة تحت الكتف ${side}` };
   }
 
-  // 5. Forearms & Pelvis (0.72 <= y < 0.95)
-  if (y >= 0.72) {
-    // Forearms / Hands
-    if (absX >= 0.16) {
-      if (z >= 0.01) {
-        return { en: `Brachioradialis ${side}`, ar: `العضلة العضدية الكعبرية ${side}` };
-      }
-      return { en: `Flexor carpi radialis ${side}`, ar: `العضلة القابضة للرسغ الكعبرية ${side}` };
+  // ─── SubTool-5 (Object_5): Anterior Thorax — Y: 1.28 → 1.47 ────────────
+  if (objName === 'Object_5' || parentName.includes('SubTool-5')) {
+    if (absX > 0.14) {
+      if (y > 1.38) return { en: `Pectoralis major ${side}`, ar: `العضلة الصدرية الكبرى ${side}` };
+      return { en: `Serratus anterior ${side}`, ar: `العضلة المنشارية الأمامية ${side}` };
     }
-    // Pelvis
-    if (z < -0.01) {
-      if (absX >= 0.11) {
-        return { en: `Gluteus medius ${side}`, ar: `العضلة الألوية المتوسطة ${side}` };
-      }
-      return { en: 'Gluteus maximus', ar: 'العضلة الألوية الكبرى' };
-    }
-    if (absX >= 0.08) {
-      return { en: `External oblique ${side}`, ar: `العضلة المائلة الخارجية ${side}` };
-    }
-    return { en: 'Rectus abdominis', ar: 'العضلة المستقيمة البطنية' };
+    if (absX < 0.04 && y < 1.37) return { en: 'Diaphragm', ar: 'الحجاب الحاجز' };
+    if (y > 1.37) return { en: `Pectoralis minor ${side}`, ar: `العضلة الصدرية الصغرى ${side}` };
+    if (absX > 0.07) return { en: `External intercostals ${side}`, ar: `العضلة بين الضلعية الخارجية ${side}` };
+    return { en: `Internal intercostals ${side}`, ar: `العضلة بين الضلعية الداخلية ${side}` };
   }
 
-  // 6. Thighs (0.42 <= y < 0.72)
-  if (y >= 0.42) {
-    if (z >= -0.01) {
-      if (absX < 0.08 && y < 0.58) {
-        return { en: `Sartorius ${side}`, ar: `العضلة الخياطية ${side}` };
+  // ─── SubTool-6 (Object_23): Posterior Back — Y: 0.90 → 1.47 ─────────────
+  if (objName === 'Object_23' || parentName.includes('SubTool-6')) {
+    if (y > 1.30) {
+      if (absX > 0.12) return { en: `Trapezius lower ${side}`, ar: `العضلة شبه المنحرفة السفلية ${side}` };
+      if (absX > 0.07) return { en: `Rhomboid major ${side}`, ar: `العضلة المعينية الكبرى ${side}` };
+      return { en: `Spinalis ${side}`, ar: `العضلة الشوكية ${side}` };
+    }
+    if (y > 1.15) {
+      if (absX > 0.13) return { en: `Latissimus dorsi ${side}`, ar: `العضلة الظهرية العريضة ${side}` };
+      if (absX > 0.07) return { en: `Rhomboid minor ${side}`, ar: `العضلة المعينية الصغرى ${side}` };
+      return { en: `Longissimus ${side}`, ar: `العضلة الطولية الطويلة ${side}` };
+    }
+    if (y > 1.00) {
+      if (absX > 0.12) return { en: `Latissimus dorsi ${side}`, ar: `العضلة الظهرية العريضة ${side}` };
+      if (absX > 0.06) return { en: `Iliocostalis ${side}`, ar: `العضلة الحرقفية الضلعية ${side}` };
+      return { en: `Multifidus ${side}`, ar: `العضلة المتعددة الشعب ${side}` };
+    }
+    if (absX > 0.10) return { en: `Quadratus lumborum ${side}`, ar: `العضلة المربعة القطنية ${side}` };
+    return { en: `Multifidus ${side}`, ar: `العضلة المتعددة الشعب ${side}` };
+  }
+
+  // ─── SubTool-7 (Object_33): Abdomen — Y: 1.11 → 1.45 ────────────────────
+  if (objName === 'Object_33' || parentName.includes('SubTool-7')) {
+    if (absX < 0.04) return { en: 'Rectus abdominis', ar: 'العضلة المستقيمة البطنية' };
+    if (y > 1.28) return { en: `External oblique ${side}`, ar: `العضلة المائلة الخارجية ${side}` };
+    if (y > 1.18) return { en: `Internal oblique ${side}`, ar: `العضلة المائلة الداخلية ${side}` };
+    return { en: `Transversus abdominis ${side}`, ar: `العضلة المستعرضة البطنية ${side}` };
+  }
+
+  // ─── SubTool-8 (Object_31): Anterior Arm & Forearm — Y: 0.68 → 1.21 ─────
+  if (objName === 'Object_31' || parentName.includes('SubTool-8')) {
+    if (y > 1.05) {
+      if (absX > 0.20) return { en: `Biceps brachii ${side}`, ar: `العضلة ذات الرأسين العضدية ${side}` };
+      if (absX > 0.13) return { en: `Brachialis ${side}`, ar: `العضلة العضدية ${side}` };
+      return { en: `Coracobrachialis ${side}`, ar: `العضلة الغرابية العضدية ${side}` };
+    }
+    if (y > 0.88) {
+      if (absX > 0.22) return { en: `Brachioradialis ${side}`, ar: `العضلة العضدية الكعبرية ${side}` };
+      if (z > 0) return { en: `Pronator teres ${side}`, ar: `العضلة الكابة المرفقية ${side}` };
+      if (absX > 0.17) return { en: `Flexor carpi radialis ${side}`, ar: `العضلة القابضة للرسغ الكعبرية ${side}` };
+      return { en: `Palmaris longus ${side}`, ar: `العضلة النخيلية الطويلة ${side}` };
+    }
+    if (y > 0.75) {
+      if (absX > 0.22) {
+        const radialSide = (side === '_L' && x > 0.10) || (side === '_R' && x < -0.10);
+        if (radialSide) return { en: `Flexor carpi radialis ${side}`, ar: `العضلة القابضة للرسغ الكعبرية ${side}` };
+        return { en: `Flexor carpi ulnaris ${side}`, ar: `العضلة القابضة للرسغ الزندية ${side}` };
       }
-      if (absX >= 0.12) {
-        return { en: `Vastus lateralis ${side}`, ar: `العضلة المتسعة الوحشية ${side}` };
+      if (absX > 0.15) return { en: `Flexor digitorum superficialis ${side}`, ar: `العضلة القابضة السطحية للأصابع ${side}` };
+      return { en: `Flexor digitorum profundus ${side}`, ar: `العضلة القابضة العميقة للأصابع ${side}` };
+    }
+    if (y > 0.70) return { en: `Flexor pollicis longus ${side}`, ar: `العضلة القابضة الطويلة للإبهام ${side}` };
+    if (absX > 0.10) return { en: `Thenar muscles ${side}`, ar: `عضلات الإبهام (ثينار) ${side}` };
+    if (absX < 0.05) return { en: `Palmar interossei ${side}`, ar: `العضلة بين العظمية الراحية ${side}` };
+    return { en: `Lumbricals ${side}`, ar: `العضلة الدودية ${side}` };
+  }
+
+  // ─── SubTool-9 (Object_21): Posterior Arm & Forearm — Y: 0.70 → 1.05 ────
+  if (objName === 'Object_21' || parentName.includes('SubTool-9')) {
+    if (y > 0.95) {
+      if (absX > 0.18) return { en: `Triceps brachii ${side}`, ar: `العضلة ثلاثية الرؤوس العضدية ${side}` };
+      if (absX > 0.12) return { en: `Anconeus ${side}`, ar: `العضلة المرفقية ${side}` };
+      return { en: `Triceps brachii ${side}`, ar: `العضلة ثلاثية الرؤوس العضدية ${side}` };
+    }
+    if (y > 0.83) {
+      if (absX > 0.20) {
+        if (z > 0) return { en: `Extensor carpi radialis longus ${side}`, ar: `العضلة الباسطة للرسغ الكعبرية الطويلة ${side}` };
+        return { en: `Extensor carpi ulnaris ${side}`, ar: `العضلة الباسطة للرسغ الزندية ${side}` };
       }
-      if (absX < 0.08) {
-        return { en: `Vastus medialis ${side}`, ar: `العضلة المتسعة الإنسية ${side}` };
-      }
+      if (absX > 0.13) return { en: `Extensor carpi radialis brevis ${side}`, ar: `العضلة الباسطة للرسغ الكعبرية القصيرة ${side}` };
+      return { en: `Supinator ${side}`, ar: `العضلة الباسطة ${side}` };
+    }
+    if (y > 0.75) {
+      if (absX > 0.20) return { en: `Extensor digitorum ${side}`, ar: `العضلة الباسطة للأصابع ${side}` };
+      if (absX > 0.15) return { en: `Extensor digiti minimi ${side}`, ar: `العضلة الباسطة للخنصر ${side}` };
+      return { en: `Extensor indicis ${side}`, ar: `العضلة الباسطة للسبابة ${side}` };
+    }
+    if (z > 0) return { en: `Abductor pollicis longus ${side}`, ar: `العضلة الباسطة للسبابة الطويلة ${side}` };
+    if (absX > 0.15) return { en: `Extensor pollicis longus ${side}`, ar: `العضلة الباسطة الطويلة للإبهام ${side}` };
+    return { en: `Extensor pollicis brevis ${side}`, ar: `العضلة الباسطة القصيرة للإبهام ${side}` };
+  }
+
+  // ─── SubTool-10 (Object_3): Gluteal & Pelvis — Y: 0.79 → 1.08 ───────────
+  if (objName === 'Object_3' || parentName.includes('SubTool-10')) {
+    if (z < -0.06) {
+      if (absX > 0.10) return { en: `Gluteus medius ${side}`, ar: `العضلة الألوية المتوسطة ${side}` };
+      return { en: `Gluteus maximus ${side}`, ar: `العضلة الألوية الكبرى ${side}` };
+    }
+    if (y > 0.97) {
+      if (absX > 0.08) return { en: `Tensor fasciae latae ${side}`, ar: `العضلة موترة اللفافة العريضة ${side}` };
+      if (z < -0.01) return { en: `Piriformis ${side}`, ar: `العضلة الكمثرية ${side}` };
+      return { en: `Psoas major ${side}`, ar: `العضلة القطنية الكبرى ${side}` };
+    }
+    if (y > 0.87) {
+      if (absX < 0.05) return { en: `Iliacus ${side}`, ar: `العضلة الحرقفية ${side}` };
+      if (absX > 0.09) return { en: `Obturator externus ${side}`, ar: `العضلة السدادية الخارجية ${side}` };
+      return { en: `Obturator internus ${side}`, ar: `العضلة السدادية الداخلية ${side}` };
+    }
+    if (absX > 0.06) return { en: `Quadratus femoris ${side}`, ar: `العضلة المربعة الفخذية ${side}` };
+    if (z < 0) {
+      if (y > 0.82) return { en: `Gemellus superior ${side}`, ar: `العضلة التوأمية العلوية ${side}` };
+      return { en: `Gemellus inferior ${side}`, ar: `العضلة التوأمية السفلية ${side}` };
+    }
+    return { en: `Gluteus minimus ${side}`, ar: `العضلة الألوية الصغرى ${side}` };
+  }
+
+  // ─── SubTool-11 (Object_17): Anterior Thigh — Y: 0.44 → 1.02 ────────────
+  if (objName === 'Object_17' || parentName.includes('SubTool-11')) {
+    if (y > 0.80) {
+      if (absX < 0.05) return { en: `Rectus femoris ${side}`, ar: `العضلة المستقيمة الفخذية ${side}` };
+      if (absX > 0.12) return { en: `Vastus lateralis ${side}`, ar: `العضلة المتسعة الوحشية ${side}` };
+      return { en: `Sartorius ${side}`, ar: `العضلة الخياطية ${side}` };
+    }
+    if (y > 0.62) {
+      if (absX > 0.12) return { en: `Vastus lateralis ${side}`, ar: `العضلة المتسعة الوحشية ${side}` };
+      if (absX < 0.05) return { en: `Vastus intermedius ${side}`, ar: `العضلة المتسعة الوسطية ${side}` };
       return { en: `Rectus femoris ${side}`, ar: `العضلة المستقيمة الفخذية ${side}` };
     }
-    // Posterior Thigh
-    if (absX >= 0.11) {
-      return { en: 'Biceps femoris', ar: 'العضلة ذات الرأسين الفخذية' };
-    }
-    if (absX < 0.07) {
-      return { en: 'Semimembranosus', ar: 'العضلة نصف الغشائية' };
-    }
-    return { en: 'Semitendinosus', ar: 'العضلة نصف الوترية' };
+    if (absX > 0.10) return { en: `Vastus lateralis ${side}`, ar: `العضلة المتسعة الوحشية ${side}` };
+    return { en: `Vastus medialis ${side}`, ar: `العضلة المتسعة الإنسية ${side}` };
   }
 
-  // 7. Calves & Lower Legs (0.10 <= y < 0.42)
-  if (y >= 0.10) {
-    if (z >= -0.01) {
-      if (absX >= 0.10) {
-        return { en: `Fibularis longus ${side}`, ar: `العضلة الشظوية الطويلة ${side}` };
-      }
-      if (y < 0.22) {
-        return { en: `Extensor digitorum longus ${side}`, ar: `العضلة الباسطة الطويلة للأصابع ${side}` };
-      }
+  // ─── SubTool-12 (Object_9): Medial Thigh — Y: 0.46 → 0.91 ──────────────
+  if (objName === 'Object_9' || parentName.includes('SubTool-12')) {
+    if (y > 0.78) {
+      if (absX < 0.04) return { en: `Pectineus ${side}`, ar: `العضلة المشطية ${side}` };
+      return { en: `Adductor brevis ${side}`, ar: `العضلة المقربة القصيرة ${side}` };
+    }
+    if (y > 0.65) {
+      if (absX > 0.09) return { en: `Adductor longus ${side}`, ar: `العضلة المقربة الطويلة ${side}` };
+      return { en: `Adductor magnus ${side}`, ar: `العضلة المقربة الكبرى ${side}` };
+    }
+    if (absX < 0.04) return { en: `Gracilis ${side}`, ar: `العضلة الرشيقة ${side}` };
+    return { en: `Adductor magnus ${side}`, ar: `العضلة المقربة الكبرى ${side}` };
+  }
+
+  // ─── SubTool-13 (Object_27): Posterior Thigh — Y: 0.47 → 0.95 ───────────
+  if (objName === 'Object_27' || parentName.includes('SubTool-13')) {
+    if (y > 0.78) {
+      if (absX > 0.08) return { en: `Biceps femoris ${side}`, ar: `العضلة ذات الرأسين الفخذية ${side}` };
+      return { en: `Semitendinosus ${side}`, ar: `العضلة نصف الوترية ${side}` };
+    }
+    if (y > 0.60) {
+      if (absX > 0.07) return { en: `Biceps femoris ${side}`, ar: `العضلة ذات الرأسين الفخذية ${side}` };
+      if (absX < 0.03) return { en: `Semimembranosus ${side}`, ar: `العضلة نصف الغشائية ${side}` };
+      return { en: `Semitendinosus ${side}`, ar: `العضلة نصف الوترية ${side}` };
+    }
+    return { en: `Popliteus ${side}`, ar: `العضلة المأبضية ${side}` };
+  }
+
+  // ─── SubTool-14 (Object_7): Posterior Leg/Calf — Y: 0.05 → 0.57 ─────────
+  if (objName === 'Object_7' || parentName.includes('SubTool-14')) {
+    if (y > 0.38) {
+      if (absX > 0.07) return { en: `Gastrocnemius ${side}`, ar: `العضلة التوأمية ${side}` };
+      return { en: `Plantaris ${side}`, ar: `العضلة الأخمصية ${side}` };
+    }
+    if (y > 0.22) {
+      if (absX < 0.05) return { en: `Soleus ${side}`, ar: `العضلة النعلية ${side}` };
+      if (z < -0.06) return { en: `Tibialis posterior ${side}`, ar: `العضلة الظنبوبية الخلفية ${side}` };
+      const isFibularSide = (side === '_L' && x < 0) || (side === '_R' && x > 0);
+      if (isFibularSide) return { en: `Flexor hallucis longus ${side}`, ar: `العضلة القابضة الطويلة لإبهام القدم ${side}` };
+      return { en: `Flexor digitorum longus ${side}`, ar: `العضلة القابضة الطويلة للأصابع ${side}` };
+    }
+    return { en: `Soleus ${side}`, ar: `العضلة النعلية ${side}` };
+  }
+
+  // ─── SubTool-15 (Object_25): Anterior & Lateral Leg + Foot — Y: 0.04 → 0.52 ──
+  if (objName === 'Object_25' || parentName.includes('SubTool-15')) {
+    if (y > 0.30) {
+      if (absX > 0.08 && z > 0.05) return { en: `Fibularis longus ${side}`, ar: `العضلة الشظوية الطويلة ${side}` };
+      if (absX > 0.07) return { en: `Fibularis brevis ${side}`, ar: `العضلة الشظوية القصيرة ${side}` };
+      if (z > 0.06) return { en: `Extensor digitorum longus ${side}`, ar: `العضلة الباسطة الطويلة للأصابع ${side}` };
       return { en: `Tibialis anterior ${side}`, ar: `العضلة الظنبوبية الأمامية ${side}` };
     }
-    // Posterior Calf
-    if (y > 0.28) {
-      return { en: 'Gastrocnemius', ar: 'العضلة التوأمية' };
+    if (y > 0.15) {
+      if (absX > 0.07) return { en: `Fibularis brevis ${side}`, ar: `العضلة الشظوية القصيرة ${side}` };
+      if (z > 0.05) return { en: `Extensor hallucis longus ${side}`, ar: `العضلة الباسطة الطويلة لإبهام القدم ${side}` };
+      return { en: `Extensor digitorum longus ${side}`, ar: `العضلة الباسطة الطويلة للأصابع ${side}` };
     }
-    return { en: 'Soleus', ar: 'العضلة النعلية' };
+    if (y > 0.08) {
+      if (absX > 0.06) return { en: `Abductor digiti minimi ${side}`, ar: `العضلة المبعدة للخنصر ${side}` };
+      if (absX < 0.02) return { en: `Abductor hallucis ${side}`, ar: `العضلة المبعدة لإبهام القدم ${side}` };
+      return { en: `Extensor digitorum brevis ${side}`, ar: `العضلة الباسطة القصيرة للأصابع ${side}` };
+    }
+    if (absX > 0.05) return { en: `Abductor digiti minimi ${side}`, ar: `العضلة المبعدة للخنصر ${side}` };
+    if (z > 0.05) return { en: `Extensor hallucis brevis ${side}`, ar: `العضلة الباسطة القصيرة لإبهام القدم ${side}` };
+    if (absX < 0.02) return { en: `Quadratus plantae ${side}`, ar: `العضلة المربعة الأخمصية ${side}` };
+    return { en: `Flexor digitorum brevis ${side}`, ar: `العضلة القابضة القصيرة للأصابع ${side}` };
   }
 
-  // 8. Feet & Toes (y < 0.10)
-  if (z >= 0.0) {
-    return { en: `Extensor hallucis longus ${side}`, ar: `العضلة الباسطة الطويلة لإبهام القدم ${side}` };
+  // ─── Fallback coordinate-based resolution ────────────────────────────────
+  if (y > 1.54) {
+    if (absX > 0.06 && y > 1.60) return { en: `Temporalis ${side}`, ar: `العضلة الصدغية ${side}` };
+    if (absX < 0.03) return { en: 'Occipitofrontalis', ar: 'العضلة القذالية الجبهية' };
+    return { en: `Masseter ${side}`, ar: `العضلة الماضغة ${side}` };
   }
+  if (y >= 1.39) {
+    if (z >= 0) return { en: `Sternocleidomastoid ${side}`, ar: `العضلة القصية الترقوية الحلمية ${side}` };
+    return { en: `Trapezius ${side}`, ar: `العضلة الشبه المنحرفة ${side}` };
+  }
+  if (y >= 1.20) {
+    if (absX >= 0.15) return { en: `Deltoid ${side}`, ar: `العضلة الدالية ${side}` };
+    if (z >= 0) return { en: `Pectoralis major ${side}`, ar: `العضلة الصدرية الكبرى ${side}` };
+    if (absX >= 0.09) return { en: `Trapezius lower ${side}`, ar: `العضلة شبه المنحرفة السفلية ${side}` };
+    return { en: `Spinalis ${side}`, ar: `العضلة الشوكية ${side}` };
+  }
+  if (y >= 0.95) {
+    if (absX >= 0.19) {
+      if (z >= 0) return { en: `Biceps brachii ${side}`, ar: `العضلة ذات الرأسين العضدية ${side}` };
+      return { en: `Triceps brachii ${side}`, ar: `العضلة ثلاثية الرؤوس العضدية ${side}` };
+    }
+    if (z >= 0 && absX < 0.08) return { en: 'Rectus abdominis', ar: 'العضلة المستقيمة البطنية' };
+    if (z >= 0) return { en: `External oblique ${side}`, ar: `العضلة المائلة الخارجية ${side}` };
+    return { en: `Latissimus dorsi ${side}`, ar: `العضلة الظهرية العريضة ${side}` };
+  }
+  if (y >= 0.75) {
+    if (absX >= 0.18) return { en: `Brachioradialis ${side}`, ar: `العضلة العضدية الكعبرية ${side}` };
+    if (z < -0.04) return { en: `Gluteus maximus ${side}`, ar: `العضلة الألوية الكبرى ${side}` };
+    if (absX < 0.05) return { en: 'Rectus abdominis', ar: 'العضلة المستقيمة البطنية' };
+    return { en: `External oblique ${side}`, ar: `العضلة المائلة الخارجية ${side}` };
+  }
+  if (y >= 0.42) {
+    if (z < -0.02) {
+      if (absX > 0.08) return { en: `Biceps femoris ${side}`, ar: `العضلة ذات الرأسين الفخذية ${side}` };
+      return { en: `Semitendinosus ${side}`, ar: `العضلة نصف الوترية ${side}` };
+    }
+    if (absX > 0.11) return { en: `Vastus lateralis ${side}`, ar: `العضلة المتسعة الوحشية ${side}` };
+    if (absX < 0.05) return { en: `Rectus femoris ${side}`, ar: `العضلة المستقيمة الفخذية ${side}` };
+    return { en: `Adductor longus ${side}`, ar: `العضلة المقربة الطويلة ${side}` };
+  }
+  if (y >= 0.10) {
+    if (z < -0.03) {
+      if (y > 0.28) return { en: `Gastrocnemius ${side}`, ar: `العضلة التوأمية ${side}` };
+      return { en: `Soleus ${side}`, ar: `العضلة النعلية ${side}` };
+    }
+    if (absX > 0.08) return { en: `Fibularis longus ${side}`, ar: `العضلة الشظوية الطويلة ${side}` };
+    if (y < 0.22) return { en: `Extensor digitorum longus ${side}`, ar: `العضلة الباسطة الطويلة للأصابع ${side}` };
+    return { en: `Tibialis anterior ${side}`, ar: `العضلة الظنبوبية الأمامية ${side}` };
+  }
+  if (z >= 0) return { en: `Extensor hallucis longus ${side}`, ar: `العضلة الباسطة الطويلة لإبهام القدم ${side}` };
   return { en: 'Plantar fascia', ar: 'السفاق الأخمصي (اللفافة الأخمصية)' };
 }
 
 export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode = false }) => {
+
   const { t, language } = useLanguage();
   const mountRef = useRef<HTMLDivElement | null>(null);
 
