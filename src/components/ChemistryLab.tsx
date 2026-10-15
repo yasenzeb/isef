@@ -3,196 +3,337 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three-stdlib';
 import { useLanguage } from '../context/LanguageContext';
 import { getFullPeriodicElements, ChemicalElement } from '../data/periodicTableData';
+import { POLYATOMIC_GROUPS, PolyatomicGroup } from '../data/polyatomicGroupsData';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
-import { Search, Award, Box, Flame, Sparkles } from 'lucide-react';
+import { Search, Award, Layers, Sparkles, RotateCcw, Play, Pause, Atom, ShieldCheck, ChevronRight } from 'lucide-react';
 
-interface MoleculePreset {
-  id: string;
-  nameEn: string;
-  nameAr: string;
-  formula: string;
-  geometryEn: string;
-  geometryAr: string;
-  atoms: { symbol: string; x: number; y: number; z: number; color: number; radius: number }[];
-  bonds: [number, number][];
+// ============================================================
+// 1. LIVE 3D ATOM MODEL COMPONENT (BOHR-QUANTUM ORBITALS)
+// Protons (p+), Neutrons (n0), and Orbiting Electrons (e-)
+// ============================================================
+interface Atom3DViewerProps {
+  element: ChemicalElement;
+  language: string;
 }
 
-const PRESET_MOLECULES: MoleculePreset[] = [
-  {
-    id: 'water',
-    nameEn: 'Water',
-    nameAr: 'الماء (أكسيد الهيدروجين)',
-    formula: 'H₂O',
-    geometryEn: 'Bent (V-shaped), 104.5° angle',
-    geometryAr: 'زاوي منحني، زاوية 104.5°',
-    atoms: [
-      { symbol: 'O', x: 0, y: 0.1, z: 0, color: 0xef4444, radius: 0.35 },
-      { symbol: 'H', x: -0.75, y: -0.45, z: 0, color: 0xf8fafc, radius: 0.22 },
-      { symbol: 'H', x: 0.75, y: -0.45, z: 0, color: 0xf8fafc, radius: 0.22 },
-    ],
-    bonds: [[0, 1], [0, 2]],
-  },
-  {
-    id: 'methane',
-    nameEn: 'Methane',
-    nameAr: 'الميثان (رباعي الأوجه)',
-    formula: 'CH₄',
-    geometryEn: 'Tetrahedral, 109.5° angle',
-    geometryAr: 'رباعي أوجه منتظم، زاوية 109.5°',
-    atoms: [
-      { symbol: 'C', x: 0, y: 0, z: 0, color: 0x334155, radius: 0.38 },
-      { symbol: 'H', x: 0.63, y: 0.63, z: 0.63, color: 0xf8fafc, radius: 0.22 },
-      { symbol: 'H', x: -0.63, y: -0.63, z: 0.63, color: 0xf8fafc, radius: 0.22 },
-      { symbol: 'H', x: -0.63, y: 0.63, z: -0.63, color: 0xf8fafc, radius: 0.22 },
-      { symbol: 'H', x: 0.63, y: -0.63, z: -0.63, color: 0xf8fafc, radius: 0.22 },
-    ],
-    bonds: [[0, 1], [0, 2], [0, 3], [0, 4]],
-  },
-  {
-    id: 'carbon_dioxide',
-    nameEn: 'Carbon Dioxide',
-    nameAr: 'ثاني أكسيد الكربون',
-    formula: 'CO₂',
-    geometryEn: 'Linear, 180° angle',
-    geometryAr: 'خطي مستقيم، زاوية 180°',
-    atoms: [
-      { symbol: 'C', x: 0, y: 0, z: 0, color: 0x334155, radius: 0.38 },
-      { symbol: 'O', x: -1.16, y: 0, z: 0, color: 0xef4444, radius: 0.35 },
-      { symbol: 'O', x: 1.16, y: 0, z: 0, color: 0xef4444, radius: 0.35 },
-    ],
-    bonds: [[0, 1], [0, 2]],
-  },
-  {
-    id: 'ethanol',
-    nameEn: 'Ethanol',
-    nameAr: 'الإيثانول (كحول إيثيلي)',
-    formula: 'C₂H₅OH',
-    geometryEn: 'Aliphatic alcohol backbone',
-    geometryAr: 'سلسلة كحولية أليفاتية',
-    atoms: [
-      { symbol: 'C', x: -0.7, y: 0, z: 0, color: 0x334155, radius: 0.38 },
-      { symbol: 'C', x: 0.7, y: 0, z: 0, color: 0x334155, radius: 0.38 },
-      { symbol: 'O', x: 1.4, y: 1.0, z: 0, color: 0xef4444, radius: 0.35 },
-      { symbol: 'H', x: 2.2, y: 0.8, z: 0, color: 0xf8fafc, radius: 0.22 },
-      { symbol: 'H', x: -1.1, y: -0.5, z: 0.8, color: 0xf8fafc, radius: 0.22 },
-      { symbol: 'H', x: -1.1, y: -0.5, z: -0.8, color: 0xf8fafc, radius: 0.22 },
-      { symbol: 'H', x: -1.1, y: 1.0, z: 0, color: 0xf8fafc, radius: 0.22 },
-      { symbol: 'H', x: 0.9, y: -0.5, z: 0.8, color: 0xf8fafc, radius: 0.22 },
-      { symbol: 'H', x: 0.9, y: -0.5, z: -0.8, color: 0xf8fafc, radius: 0.22 },
-    ],
-    bonds: [[0, 1], [1, 2], [2, 3], [0, 4], [0, 5], [0, 6], [1, 7], [1, 8]],
-  },
-];
-
-interface ChemicalReaction {
-  id: string;
-  nameEn: string;
-  nameAr: string;
-  reactants: string;
-  products: string;
-  equation: string;
-  enthalpy: string;
-  descEn: string;
-  descAr: string;
-}
-
-const CHEMICAL_REACTIONS: ChemicalReaction[] = [
-  {
-    id: 'methane_combustion',
-    nameEn: 'Methane Combustion',
-    nameAr: 'احتراق غاز الميثان التام',
-    reactants: 'CH₄ + 2 O₂',
-    products: 'CO₂ + 2 H₂O',
-    equation: 'CH₄(g) + 2 O₂(g) → CO₂(g) + 2 H₂O(l)',
-    enthalpy: 'ΔH° = -890.3 kJ/mol (Exothermic / طارد للحرارة)',
-    descEn: 'Complete exothermic hydrocarbon oxidation releasing thermal energy, carbon dioxide, and water vapor.',
-    descAr: 'تفاعل أكسدة هيدروكربوني تام وطارد للحرارة، ينتج طاقة حرارية وثاني أكسيد الكربون وبخار الماء.',
-  },
-  {
-    id: 'water_electrolysis',
-    nameEn: 'Water Electrolysis',
-    nameAr: 'التحليل الكهربائي للماء',
-    reactants: '2 H₂O',
-    products: '2 H₂ + O₂',
-    equation: '2 H₂O(l) → 2 H₂(g) + O₂(g)',
-    enthalpy: 'ΔH° = +571.6 kJ/mol (Endothermic / ماص للحرارة)',
-    descEn: 'Decomposition of water into hydrogen and oxygen diatomic gases using electric potential difference.',
-    descAr: 'تفكك جزيئات الماء إلى غازي الهيدروجين والأكسجين باستخدام فرق جهد كهربائي مستمر.',
-  },
-  {
-    id: 'haber_bosch',
-    nameEn: 'Haber-Bosch Ammonia Synthesis',
-    nameAr: 'تخليق الأمونيا (طريقة هابر-بوش)',
-    reactants: 'N₂ + 3 H₂',
-    products: '2 NH₃',
-    equation: 'N₂(g) + 3 H₂(g) ⇌ 2 NH₃(g)',
-    enthalpy: 'ΔH° = -92.4 kJ/mol (Exothermic equilibrium / اتزان طارد)',
-    descEn: 'Heterogeneous catalytic fixation of atmospheric nitrogen and hydrogen gas under high pressure and iron catalyst.',
-    descAr: 'التثبيت الصناعي لغاز النيتروجين مع الهيدروجين تحت ضغط وحرارة عالية باستخدام عامل حفاز من الحديد.',
-  },
-];
-
-export const ChemistryLab: React.FC = () => {
-  const { t, language, isRTL } = useLanguage();
-  const [activeTab, setActiveTab] = useState<'periodic' | 'molecular' | 'reactions'>('periodic');
-  const [elements] = useState<ChemicalElement[]>(() => getFullPeriodicElements());
-  const [selectedElement, setSelectedElement] = useState<ChemicalElement>(elements[0]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState('');
-
-  // 3D Molecular Conformer state
-  const [selectedMolecule, setSelectedMolecule] = useState<MoleculePreset>(PRESET_MOLECULES[0]);
-  const [selectedReaction, setSelectedReaction] = useState<ChemicalReaction>(CHEMICAL_REACTIONS[0]);
+const Atom3DViewer: React.FC<Atom3DViewerProps> = ({ element, language }) => {
   const mountRef = useRef<HTMLDivElement | null>(null);
+  const [isRotating, setIsRotating] = useState(true);
+  const isRotatingRef = useRef(true);
+  isRotatingRef.current = isRotating;
 
-  // Scientist card
-  const mendeleev = REAL_SCIENTISTS.find(s => s.id === 'mendeleev');
+  const Z = element.number;
+  const A = Math.round(element.atomicMass);
+  const N = Math.max(0, A - Z);
+  const shells = element.shells && element.shells.length > 0 ? element.shells : [Z];
 
-  // Filtering for Periodic Table
-  const filteredElements = elements.filter(el => {
-    const matchesCategory = selectedCategory === 'all' || el.category === selectedCategory;
-    const matchesSearch = 
-      el.nameEn.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      el.nameAr.includes(searchQuery) ||
-      el.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      el.number.toString() === searchQuery.trim();
-    return matchesCategory && matchesSearch;
-  });
-
-  // Molecular 3D Canvas initialization
   useEffect(() => {
-    if (activeTab !== 'molecular') return;
     const mount = mountRef.current;
     if (!mount) return;
 
     const width = mount.clientWidth;
-    const height = mount.clientHeight || 520;
+    const height = mount.clientHeight || 350;
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x040814);
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, 0, 4.5);
+    const maxRadius = 1.1 + shells.length * 0.65;
+    camera.position.set(0, maxRadius * 0.65, maxRadius * 2.1);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     mount.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.minDistance = 1.5;
+    controls.maxDistance = 30;
+
+    // Lighting
+    scene.add(new THREE.AmbientLight(0xffffff, 0.9));
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.2);
+    dirLight1.position.set(5, 8, 5);
+    scene.add(dirLight1);
+
+    const dirLight2 = new THREE.DirectionalLight(0x6366f1, 0.7);
+    dirLight2.position.set(-5, -5, -5);
+    scene.add(dirLight2);
+
+    const pointLight = new THREE.PointLight(0xf59e0b, 1.8, 6);
+    pointLight.position.set(0, 0, 0);
+    scene.add(pointLight);
+
+    // --- 1. Nucleus Cluster (Protons + Neutrons) ---
+    const nucleusGroup = new THREE.Group();
+    const protonGeo = new THREE.SphereGeometry(0.12, 16, 16);
+    const neutronGeo = new THREE.SphereGeometry(0.12, 16, 16);
+    const protonMat = new THREE.MeshStandardMaterial({
+      color: 0xef4444, // Red
+      roughness: 0.25,
+      metalness: 0.1,
+      emissive: 0x7f1d1d,
+      emissiveIntensity: 0.45,
+    });
+    const neutronMat = new THREE.MeshStandardMaterial({
+      color: 0x94a3b8, // Slate / Cyan-gray
+      roughness: 0.35,
+      metalness: 0.2,
+      emissive: 0x1e293b,
+      emissiveIntensity: 0.35,
+    });
+
+    const totalParticles = Z + N;
+    const displayCount = Math.min(totalParticles, 40);
+    const protonRatio = Z / (totalParticles || 1);
+    const nucRadius = 0.2 + Math.min(0.4, Math.cbrt(displayCount) * 0.12);
+
+    for (let p = 0; p < displayCount; p++) {
+      const isProton = Math.random() < protonRatio;
+      const mesh = new THREE.Mesh(isProton ? protonGeo : neutronGeo, isProton ? protonMat : neutronMat);
+
+      const phi = Math.acos(1 - (2 * (p + 0.5)) / displayCount);
+      const theta = Math.PI * (1 + Math.sqrt(5)) * p;
+      const r = nucRadius * Math.cbrt((p + 1) / displayCount);
+
+      mesh.position.set(
+        r * Math.sin(phi) * Math.cos(theta),
+        r * Math.sin(phi) * Math.sin(theta),
+        r * Math.cos(phi)
+      );
+      nucleusGroup.add(mesh);
+    }
+
+    if (totalParticles > 6) {
+      const glowGeo = new THREE.SphereGeometry(nucRadius * 1.25, 24, 24);
+      const glowMat = new THREE.MeshBasicMaterial({
+        color: 0xef4444,
+        transparent: true,
+        opacity: 0.12,
+      });
+      nucleusGroup.add(new THREE.Mesh(glowGeo, glowMat));
+    }
+    scene.add(nucleusGroup);
+
+    // --- 2. Concentric Electron Shells & Orbiting Electrons ---
+    const electronGeo = new THREE.SphereGeometry(0.075, 16, 16);
+    const electronMat = new THREE.MeshStandardMaterial({
+      color: 0x22d3ee, // Bright glowing Cyan
+      roughness: 0.15,
+      metalness: 0.4,
+      emissive: 0x06b6d4,
+      emissiveIntensity: 0.9,
+    });
+
+    interface OrbitingElectron {
+      mesh: THREE.Mesh;
+      shellRadius: number;
+      baseAngle: number;
+      speed: number;
+    }
+
+    const electronList: OrbitingElectron[] = [];
+
+    shells.forEach((electronCount, shellIdx) => {
+      const shellRadius = 1.0 + (shellIdx + 1) * 0.65;
+      const shellGroup = new THREE.Group();
+
+      // Realistic 3D orbital tilt for each shell plane
+      shellGroup.rotation.x = ((shellIdx * 0.45) % Math.PI) - 0.2;
+      shellGroup.rotation.z = ((shellIdx * 0.35) % Math.PI) - 0.15;
+      shellGroup.rotation.y = (shellIdx * 0.25) % Math.PI;
+
+      // Concentric glowing orbital path
+      const ringPoints: THREE.Vector3[] = [];
+      const segments = 72;
+      for (let s = 0; s <= segments; s++) {
+        const theta = (s / segments) * Math.PI * 2;
+        ringPoints.push(new THREE.Vector3(Math.cos(theta) * shellRadius, 0, Math.sin(theta) * shellRadius));
+      }
+      const ringGeo = new THREE.BufferGeometry().setFromPoints(ringPoints);
+      const ringMat = new THREE.LineBasicMaterial({
+        color: 0x6366f1,
+        transparent: true,
+        opacity: 0.35,
+      });
+      const ringLine = new THREE.LineLoop(ringGeo, ringMat);
+      shellGroup.add(ringLine);
+
+      // Distribute electrons along the ring
+      for (let e = 0; e < electronCount; e++) {
+        const eMesh = new THREE.Mesh(electronGeo, electronMat);
+        const baseAngle = (e / electronCount) * Math.PI * 2;
+        eMesh.position.set(Math.cos(baseAngle) * shellRadius, 0, Math.sin(baseAngle) * shellRadius);
+        shellGroup.add(eMesh);
+
+        const speed = 1.8 / Math.sqrt(shellIdx + 1);
+        electronList.push({
+          mesh: eMesh,
+          shellRadius,
+          baseAngle,
+          speed,
+        });
+      }
+
+      scene.add(shellGroup);
+    });
+
+    // --- 3. Animation Loop ---
+    let animId: number;
+    let clockTime = 0;
+
+    const animate = () => {
+      animId = requestAnimationFrame(animate);
+
+      if (isRotatingRef.current) {
+        clockTime += 0.016;
+        nucleusGroup.rotation.y += 0.005;
+        nucleusGroup.rotation.x += 0.002;
+
+        electronList.forEach(e => {
+          const currentAngle = e.baseAngle + clockTime * e.speed;
+          e.mesh.position.set(
+            Math.cos(currentAngle) * e.shellRadius,
+            0,
+            Math.sin(currentAngle) * e.shellRadius
+          );
+        });
+      }
+
+      controls.update();
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    const handleResize = () => {
+      if (!mount) return;
+      const w = mount.clientWidth;
+      const h = mount.clientHeight || 350;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    };
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animId);
+      renderer.dispose();
+      if (mount.contains(renderer.domElement)) {
+        mount.removeChild(renderer.domElement);
+      }
+    };
+  }, [element, shells]);
+
+  const ar = language === 'ar';
+
+  return (
+    <div className="relative w-full rounded-2xl overflow-hidden border border-white/10 bg-[#040814] shadow-2xl flex flex-col">
+      {/* Top Overlay Bar */}
+      <div className="absolute top-2.5 inset-x-3 flex items-center justify-between z-10 pointer-events-none">
+        <div className="flex items-center gap-2 pointer-events-auto bg-[#030712]/80 backdrop-blur-md px-3 py-1 rounded-xl border border-white/10">
+          <Atom className="w-4 h-4 text-cyan-400" />
+          <span className="text-xs font-bold text-white font-mono">
+            {element.symbol} · {ar ? `ذرة ${element.nameAr}` : `${element.nameEn} Atom 3D`}
+          </span>
+          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+            Z={Z}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-1.5 pointer-events-auto">
+          <button
+            onClick={() => setIsRotating(prev => !prev)}
+            className="p-1.5 rounded-lg bg-[#030712]/80 backdrop-blur-md border border-white/10 text-slate-300 hover:text-white transition-colors"
+            title={isRotating ? (ar ? 'إيقاف دوران الإلكترونات' : 'Pause Orbit') : (ar ? 'تشغيل دوران الإلكترونات' : 'Resume Orbit')}
+          >
+            {isRotating ? <Pause className="w-3.5 h-3.5 text-amber-400" /> : <Play className="w-3.5 h-3.5 text-emerald-400" />}
+          </button>
+        </div>
+      </div>
+
+      {/* 3D Canvas Mount */}
+      <div ref={mountRef} className="w-full h-[330px] cursor-grab active:cursor-grabbing" />
+
+      {/* Bottom Particle Telemetry HUD */}
+      <div className="bg-[#030712]/90 backdrop-blur-md border-t border-white/10 p-2.5 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+        <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-1.5">
+          <span className="text-[10px] text-red-400 block font-bold">{ar ? 'البروتونات (p⁺)' : 'Protons (p⁺)'}</span>
+          <span className="text-sm font-black font-mono text-red-300">{Z}</span>
+        </div>
+
+        <div className="bg-slate-500/10 border border-slate-500/20 rounded-xl p-1.5">
+          <span className="text-[10px] text-slate-400 block font-bold">{ar ? 'النيوترونات (n⁰)' : 'Neutrons (n⁰)'}</span>
+          <span className="text-sm font-black font-mono text-slate-300">{N}</span>
+        </div>
+
+        <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-xl p-1.5">
+          <span className="text-[10px] text-cyan-400 block font-bold">{ar ? 'الإلكترونات (e⁻)' : 'Electrons (e⁻)'}</span>
+          <span className="text-sm font-black font-mono text-cyan-300">{Z}</span>
+        </div>
+
+        <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-xl p-1.5">
+          <span className="text-[10px] text-indigo-400 block font-bold">{ar ? 'مستويات الطاقة' : 'Energy Shells'}</span>
+          <span className="text-xs font-black font-mono text-indigo-300 truncate block mt-0.5">
+            {shells.join(' · ')}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ============================================================
+// 2. 3D POLYATOMIC GROUP VIEWER COMPONENT
+// Ball-and-Stick 3D Conformer for Radicals & Ions
+// ============================================================
+interface PolyatomicGroup3DViewerProps {
+  group: PolyatomicGroup;
+  language: string;
+}
+
+const PolyatomicGroup3DViewer: React.FC<PolyatomicGroup3DViewerProps> = ({ group, language }) => {
+  const mountRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const mount = mountRef.current;
+    if (!mount) return;
+
+    const width = mount.clientWidth;
+    const height = mount.clientHeight || 500;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x040814);
+
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+    camera.position.set(0, 0, 4.8);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    mount.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
 
     // Lights
-    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1.3);
-    dirLight.position.set(3, 4, 3);
-    scene.add(dirLight);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.9));
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.3);
+    dirLight1.position.set(3, 4, 3);
+    scene.add(dirLight1);
 
-    // Build molecular Ball-and-Stick graph
+    const dirLight2 = new THREE.DirectionalLight(0x6366f1, 0.5);
+    dirLight2.position.set(-3, -4, -3);
+    scene.add(dirLight2);
+
+    // Build 3D Molecular Graph
     const molGroup = new THREE.Group();
 
-    // Atoms
-    selectedMolecule.atoms.forEach((atom: { symbol: string; x: number; y: number; z: number; color: number; radius: number }) => {
+    // Atoms (Spheres)
+    group.atoms.forEach((atom) => {
       const geo = new THREE.SphereGeometry(atom.radius, 32, 32);
       const mat = new THREE.MeshStandardMaterial({
         color: atom.color,
@@ -204,14 +345,14 @@ export const ChemistryLab: React.FC = () => {
       molGroup.add(mesh);
     });
 
-    // Bonds
-    selectedMolecule.bonds.forEach(([idxA, idxB]: [number, number]) => {
-      const posA = new THREE.Vector3(selectedMolecule.atoms[idxA].x, selectedMolecule.atoms[idxA].y, selectedMolecule.atoms[idxA].z);
-      const posB = new THREE.Vector3(selectedMolecule.atoms[idxB].x, selectedMolecule.atoms[idxB].y, selectedMolecule.atoms[idxB].z);
+    // Bonds (Cylinders)
+    group.bonds.forEach(([idxA, idxB]) => {
+      if (!group.atoms[idxA] || !group.atoms[idxB]) return;
+      const posA = new THREE.Vector3(group.atoms[idxA].x, group.atoms[idxA].y, group.atoms[idxA].z);
+      const posB = new THREE.Vector3(group.atoms[idxB].x, group.atoms[idxB].y, group.atoms[idxB].z);
 
-      
       const distance = posA.distanceTo(posB);
-      const bondGeo = new THREE.CylinderGeometry(0.07, 0.07, distance, 16);
+      const bondGeo = new THREE.CylinderGeometry(0.065, 0.065, distance, 16);
       const bondMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.4 });
       const bondMesh = new THREE.Mesh(bondGeo, bondMat);
 
@@ -232,69 +373,138 @@ export const ChemistryLab: React.FC = () => {
     };
     animate();
 
+    const handleResize = () => {
+      if (!mount) return;
+      const w = mount.clientWidth;
+      const h = mount.clientHeight || 500;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    };
+    window.addEventListener('resize', handleResize);
+
     return () => {
+      window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animId);
       renderer.dispose();
       if (mount.contains(renderer.domElement)) {
         mount.removeChild(renderer.domElement);
       }
     };
-  }, [activeTab, selectedMolecule]);
+  }, [group]);
+
+  const ar = language === 'ar';
+
+  return (
+    <div className="sci-card overflow-hidden relative flex flex-col h-[560px]">
+      <div className="bg-[#030712]/90 backdrop-blur-md px-4 py-3 border-b border-white/10 flex items-center justify-between z-10">
+        <div>
+          <span className="text-sm font-bold text-white block">
+            {ar ? group.nameAr : group.nameEn}
+          </span>
+          <span className="text-[11px] text-slate-400 font-mono">
+            {ar ? group.geometryAr : group.geometryEn}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-base font-black font-mono px-3 py-1 rounded-xl bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+            {group.formula}
+          </span>
+          <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+            {group.valencyAr}
+          </span>
+        </div>
+      </div>
+      <div ref={mountRef} className="w-full flex-1 cursor-grab active:cursor-grabbing" />
+    </div>
+  );
+};
+
+// ============================================================
+// 3. MAIN CHEMISTRY LAB COMPONENT
+// ============================================================
+export const ChemistryLab: React.FC = () => {
+  const { t, language, isRTL } = useLanguage();
+  const [activeTab, setActiveTab] = useState<'periodic' | 'atomic-groups'>('periodic');
+  const [elements] = useState<ChemicalElement[]>(() => getFullPeriodicElements());
+  const [selectedElement, setSelectedElement] = useState<ChemicalElement>(elements[0]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Polyatomic groups state
+  const [selectedGroup, setSelectedGroup] = useState<PolyatomicGroup>(POLYATOMIC_GROUPS[0]);
+  const [valencyFilter, setValencyFilter] = useState<string>('all');
+
+  // Scientist card
+  const mendeleev = REAL_SCIENTISTS.find(s => s.id === 'mendeleev');
+
+  // Filtering for Periodic Table
+  const filteredElements = elements.filter(el => {
+    const matchesCategory = selectedCategory === 'all' || el.category === selectedCategory;
+    const matchesSearch = 
+      el.nameEn.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      el.nameAr.includes(searchQuery) ||
+      el.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      el.number.toString() === searchQuery.trim();
+    return matchesCategory && matchesSearch;
+  });
+
+  // Filtering for Polyatomic Groups
+  const filteredGroups = POLYATOMIC_GROUPS.filter(g => {
+    if (valencyFilter === 'all') return true;
+    return g.valencyType === valencyFilter;
+  });
+
+  const ar = language === 'ar';
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 space-y-6">
       
+      {/* Header Bar */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
         <div>
           <span className="sci-badge">
-            {language === 'ar' ? 'الكيمياء الجزيئية ومعايير IUPAC' : 'IUPAC Standard & 3D Molecular Chemistry'}
+            {ar ? 'الكيمياء الجزيئية والذرية ومعايير IUPAC' : 'Atomic & Molecular Chemistry Lab (IUPAC)'}
           </span>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-1" style={{ fontFamily: 'var(--font-display)' }}>
-            {language === 'ar' ? 'مختبر الكيمياء والجدول الدوري والجزيئات' : 'Chemistry & Molecular Visualization Lab'}
+            {ar ? 'مختبر الكيمياء والجدول الدوري والمجموعات الذرية' : 'Chemistry, Periodic Table & Polyatomic Groups'}
           </h1>
           <p className="text-xs text-slate-400 mt-0.5">{t.chemistry.subtitle}</p>
         </div>
 
-        {/* Tab switcher */}
+        {/* Tab switcher: Only 2 tabs (Reactions removed) */}
         <div className="flex items-center space-x-2 sci-surface p-1.5">
           <button
             onClick={() => setActiveTab('periodic')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
               activeTab === 'periodic' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
             style={activeTab === 'periodic' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
           >
-            {language === 'ar' ? 'الجدول الدوري (118 عنصراً)' : '118 Periodic Elements'}
+            <Atom className="w-3.5 h-3.5" />
+            <span>{ar ? 'الجدول الدوري وبنية الذرة 3D' : 'Periodic Table & 3D Atom'}</span>
           </button>
+
           <button
-            onClick={() => setActiveTab('molecular')}
+            onClick={() => setActiveTab('atomic-groups')}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'molecular' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
+              activeTab === 'atomic-groups' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
-            style={activeTab === 'molecular' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
+            style={activeTab === 'atomic-groups' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
           >
-            <Box className="w-3.5 h-3.5" />
-            <span>{language === 'ar' ? 'المتطابقات الجزيئية 3D' : '3D Molecular Viewer'}</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('reactions')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'reactions' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
-            }`}
-            style={activeTab === 'reactions' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
-          >
-            <Flame className="w-3.5 h-3.5" />
-            <span>{language === 'ar' ? 'المعادلات والتفاعلات' : 'Reaction Dynamics'}</span>
+            <Layers className="w-3.5 h-3.5" />
+            <span>{ar ? 'المجموعات الذرية 3D' : 'Polyatomic Groups 3D'}</span>
           </button>
         </div>
       </div>
 
-      {/* VIEW 1: PERIODIC TABLE */}
+      {/* VIEW 1: PERIODIC TABLE & 3D ATOM MODEL */}
       {activeTab === 'periodic' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column: Interactive Periodic Table Grid */}
           <div className="lg:col-span-2 sci-card p-4 overflow-x-auto space-y-4">
             
-            <div className="flex flex-wrap items-center gap-2 pb-2 border-b border-sky-500/15">
+            <div className="flex flex-wrap items-center gap-2 pb-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
               <div className="relative flex-1 min-w-[200px]">
                 <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
                 <input
@@ -302,7 +512,7 @@ export const ChemistryLab: React.FC = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t.chemistry.searchPlaceholder}
-                  className={`w-full bg-slate-950 border border-slate-700 rounded-xl py-2 text-xs text-white focus:outline-none focus:border-sky-400 ${
+                  className={`w-full bg-slate-950/80 border border-slate-700 rounded-xl py-2 text-xs text-white focus:outline-none focus:border-indigo-400 ${
                     isRTL ? "pr-8 text-right" : "pl-9"
                   }`}
                 />
@@ -311,7 +521,7 @@ export const ChemistryLab: React.FC = () => {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
+                className="bg-slate-950/80 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
               >
                 <option value="all">{t.chemistry.allCategories}</option>
                 <option value="alkali-metal">{t.chemistry.alkaliMetal}</option>
@@ -326,6 +536,7 @@ export const ChemistryLab: React.FC = () => {
               </select>
             </div>
 
+            {/* Elements Grid */}
             <div className="grid grid-cols-6 sm:grid-cols-9 md:grid-cols-12 gap-1.5 min-w-[500px]">
               {filteredElements.map((el) => {
                 const isSelected = selectedElement.number === el.number;
@@ -335,14 +546,14 @@ export const ChemistryLab: React.FC = () => {
                     onClick={() => setSelectedElement(el)}
                     className={`flex flex-col items-center justify-center p-2 rounded-xl border transition-all text-center relative ${
                       isSelected 
-                        ? 'bg-sky-500/20 border-sky-400 ring-2 ring-sky-400 scale-105 z-10' 
-                        : 'bg-slate-950/80 border-slate-800 hover:border-sky-500/30 hover:scale-102'
+                        ? 'bg-indigo-500/25 border-cyan-400 ring-2 ring-cyan-400/80 scale-105 z-10 shadow-lg' 
+                        : 'bg-slate-950/80 border-slate-800 hover:border-indigo-500/40 hover:scale-102'
                     }`}
                   >
                     <span className="text-[9px] font-mono text-slate-400 absolute top-1 left-1.5">{el.number}</span>
                     <span className="text-base font-black text-white mt-2">{el.symbol}</span>
                     <span className="text-[10px] text-slate-300 truncate max-w-full font-medium">
-                      {language === 'ar' ? el.nameAr : el.nameEn}
+                      {ar ? el.nameAr : el.nameEn}
                     </span>
                     <span className="text-[8px] font-mono text-slate-500 mt-0.5">{el.atomicMass}</span>
                   </button>
@@ -351,13 +562,19 @@ export const ChemistryLab: React.FC = () => {
             </div>
           </div>
 
+          {/* Right Column: 3D Atom Model & Element Details */}
           <div className="space-y-6">
+            
+            {/* 3D Orbiting Atom Viewer */}
+            <Atom3DViewer element={selectedElement} language={language} />
+
+            {/* Detailed Properties Card */}
             <div className="sci-card p-6 space-y-4">
-              <div className="flex items-center justify-between border-b border-sky-500/15 pb-3">
+              <div className="flex items-center justify-between pb-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
                 <div>
-                  <span className="text-3xl font-black text-white">{selectedElement.symbol}</span>
-                  <h3 className="text-lg font-bold text-sky-400">
-                    {language === 'ar' ? selectedElement.nameAr : selectedElement.nameEn}
+                  <span className="text-3xl font-black text-white font-mono">{selectedElement.symbol}</span>
+                  <h3 className="text-lg font-bold text-cyan-400">
+                    {ar ? selectedElement.nameAr : selectedElement.nameEn}
                   </h3>
                 </div>
                 <div className="text-right">
@@ -367,28 +584,43 @@ export const ChemistryLab: React.FC = () => {
               </div>
 
               <div className="space-y-2 text-xs">
-                <div className="flex justify-between py-1 border-b border-sky-500/10">
-                  <span className="text-slate-400">{language === 'ar' ? 'الكتلة الذرية القياسية' : 'Atomic Mass'}</span>
+                <div className="flex justify-between py-1" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <span className="text-slate-400">{ar ? 'الكتلة الذرية القياسية' : 'Atomic Mass'}</span>
                   <span className="font-mono text-white">{selectedElement.atomicMass} u</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-sky-500/10">
-                  <span className="text-slate-400">{language === 'ar' ? 'التوزيع الإلكتروني' : 'Electron Configuration'}</span>
-                  <span className="font-mono text-sky-400">{selectedElement.electronConfig}</span>
+                <div className="flex justify-between py-1" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <span className="text-slate-400">{ar ? 'التوزيع الإلكتروني' : 'Electron Configuration'}</span>
+                  <span className="font-mono text-cyan-400">{selectedElement.electronConfig}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-sky-500/10">
-                  <span className="text-slate-400">{language === 'ar' ? 'السالبية الكهربائية' : 'Electronegativity'}</span>
+                <div className="flex justify-between py-1" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <span className="text-slate-400">{ar ? 'السالبية الكهربائية' : 'Electronegativity'}</span>
                   <span className="font-mono text-white">{selectedElement.electronegativity ?? 'N/A'}</span>
+                </div>
+                <div className="flex justify-between py-1" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <span className="text-slate-400">{ar ? 'الفئة والمجموعة' : 'Block & Group'}</span>
+                  <span className="font-mono text-indigo-300">Block {selectedElement.block?.toUpperCase()} · Group {selectedElement.group}</span>
                 </div>
               </div>
 
               <div>
                 <span className="text-xs font-bold text-slate-300 uppercase tracking-wider block mb-1">
-                  {language === 'ar' ? 'نبذة علمية وتطبيقات' : 'Overview & Occurrence'}
+                  {ar ? 'نبذة علمية وتطبيقات' : 'Overview & Occurrence'}
                 </span>
-                <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/70 p-3 rounded-xl border border-sky-500/15">
-                  {language === 'ar' ? selectedElement.summaryAr : selectedElement.summaryEn}
+                <p className="text-xs text-slate-300 leading-relaxed p-3 rounded-xl" style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                  {ar ? selectedElement.summaryAr : selectedElement.summaryEn}
                 </p>
               </div>
+
+              {selectedElement.commonUsesAr && (
+                <div>
+                  <span className="text-xs font-bold text-slate-300 uppercase tracking-wider block mb-1">
+                    {ar ? 'أبرز الاستخدامات الصناعية والطبية' : 'Industrial & Practical Uses'}
+                  </span>
+                  <p className="text-xs text-slate-300 leading-relaxed p-3 rounded-xl" style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                    {ar ? selectedElement.commonUsesAr : selectedElement.commonUsesEn}
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Mendeleev Card */}
@@ -397,7 +629,7 @@ export const ChemistryLab: React.FC = () => {
                 <div className="flex items-center space-x-2 text-amber-400">
                   <Award className="w-4 h-4" />
                   <h4 className="text-xs font-bold uppercase tracking-wider">
-                    {language === 'ar' ? 'مؤسس الجدول الدوري' : 'Scientific Pioneer'}
+                    {ar ? 'مؤسس الجدول الدوري' : 'Scientific Pioneer'}
                   </h4>
                 </div>
                 <div>
@@ -405,7 +637,7 @@ export const ChemistryLab: React.FC = () => {
                   <span className="text-[11px] text-slate-400">{mendeleev.dates} • {mendeleev.field}</span>
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  {language === 'ar' ? mendeleev.contributionsAr : mendeleev.contributionsEn}
+                  {ar ? mendeleev.contributionsAr : mendeleev.contributionsEn}
                 </p>
                 <span className="text-[10px] text-slate-500 font-mono block">
                   {mendeleev.citation}
@@ -416,122 +648,118 @@ export const ChemistryLab: React.FC = () => {
         </div>
       )}
 
-      {/* VIEW 2: 3D MOLECULAR CONFORMER VIEWER */}
-      {activeTab === 'molecular' && (
+      {/* VIEW 2: 3D POLYATOMIC GROUPS (المجموعات الذرية) */}
+      {activeTab === 'atomic-groups' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 sci-card overflow-hidden relative flex flex-col h-[550px]">
-            <div className="bg-slate-950/80 px-4 py-3 border-b border-sky-500/15 flex items-center justify-between z-10">
-              <span className="text-xs font-bold text-white">
-                {language === 'ar' ? `المتطابق الجزيئي ثلاثي الأبعاد: ${selectedMolecule.nameAr}` : `Ball-and-Stick 3D Conformer: ${selectedMolecule.nameEn}`}
-              </span>
-              <span className="text-xs font-mono text-sky-400">{selectedMolecule.formula}</span>
+          {/* Left Column: 3D Polyatomic Group Model */}
+          <div className="lg:col-span-2 space-y-4">
+            <PolyatomicGroup3DViewer group={selectedGroup} language={language} />
+
+            {/* Deep Chemistry Explainer Card */}
+            <div className="sci-card p-6 space-y-4">
+              <div className="flex items-center gap-2 text-indigo-400">
+                <ShieldCheck className="w-5 h-5" />
+                <h3 className="text-sm font-bold uppercase tracking-wider text-white">
+                  {ar ? 'مفهوم وسلوك المجموعة الذرية في التفاعلات الكيميائية' : 'Behavior of Polyatomic Radicals in Chemical Reactions'}
+                </h3>
+              </div>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                {ar
+                  ? 'المجموعة الذرية (Radical / Polyatomic Ion) هي مجموعة من الذرات لعناصر مختلفة مرتبطة ببعضها بروابط تساهمية قوية، تسلك مسلك الذرة الواحدة في التفاعل الكيميائي، ولها تكافؤ خاص بها ولا توجد في حالة انفراد بل تشكل أملاحاً ومركبات مستقرة.'
+                  : 'A polyatomic ion is a covalently bonded set of two or more atoms that acts as a single charged unit in chemical reactions with its own distinct valence state.'}
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                <div className="p-3 rounded-xl bg-slate-950/70 border border-white/10 space-y-1">
+                  <span className="text-[11px] text-slate-400 block font-bold">{ar ? 'أمثلة على المركبات والأملاح:' : 'Common Compounds & Salts:'}</span>
+                  <span className="text-xs font-mono text-cyan-300 block">{ar ? selectedGroup.examplesAr : selectedGroup.examplesEn}</span>
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-950/70 border border-white/10 space-y-1">
+                  <span className="text-[11px] text-slate-400 block font-bold">{ar ? 'حالات التأكسد داخل المجموعة:' : 'Oxidation States:'}</span>
+                  <span className="text-xs font-mono text-indigo-300 block">{selectedGroup.oxidationState}</span>
+                </div>
+              </div>
             </div>
-            <div ref={mountRef} className="w-full flex-1 cursor-grab active:cursor-grabbing" />
           </div>
 
+          {/* Right Column: Polyatomic Groups Selector & Details */}
           <div className="space-y-4">
-            <div className="sci-card p-5 space-y-3">
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                {language === 'ar' ? 'اختر الجزيء الكيميائي' : 'Select Molecular Structure'}
-              </h3>
-              <div className="space-y-2">
-                {PRESET_MOLECULES.map((mol) => (
+            
+            {/* Valency Filters */}
+            <div className="sci-card p-4 space-y-3">
+              <span className="text-xs font-bold text-white uppercase tracking-wider block">
+                {ar ? 'تصفية حسب التكافؤ والشحنة' : 'Filter by Valency & Charge'}
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  { id: 'all', ar: 'الكل (16)', en: 'All (16)' },
+                  { id: 'monovalent_neg', ar: 'أحادية سالبة (-1)', en: 'Monovalent (-1)' },
+                  { id: 'divalent_neg', ar: 'ثنائية سالبة (-2)', en: 'Divalent (-2)' },
+                  { id: 'trivalent_neg', ar: 'ثلاثية سالبة (-3)', en: 'Trivalent (-3)' },
+                  { id: 'monovalent_pos', ar: 'أحادية موجبة (+1)', en: 'Cation (+1)' },
+                ].map(f => (
                   <button
-                    key={mol.id}
-                    onClick={() => setSelectedMolecule(mol)}
-                    className={`w-full p-3 rounded-xl border text-left transition-all flex items-center justify-between ${
-                      selectedMolecule.id === mol.id
-                        ? 'bg-sky-600 border-sky-500 text-white shadow'
-                        : 'bg-slate-950 border-slate-800 text-slate-300 hover:bg-slate-800/60'
+                    key={f.id}
+                    onClick={() => setValencyFilter(f.id)}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all ${
+                      valencyFilter === f.id
+                        ? 'bg-indigo-600 text-white shadow'
+                        : 'bg-slate-950/70 text-slate-400 hover:text-white border border-white/5'
                     }`}
                   >
-                    <div>
-                      <span className="text-xs font-bold block">{language === 'ar' ? mol.nameAr : mol.nameEn}</span>
-                      <span className="text-[10px] text-slate-400">{language === 'ar' ? mol.geometryAr : mol.geometryEn}</span>
-                    </div>
-                    <span className="text-xs font-mono font-bold">{mol.formula}</span>
+                    {ar ? f.ar : f.en}
                   </button>
                 ))}
               </div>
             </div>
 
-            <div className="sci-card p-5 text-xs text-slate-300 space-y-2">
-              <span className="font-bold text-white block">PubChem Conformer Reference</span>
-              <p className="leading-relaxed text-slate-400">
-                {language === 'ar'
-                  ? 'تم بناء الإحداثيات الجزيئية ثلاثية الأبعاد استناداً إلى أطوال الروابط المقاسة ونظرية VSEPR للتنافر بين أزواج إلكترونات التكافؤ.'
-                  : 'Constructed using experimentally verified bond lengths and VSEPR spatial geometries (e.g., 104.5° bent angle for water).'}
+            {/* Groups List */}
+            <div className="sci-card p-4 space-y-2 max-h-[460px] overflow-y-auto">
+              <span className="text-xs font-bold text-white uppercase tracking-wider block mb-2">
+                {ar ? 'قائمة المجموعات الذرية الشهيرة' : 'Famous Polyatomic Groups'}
+              </span>
+
+              <div className="space-y-1.5">
+                {filteredGroups.map((g) => {
+                  const isSelected = selectedGroup.id === g.id;
+                  return (
+                    <button
+                      key={g.id}
+                      onClick={() => setSelectedGroup(g)}
+                      className={`w-full p-2.5 rounded-xl border text-left transition-all flex items-center justify-between ${
+                        isSelected
+                          ? 'bg-indigo-500/25 border-cyan-400 ring-1 ring-cyan-400/80 text-white shadow'
+                          : 'bg-slate-950/80 border-slate-800 text-slate-300 hover:bg-slate-800/60'
+                      }`}
+                    >
+                      <div className={ar ? 'text-right' : ''}>
+                        <span className="text-xs font-bold block">{ar ? g.nameAr : g.nameEn}</span>
+                        <span className="text-[10px] text-slate-400">{ar ? g.valencyAr : g.valencyEn}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-mono font-black text-cyan-300 px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20">
+                          {g.formula}
+                        </span>
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Active Group Details Card */}
+            <div className="sci-card p-5 space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b border-white/10">
+                <span className="text-base font-black font-mono text-cyan-400">{selectedGroup.formula}</span>
+                <span className="text-xs font-bold text-white">{ar ? selectedGroup.nameAr : selectedGroup.nameEn}</span>
+              </div>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                {ar ? selectedGroup.descAr : selectedGroup.descEn}
               </p>
             </div>
-          </div>
-        </div>
-      )}
 
-      {/* VIEW 3: CHEMICAL REACTION DYNAMICS */}
-      {activeTab === 'reactions' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 sci-card p-6 flex flex-col justify-between space-y-6">
-            <div className="border-b border-sky-500/15 pb-3">
-              <h3 className="text-base font-bold text-white">
-                {language === 'ar' ? 'معادلات التفاعل وقانون بقاء الكتلة والتغير في المحتوى الحراري' : 'Balanced Reaction Dynamics & Enthalpy Changes'}
-              </h3>
-              <span className="text-xs text-slate-400">
-                {language === 'ar' ? 'حساب الحصيلة وتكافؤ الذرات قبل وبعد التفاعل الكيميائي' : 'Stoichiometric conservation of mass and reaction enthalpy'}
-              </span>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-slate-950 border border-slate-800 text-center space-y-3">
-              <span className="text-xs text-sky-400 font-bold uppercase tracking-wider block">
-                {language === 'ar' ? selectedReaction.nameAr : selectedReaction.nameEn}
-              </span>
-              <div className="text-xl sm:text-2xl font-black font-mono text-white tracking-wide">
-                {selectedReaction.equation}
-              </div>
-              <div className="inline-block px-3 py-1 rounded-full text-xs font-mono bg-sky-500/10 text-sky-300 border border-sky-500/20">
-                {selectedReaction.enthalpy}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-                <span className="text-xs text-slate-400 block mb-1">{language === 'ar' ? 'المتفاعلات (Reactants):' : 'Reactants:'}</span>
-                <span className="text-sm font-bold font-mono text-sky-400">{selectedReaction.reactants}</span>
-              </div>
-              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-                <span className="text-xs text-slate-400 block mb-1">{language === 'ar' ? 'النواتج (Products):' : 'Products:'}</span>
-                <span className="text-sm font-bold font-mono text-emerald-400">{selectedReaction.products}</span>
-              </div>
-            </div>
-
-            <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/70 p-4 rounded-xl border border-sky-500/15">
-              {language === 'ar' ? selectedReaction.descAr : selectedReaction.descEn}
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            <div className="sci-card p-5 space-y-3">
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                {language === 'ar' ? 'اختر التفاعل الكيميائي' : 'Select Chemical Reaction'}
-              </h3>
-              <div className="space-y-2">
-                {CHEMICAL_REACTIONS.map((rxn) => (
-                  <button
-                    key={rxn.id}
-                    onClick={() => setSelectedReaction(rxn)}
-                    className={`w-full p-3 rounded-xl border text-left transition-all flex items-center justify-between ${
-                      selectedReaction.id === rxn.id
-                        ? 'bg-sky-600 border-sky-500 text-white shadow'
-                        : 'bg-slate-950 border-slate-800 text-slate-300 hover:bg-slate-800/60'
-                    }`}
-                  >
-                    <div>
-                      <span className="text-xs font-bold block">{language === 'ar' ? rxn.nameAr : rxn.nameEn}</span>
-                      <span className="text-[10px] text-slate-400 font-mono">{rxn.reactants} &rarr; {rxn.products}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       )}
