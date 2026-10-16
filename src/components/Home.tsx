@@ -18,14 +18,16 @@ import {
   PlayCircle,
   TrendingUp,
   Clock,
-  Sparkles
+  Sparkles,
+  Download
 } from 'lucide-react';
 
 interface HomeProps {
   onNavigate: (tab: string) => void;
+  onOpenOfflineModal?: () => void;
 }
 
-export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
+export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) => {
   const { t, isRTL, language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -186,6 +188,16 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
               <Activity className="w-4 h-4 text-slate-300" />
               <span>{language === 'ar' ? 'استكشاف الأطلس الطبي' : 'Inspect Anatomy Atlas'}</span>
             </button>
+
+            {onOpenOfflineModal && (
+              <button
+                onClick={onOpenOfflineModal}
+                className="btn-silver-secondary border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60"
+              >
+                <Download className="w-4 h-4 text-emerald-400" />
+                <span>{language === 'ar' ? 'تحميل الموقع أوفلاين' : 'Offline Download'}</span>
+              </button>
+            )}
           </div>
 
           {/* Telemetry Metrics (Matching 94.8% / 14d / 99.98% from image) */}

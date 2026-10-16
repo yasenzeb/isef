@@ -7,21 +7,22 @@ import {
   MapPin,
   Menu,
   X,
-  Radio,
-  Sliders,
-  BarChart3,
-  Layers,
-  Sparkles,
-  Volume2
+  Download
 } from 'lucide-react';
 
 interface NavbarProps {
   currentTab: string;
   setCurrentTab: (tab: string) => void;
   onOpenLocationModal: () => void;
+  onOpenOfflineModal: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpenLocationModal }) => {
+export const Navbar: React.FC<NavbarProps> = ({ 
+  currentTab, 
+  setCurrentTab, 
+  onOpenLocationModal, 
+  onOpenOfflineModal 
+}) => {
   const { language, setLanguage, t, isRTL } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
@@ -44,17 +45,17 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
 
-          {/* Left: Brand Identity in Industrial Silver */}
+          {/* Left: Industrial Monogram & System Title */}
           <div
-            className="flex items-center gap-3 cursor-pointer group"
+            className="flex items-center gap-2.5 cursor-pointer select-none group"
             onClick={() => setCurrentTab('home')}
           >
-            <div className="w-8 h-8 rounded-lg bg-[#0e1015] border border-white/20 flex items-center justify-center text-white shadow-inner group-hover:border-white/40 transition-colors">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-white/20 to-white/5 border border-white/20 flex items-center justify-center shadow-inner group-hover:border-white/40 transition-colors">
               <Atom className="w-4 h-4 text-white" />
             </div>
-            <div className={isRTL ? 'text-right' : ''}>
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-extrabold tracking-wider text-white font-mono uppercase">
+            <div className={isRTL ? 'text-right' : 'text-left'}>
+              <div className="flex items-center gap-1.5">
+                <span className="font-mono text-sm font-bold tracking-tight text-white uppercase">
                   {t.appName}
                 </span>
                 <span className="hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-mono rounded bg-white/[0.06] border border-white/10 text-slate-400">
@@ -67,7 +68,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
             </div>
           </div>
 
-          {/* Center: Industrial Pill Navigation (Identical to 01 Overview, 02 Input Data, 03 Analytics in reference) */}
+          {/* Center: Industrial Pill Navigation */}
           <nav className="hidden lg:flex items-center p-1 bg-[#090a0d] border border-white/[0.08] rounded-full gap-0.5">
             {navItems.map((item) => {
               const isActive = currentTab === item.id;
@@ -86,16 +87,26 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
             })}
           </nav>
 
-          {/* Right: Telemetry & Controls (Source, Sync Status, Location, Lang) */}
-          <div className="hidden sm:flex items-center gap-3">
-            {/* Status Telemetry (like SOURCE: Simulator | SYNC: BOT SYNC | NOMINAL in reference) */}
-            <div className="hidden xl:flex items-center gap-2 font-mono text-[11px] text-slate-400 border-r border-white/10 pr-3">
+          {/* Right: Telemetry & Controls */}
+          <div className="hidden sm:flex items-center gap-2.5">
+            {/* Status Telemetry */}
+            <div className="hidden xl:flex items-center gap-2 font-mono text-[11px] text-slate-400 border-r border-white/10 pr-2.5">
               <span className="text-slate-500 text-[10px]">ENGINE:</span>
               <span className="text-emerald-400 font-semibold flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                HIL PHYS-60FPS
+                PHYS-60FPS
               </span>
             </div>
+
+            {/* Offline Mode / Download Button */}
+            <button
+              onClick={onOpenOfflineModal}
+              title={language === 'ar' ? 'تحميل الموقع وتشغيله بدون إنترنت' : 'Download for offline execution'}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span className="hidden md:inline">{language === 'ar' ? 'أوفلاين' : 'Offline'}</span>
+            </button>
 
             {/* Region / Governorate */}
             <button
@@ -127,6 +138,13 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
           {/* Mobile Menu Toggle */}
           <div className="flex lg:hidden items-center gap-2">
             <button
+              onClick={onOpenOfflineModal}
+              className="p-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400"
+              title="Offline"
+            >
+              <Download className="w-4 h-4" />
+            </button>
+            <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-1.5 rounded-md bg-white/[0.05] border border-white/10 text-slate-300 hover:text-white"
             >
@@ -138,47 +156,49 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, onOpe
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden px-4 py-4 space-y-2 bg-[#050608] border-b border-white/10">
-          <div className="grid grid-cols-2 gap-1.5 pb-3">
-            {navItems.map((item) => {
-              const isActive = currentTab === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => { setCurrentTab(item.id); setMobileMenuOpen(false); }}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-mono text-left ${
-                    isActive ? 'bg-white text-black font-bold' : 'bg-white/[0.03] text-slate-300 border border-white/[0.07]'
-                  }`}
-                >
-                  <span className="opacity-50 text-[10px]">{item.num}</span>
-                  <span className="truncate">{item.label}</span>
-                </button>
-              );
-            })}
-          </div>
+        <div className="lg:hidden px-4 pt-2 pb-4 space-y-1 bg-[#090a0d] border-b border-white/[0.08]">
+          {navItems.map((item) => {
+            const isActive = currentTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setCurrentTab(item.id);
+                  setMobileMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-mono transition-all ${
+                  isActive
+                    ? 'bg-white text-black font-bold'
+                    : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
+                }`}
+              >
+                <span>{item.label}</span>
+                <span className="text-[10px] opacity-60">{item.num}</span>
+              </button>
+            );
+          })}
 
-          <div className="flex items-center justify-between pt-3 border-t border-white/[0.08] text-xs">
+          <div className="pt-2 flex items-center justify-between border-t border-white/[0.06] mt-2">
             <button
-              onClick={() => { onOpenLocationModal(); setMobileMenuOpen(false); }}
-              className="flex items-center gap-1.5 text-emerald-400 font-mono"
+              onClick={() => {
+                onOpenLocationModal();
+                setMobileMenuOpen(false);
+              }}
+              className="flex items-center gap-1.5 text-xs font-mono text-emerald-400 py-1"
             >
               <MapPin className="w-3.5 h-3.5" />
               <span>{t.egyptLocation.title}</span>
             </button>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-mono text-slate-500">LANG:</span>
-              <select
-                value={language}
-                onChange={handleLanguageChange}
-                aria-label="Select mobile language"
-                className="bg-[#101217] text-white border border-white/20 rounded px-2 py-1 text-xs font-mono"
-              >
-                <option value="en">English (EN)</option>
-                <option value="ar">العربية (AR)</option>
-                <option value="fr">Français (FR)</option>
-                <option value="de">Deutsch (DE)</option>
-              </select>
-            </div>
+            <select
+              value={language}
+              onChange={handleLanguageChange}
+              className="text-xs font-mono bg-[#14171e] text-white border border-white/10 rounded px-2 py-1"
+            >
+              <option value="en">English (EN)</option>
+              <option value="ar">العربية (AR)</option>
+              <option value="fr">Français (FR)</option>
+              <option value="de">Deutsch (DE)</option>
+            </select>
           </div>
         </div>
       )}

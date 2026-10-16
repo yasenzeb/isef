@@ -15,9 +15,6 @@ import {
   Sparkles
 } from 'lucide-react';
 
-// ============================================================
-// PhET-Style Wave on a String Simulator Component
-// ============================================================
 function WaveSimulator({ language }: { language: string }) {
   const [frequency, setFrequency] = useState(1.5); // Hz
   const [amplitude, setAmplitude] = useState(30);  // px
@@ -226,9 +223,6 @@ function WaveSimulator({ language }: { language: string }) {
   );
 }
 
-// ============================================================
-// PhysicsLab Main Component
-// ============================================================
 export const PhysicsLab: React.FC = () => {
   const { t, isRTL, language } = useLanguage();
   const [activeModule, setActiveModule] = useState<'circuits' | 'forces' | 'projectiles' | 'optics' | 'waves'>('circuits');
@@ -242,6 +236,14 @@ export const PhysicsLab: React.FC = () => {
   const forcesIframeRef = useRef<HTMLIFrameElement>(null);
   const projectilesIframeRef = useRef<HTMLIFrameElement>(null);
   const opticsIframeRef = useRef<HTMLIFrameElement>(null);
+
+  const simLocale = language === 'ar' ? 'ar' : 'en';
+
+  const getSimUrl = (base: string, params: string = '') => {
+    const separator = base.includes('?') ? '&' : '?';
+    const query = params ? `${params}&locale=${simLocale}` : `locale=${simLocale}`;
+    return `${base}${separator}${query}`;
+  };
 
   const handleReload = (ref: React.RefObject<HTMLIFrameElement | null>, defaultSrc: string) => {
     if (ref.current) {
@@ -345,7 +347,7 @@ export const PhysicsLab: React.FC = () => {
 
             <div className="flex items-center gap-2">
               <button
-                onClick={() => handleReload(circuitsIframeRef, '/simulations/circuit-construction-kit-dc_ar.html')}
+                onClick={() => handleReload(circuitsIframeRef, getSimUrl('/simulations/circuit-construction-kit-dc_ar.html'))}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-colors"
                 style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                 title={language === 'ar' ? 'إعادة ضبط المختبر' : 'Reset Simulation'}
@@ -363,7 +365,7 @@ export const PhysicsLab: React.FC = () => {
                 <span>{language === 'ar' ? 'ملء الشاشة' : 'Fullscreen'}</span>
               </button>
               <button
-                onClick={() => window.open('/simulations/circuit-construction-kit-dc_ar.html', '_blank')}
+                onClick={() => window.open(getSimUrl('/simulations/circuit-construction-kit-dc_ar.html'), '_blank')}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-colors"
                 style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                 title={language === 'ar' ? 'فتح في نافذة مستقلة' : 'Open in New Window'}
@@ -378,7 +380,8 @@ export const PhysicsLab: React.FC = () => {
             <div className="relative w-full rounded-xl overflow-hidden bg-[#030712] border border-white/10" style={{ height: '720px' }}>
               <iframe
                 ref={circuitsIframeRef}
-                src="/simulations/circuit-construction-kit-dc_ar.html"
+                key={`circuits-${simLocale}`}
+                src={getSimUrl('/simulations/circuit-construction-kit-dc_ar.html')}
                 title={language === 'ar' ? 'مختبر الدوائر التفاعلي' : 'Interactive Circuit Lab'}
                 className="w-full h-full border-0 block"
                 allow="fullscreen; autoplay"
@@ -463,7 +466,7 @@ export const PhysicsLab: React.FC = () => {
 
             <div className="flex items-center gap-2">
               <button
-                onClick={() => handleReload(forcesIframeRef, `/simulations/forces-and-motion-basics_ar.html?screens=${forcesScreen}`)}
+                onClick={() => handleReload(forcesIframeRef, getSimUrl('/simulations/forces-and-motion-basics_ar.html', `screens=${forcesScreen}`))}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-colors"
                 style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                 title={language === 'ar' ? 'إعادة ضبط المختبر' : 'Reset Simulation'}
@@ -481,7 +484,7 @@ export const PhysicsLab: React.FC = () => {
                 <span>{language === 'ar' ? 'ملء الشاشة' : 'Fullscreen'}</span>
               </button>
               <button
-                onClick={() => window.open(`/simulations/forces-and-motion-basics_ar.html?screens=${forcesScreen}`, '_blank')}
+                onClick={() => window.open(getSimUrl('/simulations/forces-and-motion-basics_ar.html', `screens=${forcesScreen}`), '_blank')}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-colors"
                 style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                 title={language === 'ar' ? 'فتح في نافذة مستقلة' : 'Open in New Window'}
@@ -496,8 +499,8 @@ export const PhysicsLab: React.FC = () => {
             <div className="relative w-full rounded-xl overflow-hidden bg-[#030712] border border-white/10" style={{ height: '720px' }}>
               <iframe
                 ref={forcesIframeRef}
-                key={`forces-${forcesScreen}`}
-                src={`/simulations/forces-and-motion-basics_ar.html?screens=${forcesScreen}`}
+                key={`forces-${forcesScreen}-${simLocale}`}
+                src={getSimUrl('/simulations/forces-and-motion-basics_ar.html', `screens=${forcesScreen}`)}
                 title={language === 'ar' ? 'محاكي القوى والحركة' : 'Forces and Motion Simulation'}
                 className="w-full h-full border-0 block"
                 allow="fullscreen; autoplay"
@@ -582,7 +585,7 @@ export const PhysicsLab: React.FC = () => {
 
             <div className="flex items-center gap-2">
               <button
-                onClick={() => handleReload(projectilesIframeRef, `/simulations/projectile-motion_ar.html?screens=${pmScreen}`)}
+                onClick={() => handleReload(projectilesIframeRef, getSimUrl('/simulations/projectile-motion_ar.html', `screens=${pmScreen}`))}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-colors"
                 style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                 title={language === 'ar' ? 'إعادة ضبط المختبر' : 'Reset Simulation'}
@@ -600,7 +603,7 @@ export const PhysicsLab: React.FC = () => {
                 <span>{language === 'ar' ? 'ملء الشاشة' : 'Fullscreen'}</span>
               </button>
               <button
-                onClick={() => window.open(`/simulations/projectile-motion_ar.html?screens=${pmScreen}`, '_blank')}
+                onClick={() => window.open(getSimUrl('/simulations/projectile-motion_ar.html', `screens=${pmScreen}`), '_blank')}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-colors"
                 style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                 title={language === 'ar' ? 'فتح في نافذة مستقلة' : 'Open in New Window'}
@@ -615,8 +618,8 @@ export const PhysicsLab: React.FC = () => {
             <div className="relative w-full rounded-xl overflow-hidden bg-[#030712] border border-white/10" style={{ height: '720px' }}>
               <iframe
                 ref={projectilesIframeRef}
-                key={`pm-${pmScreen}`}
-                src={`/simulations/projectile-motion_ar.html?screens=${pmScreen}`}
+                key={`pm-${pmScreen}-${simLocale}`}
+                src={getSimUrl('/simulations/projectile-motion_ar.html', `screens=${pmScreen}`)}
                 title={language === 'ar' ? 'محاكي حركة المقذوفات ومقاومة الهواء' : 'Projectile Motion Simulation'}
                 className="w-full h-full border-0 block"
                 allow="fullscreen; autoplay"
@@ -700,7 +703,7 @@ export const PhysicsLab: React.FC = () => {
 
             <div className="flex items-center gap-2">
               <button
-                onClick={() => handleReload(opticsIframeRef, `/simulations/bending-light_ar.html?screens=${opticsScreen}`)}
+                onClick={() => handleReload(opticsIframeRef, getSimUrl('/simulations/bending-light_ar.html', `screens=${opticsScreen}`))}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-colors"
                 style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                 title={language === 'ar' ? 'إعادة ضبط المختبر' : 'Reset Simulation'}
@@ -718,7 +721,7 @@ export const PhysicsLab: React.FC = () => {
                 <span>{language === 'ar' ? 'ملء الشاشة' : 'Fullscreen'}</span>
               </button>
               <button
-                onClick={() => window.open(`/simulations/bending-light_ar.html?screens=${opticsScreen}`, '_blank')}
+                onClick={() => window.open(getSimUrl('/simulations/bending-light_ar.html', `screens=${opticsScreen}`), '_blank')}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-colors"
                 style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                 title={language === 'ar' ? 'فتح في نافذة مستقلة' : 'Open in New Window'}
@@ -733,8 +736,8 @@ export const PhysicsLab: React.FC = () => {
             <div className="relative w-full rounded-xl overflow-hidden bg-[#030712] border border-white/10" style={{ height: '720px' }}>
               <iframe
                 ref={opticsIframeRef}
-                key={`optics-${opticsScreen}`}
-                src={`/simulations/bending-light_ar.html?screens=${opticsScreen}`}
+                key={`optics-${opticsScreen}-${simLocale}`}
+                src={getSimUrl('/simulations/bending-light_ar.html', `screens=${opticsScreen}`)}
                 title={language === 'ar' ? 'محاكي انكسار الضوء والمناشير' : 'Bending Light Simulation'}
                 className="w-full h-full border-0 block"
                 allow="fullscreen; autoplay"

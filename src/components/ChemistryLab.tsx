@@ -7,10 +7,6 @@ import { POLYATOMIC_GROUPS, PolyatomicGroup } from '../data/polyatomicGroupsData
 import { REAL_SCIENTISTS } from '../data/scientistsData';
 import { Search, Award, Layers, Sparkles, RotateCcw, Play, Pause, Atom, ShieldCheck, ChevronRight } from 'lucide-react';
 
-// ============================================================
-// 1. LIVE 3D ATOM MODEL COMPONENT (BOHR-QUANTUM ORBITALS)
-// Protons (p+), Neutrons (n0), and Orbiting Electrons (e-)
-// ============================================================
 interface Atom3DViewerProps {
   element: ChemicalElement;
   language: string;
@@ -285,10 +281,6 @@ const Atom3DViewer: React.FC<Atom3DViewerProps> = ({ element, language }) => {
   );
 };
 
-// ============================================================
-// 2. 3D POLYATOMIC GROUP VIEWER COMPONENT
-// Ball-and-Stick 3D Conformer for Radicals & Ions
-// ============================================================
 interface PolyatomicGroup3DViewerProps {
   group: PolyatomicGroup;
   language: string;
@@ -420,9 +412,6 @@ const PolyatomicGroup3DViewer: React.FC<PolyatomicGroup3DViewerProps> = ({ group
   );
 };
 
-// ============================================================
-// 3. MAIN CHEMISTRY LAB COMPONENT
-// ============================================================
 export const ChemistryLab: React.FC = () => {
   const { t, language, isRTL } = useLanguage();
   const [activeTab, setActiveTab] = useState<'periodic' | 'atomic-groups'>('periodic');
