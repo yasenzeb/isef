@@ -3,7 +3,18 @@ import { useLanguage } from '../context/LanguageContext';
 import { calculateTsunamiSpeed, calculateSeismicTravelTimes, calculateEarthquakeEnergyJoules } from '../simulators/geophysicsSolver';
 import { calculateStructuralResponse } from '../simulators/structuralSolver';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
-import { Globe2, AlertTriangle, Waves, Award, Building2 } from 'lucide-react';
+import { Globe2, AlertTriangle, Waves, Award, Building2, Box, Play, Pause } from 'lucide-react';
+import { GeologyModelViewer } from './GeologyModelViewer';
+
+// Available GLB models for the geology lab
+const GEOLOGY_MODELS = [
+  { label: 'Modern Apartment', labelAr: 'شقة حديثة', url: '/models/geology/modern_apartment.glb', type: 'residential' },
+  { label: 'Construction Site', labelAr: 'موقع بناء', url: '/models/geology/construction_site.glb', type: 'construction' },
+  { label: 'Wooden Cottage', labelAr: 'كوخ خشبي', url: '/models/geology/wooden_cottage.glb', type: 'wood' },
+  { label: 'Tall Building', labelAr: 'مبنى شاهق', url: '/models/geology/tall_building.glb', type: 'highrise' },
+  { label: 'Abandoned Building', labelAr: 'مبنى مهجور', url: '/models/geology/abandoned_building.glb', type: 'old' },
+  { label: 'Beach Scene', labelAr: 'مشهد شاطئي', url: '/models/geology/beach_scene.glb', type: 'coastal' },
+];
 
 interface EarthLayer {
   id: string;
@@ -48,7 +59,7 @@ const EARTH_LAYERS: EarthLayer[] = [
     tempC: '4,000 - 5,000 °C',
     compositionEn: 'Molten iron (80%) and nickel.',
     compositionAr: 'حديد مصهور (80%) ونيكل يولد المجال المغناطيسي.',
-    stateEn: 'Liquid fluid generating Earth’s magnetic field',
+    stateEn: "Liquid fluid generating Earth's magnetic field",
     color: 'bg-rose-600',
   },
   {
@@ -66,7 +77,7 @@ const EARTH_LAYERS: EarthLayer[] = [
 
 export const GeologyLab: React.FC = () => {
   const { t, language } = useLanguage();
-  const [activeModule, setActiveModule] = useState<'layers' | 'tsunami' | 'earthquake' | 'structural'>('layers');
+  const [activeModule, setActiveModule] = useState<'layers' | 'tsunami' | 'earthquake' | 'structural' | 'interactive3d'>('layers');
   const [selectedLayer, setSelectedLayer] = useState<EarthLayer>(EARTH_LAYERS[0]);
 
   // Tsunami simulator parameters
@@ -81,9 +92,32 @@ export const GeologyLab: React.FC = () => {
 
   // Structural base isolation parameters
   const [floors, setFloors] = useState(10);
-  const [groundFrequency, setGroundFrequency] = useState(1.2); // Hz
+  const [groundFrequency, setGroundFrequency] = useState(1.2);
   const [isIsolated, setIsIsolated] = useState(false);
   const structuralMetrics = calculateStructuralResponse(floors, groundFrequency, 0.35, isIsolated);
+
+  // 3D Interactive viewer state
+  const [selectedModelUrl, setSelectedModelUrl] = useState<string>(GEOLOGY_MODELS[0].url);
+  const [simType, setSimType] = useState<'earthquake' | 'tsunami'>('earthquake');
+  const [simIntensity, setSimIntensity] = useState(5);
+  const [isSimRunning, setIsSimRunning] = useState(false);
+
+  // Compute viewer intensity
+  const viewerIntensity = isSimRunning ? (simIntensity / 10) : 0;
+
+  // Damage assessment based on intensity & building type
+  const selectedModel = GEOLOGY_MODELS.find(m => m.url === selectedModelUrl) || GEOLOGY_MODELS[0];
+  const getDamageLevel = () => {
+    if (!isSimRunning) return { level: '-', color: '#64748b', descAr: 'أوقف المحاكاة لتبدأ', descEn: 'Start simulation to see effects' };
+    const base = simIntensity;
+    const typeMultiplier = selectedModel.type === 'wood' ? 1.3 : selectedModel.type === 'old' ? 1.5 : selectedModel.type === 'construction' ? 1.4 : selectedModel.type === 'highrise' ? 0.8 : selectedModel.type === 'coastal' ? (simType === 'tsunami' ? 1.6 : 0.9) : 1.0;
+    const damage = Math.min(10, base * typeMultiplier);
+    if (damage < 3) return { level: language === 'ar' ? 'طفيف' : 'Minor', color: '#34d399', descAr: 'أضرار سطحية بسيطة - تشققات طفيفة في الجدران', descEn: 'Minor surface cracks, cosmetic damage only' };
+    if (damage < 5) return { level: language === 'ar' ? 'متوسط' : 'Moderate', color: '#fbbf24', descAr: 'تشققات في الجدران الحاملة - يحتاج إصلاح', descEn: 'Structural cracks, repair needed before occupancy' };
+    if (damage < 7) return { level: language === 'ar' ? 'شديد' : 'Severe', color: '#f97316', descAr: 'أضرار هيكلية كبيرة - خطر الانهيار الجزئي', descEn: 'Major structural damage, partial collapse risk' };
+    return { level: language === 'ar' ? 'كارثي' : 'Catastrophic', color: '#ef4444', descAr: 'انهيار كامل أو شبه كامل للمبنى', descEn: 'Total or near-total structural collapse' };
+  };
+  const damage = getDamageLevel();
 
   const lehmann = REAL_SCIENTISTS.find(s => s.id === 'lehmann');
 
@@ -140,6 +174,16 @@ export const GeologyLab: React.FC = () => {
             <Building2 className="w-3.5 h-3.5" />
             <span>{language === 'ar' ? 'مقاومة الزلازل للمنشآت' : 'Seismic Base Isolation'}</span>
           </button>
+          <button
+            onClick={() => setActiveModule('interactive3d')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 ${
+              activeModule === 'interactive3d' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
+            }`}
+            style={activeModule === 'interactive3d' ? { background: 'linear-gradient(135deg, #a855f7, #f43f5e)' } : undefined}
+          >
+            <Box className="w-3.5 h-3.5" />
+            <span>{language === 'ar' ? 'المحاكاة التفاعلية ثلاثية الأبعاد' : '3D Interactive Simulation'}</span>
+          </button>
         </div>
       </div>
 
@@ -147,7 +191,7 @@ export const GeologyLab: React.FC = () => {
       {activeModule === 'layers' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 sci-card p-6 flex flex-col justify-between space-y-4">
-            <div className="border-b border-sky-500/15 pb-3">
+            <div style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }} className="pb-3">
               <h3 className="text-base font-bold text-white">
                 {language === 'ar' ? 'مقطع طبقات الأرض الداخلية الجيوفيزيائي' : 'Planetary Earth Interior Layers'}
               </h3>
@@ -164,8 +208,9 @@ export const GeologyLab: React.FC = () => {
                     key={layer.id}
                     onClick={() => setSelectedLayer(layer)}
                     className={`p-4 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
-                      isSelected ? 'bg-slate-800 border-sky-400 shadow-xl' : 'bg-slate-950/80 border-slate-800 hover:bg-slate-800/40'
+                      isSelected ? 'bg-slate-800 shadow-xl' : 'bg-slate-950/80 border-slate-800 hover:bg-slate-800/40'
                     }`}
+                    style={isSelected ? { borderColor: 'rgba(99,102,241,0.5)' } : undefined}
                   >
                     <div className="flex items-center space-x-3">
                       <div className={`w-4 h-4 rounded-full ${layer.color}`} />
@@ -181,13 +226,13 @@ export const GeologyLab: React.FC = () => {
 
             <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 text-xs text-slate-300 flex items-center justify-between">
               <span>{language === 'ar' ? 'متوسط نصف قطر الأرض: 6,371 كم' : 'Mean Earth Radius: 6,371 km'}</span>
-              <span className="text-sky-400 font-mono">{language === 'ar' ? 'حرارة اللب المركزي: ~6,000 °م' : 'Core Temp: ~6,000 °C'}</span>
+              <span style={{ color: '#818cf8' }} className="font-mono">{language === 'ar' ? 'حرارة اللب المركزي: ~6,000 °م' : 'Core Temp: ~6,000 °C'}</span>
             </div>
           </div>
 
           <div className="space-y-6">
             <div className="sci-card p-6 space-y-4">
-              <div className="border-b border-sky-500/15 pb-3">
+              <div style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }} className="pb-3">
                 <span className="text-xs text-slate-400 block uppercase tracking-wider">
                   {language === 'ar' ? 'بيانات الطبقة' : 'Layer Telemetry'}
                 </span>
@@ -197,13 +242,13 @@ export const GeologyLab: React.FC = () => {
               </div>
 
               <div className="space-y-2 text-xs">
-                <div className="flex justify-between py-1.5 border-b border-sky-500/10">
+                <div className="flex justify-between py-1.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                   <span className="text-slate-400">{language === 'ar' ? 'العمق' : 'Depth Boundary'}</span>
                   <span className="font-mono text-white">{selectedLayer.depthKm}</span>
                 </div>
-                <div className="flex justify-between py-1.5 border-b border-sky-500/10">
+                <div className="flex justify-between py-1.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                   <span className="text-slate-400">{language === 'ar' ? 'درجة الحرارة' : 'Temperature'}</span>
-                  <span className="font-mono text-sky-400">{selectedLayer.tempC}</span>
+                  <span className="font-mono" style={{ color: '#818cf8' }}>{selectedLayer.tempC}</span>
                 </div>
               </div>
 
@@ -211,7 +256,7 @@ export const GeologyLab: React.FC = () => {
                 <span className="text-xs font-semibold text-slate-400 block mb-1">
                   {language === 'ar' ? 'التركيب الكيميائي' : 'Composition'}
                 </span>
-                <p className="text-xs text-slate-200 leading-relaxed bg-slate-950/70 p-3 rounded-xl border border-sky-500/15">
+                <p className="text-xs text-slate-200 leading-relaxed bg-slate-950/70 p-3 rounded-xl" style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
                   {language === 'ar' ? selectedLayer.compositionAr : selectedLayer.compositionEn}
                 </p>
               </div>
@@ -220,7 +265,7 @@ export const GeologyLab: React.FC = () => {
             {/* Inge Lehmann Card */}
             {lehmann && (
               <div className="sci-card p-5 space-y-3">
-                <div className="flex items-center space-x-2 text-amber-400">
+                <div className="flex items-center space-x-2" style={{ color: '#fbbf24' }}>
                   <Award className="w-4 h-4" />
                   <h4 className="text-xs font-bold uppercase tracking-wider">
                     {language === 'ar' ? 'رائدة علم الزلازل والجيوفيزياء' : 'Scientific Pioneer'}
@@ -246,7 +291,7 @@ export const GeologyLab: React.FC = () => {
       {activeModule === 'tsunami' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="sci-card p-6 space-y-5">
-            <h3 className="text-base font-bold text-white border-b border-sky-500/15 pb-2">
+            <h3 className="text-base font-bold text-white pb-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
               {language === 'ar' ? 'محرك انتشار موجات تسونامي في المياه الضحلة' : 'Shallow-Water Tsunami Propagation Engine'}
             </h3>
 
@@ -255,7 +300,7 @@ export const GeologyLab: React.FC = () => {
                 <span className="text-slate-300">
                   {language === 'ar' ? 'عمق عمود الماء بالمحيط (h):' : 'Ocean Column Bathymetric Depth (h):'}
                 </span>
-                <span className="text-sky-400 font-mono">{oceanDepth} m</span>
+                <span style={{ color: '#818cf8' }} className="font-mono">{oceanDepth} m</span>
               </div>
               <input
                 type="range"
@@ -264,23 +309,23 @@ export const GeologyLab: React.FC = () => {
                 step="50"
                 value={oceanDepth}
                 onChange={(e) => setOceanDepth(Number(e.target.value))}
-                className="w-full accent-sky-500"
+                className="w-full"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4 pt-2">
-              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-center">
+              <div className="metric-card">
                 <span className="text-xs text-slate-400 block mb-1">
                   {language === 'ar' ? 'سرعة الطور المحسوبة (c)' : 'Calculated Phase Speed (c)'}
                 </span>
-                <span className="text-2xl font-black text-sky-400 font-mono">{tsunamiSpeed.speedMs.toFixed(1)} m/s</span>
+                <span className="text-2xl font-black font-mono" style={{ color: '#818cf8' }}>{tsunamiSpeed.speedMs.toFixed(1)} m/s</span>
                 <span className="text-[10px] text-slate-500 block mt-1">c = &radic;(g &times; h)</span>
               </div>
-              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-center">
+              <div className="metric-card">
                 <span className="text-xs text-slate-400 block mb-1">
                   {language === 'ar' ? 'السرعة بالكم / ساعة' : 'Speed (km/h)'}
                 </span>
-                <span className="text-2xl font-black text-sky-300 font-mono">{tsunamiSpeed.speedKmh.toFixed(0)} km/h</span>
+                <span className="text-2xl font-black font-mono" style={{ color: '#22d3ee' }}>{tsunamiSpeed.speedKmh.toFixed(0)} km/h</span>
                 <span className="text-[10px] text-slate-500 block mt-1">
                   {language === 'ar' ? 'سرعة طائرة ركاب نفاثة' : 'Jet Airliner Velocity'}
                 </span>
@@ -300,7 +345,7 @@ export const GeologyLab: React.FC = () => {
               </p>
               <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs font-mono text-slate-200 space-y-1">
                 <div>• c = &radic;(g &times; h) (Phase velocity)</div>
-                <div>• H&#8322; / H&#8321; = (h&#8321; / h&#8322;)&#188; (Green's Law of Shoaling)</div>
+                <div>• H&#8322; / H&#8321; = (h&#8321; / h&#8322;)&frac14; (Green's Law of Shoaling)</div>
               </div>
             </div>
           </div>
@@ -311,7 +356,7 @@ export const GeologyLab: React.FC = () => {
       {activeModule === 'earthquake' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="sci-card p-6 space-y-5">
-            <h3 className="text-base font-bold text-white border-b border-sky-500/15 pb-2">
+            <h3 className="text-base font-bold text-white pb-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
               {language === 'ar' ? 'حساب أزمنة وصول الموجات الزلزالية P و S' : 'Seismic P-Wave & S-Wave Arrival Times'}
             </h3>
 
@@ -320,7 +365,7 @@ export const GeologyLab: React.FC = () => {
                 <span className="text-slate-300">
                   {language === 'ar' ? 'المسافة إلى المركز السطحي (Δ):' : 'Epicentral Distance (Δ):'}
                 </span>
-                <span className="text-sky-400 font-mono">{epicenterDistKm} km</span>
+                <span style={{ color: '#818cf8' }} className="font-mono">{epicenterDistKm} km</span>
               </div>
               <input
                 type="range"
@@ -328,7 +373,7 @@ export const GeologyLab: React.FC = () => {
                 max="800"
                 value={epicenterDistKm}
                 onChange={(e) => setEpicenterDistKm(Number(e.target.value))}
-                className="w-full accent-sky-500"
+                className="w-full"
               />
             </div>
 
@@ -337,7 +382,7 @@ export const GeologyLab: React.FC = () => {
                 <span className="text-slate-300">
                   {language === 'ar' ? 'مقدار الزلزال (Moment Magnitude Mw):' : 'Moment Magnitude (M_w):'}
                 </span>
-                <span className="text-rose-400 font-mono">{quakeMagnitude} M_w</span>
+                <span style={{ color: '#f87171' }} className="font-mono">{quakeMagnitude} M_w</span>
               </div>
               <input
                 type="range"
@@ -346,28 +391,28 @@ export const GeologyLab: React.FC = () => {
                 step="0.1"
                 value={quakeMagnitude}
                 onChange={(e) => setQuakeMagnitude(Number(e.target.value))}
-                className="w-full accent-rose-500"
+                className="w-full"
               />
             </div>
 
             <div className="grid grid-cols-3 gap-3 pt-2">
-              <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-center">
+              <div className="metric-card">
                 <span className="text-[10px] text-slate-400 uppercase tracking-wider block">
                   {language === 'ar' ? 'وصول موجة P' : 'P-Wave Arrival'}
                 </span>
-                <span className="text-base font-bold text-emerald-400 font-mono">{seismicTimes.pArrivalTimeSec} s</span>
+                <span className="text-base font-bold font-mono" style={{ color: '#34d399' }}>{seismicTimes.pArrivalTimeSec} s</span>
               </div>
-              <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-center">
+              <div className="metric-card">
                 <span className="text-[10px] text-slate-400 uppercase tracking-wider block">
                   {language === 'ar' ? 'وصول موجة S' : 'S-Wave Arrival'}
                 </span>
-                <span className="text-base font-bold text-amber-400 font-mono">{seismicTimes.sArrivalTimeSec} s</span>
+                <span className="text-base font-bold font-mono" style={{ color: '#fbbf24' }}>{seismicTimes.sArrivalTimeSec} s</span>
               </div>
-              <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-center">
+              <div className="metric-card">
                 <span className="text-[10px] text-slate-400 uppercase tracking-wider block">
                   {language === 'ar' ? 'فارق S - P' : 'S - P Interval'}
                 </span>
-                <span className="text-base font-bold text-rose-400 font-mono">{seismicTimes.sMinusPDurationSec} s</span>
+                <span className="text-base font-bold font-mono" style={{ color: '#f87171' }}>{seismicTimes.sMinusPDurationSec} s</span>
               </div>
             </div>
           </div>
@@ -395,7 +440,7 @@ export const GeologyLab: React.FC = () => {
       {activeModule === 'structural' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="sci-card p-6 space-y-5">
-            <h3 className="text-base font-bold text-white border-b border-sky-500/15 pb-2">
+            <h3 className="text-base font-bold text-white pb-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
               {language === 'ar' ? 'محاكي الاهتزاز وعزل القواعد الزلزالي للمباني' : 'Structural Vibration & Base Isolation Simulator'}
             </h3>
 
@@ -404,7 +449,7 @@ export const GeologyLab: React.FC = () => {
                 <span className="text-slate-300">
                   {language === 'ar' ? 'عدد طوابق المبنى:' : 'Building Floor Count:'}
                 </span>
-                <span className="text-sky-400 font-mono">{floors} floors</span>
+                <span style={{ color: '#818cf8' }} className="font-mono">{floors} floors</span>
               </div>
               <input
                 type="range"
@@ -412,7 +457,7 @@ export const GeologyLab: React.FC = () => {
                 max="30"
                 value={floors}
                 onChange={(e) => setFloors(Number(e.target.value))}
-                className="w-full accent-sky-500"
+                className="w-full"
               />
             </div>
 
@@ -421,7 +466,7 @@ export const GeologyLab: React.FC = () => {
                 <span className="text-slate-300">
                   {language === 'ar' ? 'تردد الهزة الأرضية (Hz):' : 'Ground Motion Frequency (Hz):'}
                 </span>
-                <span className="text-sky-400 font-mono">{groundFrequency} Hz</span>
+                <span style={{ color: '#818cf8' }} className="font-mono">{groundFrequency} Hz</span>
               </div>
               <input
                 type="range"
@@ -430,7 +475,7 @@ export const GeologyLab: React.FC = () => {
                 step="0.1"
                 value={groundFrequency}
                 onChange={(e) => setGroundFrequency(Number(e.target.value))}
-                className="w-full accent-sky-500"
+                className="w-full"
               />
             </div>
 
@@ -440,28 +485,27 @@ export const GeologyLab: React.FC = () => {
               </span>
               <button
                 onClick={() => setIsIsolated(!isIsolated)}
-                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  isIsolated ? 'bg-sky-600 text-white shadow' : 'bg-slate-800 text-slate-400'
-                }`}
+                className="px-4 py-1.5 rounded-lg text-xs font-bold transition-all"
+                style={isIsolated ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)', color: 'white' } : { background: '#1e293b', color: '#94a3b8' }}
               >
                 {isIsolated ? (language === 'ar' ? 'مفعل (محمي)' : 'Active (Protected)') : (language === 'ar' ? 'غير مفعل (قواعد ثابتة)' : 'Fixed Base')}
               </button>
             </div>
 
             <div className="grid grid-cols-2 gap-3 pt-2">
-              <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-center">
+              <div className="metric-card">
                 <span className="text-[10px] text-slate-400 uppercase tracking-wider block">
                   {language === 'ar' ? 'إزاحة القمة المتذبذبة' : 'Peak Relative Drift'}
                 </span>
-                <span className={`text-base font-bold font-mono ${isIsolated ? 'text-emerald-400' : 'text-rose-400'}`}>
+                <span className="text-base font-bold font-mono" style={{ color: isIsolated ? '#34d399' : '#f87171' }}>
                   {structuralMetrics.peakRelativeDispMm} mm
                 </span>
               </div>
-              <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-center">
+              <div className="metric-card">
                 <span className="text-[10px] text-slate-400 uppercase tracking-wider block">
                   {language === 'ar' ? 'قوة القص القاعدي' : 'Peak Base Shear'}
                 </span>
-                <span className={`text-base font-bold font-mono ${isIsolated ? 'text-emerald-400' : 'text-rose-400'}`}>
+                <span className="text-base font-bold font-mono" style={{ color: isIsolated ? '#34d399' : '#f87171' }}>
                   {structuralMetrics.peakBaseShearKn} kN
                 </span>
               </div>
@@ -483,6 +527,177 @@ export const GeologyLab: React.FC = () => {
                 <div>• Damping Ratio (&zeta;): {structuralMetrics.dampingRatio}</div>
                 <div>• Dynamic Amplification (DAF): {structuralMetrics.displacementAmplification}</div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODULE 5: INTERACTIVE 3D SIMULATION */}
+      {activeModule === 'interactive3d' && (
+        <div className="space-y-6">
+          {/* Model selector row */}
+          <div className="sci-card p-5">
+            <div className="flex flex-col md:flex-row md:items-center gap-4">
+              <div className="flex-1">
+                <h3 className="text-base font-bold text-white mb-1" style={{ fontFamily: 'var(--font-display)' }}>
+                  {language === 'ar' ? 'المحاكاة التفاعلية ثلاثية الأبعاد للكوارث الطبيعية' : '3D Interactive Natural Disaster Simulation'}
+                </h3>
+                <p className="text-xs text-slate-400">
+                  {language === 'ar'
+                    ? 'اختر نموذج مبنى وتحكم في قوة الزلزال أو التسونامي لمشاهدة التأثير لحظياً'
+                    : 'Select a structure model and control earthquake or tsunami intensity to see live effects'}
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <select
+                  value={selectedModelUrl}
+                  onChange={(e) => setSelectedModelUrl(e.target.value)}
+                  className="text-xs rounded-xl px-3 py-2"
+                  style={{ background: 'rgba(17,24,39,0.9)', border: '1px solid rgba(99,102,241,0.3)', color: 'white', minWidth: '180px' }}
+                >
+                  {GEOLOGY_MODELS.map((m) => (
+                    <option key={m.url} value={m.url} style={{ background: '#111827' }}>
+                      {language === 'ar' ? m.labelAr : m.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* 3D Viewer */}
+            <div className="lg:col-span-2 sci-card overflow-hidden" style={{ minHeight: '500px' }}>
+              <GeologyModelViewer modelUrl={selectedModelUrl} intensity={viewerIntensity} disasterType={simType} />
+            </div>
+
+            {/* Controls Panel */}
+            <div className="space-y-4">
+              {/* Simulation Type Toggle */}
+              <div className="sci-card p-5 space-y-4">
+                <h4 className="text-sm font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
+                  {language === 'ar' ? 'نوع الكارثة' : 'Disaster Type'}
+                </h4>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => setSimType('earthquake')}
+                    className="px-3 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2"
+                    style={simType === 'earthquake'
+                      ? { background: 'linear-gradient(135deg, #f59e0b, #f43f5e)', color: 'white', boxShadow: '0 0 16px rgba(245,158,11,0.3)' }
+                      : { background: 'rgba(255,255,255,0.04)', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.07)' }}
+                  >
+                    <AlertTriangle className="w-4 h-4" />
+                    {language === 'ar' ? 'زلزال' : 'Earthquake'}
+                  </button>
+                  <button
+                    onClick={() => setSimType('tsunami')}
+                    className="px-3 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2"
+                    style={simType === 'tsunami'
+                      ? { background: 'linear-gradient(135deg, #06b6d4, #6366f1)', color: 'white', boxShadow: '0 0 16px rgba(6,182,212,0.3)' }
+                      : { background: 'rgba(255,255,255,0.04)', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.07)' }}
+                  >
+                    <Waves className="w-4 h-4" />
+                    {language === 'ar' ? 'تسونامي' : 'Tsunami'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Intensity Slider */}
+              <div className="sci-card p-5 space-y-4">
+                <div className="flex justify-between items-center">
+                  <h4 className="text-sm font-bold text-white">
+                    {simType === 'earthquake'
+                      ? (language === 'ar' ? 'قوة الزلزال' : 'Earthquake Magnitude')
+                      : (language === 'ar' ? 'قوة التسونامي' : 'Tsunami Force')}
+                  </h4>
+                  <span className="text-lg font-black font-mono" style={{ color: simIntensity > 7 ? '#ef4444' : simIntensity > 4 ? '#f59e0b' : '#34d399' }}>
+                    {simIntensity}/10
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="1"
+                  max="10"
+                  step="1"
+                  value={simIntensity}
+                  onChange={(e) => setSimIntensity(Number(e.target.value))}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-[10px] text-slate-500">
+                  <span>{language === 'ar' ? 'ضعيف' : 'Mild'}</span>
+                  <span>{language === 'ar' ? 'متوسط' : 'Moderate'}</span>
+                  <span>{language === 'ar' ? 'مدمر' : 'Devastating'}</span>
+                </div>
+              </div>
+
+              {/* Play/Pause */}
+              <button
+                onClick={() => setIsSimRunning(!isSimRunning)}
+                className="w-full py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all"
+                style={isSimRunning
+                  ? { background: 'rgba(244,63,94,0.15)', color: '#f87171', border: '1px solid rgba(244,63,94,0.3)' }
+                  : { background: 'linear-gradient(135deg, #6366f1, #06b6d4)', color: 'white', boxShadow: '0 0 20px rgba(99,102,241,0.4)' }}
+              >
+                {isSimRunning ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                {isSimRunning
+                  ? (language === 'ar' ? 'إيقاف المحاكاة' : 'Stop Simulation')
+                  : (language === 'ar' ? 'بدء المحاكاة' : 'Start Simulation')}
+              </button>
+
+              {/* Damage Assessment */}
+              <div className="sci-card p-5 space-y-3">
+                <h4 className="text-sm font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
+                  {language === 'ar' ? 'تقييم الأضرار' : 'Damage Assessment'}
+                </h4>
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 rounded-full glow-pulse" style={{ backgroundColor: damage.color, boxShadow: `0 0 8px ${damage.color}` }} />
+                  <span className="text-base font-bold" style={{ color: damage.color }}>{damage.level}</span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  {language === 'ar' ? damage.descAr : damage.descEn}
+                </p>
+
+                <div className="grid grid-cols-2 gap-2 pt-2">
+                  <div className="metric-card">
+                    <div className="text-[10px] text-slate-500 uppercase">{language === 'ar' ? 'نوع المبنى' : 'Structure'}</div>
+                    <div className="text-xs font-bold text-white mt-0.5">{language === 'ar' ? selectedModel.labelAr : selectedModel.label}</div>
+                  </div>
+                  <div className="metric-card">
+                    <div className="text-[10px] text-slate-500 uppercase">{language === 'ar' ? 'شدة الاهتزاز' : 'Shake Force'}</div>
+                    <div className="text-xs font-bold mt-0.5" style={{ color: '#818cf8', fontFamily: 'var(--font-mono)' }}>
+                      {isSimRunning ? `${(viewerIntensity * 100).toFixed(0)}%` : '0%'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Info cards row */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="sci-card p-4 space-y-2">
+              <span className="sci-badge">{language === 'ar' ? 'نماذج ثلاثية الأبعاد' : '3D Models'}</span>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                {language === 'ar'
+                  ? '6 نماذج واقعية تشمل مبانٍ سكنية وتجارية وكوخ خشبي وموقع بناء ومشهد شاطئي لمحاكاة تأثيرات الكوارث المختلفة.'
+                  : '6 realistic GLB models including residential, commercial, wooden, construction, and coastal scenes for diverse disaster simulation.'}
+              </p>
+            </div>
+            <div className="sci-card p-4 space-y-2">
+              <span className="sci-badge sci-badge-warning">{language === 'ar' ? 'محاكاة لحظية' : 'Real-Time Physics'}</span>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                {language === 'ar'
+                  ? 'اهتزاز واقعي يعتمد على شدة القوة المطبقة مع تقييم فوري للأضرار بناءً على نوع المبنى ونوع الكارثة.'
+                  : 'Realistic shaking animation proportional to force intensity with instant damage assessment based on structure type and disaster category.'}
+              </p>
+            </div>
+            <div className="sci-card p-4 space-y-2">
+              <span className="sci-badge sci-badge-success">{language === 'ar' ? 'تعليم تفاعلي' : 'Interactive Learning'}</span>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                {language === 'ar'
+                  ? 'قارن بين استجابة المباني المختلفة للزلازل والتسونامي لفهم أهمية التصميم الإنشائي المقاوم للكوارث.'
+                  : 'Compare how different structures respond to earthquakes vs. tsunamis to understand the importance of disaster-resistant engineering.'}
+              </p>
             </div>
           </div>
         </div>
