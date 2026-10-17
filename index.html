@@ -1,16 +1,73 @@
 <!doctype html>
-<html lang="en">
+<html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SciNexa — Interactive Science Learning Platform</title>
-    <meta name="description" content="SciNexa is an interactive 3D science learning platform and virtual laboratory with real human skeleton exploration, circuit nodal analysis, 118 periodic elements, and geodynamics.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    
+    <!-- Primary Title & Meta Tags -->
+    <title>SciNexa — منصة المحاكاة والعلوم التفاعلية ثلاثية الأبعاد | Interactive 3D Science Platform</title>
+    <meta name="title" content="SciNexa — منصة المحاكاة والعلوم التفاعلية ثلاثية الأبعاد" />
+    <meta name="description" content="منصة SciNexa: بيئة افتراضية متطورة للمختبرات العلمية التفاعلية؛ تشمل أطلس التشريح البشري الطبي 3D، محاكيات الدوائر والقوى والحركة والمقذوفات الفيزيائية، الجدول الدوري 118 عنصراً والذرة ثلاثية الأبعاد، علوم الفلك والنظام الشمسي، ومحاكاة انهيار المباني والزلازل والتسونامي." />
+    <meta name="keywords" content="SciNexa, ساينكسا, محاكاة علمية, مختبر افتراضي, تشريح ثلاثي الأبعاد, فيزياء تفاعلية, كيمياء ثلاثية الأبعاد, النظام الشمسي, زلازل وتسونامي, تعليم تفاعلي, STEM, 3D Science Lab" />
+    <meta name="author" content="SciNexa Team" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="theme-color" content="#090a0d" />
+    <meta name="application-name" content="SciNexa" />
+
+    <!-- Favicon & Touch Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://scinexa.org/" />
+    <meta property="og:title" content="SciNexa — منصة العلوم والمختبرات التفاعلية ثلاثية الأبعاد" />
+    <meta property="og:description" content="منصة تعليمية STEM تدمج أطلس التشريح البشري المعتمد، ومحاكاة الفيزياء، والكيمياء ثلاثية الأبعاد، وعلوم الفلك، والجيولوجيا التفاعلية للزلازل والتسونامي." />
+    <meta property="og:image" content="/logo.png" />
+    <meta property="og:site_name" content="SciNexa" />
+    <meta property="og:locale" content="ar_EG" />
+    <meta property="og:locale:alternate" content="en_US" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SciNexa — Next-Gen 3D Interactive Science Platform" />
+    <meta name="twitter:description" content="Real-time 3D anatomical atlas, physics simulations, quantum chemistry, astronomy, and seismic building response simulator." />
+    <meta name="twitter:image" content="/logo.png" />
+
+    <!-- Preconnect & Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Structured Data (JSON-LD) for Google Search Engine Optimization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "SciNexa",
+      "alternateName": ["ساينكسا", "SciNexa Platform"],
+      "url": "https://scinexa.org/",
+      "logo": "https://scinexa.org/logo.png",
+      "description": "منصة مختبرات علمية تفاعلية ثلاثية الأبعاد للفيزياء، الكيمياء، الأحياء والتشريح البشري، الجيولوجيا، وعلوم الفلك.",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "All (Web, Windows, Android, iOS, macOS, Linux)",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "educationalUse": "Virtual Science Laboratory & Interactive 3D Simulations",
+      "audience": {
+        "@type": "EducationalAudience",
+        "educationalRole": "student"
+      }
+    }
+    </script>
   </head>
-  <body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+  <body class="bg-black text-slate-100 antialiased selection:bg-white selection:text-black">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

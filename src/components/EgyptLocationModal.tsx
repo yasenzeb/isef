@@ -12,11 +12,11 @@ export const EgyptLocationModal: React.FC<EgyptLocationModalProps> = ({ isOpen, 
   const { t, isRTL } = useLanguage();
   
   const [selectedGovId, setSelectedGovId] = useState<string>(() => {
-    return localStorage.getItem('scinexa_gov_id') || localStorage.getItem('isef_gov_id') || 'cairo';
+    return localStorage.getItem('scinexa_gov_id') || 'cairo';
   });
 
   const [selectedAdminId, setSelectedAdminId] = useState<string>(() => {
-    return localStorage.getItem('scinexa_admin_id') || localStorage.getItem('isef_admin_id') || 'cairo-east-nasr';
+    return localStorage.getItem('scinexa_admin_id') || 'cairo-east-nasr';
   });
 
   const [savedSuccess, setSavedSuccess] = useState(false);

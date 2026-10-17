@@ -251,7 +251,7 @@ const Atom3DViewer: React.FC<Atom3DViewerProps> = ({ element, language }) => {
       </div>
 
       {/* 3D Canvas Mount */}
-      <div ref={mountRef} className="w-full h-[330px] cursor-grab active:cursor-grabbing" />
+      <div ref={mountRef} className="w-full h-[330px] cursor-grab active:cursor-grabbing" style={{ touchAction: 'none' }} />
 
       {/* Bottom Particle Telemetry HUD */}
       <div className="bg-[#030712]/90 backdrop-blur-md border-t border-white/10 p-2.5 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
@@ -407,7 +407,7 @@ const PolyatomicGroup3DViewer: React.FC<PolyatomicGroup3DViewerProps> = ({ group
           </span>
         </div>
       </div>
-      <div ref={mountRef} className="w-full flex-1 cursor-grab active:cursor-grabbing" />
+      <div ref={mountRef} className="w-full flex-1 cursor-grab active:cursor-grabbing" style={{ touchAction: 'none' }} />
     </div>
   );
 };

@@ -4734,54 +4734,54 @@
     "descAr": "لفافة متينة تغطي العضلتين القطنية والحرقفية وتمر عبر الحوض إلى الفخذ."
   },
   "Interosseous membrane of leg": {
-    "ar": "الغشاء بين عظمي الساق (الظنبوب والشظية)",
-    "descEn": "Broad syndesmosis ligament connecting the tibia and fibula.",
-    "descAr": "غشاء ليفي متين يربط بين عظمي الساق (الظنبوب والشظية) ويوفر مرتكزاً لعضلات الساق."
+    "ar": "الغشاء بين العظمين للساق",
+    "descAr": "صفيحة ليفية متينة تمتد بين القصبة والشظية لربطهما وتوفير مرتكز واسع لعضلات الساق.",
+    "descEn": "Dense fibrous aponeurosis connecting tibia and fibula and anchoring leg muscles."
   },
   "interosseous membrane of leg": {
-    "ar": "الغشاء بين عظمي الساق (الظنبوب والشظية)",
-    "descEn": "Broad syndesmosis ligament connecting the tibia and fibula.",
-    "descAr": "غشاء ليفي متين يربط بين عظمي الساق (الظنبوب والشظية) ويوفر مرتكزاً لعضلات الساق."
+    "ar": "الغشاء بين العظمين للساق",
+    "descAr": "صفيحة ليفية متينة تمتد بين القصبة والشظية لربطهما وتوفير مرتكز واسع لعضلات الساق.",
+    "descEn": "Dense fibrous aponeurosis connecting tibia and fibula and anchoring leg muscles."
   },
   "Anterior tibiofibular ligament": {
     "ar": "الرباط الظنبوبي الشظوي الأمامي",
-    "descEn": "Flat triangular ligament reinforcing the anterior syndesmosis of the ankle.",
-    "descAr": "رباط مثلث قوي يربط أسفل الظنبوب بالشظية ويثبت شوكة مفصل الكاحل."
+    "descAr": "رباط ليفي مسطح يربط النهاية السفلية للقصبة والشظية فوق مفصل الكاحل مباشرة.",
+    "descEn": "Flat fibrous band uniting lower ends of tibia and fibula at the syndesmosis."
   },
   "anterior tibiofibular ligament": {
     "ar": "الرباط الظنبوبي الشظوي الأمامي",
-    "descEn": "Flat triangular ligament reinforcing the anterior syndesmosis of the ankle.",
-    "descAr": "رباط مثلث قوي يربط أسفل الظنبوب بالشظية ويثبت شوكة مفصل الكاحل."
+    "descAr": "رباط ليفي مسطح يربط النهاية السفلية للقصبة والشظية فوق مفصل الكاحل مباشرة.",
+    "descEn": "Flat fibrous band uniting lower ends of tibia and fibula at the syndesmosis."
   },
   "Posterior tibiofibular ligament": {
     "ar": "الرباط الظنبوبي الشظوي الخلفي",
-    "descEn": "Thick fibrous band stabilizing the posterior syndesmotic ankle mortise.",
-    "descAr": "شريط ليفي سميك يثبت مفصل الكاحل من الخلف ويمنع تباعد الشظية عن الظنبوب."
+    "descAr": "رباط خلفي متين يحمي استقرار شوكة الكاحل ويمنع تباعد عظمي الساق.",
+    "descEn": "Posterior ligament stabilizing ankle mortise against rotational shearing."
   },
   "posterior tibiofibular ligament": {
     "ar": "الرباط الظنبوبي الشظوي الخلفي",
-    "descEn": "Thick fibrous band stabilizing the posterior syndesmotic ankle mortise.",
-    "descAr": "شريط ليفي سميك يثبت مفصل الكاحل من الخلف ويمنع تباعد الشظية عن الظنبوب."
+    "descAr": "رباط خلفي متين يحمي استقرار شوكة الكاحل ويمنع تباعد عظمي الساق.",
+    "descEn": "Posterior ligament stabilizing ankle mortise against rotational shearing."
   },
   "Acetabular labrum": {
-    "ar": "الشفا الحقي (مفصل الحوض)",
-    "descEn": "Fibrocartilaginous ring deepening the hip socket to stabilize the femoral head.",
-    "descAr": "حلقة غضروفية ليفية تعمق التجويف الحقي بالحوض لتثبيت رأس عظم الفخذ بإحكام."
+    "ar": "شفا الحُق (حافة مفصل الورك الليفية)",
+    "descAr": "حلقة غضروفية ليفية تطوق حافة التجويف الحقي لتعميق مفصل الورك وتثبيت رأس عظم الفخذ.",
+    "descEn": "Fibrocartilaginous rim deepening the hip socket and stabilizing femoral head."
   },
   "acetabular labrum": {
-    "ar": "الشفا الحقي (مفصل الحوض)",
-    "descEn": "Fibrocartilaginous ring deepening the hip socket to stabilize the femoral head.",
-    "descAr": "حلقة غضروفية ليفية تعمق التجويف الحقي بالحوض لتثبيت رأس عظم الفخذ بإحكام."
+    "ar": "شفا الحُق (حافة مفصل الورك الليفية)",
+    "descAr": "حلقة غضروفية ليفية تطوق حافة التجويف الحقي لتعميق مفصل الورك وتثبيت رأس عظم الفخذ.",
+    "descEn": "Fibrocartilaginous rim deepening the hip socket and stabilizing femoral head."
   },
   "Articular capsule of hip joint": {
     "ar": "المحفظة المفصلية لمفصل الورك",
-    "descEn": "Strong dense fibrous envelope enclosing the ball-and-socket hip articulation.",
-    "descAr": "غلاف ليفي محكم يحيط بمفصل الفخذ الكروي الحقي ويحافظ على السائل الزليلي."
+    "descAr": "غلاف ليفي أسطواني قوي يحيط بمفصل الورك بأكمله ويفرز السائل الزلالي لحركة سلسة.",
+    "descEn": "Dense fibrous capsule enclosing the femoral head and acetabulum."
   },
   "articular capsule of hip joint": {
     "ar": "المحفظة المفصلية لمفصل الورك",
-    "descEn": "Strong dense fibrous envelope enclosing the ball-and-socket hip articulation.",
-    "descAr": "غلاف ليفي محكم يحيط بمفصل الفخذ الكروي الحقي ويحافظ على السائل الزليلي."
+    "descAr": "غلاف ليفي أسطواني قوي يحيط بمفصل الورك بأكمله ويفرز السائل الزلالي لحركة سلسة.",
+    "descEn": "Dense fibrous capsule enclosing the femoral head and acetabulum."
   },
   "Iliofemoral ligament": {
     "ar": "الرباط الحرقفي الفخزي (رباط بيغلو)",
@@ -8505,13 +8505,13 @@
   },
   "Anterior longitudinal ligament": {
     "ar": "الرباط الطولي الأمامي للعمود الفقري",
-    "descAr": "تثبيت الفقرات ومنع فرط بسط العمود الفقري",
-    "descEn": "Stabilizes vertebral bodies and prevents spinal hyperextension"
+    "descAr": "شريط ليفي عريض يمتد بطول الأسطح الأمامية لأجسام الفقرات لمنع فرط بسط العمود الفقري.",
+    "descEn": "Broad band along anterior vertebral bodies limiting hyperextension of spine."
   },
   "anterior longitudinal ligament": {
     "ar": "الرباط الطولي الأمامي للعمود الفقري",
-    "descAr": "تثبيت الفقرات ومنع فرط بسط العمود الفقري",
-    "descEn": "Stabilizes vertebral bodies and prevents spinal hyperextension"
+    "descAr": "شريط ليفي عريض يمتد بطول الأسطح الأمامية لأجسام الفقرات لمنع فرط بسط العمود الفقري.",
+    "descEn": "Broad band along anterior vertebral bodies limiting hyperextension of spine."
   },
   "Cervical facet joints _L": {
     "ar": "المفاصل الوجيهية العنقية _L",
@@ -8937,13 +8937,9 @@
     "descDe": "Vertieft die linke Hüftpfanne"
   },
   "Acetabular labrum.l": {
-    "ar": "الشفة الحقية _L",
-    "descEn": "Deepens the left hip socket",
-    "descAr": "تعميق تجويف الحوض الأيسر",
-    "fr": "Labrum acétabulaire _L",
-    "de": "Hüftpfannenlippe _L",
-    "descFr": "Approfondit la cavité de la hanche gauche",
-    "descDe": "Vertieft die linke Hüftpfanne"
+    "ar": "شفا الحُق (حافة مفصل الورك الليفية) (الأيسر)",
+    "descAr": "حلقة غضروفية ليفية تطوق حافة التجويف الحقي لتعميق مفصل الورك وتثبيت رأس عظم الفخذ.",
+    "descEn": "Fibrocartilaginous rim deepening the hip socket and stabilizing femoral head."
   },
   "Acetabular labrum _R": {
     "ar": "الشفة الحقية _R",
@@ -8973,13 +8969,9 @@
     "descDe": "Vertieft die rechte Hüftpfanne"
   },
   "Acetabular labrum.r": {
-    "ar": "الشفة الحقية _R",
-    "descEn": "Deepens the right hip socket",
-    "descAr": "تعميق تجويف الحوض الأيمن",
-    "fr": "Labrum acétabulaire _R",
-    "de": "Hüftpfannenlippe _R",
-    "descFr": "Approfondit la cavité de la hanche droite",
-    "descDe": "Vertieft die rechte Hüftpfanne"
+    "ar": "شفا الحُق (حافة مفصل الورك الليفية) (الأيمن)",
+    "descAr": "حلقة غضروفية ليفية تطوق حافة التجويف الحقي لتعميق مفصل الورك وتثبيت رأس عظم الفخذ.",
+    "descEn": "Fibrocartilaginous rim deepening the hip socket and stabilizing femoral head."
   },
   "Hip articular cartilage _L": {
     "ar": "الغضروف المفصلي للورك _L",
@@ -9685,9 +9677,9 @@
     "descAr": "الغشاء الليفي الخارجي المتين الذي يحيط بالنخاع الشوكي والسائل الدماغي الشوكي لحمايته داخل القناة الفقرية."
   },
   "Medulla oblongata": {
-    "ar": "النخاع المستطيل (جذع الدماغ)",
-    "descEn": "Lower half of brainstem containing cardiac, respiratory, vomiting, and vasomotor centers.",
-    "descAr": "الجزء السفلي من جذع الدماغ، يحوي مراكز التنفس وضغط الدم والقلب ومنعكسات القيء والسعال."
+    "ar": "النخاع المستطيل (البصلة السيسائية في جذع الدماغ)",
+    "descAr": "مركز التنظيم الحيوي الذاتي؛ يتحكم في نبضات القلب وضغط الدم ومعدل التنفس والبلع.",
+    "descEn": "Autonomic reflex center controlling cardiac output, vasomotor tone, and respiration."
   },
   "Medulla oblongata _L": {
     "ar": "النخاع المستطيل (جذع الدماغ) الأيسر",
@@ -9700,19 +9692,19 @@
     "descAr": "الجزء السفلي من جذع الدماغ، يحوي مراكز التنفس وضغط الدم والقلب ومنعكسات القيء والسعال."
   },
   "Medulla oblongata.l": {
-    "ar": "النخاع المستطيل (جذع الدماغ) الأيسر",
-    "descEn": "Lower half of brainstem containing cardiac, respiratory, vomiting, and vasomotor centers.",
-    "descAr": "الجزء السفلي من جذع الدماغ، يحوي مراكز التنفس وضغط الدم والقلب ومنعكسات القيء والسعال."
+    "ar": "النخاع المستطيل (البصلة السيسائية في جذع الدماغ) (الأيسر)",
+    "descAr": "مركز التنظيم الحيوي الذاتي؛ يتحكم في نبضات القلب وضغط الدم ومعدل التنفس والبلع.",
+    "descEn": "Autonomic reflex center controlling cardiac output, vasomotor tone, and respiration."
   },
   "Medulla oblongata.r": {
-    "ar": "النخاع المستطيل (جذع الدماغ) الأيمن",
-    "descEn": "Lower half of brainstem containing cardiac, respiratory, vomiting, and vasomotor centers.",
-    "descAr": "الجزء السفلي من جذع الدماغ، يحوي مراكز التنفس وضغط الدم والقلب ومنعكسات القيء والسعال."
+    "ar": "النخاع المستطيل (البصلة السيسائية في جذع الدماغ) (الأيمن)",
+    "descAr": "مركز التنظيم الحيوي الذاتي؛ يتحكم في نبضات القلب وضغط الدم ومعدل التنفس والبلع.",
+    "descEn": "Autonomic reflex center controlling cardiac output, vasomotor tone, and respiration."
   },
   "Pons": {
-    "ar": "الجسر (جذع الدماغ)",
-    "descEn": "Part of brainstem relaying signals between cerebrum and cerebellum; regulates sleep and breathing.",
-    "descAr": "جزء من جذع الدماغ ينقل الإشارات بين المخ والمخيخ، وينظم دورات النوم وإيقاع التنفس."
+    "ar": "الجسر (قنطرة جذع الدماغ)",
+    "descAr": "جسر عصبي يربط المخ بالمخيخ وينظم حركة الوجه والنوم وتنظيم إيقاع التنفس.",
+    "descEn": "Brainstem structure relaying cerebral motor signals to cerebellum and assisting respiration."
   },
   "Pons _L": {
     "ar": "الجسر (جذع الدماغ) الأيسر",
@@ -9725,19 +9717,19 @@
     "descAr": "جزء من جذع الدماغ ينقل الإشارات بين المخ والمخيخ، وينظم دورات النوم وإيقاع التنفس."
   },
   "Pons.l": {
-    "ar": "الجسر (جذع الدماغ) الأيسر",
-    "descEn": "Part of brainstem relaying signals between cerebrum and cerebellum; regulates sleep and breathing.",
-    "descAr": "جزء من جذع الدماغ ينقل الإشارات بين المخ والمخيخ، وينظم دورات النوم وإيقاع التنفس."
+    "ar": "الجسر (قنطرة جذع الدماغ) (الأيسر)",
+    "descAr": "جسر عصبي يربط المخ بالمخيخ وينظم حركة الوجه والنوم وتنظيم إيقاع التنفس.",
+    "descEn": "Brainstem structure relaying cerebral motor signals to cerebellum and assisting respiration."
   },
   "Pons.r": {
-    "ar": "الجسر (جذع الدماغ) الأيمن",
-    "descEn": "Part of brainstem relaying signals between cerebrum and cerebellum; regulates sleep and breathing.",
-    "descAr": "جزء من جذع الدماغ ينقل الإشارات بين المخ والمخيخ، وينظم دورات النوم وإيقاع التنفس."
+    "ar": "الجسر (قنطرة جذع الدماغ) (الأيمن)",
+    "descAr": "جسر عصبي يربط المخ بالمخيخ وينظم حركة الوجه والنوم وتنظيم إيقاع التنفس.",
+    "descEn": "Brainstem structure relaying cerebral motor signals to cerebellum and assisting respiration."
   },
   "Midbrain": {
-    "ar": "الدماغ المتوسط (جذع الدماغ)",
-    "descEn": "Associated with vision, hearing, motor control, alertness, and temperature regulation.",
-    "descAr": "جزء من جذع الدماغ مسؤول عن المنعكسات البصرية والسمعية والتحكم الحركي واليقظة."
+    "ar": "الدماغ المتوسط (جذع الدماغ العلوي)",
+    "descAr": "يربط الدماغ البيني بالحبل الشوكي ويحتوي على مراكز المنعكسات البصرية والسمعية.",
+    "descEn": "Rostral brainstem division containing visual and auditory reflex relays."
   },
   "Midbrain _L": {
     "ar": "الدماغ المتوسط (جذع الدماغ) الأيسر",
@@ -9750,14 +9742,14 @@
     "descAr": "جزء من جذع الدماغ مسؤول عن المنعكسات البصرية والسمعية والتحكم الحركي واليقظة."
   },
   "Midbrain.l": {
-    "ar": "الدماغ المتوسط (جذع الدماغ) الأيسر",
-    "descEn": "Associated with vision, hearing, motor control, alertness, and temperature regulation.",
-    "descAr": "جزء من جذع الدماغ مسؤول عن المنعكسات البصرية والسمعية والتحكم الحركي واليقظة."
+    "ar": "الدماغ المتوسط (جذع الدماغ العلوي) (الأيسر)",
+    "descAr": "يربط الدماغ البيني بالحبل الشوكي ويحتوي على مراكز المنعكسات البصرية والسمعية.",
+    "descEn": "Rostral brainstem division containing visual and auditory reflex relays."
   },
   "Midbrain.r": {
-    "ar": "الدماغ المتوسط (جذع الدماغ) الأيمن",
-    "descEn": "Associated with vision, hearing, motor control, alertness, and temperature regulation.",
-    "descAr": "جزء من جذع الدماغ مسؤول عن المنعكسات البصرية والسمعية والتحكم الحركي واليقظة."
+    "ar": "الدماغ المتوسط (جذع الدماغ العلوي) (الأيمن)",
+    "descAr": "يربط الدماغ البيني بالحبل الشوكي ويحتوي على مراكز المنعكسات البصرية والسمعية.",
+    "descEn": "Rostral brainstem division containing visual and auditory reflex relays."
   },
   "Thalamus": {
     "ar": "المهاد (الثلاموس)",
@@ -9860,9 +9852,9 @@
     "descAr": "بنية عصبية محورية لتحويل الذاكرة قصيرة المدى إلى ذاكرة طويلة المدى والملاحة المكانية."
   },
   "Amygdaloid body": {
-    "ar": "اللوزة العصبية (الأميجدالا)",
-    "descEn": "Integrative center for emotions, emotional behavior, fear response, and motivation.",
-    "descAr": "المركز العصبي لمعالجة المشاعر والانفعالات كاستجابة الخوف والقلق والذاكرة العاطفية."
+    "ar": "الجسم اللوزي (اللوزة الدماغية Amygdala)",
+    "descAr": "كتلة نووية في الفص الصدغي، مركز معالجة العواطف والخوف والذاكرة الانفعالية.",
+    "descEn": "Nuclear complex in temporal lobe vital for emotional processing, fear conditioning, and memory."
   },
   "Amygdaloid body _L": {
     "ar": "اللوزة العصبية (الأميجدالا) الأيسر",
@@ -9875,19 +9867,19 @@
     "descAr": "المركز العصبي لمعالجة المشاعر والانفعالات كاستجابة الخوف والقلق والذاكرة العاطفية."
   },
   "Amygdaloid body.l": {
-    "ar": "اللوزة العصبية (الأميجدالا) الأيسر",
-    "descEn": "Integrative center for emotions, emotional behavior, fear response, and motivation.",
-    "descAr": "المركز العصبي لمعالجة المشاعر والانفعالات كاستجابة الخوف والقلق والذاكرة العاطفية."
+    "ar": "الجسم اللوزي (اللوزة الدماغية Amygdala) (الأيسر)",
+    "descAr": "كتلة نووية في الفص الصدغي، مركز معالجة العواطف والخوف والذاكرة الانفعالية.",
+    "descEn": "Nuclear complex in temporal lobe vital for emotional processing, fear conditioning, and memory."
   },
   "Amygdaloid body.r": {
-    "ar": "اللوزة العصبية (الأميجدالا) الأيمن",
-    "descEn": "Integrative center for emotions, emotional behavior, fear response, and motivation.",
-    "descAr": "المركز العصبي لمعالجة المشاعر والانفعالات كاستجابة الخوف والقلق والذاكرة العاطفية."
+    "ar": "الجسم اللوزي (اللوزة الدماغية Amygdala) (الأيمن)",
+    "descAr": "كتلة نووية في الفص الصدغي، مركز معالجة العواطف والخوف والذاكرة الانفعالية.",
+    "descEn": "Nuclear complex in temporal lobe vital for emotional processing, fear conditioning, and memory."
   },
   "Fourth ventricle": {
     "ar": "البطين الرابع للدماغ",
-    "descEn": "CSF-filled cavity located posterior to pons and medulla and anterior to cerebellum.",
-    "descAr": "تجويف مملوء بالسائل الدماغي الشوكي يقع بين جذع الدماغ والمخيخ ويسهم في حماية الجهاز العصبي."
+    "descAr": "تجويف يقع بين جذع الدماغ والمخيخ يمر عبره السائل الدماغي الشوكي إلى الحبل الشوكي.",
+    "descEn": "Diamond-shaped cavity between brainstem and cerebellum circulating CSF."
   },
   "Fourth ventricle _L": {
     "ar": "البطين الرابع للدماغ الأيسر",
@@ -9900,14 +9892,14 @@
     "descAr": "تجويف مملوء بالسائل الدماغي الشوكي يقع بين جذع الدماغ والمخيخ ويسهم في حماية الجهاز العصبي."
   },
   "Fourth ventricle.l": {
-    "ar": "البطين الرابع للدماغ الأيسر",
-    "descEn": "CSF-filled cavity located posterior to pons and medulla and anterior to cerebellum.",
-    "descAr": "تجويف مملوء بالسائل الدماغي الشوكي يقع بين جذع الدماغ والمخيخ ويسهم في حماية الجهاز العصبي."
+    "ar": "البطين الرابع للدماغ (الأيسر)",
+    "descAr": "تجويف يقع بين جذع الدماغ والمخيخ يمر عبره السائل الدماغي الشوكي إلى الحبل الشوكي.",
+    "descEn": "Diamond-shaped cavity between brainstem and cerebellum circulating CSF."
   },
   "Fourth ventricle.r": {
-    "ar": "البطين الرابع للدماغ الأيمن",
-    "descEn": "CSF-filled cavity located posterior to pons and medulla and anterior to cerebellum.",
-    "descAr": "تجويف مملوء بالسائل الدماغي الشوكي يقع بين جذع الدماغ والمخيخ ويسهم في حماية الجهاز العصبي."
+    "ar": "البطين الرابع للدماغ (الأيمن)",
+    "descAr": "تجويف يقع بين جذع الدماغ والمخيخ يمر عبره السائل الدماغي الشوكي إلى الحبل الشوكي.",
+    "descEn": "Diamond-shaped cavity between brainstem and cerebellum circulating CSF."
   },
   "Third ventricle": {
     "ar": "البطين الثالث للدماغ",
@@ -9960,9 +9952,9 @@
     "descAr": "زوج من التجاويف الدماغية الكبيرة ينتج السائل الدماغي الشوكي عبر الضفيرة المشيمية."
   },
   "Aqueduct of midbrain": {
-    "ar": "مسال الدماغ المتوسط (مسال سيلفيوس)",
-    "descEn": "Channel connecting the third and fourth ventricles for CSF passage.",
-    "descAr": "قناة ضيقة داخل الدماغ المتوسط تنقل السائل الشوكي من البطين الثالث إلى البطين الرابع."
+    "ar": "المسال الدماغي (قناة سيلفيوس في الدماغ المتوسط)",
+    "descAr": "قناة دقيقة تصل البطين الثالث بالبطين الرابع لمرور السائل الدماغي الشوكي.",
+    "descEn": "Cerebrospinal fluid conduit connecting third and fourth ventricles in midbrain."
   },
   "Aqueduct of midbrain _L": {
     "ar": "مسال الدماغ المتوسط (مسال سيلفيوس) الأيسر",
@@ -9975,19 +9967,19 @@
     "descAr": "قناة ضيقة داخل الدماغ المتوسط تنقل السائل الشوكي من البطين الثالث إلى البطين الرابع."
   },
   "Aqueduct of midbrain.l": {
-    "ar": "مسال الدماغ المتوسط (مسال سيلفيوس) الأيسر",
-    "descEn": "Channel connecting the third and fourth ventricles for CSF passage.",
-    "descAr": "قناة ضيقة داخل الدماغ المتوسط تنقل السائل الشوكي من البطين الثالث إلى البطين الرابع."
+    "ar": "المسال الدماغي (قناة سيلفيوس في الدماغ المتوسط) (الأيسر)",
+    "descAr": "قناة دقيقة تصل البطين الثالث بالبطين الرابع لمرور السائل الدماغي الشوكي.",
+    "descEn": "Cerebrospinal fluid conduit connecting third and fourth ventricles in midbrain."
   },
   "Aqueduct of midbrain.r": {
-    "ar": "مسال الدماغ المتوسط (مسال سيلفيوس) الأيمن",
-    "descEn": "Channel connecting the third and fourth ventricles for CSF passage.",
-    "descAr": "قناة ضيقة داخل الدماغ المتوسط تنقل السائل الشوكي من البطين الثالث إلى البطين الرابع."
+    "ar": "المسال الدماغي (قناة سيلفيوس في الدماغ المتوسط) (الأيمن)",
+    "descAr": "قناة دقيقة تصل البطين الثالث بالبطين الرابع لمرور السائل الدماغي الشوكي.",
+    "descEn": "Cerebrospinal fluid conduit connecting third and fourth ventricles in midbrain."
   },
   "Optic chiasm": {
-    "ar": "التصالب البصري",
-    "descEn": "X-shaped space where the two optic nerves partially cross their medial retinal fibers.",
-    "descAr": "منطقة تقاطع ألياف العصبين البصريين تتيح الرؤية المجسمة ثلاثية الأبعاد ودمج المجالين البصريين."
+    "ar": "التصالب البصري (مفترق الألياف البصرية للعينين)",
+    "descAr": "موقع تصالب ألياف العصب البصري الأنفية بين العينين لنقل مجالات الرؤية المجسمة 3D.",
+    "descEn": "X-shaped crossing point of optic nerve fibers enabling stereoscopic vision."
   },
   "Optic chiasm _L": {
     "ar": "التصالب البصري الأيسر",
@@ -10000,19 +9992,19 @@
     "descAr": "منطقة تقاطع ألياف العصبين البصريين تتيح الرؤية المجسمة ثلاثية الأبعاد ودمج المجالين البصريين."
   },
   "Optic chiasm.l": {
-    "ar": "التصالب البصري الأيسر",
-    "descEn": "X-shaped space where the two optic nerves partially cross their medial retinal fibers.",
-    "descAr": "منطقة تقاطع ألياف العصبين البصريين تتيح الرؤية المجسمة ثلاثية الأبعاد ودمج المجالين البصريين."
+    "ar": "التصالب البصري (مفترق الألياف البصرية للعينين) (الأيسر)",
+    "descAr": "موقع تصالب ألياف العصب البصري الأنفية بين العينين لنقل مجالات الرؤية المجسمة 3D.",
+    "descEn": "X-shaped crossing point of optic nerve fibers enabling stereoscopic vision."
   },
   "Optic chiasm.r": {
-    "ar": "التصالب البصري الأيمن",
-    "descEn": "X-shaped space where the two optic nerves partially cross their medial retinal fibers.",
-    "descAr": "منطقة تقاطع ألياف العصبين البصريين تتيح الرؤية المجسمة ثلاثية الأبعاد ودمج المجالين البصريين."
+    "ar": "التصالب البصري (مفترق الألياف البصرية للعينين) (الأيمن)",
+    "descAr": "موقع تصالب ألياف العصب البصري الأنفية بين العينين لنقل مجالات الرؤية المجسمة 3D.",
+    "descEn": "X-shaped crossing point of optic nerve fibers enabling stereoscopic vision."
   },
   "Optic tract": {
     "ar": "السبيل البصري",
-    "descEn": "Continuation of the optic nerve carrying visual fibers to lateral geniculate nucleus.",
-    "descAr": "امتداد الألياف العصبية البصرية من التصالب البصري إلى النواة الركبية الوحشية بالمهاد."
+    "descAr": "حزمة الألياف البصرية التي تنقل المعلومات بعد التصالب إلى الجسم الركبي والباحة البصرية.",
+    "descEn": "Continuation of the optic pathways transmitting visual signals to lateral geniculate body."
   },
   "Optic tract _L": {
     "ar": "السبيل البصري الأيسر",
@@ -10025,19 +10017,19 @@
     "descAr": "امتداد الألياف العصبية البصرية من التصالب البصري إلى النواة الركبية الوحشية بالمهاد."
   },
   "Optic tract.l": {
-    "ar": "السبيل البصري الأيسر",
-    "descEn": "Continuation of the optic nerve carrying visual fibers to lateral geniculate nucleus.",
-    "descAr": "امتداد الألياف العصبية البصرية من التصالب البصري إلى النواة الركبية الوحشية بالمهاد."
+    "ar": "السبيل البصري (الأيسر)",
+    "descAr": "حزمة الألياف البصرية التي تنقل المعلومات بعد التصالب إلى الجسم الركبي والباحة البصرية.",
+    "descEn": "Continuation of the optic pathways transmitting visual signals to lateral geniculate body."
   },
   "Optic tract.r": {
-    "ar": "السبيل البصري الأيمن",
-    "descEn": "Continuation of the optic nerve carrying visual fibers to lateral geniculate nucleus.",
-    "descAr": "امتداد الألياف العصبية البصرية من التصالب البصري إلى النواة الركبية الوحشية بالمهاد."
+    "ar": "السبيل البصري (الأيمن)",
+    "descAr": "حزمة الألياف البصرية التي تنقل المعلومات بعد التصالب إلى الجسم الركبي والباحة البصرية.",
+    "descEn": "Continuation of the optic pathways transmitting visual signals to lateral geniculate body."
   },
   "Olive": {
     "ar": "الزيتونة (النخاع المستطيل)",
-    "descEn": "Prominent oval mass on the anterior surface of medulla involved in cerebellar motor learning.",
-    "descAr": "بروز بيضاوي على النخاع المستطيل يسهم في معالجة الإشارات السمعية والتعلم الحركي الدقيق."
+    "descAr": "بروز بيضاوي على النخاع المستطيل يشارك في التحكم الحركي الدقيق والإدراك السمعي.",
+    "descEn": "Prominence on the medulla oblongata involved in precision motor coordination."
   },
   "Olive _L": {
     "ar": "الزيتونة (النخاع المستطيل) الأيسر",
@@ -10050,19 +10042,19 @@
     "descAr": "بروز بيضاوي على النخاع المستطيل يسهم في معالجة الإشارات السمعية والتعلم الحركي الدقيق."
   },
   "Olive.l": {
-    "ar": "الزيتونة (النخاع المستطيل) الأيسر",
-    "descEn": "Prominent oval mass on the anterior surface of medulla involved in cerebellar motor learning.",
-    "descAr": "بروز بيضاوي على النخاع المستطيل يسهم في معالجة الإشارات السمعية والتعلم الحركي الدقيق."
+    "ar": "الزيتونة (النخاع المستطيل) (الأيسر)",
+    "descAr": "بروز بيضاوي على النخاع المستطيل يشارك في التحكم الحركي الدقيق والإدراك السمعي.",
+    "descEn": "Prominence on the medulla oblongata involved in precision motor coordination."
   },
   "Olive.r": {
-    "ar": "الزيتونة (النخاع المستطيل) الأيمن",
-    "descEn": "Prominent oval mass on the anterior surface of medulla involved in cerebellar motor learning.",
-    "descAr": "بروز بيضاوي على النخاع المستطيل يسهم في معالجة الإشارات السمعية والتعلم الحركي الدقيق."
+    "ar": "الزيتونة (النخاع المستطيل) (الأيمن)",
+    "descAr": "بروز بيضاوي على النخاع المستطيل يشارك في التحكم الحركي الدقيق والإدراك السمعي.",
+    "descEn": "Prominence on the medulla oblongata involved in precision motor coordination."
   },
   "Pyramid of medulla oblongata": {
-    "ar": "هرم النخاع المستطيل",
-    "descEn": "Paired white matter structures containing the corticospinal motor tracts.",
-    "descAr": "بنية هرمية مزدوجة بالنخاع المستطيل تعبرها السبيل الهرمي الحركي المسؤولة عن الحركة الإرادية."
+    "ar": "هرم النخاع المستطيل (المسار الحركي)",
+    "descAr": "بروزان يحملان الألياف القشرية النخاعية؛ موقع تصالب السبيل الحركي الرئيسي للجسم.",
+    "descEn": "Paired anterior ridges of medulla containing decussating corticospinal fibers."
   },
   "Pyramid of medulla oblongata _L": {
     "ar": "هرم النخاع المستطيل الأيسر",
@@ -10075,14 +10067,14 @@
     "descAr": "بنية هرمية مزدوجة بالنخاع المستطيل تعبرها السبيل الهرمي الحركي المسؤولة عن الحركة الإرادية."
   },
   "Pyramid of medulla oblongata.l": {
-    "ar": "هرم النخاع المستطيل الأيسر",
-    "descEn": "Paired white matter structures containing the corticospinal motor tracts.",
-    "descAr": "بنية هرمية مزدوجة بالنخاع المستطيل تعبرها السبيل الهرمي الحركي المسؤولة عن الحركة الإرادية."
+    "ar": "هرم النخاع المستطيل (المسار الحركي) (الأيسر)",
+    "descAr": "بروزان يحملان الألياف القشرية النخاعية؛ موقع تصالب السبيل الحركي الرئيسي للجسم.",
+    "descEn": "Paired anterior ridges of medulla containing decussating corticospinal fibers."
   },
   "Pyramid of medulla oblongata.r": {
-    "ar": "هرم النخاع المستطيل الأيمن",
-    "descEn": "Paired white matter structures containing the corticospinal motor tracts.",
-    "descAr": "بنية هرمية مزدوجة بالنخاع المستطيل تعبرها السبيل الهرمي الحركي المسؤولة عن الحركة الإرادية."
+    "ar": "هرم النخاع المستطيل (المسار الحركي) (الأيمن)",
+    "descAr": "بروزان يحملان الألياف القشرية النخاعية؛ موقع تصالب السبيل الحركي الرئيسي للجسم.",
+    "descEn": "Paired anterior ridges of medulla containing decussating corticospinal fibers."
   },
   "Superior colliculus": {
     "ar": "الأكيمة العلوية (الدماغ المتوسط)",
@@ -10160,9 +10152,9 @@
     "descAr": "نواة حركية بالدماغ المتوسط غنية بالحديد تشارك في تنسيق الحركات الحركية العضلية والوضعية."
   },
   "Caudate nucleus": {
-    "ar": "النواة المذنبة (العقد القاعدية)",
-    "descEn": "C-shaped basal ganglia component essential for goal-directed action and motor planning.",
-    "descAr": "جزء من العقد القاعدية بالدماغ يسهم في التخطيط الحركي والتعلم والذاكرة الإجرائية."
+    "ar": "النواة المذنبة (العقد القاعدية في المخ)",
+    "descAr": "جزء رئيسي من العقد القاعدية يلعب دوراً محورياً في التخطيط الحركي والتعلم والذاكرة.",
+    "descEn": "Component of the basal ganglia involved in motor planning and associative learning."
   },
   "Caudate nucleus _L": {
     "ar": "النواة المذنبة (العقد القاعدية) الأيسر",
@@ -10175,14 +10167,14 @@
     "descAr": "جزء من العقد القاعدية بالدماغ يسهم في التخطيط الحركي والتعلم والذاكرة الإجرائية."
   },
   "Caudate nucleus.l": {
-    "ar": "النواة المذنبة (العقد القاعدية) الأيسر",
-    "descEn": "C-shaped basal ganglia component essential for goal-directed action and motor planning.",
-    "descAr": "جزء من العقد القاعدية بالدماغ يسهم في التخطيط الحركي والتعلم والذاكرة الإجرائية."
+    "ar": "النواة المذنبة (العقد القاعدية في المخ) (الأيسر)",
+    "descAr": "جزء رئيسي من العقد القاعدية يلعب دوراً محورياً في التخطيط الحركي والتعلم والذاكرة.",
+    "descEn": "Component of the basal ganglia involved in motor planning and associative learning."
   },
   "Caudate nucleus.r": {
-    "ar": "النواة المذنبة (العقد القاعدية) الأيمن",
-    "descEn": "C-shaped basal ganglia component essential for goal-directed action and motor planning.",
-    "descAr": "جزء من العقد القاعدية بالدماغ يسهم في التخطيط الحركي والتعلم والذاكرة الإجرائية."
+    "ar": "النواة المذنبة (العقد القاعدية في المخ) (الأيمن)",
+    "descAr": "جزء رئيسي من العقد القاعدية يلعب دوراً محورياً في التخطيط الحركي والتعلم والذاكرة.",
+    "descEn": "Component of the basal ganglia involved in motor planning and associative learning."
   },
   "Putamen": {
     "ar": "اللقمة (العقد القاعدية)",
@@ -60739,5 +60731,950 @@
     "descAr": "حاجز ليفي متين يربط الرباط الإربي بالبروز الحرقفي التمشيطي، يفصل بين الحيز الوعائي الفخذي والحيز العضلي العصبي.",
     "descEn": "Strong fibrous band dividing the retro-inguinal space into a lateral muscular compartment and a medial vascular compartment.",
     "system": "muscular"
+  },
+  "Abducens nerve (VI)": {
+    "ar": "العصب المبعد (العصب القحفي السادس VI)",
+    "descAr": "العصب القحفي السادس المسؤول عن حركة عضلة العين المستقيمة الوحشية للنظر للخارج.",
+    "descEn": "Sixth cranial nerve controlling lateral rectus muscle for outward gaze."
+  },
+  "abducens nerve (vi)": {
+    "ar": "العصب المبعد (العصب القحفي السادس VI)",
+    "descAr": "العصب القحفي السادس المسؤول عن حركة عضلة العين المستقيمة الوحشية للنظر للخارج.",
+    "descEn": "Sixth cranial nerve controlling lateral rectus muscle for outward gaze."
+  },
+  "Abducens nerve (VI).l": {
+    "ar": "العصب المبعد (العصب القحفي السادس VI) (الأيسر)",
+    "descAr": "العصب القحفي السادس المسؤول عن حركة عضلة العين المستقيمة الوحشية للنظر للخارج.",
+    "descEn": "Sixth cranial nerve controlling lateral rectus muscle for outward gaze."
+  },
+  "Abducens nerve (VI).r": {
+    "ar": "العصب المبعد (العصب القحفي السادس VI) (الأيمن)",
+    "descAr": "العصب القحفي السادس المسؤول عن حركة عضلة العين المستقيمة الوحشية للنظر للخارج.",
+    "descEn": "Sixth cranial nerve controlling lateral rectus muscle for outward gaze."
+  },
+  "Accessory nerve (XI)": {
+    "ar": "العصب اللاحق الإضافي (العصب القحفي الحادي عشر XI)",
+    "descAr": "العصب القحفي الحادي عشر، يعصب عضلة القصية الترقوية الخشائية والعضلة شبه المنحرفة لرفع الكتف وتدوير الرأس.",
+    "descEn": "Eleventh cranial nerve supplying sternocleidomastoid and trapezius muscles."
+  },
+  "accessory nerve (xi)": {
+    "ar": "العصب اللاحق الإضافي (العصب القحفي الحادي عشر XI)",
+    "descAr": "العصب القحفي الحادي عشر، يعصب عضلة القصية الترقوية الخشائية والعضلة شبه المنحرفة لرفع الكتف وتدوير الرأس.",
+    "descEn": "Eleventh cranial nerve supplying sternocleidomastoid and trapezius muscles."
+  },
+  "Accessory nerve (XI).l": {
+    "ar": "العصب اللاحق الإضافي (العصب القحفي الحادي عشر XI) (الأيسر)",
+    "descAr": "العصب القحفي الحادي عشر، يعصب عضلة القصية الترقوية الخشائية والعضلة شبه المنحرفة لرفع الكتف وتدوير الرأس.",
+    "descEn": "Eleventh cranial nerve supplying sternocleidomastoid and trapezius muscles."
+  },
+  "Accessory nerve (XI).r": {
+    "ar": "العصب اللاحق الإضافي (العصب القحفي الحادي عشر XI) (الأيمن)",
+    "descAr": "العصب القحفي الحادي عشر، يعصب عضلة القصية الترقوية الخشائية والعضلة شبه المنحرفة لرفع الكتف وتدوير الرأس.",
+    "descEn": "Eleventh cranial nerve supplying sternocleidomastoid and trapezius muscles."
+  },
+  "Accessory nucleus of oculomotor nerve": {
+    "ar": "النواة الإضافية للعصب محرك العين (نواة إيدنجر-فيستفال)",
+    "descAr": "نواة لاودية في الدماغ المتوسط تتحكم في تضييق حدقة العين ومطابقة الرؤية القريبة.",
+    "descEn": "Parasympathetic preganglionic nucleus controlling pupillary constriction and lens accommodation."
+  },
+  "accessory nucleus of oculomotor nerve": {
+    "ar": "النواة الإضافية للعصب محرك العين (نواة إيدنجر-فيستفال)",
+    "descAr": "نواة لاودية في الدماغ المتوسط تتحكم في تضييق حدقة العين ومطابقة الرؤية القريبة.",
+    "descEn": "Parasympathetic preganglionic nucleus controlling pupillary constriction and lens accommodation."
+  },
+  "Accessory nucleus of oculomotor nerve.l": {
+    "ar": "النواة الإضافية للعصب محرك العين (نواة إيدنجر-فيستفال) (الأيسر)",
+    "descAr": "نواة لاودية في الدماغ المتوسط تتحكم في تضييق حدقة العين ومطابقة الرؤية القريبة.",
+    "descEn": "Parasympathetic preganglionic nucleus controlling pupillary constriction and lens accommodation."
+  },
+  "Accessory nucleus of oculomotor nerve.r": {
+    "ar": "النواة الإضافية للعصب محرك العين (نواة إيدنجر-فيستفال) (الأيمن)",
+    "descAr": "نواة لاودية في الدماغ المتوسط تتحكم في تضييق حدقة العين ومطابقة الرؤية القريبة.",
+    "descEn": "Parasympathetic preganglionic nucleus controlling pupillary constriction and lens accommodation."
+  },
+  "Ampulla of lacrimal canaliculus": {
+    "ar": "أمبولة النفير الدمعي",
+    "descAr": "اتساع قنيوي في زاوية الجفن يجمع الدموع من العين ويوجهها إلى الكيس الدمعي.",
+    "descEn": "Dilated portion of the lacrimal duct collecting tear fluid."
+  },
+  "ampulla of lacrimal canaliculus": {
+    "ar": "أمبولة النفير الدمعي",
+    "descAr": "اتساع قنيوي في زاوية الجفن يجمع الدموع من العين ويوجهها إلى الكيس الدمعي.",
+    "descEn": "Dilated portion of the lacrimal duct collecting tear fluid."
+  },
+  "Ampulla of lacrimal canaliculus.l": {
+    "ar": "أمبولة النفير الدمعي (الأيسر)",
+    "descAr": "اتساع قنيوي في زاوية الجفن يجمع الدموع من العين ويوجهها إلى الكيس الدمعي.",
+    "descEn": "Dilated portion of the lacrimal duct collecting tear fluid."
+  },
+  "Ampulla of lacrimal canaliculus.r": {
+    "ar": "أمبولة النفير الدمعي (الأيمن)",
+    "descAr": "اتساع قنيوي في زاوية الجفن يجمع الدموع من العين ويوجهها إلى الكيس الدمعي.",
+    "descEn": "Dilated portion of the lacrimal duct collecting tear fluid."
+  },
+  "amygdaloid body": {
+    "ar": "الجسم اللوزي (اللوزة الدماغية Amygdala)",
+    "descAr": "كتلة نووية في الفص الصدغي، مركز معالجة العواطف والخوف والذاكرة الانفعالية.",
+    "descEn": "Nuclear complex in temporal lobe vital for emotional processing, fear conditioning, and memory."
+  },
+  "Angular gyrus": {
+    "ar": "التلفيف الزاوي (الفص الجداري)",
+    "descAr": "تلفيف دماغي يشارك في معالجة اللغة والقراءة والرياضيات والإدراك المكاني.",
+    "descEn": "Parietal lobe region involved in language processing, number processing, and spatial cognition."
+  },
+  "angular gyrus": {
+    "ar": "التلفيف الزاوي (الفص الجداري)",
+    "descAr": "تلفيف دماغي يشارك في معالجة اللغة والقراءة والرياضيات والإدراك المكاني.",
+    "descEn": "Parietal lobe region involved in language processing, number processing, and spatial cognition."
+  },
+  "Angular gyrus.l": {
+    "ar": "التلفيف الزاوي (الفص الجداري) (الأيسر)",
+    "descAr": "تلفيف دماغي يشارك في معالجة اللغة والقراءة والرياضيات والإدراك المكاني.",
+    "descEn": "Parietal lobe region involved in language processing, number processing, and spatial cognition."
+  },
+  "Angular gyrus.r": {
+    "ar": "التلفيف الزاوي (الفص الجداري) (الأيمن)",
+    "descAr": "تلفيف دماغي يشارك في معالجة اللغة والقراءة والرياضيات والإدراك المكاني.",
+    "descEn": "Parietal lobe region involved in language processing, number processing, and spatial cognition."
+  },
+  "Anterior branch of medial antebrachial cutaneous nerve": {
+    "ar": "الفرع الأمامي للعصب الجلدي الإنسي للساعد",
+    "descAr": "فرع عصبي حسي يغذي جلد الناحية الأمامية الإنسية من الساعد.",
+    "descEn": "Sensory branch innervating skin of anterior medial forearm."
+  },
+  "anterior branch of medial antebrachial cutaneous nerve": {
+    "ar": "الفرع الأمامي للعصب الجلدي الإنسي للساعد",
+    "descAr": "فرع عصبي حسي يغذي جلد الناحية الأمامية الإنسية من الساعد.",
+    "descEn": "Sensory branch innervating skin of anterior medial forearm."
+  },
+  "Anterior branch of medial antebrachial cutaneous nerve.l": {
+    "ar": "الفرع الأمامي للعصب الجلدي الإنسي للساعد (الأيسر)",
+    "descAr": "فرع عصبي حسي يغذي جلد الناحية الأمامية الإنسية من الساعد.",
+    "descEn": "Sensory branch innervating skin of anterior medial forearm."
+  },
+  "Anterior branch of medial antebrachial cutaneous nerve.r": {
+    "ar": "الفرع الأمامي للعصب الجلدي الإنسي للساعد (الأيمن)",
+    "descAr": "فرع عصبي حسي يغذي جلد الناحية الأمامية الإنسية من الساعد.",
+    "descEn": "Sensory branch innervating skin of anterior medial forearm."
+  },
+  "Anterior branch of obturator nerve": {
+    "ar": "الفرع الأمامي للعصب السدادي",
+    "descAr": "عصب ينزل أمام العضلة السدادة الظاهرة لتغذية عضلات تقريب الفخذ وجلد الفخذ الإنسي.",
+    "descEn": "Motor and sensory nerve supplying adductor muscles and medial thigh skin."
+  },
+  "anterior branch of obturator nerve": {
+    "ar": "الفرع الأمامي للعصب السدادي",
+    "descAr": "عصب ينزل أمام العضلة السدادة الظاهرة لتغذية عضلات تقريب الفخذ وجلد الفخذ الإنسي.",
+    "descEn": "Motor and sensory nerve supplying adductor muscles and medial thigh skin."
+  },
+  "Anterior branch of obturator nerve.l": {
+    "ar": "الفرع الأمامي للعصب السدادي (الأيسر)",
+    "descAr": "عصب ينزل أمام العضلة السدادة الظاهرة لتغذية عضلات تقريب الفخذ وجلد الفخذ الإنسي.",
+    "descEn": "Motor and sensory nerve supplying adductor muscles and medial thigh skin."
+  },
+  "Anterior branch of obturator nerve.r": {
+    "ar": "الفرع الأمامي للعصب السدادي (الأيمن)",
+    "descAr": "عصب ينزل أمام العضلة السدادة الظاهرة لتغذية عضلات تقريب الفخذ وجلد الفخذ الإنسي.",
+    "descEn": "Motor and sensory nerve supplying adductor muscles and medial thigh skin."
+  },
+  "Anterior chamber of eyeball": {
+    "ar": "الغرفة الأمامية لمقلة العين (تجويف العين الأمامي)",
+    "descAr": "التجويف المملوء بالخلط المائي بين القرنية والقزحية؛ أساسي للحفاظ على ضغط العين السليم.",
+    "descEn": "Fluid-filled space between the cornea and iris containing aqueous humor."
+  },
+  "anterior chamber of eyeball": {
+    "ar": "الغرفة الأمامية لمقلة العين (تجويف العين الأمامي)",
+    "descAr": "التجويف المملوء بالخلط المائي بين القرنية والقزحية؛ أساسي للحفاظ على ضغط العين السليم.",
+    "descEn": "Fluid-filled space between the cornea and iris containing aqueous humor."
+  },
+  "Anterior chamber of eyeball.l": {
+    "ar": "الغرفة الأمامية لمقلة العين (تجويف العين الأمامي) (الأيسر)",
+    "descAr": "التجويف المملوء بالخلط المائي بين القرنية والقزحية؛ أساسي للحفاظ على ضغط العين السليم.",
+    "descEn": "Fluid-filled space between the cornea and iris containing aqueous humor."
+  },
+  "Anterior chamber of eyeball.r": {
+    "ar": "الغرفة الأمامية لمقلة العين (تجويف العين الأمامي) (الأيمن)",
+    "descAr": "التجويف المملوء بالخلط المائي بين القرنية والقزحية؛ أساسي للحفاظ على ضغط العين السليم.",
+    "descEn": "Fluid-filled space between the cornea and iris containing aqueous humor."
+  },
+  "Anterior cochlear nucleus": {
+    "ar": "النواة القوقعية الأمامية (السمعية)",
+    "descAr": "محطة معالجة الإشارات السمعية الأولية الصاعدة من العصب السمعي في جذع الدماغ.",
+    "descEn": "First central auditory station receiving primary auditory nerve fibers."
+  },
+  "anterior cochlear nucleus": {
+    "ar": "النواة القوقعية الأمامية (السمعية)",
+    "descAr": "محطة معالجة الإشارات السمعية الأولية الصاعدة من العصب السمعي في جذع الدماغ.",
+    "descEn": "First central auditory station receiving primary auditory nerve fibers."
+  },
+  "Anterior cochlear nucleus.l": {
+    "ar": "النواة القوقعية الأمامية (السمعية) (الأيسر)",
+    "descAr": "محطة معالجة الإشارات السمعية الأولية الصاعدة من العصب السمعي في جذع الدماغ.",
+    "descEn": "First central auditory station receiving primary auditory nerve fibers."
+  },
+  "Anterior cochlear nucleus.r": {
+    "ar": "النواة القوقعية الأمامية (السمعية) (الأيمن)",
+    "descAr": "محطة معالجة الإشارات السمعية الأولية الصاعدة من العصب السمعي في جذع الدماغ.",
+    "descEn": "First central auditory station receiving primary auditory nerve fibers."
+  },
+  "Anterior commissure": {
+    "ar": "الصوار الأمامي للمخ",
+    "descAr": "حزمة ألياف عصبية تربط نصفي الكرة المخية والفصين الصدغيين لتنسيق الذاكرة والانفعالات.",
+    "descEn": "White matter tract connecting the two cerebral hemispheres, especially temporal lobes."
+  },
+  "anterior commissure": {
+    "ar": "الصوار الأمامي للمخ",
+    "descAr": "حزمة ألياف عصبية تربط نصفي الكرة المخية والفصين الصدغيين لتنسيق الذاكرة والانفعالات.",
+    "descEn": "White matter tract connecting the two cerebral hemispheres, especially temporal lobes."
+  },
+  "Anterior commissure.l": {
+    "ar": "الصوار الأمامي للمخ (الأيسر)",
+    "descAr": "حزمة ألياف عصبية تربط نصفي الكرة المخية والفصين الصدغيين لتنسيق الذاكرة والانفعالات.",
+    "descEn": "White matter tract connecting the two cerebral hemispheres, especially temporal lobes."
+  },
+  "Anterior commissure.r": {
+    "ar": "الصوار الأمامي للمخ (الأيمن)",
+    "descAr": "حزمة ألياف عصبية تربط نصفي الكرة المخية والفصين الصدغيين لتنسيق الذاكرة والانفعالات.",
+    "descEn": "White matter tract connecting the two cerebral hemispheres, especially temporal lobes."
+  },
+  "Anterior corticospinal tract": {
+    "ar": "السبيل القشري النخاعي الأمامي (الحركي)",
+    "descAr": "مسار عصبي حركي نازل من القشرة المخية للتحكم في العضلات المحورية وعضلات الجذع.",
+    "descEn": "Descending motor tract controlling axial and girdle musculature."
+  },
+  "anterior corticospinal tract": {
+    "ar": "السبيل القشري النخاعي الأمامي (الحركي)",
+    "descAr": "مسار عصبي حركي نازل من القشرة المخية للتحكم في العضلات المحورية وعضلات الجذع.",
+    "descEn": "Descending motor tract controlling axial and girdle musculature."
+  },
+  "Anterior corticospinal tract.l": {
+    "ar": "السبيل القشري النخاعي الأمامي (الحركي) (الأيسر)",
+    "descAr": "مسار عصبي حركي نازل من القشرة المخية للتحكم في العضلات المحورية وعضلات الجذع.",
+    "descEn": "Descending motor tract controlling axial and girdle musculature."
+  },
+  "Anterior corticospinal tract.r": {
+    "ar": "السبيل القشري النخاعي الأمامي (الحركي) (الأيمن)",
+    "descAr": "مسار عصبي حركي نازل من القشرة المخية للتحكم في العضلات المحورية وعضلات الجذع.",
+    "descEn": "Descending motor tract controlling axial and girdle musculature."
+  },
+  "Anterior horn of spinal cord": {
+    "ar": "القرن الأمامي للنخاع الشوكي (الحركي)",
+    "descAr": "عمود رمادي يحتوي على العصبونات الحركية السفلية التي ترسل الإشارات لعضلات الهيكل العظمي.",
+    "descEn": "Ventral gray column containing lower motor neurons projecting to skeletal muscles."
+  },
+  "anterior horn of spinal cord": {
+    "ar": "القرن الأمامي للنخاع الشوكي (الحركي)",
+    "descAr": "عمود رمادي يحتوي على العصبونات الحركية السفلية التي ترسل الإشارات لعضلات الهيكل العظمي.",
+    "descEn": "Ventral gray column containing lower motor neurons projecting to skeletal muscles."
+  },
+  "Anterior horn of spinal cord.l": {
+    "ar": "القرن الأمامي للنخاع الشوكي (الحركي) (الأيسر)",
+    "descAr": "عمود رمادي يحتوي على العصبونات الحركية السفلية التي ترسل الإشارات لعضلات الهيكل العظمي.",
+    "descEn": "Ventral gray column containing lower motor neurons projecting to skeletal muscles."
+  },
+  "Anterior horn of spinal cord.r": {
+    "ar": "القرن الأمامي للنخاع الشوكي (الحركي) (الأيمن)",
+    "descAr": "عمود رمادي يحتوي على العصبونات الحركية السفلية التي ترسل الإشارات لعضلات الهيكل العظمي.",
+    "descEn": "Ventral gray column containing lower motor neurons projecting to skeletal muscles."
+  },
+  "Anterior interosseous nerve of forearm": {
+    "ar": "العصب الأمامي بين العظمين للساعد",
+    "descAr": "فرع من العصب المتوسط يعصب عضلات الساعد العميقة المسؤولة عن ثني الإبهام والسبابة.",
+    "descEn": "Branch of median nerve supplying deep flexor muscles of the forearm."
+  },
+  "anterior interosseous nerve of forearm": {
+    "ar": "العصب الأمامي بين العظمين للساعد",
+    "descAr": "فرع من العصب المتوسط يعصب عضلات الساعد العميقة المسؤولة عن ثني الإبهام والسبابة.",
+    "descEn": "Branch of median nerve supplying deep flexor muscles of the forearm."
+  },
+  "Anterior interosseous nerve of forearm.l": {
+    "ar": "العصب الأمامي بين العظمين للساعد (الأيسر)",
+    "descAr": "فرع من العصب المتوسط يعصب عضلات الساعد العميقة المسؤولة عن ثني الإبهام والسبابة.",
+    "descEn": "Branch of median nerve supplying deep flexor muscles of the forearm."
+  },
+  "Anterior interosseous nerve of forearm.r": {
+    "ar": "العصب الأمامي بين العظمين للساعد (الأيمن)",
+    "descAr": "فرع من العصب المتوسط يعصب عضلات الساعد العميقة المسؤولة عن ثني الإبهام والسبابة.",
+    "descEn": "Branch of median nerve supplying deep flexor muscles of the forearm."
+  },
+  "Anterior segment of eyeball": {
+    "ar": "القطاع الأمامي لمقلة العين",
+    "descAr": "يشمل القرنية، القزحية، الجسم الهدبي، والعدسة، مسؤول عن تركيز الضوء على الشبكية.",
+    "descEn": "Front third of eye including cornea, iris, ciliary body, and crystalline lens."
+  },
+  "anterior segment of eyeball": {
+    "ar": "القطاع الأمامي لمقلة العين",
+    "descAr": "يشمل القرنية، القزحية، الجسم الهدبي، والعدسة، مسؤول عن تركيز الضوء على الشبكية.",
+    "descEn": "Front third of eye including cornea, iris, ciliary body, and crystalline lens."
+  },
+  "Anterior segment of eyeball.l": {
+    "ar": "القطاع الأمامي لمقلة العين (الأيسر)",
+    "descAr": "يشمل القرنية، القزحية، الجسم الهدبي، والعدسة، مسؤول عن تركيز الضوء على الشبكية.",
+    "descEn": "Front third of eye including cornea, iris, ciliary body, and crystalline lens."
+  },
+  "Anterior segment of eyeball.r": {
+    "ar": "القطاع الأمامي لمقلة العين (الأيمن)",
+    "descAr": "يشمل القرنية، القزحية، الجسم الهدبي، والعدسة، مسؤول عن تركيز الضوء على الشبكية.",
+    "descEn": "Front third of eye including cornea, iris, ciliary body, and crystalline lens."
+  },
+  "Posterior segment of eyeball": {
+    "ar": "القطاع الخلفي لمقلة العين (الجسم الزجاجي والشبكية)",
+    "descAr": "الجزء الخلفي من العين، يحتوي على السائل الزجاجي والشبكية والمشيمية والعصب البصري.",
+    "descEn": "Back two-thirds of eye containing vitreous humor, retina, choroid, and optic nerve."
+  },
+  "posterior segment of eyeball": {
+    "ar": "القطاع الخلفي لمقلة العين (الجسم الزجاجي والشبكية)",
+    "descAr": "الجزء الخلفي من العين، يحتوي على السائل الزجاجي والشبكية والمشيمية والعصب البصري.",
+    "descEn": "Back two-thirds of eye containing vitreous humor, retina, choroid, and optic nerve."
+  },
+  "Posterior segment of eyeball.l": {
+    "ar": "القطاع الخلفي لمقلة العين (الجسم الزجاجي والشبكية) (الأيسر)",
+    "descAr": "الجزء الخلفي من العين، يحتوي على السائل الزجاجي والشبكية والمشيمية والعصب البصري.",
+    "descEn": "Back two-thirds of eye containing vitreous humor, retina, choroid, and optic nerve."
+  },
+  "Posterior segment of eyeball.r": {
+    "ar": "القطاع الخلفي لمقلة العين (الجسم الزجاجي والشبكية) (الأيمن)",
+    "descAr": "الجزء الخلفي من العين، يحتوي على السائل الزجاجي والشبكية والمشيمية والعصب البصري.",
+    "descEn": "Back two-thirds of eye containing vitreous humor, retina, choroid, and optic nerve."
+  },
+  "Anterior spinocerebellar tract": {
+    "ar": "السبيل الشوكي المخيخي الأمامي",
+    "descAr": "ينقل إشارات الحس العميق وتناسق حركة الأطراف السفلية إلى المخيخ.",
+    "descEn": "Transmits proprioceptive feedback from lower limbs to cerebellum."
+  },
+  "anterior spinocerebellar tract": {
+    "ar": "السبيل الشوكي المخيخي الأمامي",
+    "descAr": "ينقل إشارات الحس العميق وتناسق حركة الأطراف السفلية إلى المخيخ.",
+    "descEn": "Transmits proprioceptive feedback from lower limbs to cerebellum."
+  },
+  "Anterior spinocerebellar tract.l": {
+    "ar": "السبيل الشوكي المخيخي الأمامي (الأيسر)",
+    "descAr": "ينقل إشارات الحس العميق وتناسق حركة الأطراف السفلية إلى المخيخ.",
+    "descEn": "Transmits proprioceptive feedback from lower limbs to cerebellum."
+  },
+  "Anterior spinocerebellar tract.r": {
+    "ar": "السبيل الشوكي المخيخي الأمامي (الأيمن)",
+    "descAr": "ينقل إشارات الحس العميق وتناسق حركة الأطراف السفلية إلى المخيخ.",
+    "descEn": "Transmits proprioceptive feedback from lower limbs to cerebellum."
+  },
+  "Anterior spinothalamic tract": {
+    "ar": "السبيل الشوكي المهادي الأمامي",
+    "descAr": "مسار حسي صاعد ينقل معلومات اللمس الخشن والضغط السطحي إلى المهاد والقشرة.",
+    "descEn": "Ascending pathway conveying crude touch and pressure sensations to thalamus."
+  },
+  "anterior spinothalamic tract": {
+    "ar": "السبيل الشوكي المهادي الأمامي",
+    "descAr": "مسار حسي صاعد ينقل معلومات اللمس الخشن والضغط السطحي إلى المهاد والقشرة.",
+    "descEn": "Ascending pathway conveying crude touch and pressure sensations to thalamus."
+  },
+  "Anterior spinothalamic tract.l": {
+    "ar": "السبيل الشوكي المهادي الأمامي (الأيسر)",
+    "descAr": "مسار حسي صاعد ينقل معلومات اللمس الخشن والضغط السطحي إلى المهاد والقشرة.",
+    "descEn": "Ascending pathway conveying crude touch and pressure sensations to thalamus."
+  },
+  "Anterior spinothalamic tract.r": {
+    "ar": "السبيل الشوكي المهادي الأمامي (الأيمن)",
+    "descAr": "مسار حسي صاعد ينقل معلومات اللمس الخشن والضغط السطحي إلى المهاد والقشرة.",
+    "descEn": "Ascending pathway conveying crude touch and pressure sensations to thalamus."
+  },
+  "aqueduct of midbrain": {
+    "ar": "المسال الدماغي (قناة سيلفيوس في الدماغ المتوسط)",
+    "descAr": "قناة دقيقة تصل البطين الثالث بالبطين الرابع لمرور السائل الدماغي الشوكي.",
+    "descEn": "Cerebrospinal fluid conduit connecting third and fourth ventricles in midbrain."
+  },
+  "Axillary nerve": {
+    "ar": "العصب الإبطي",
+    "descAr": "عصب قادم من الضفيرة العضدية يعصب العضلة الدالية وعضلة المدورة الصغيرة وجلد الكتف.",
+    "descEn": "Nerve of brachial plexus innervating deltoid and teres minor muscles."
+  },
+  "axillary nerve": {
+    "ar": "العصب الإبطي",
+    "descAr": "عصب قادم من الضفيرة العضدية يعصب العضلة الدالية وعضلة المدورة الصغيرة وجلد الكتف.",
+    "descEn": "Nerve of brachial plexus innervating deltoid and teres minor muscles."
+  },
+  "Axillary nerve.l": {
+    "ar": "العصب الإبطي (الأيسر)",
+    "descAr": "عصب قادم من الضفيرة العضدية يعصب العضلة الدالية وعضلة المدورة الصغيرة وجلد الكتف.",
+    "descEn": "Nerve of brachial plexus innervating deltoid and teres minor muscles."
+  },
+  "Axillary nerve.r": {
+    "ar": "العصب الإبطي (الأيمن)",
+    "descAr": "عصب قادم من الضفيرة العضدية يعصب العضلة الدالية وعضلة المدورة الصغيرة وجلد الكتف.",
+    "descEn": "Nerve of brachial plexus innervating deltoid and teres minor muscles."
+  },
+  "Cauda equina": {
+    "ar": "ذيل الفرس (الأعصاب الشوكية القطنية والعجزية)",
+    "descAr": "حزمة من الجذور العصبية الشوكية أسفل النخاع الشوكي تشبه ذيل الحصان وتغذي الحوض والساقين.",
+    "descEn": "Bundle of lumbar and sacral nerve roots descending below the conus medullaris."
+  },
+  "cauda equina": {
+    "ar": "ذيل الفرس (الأعصاب الشوكية القطنية والعجزية)",
+    "descAr": "حزمة من الجذور العصبية الشوكية أسفل النخاع الشوكي تشبه ذيل الحصان وتغذي الحوض والساقين.",
+    "descEn": "Bundle of lumbar and sacral nerve roots descending below the conus medullaris."
+  },
+  "Cauda equina.l": {
+    "ar": "ذيل الفرس (الأعصاب الشوكية القطنية والعجزية) (الأيسر)",
+    "descAr": "حزمة من الجذور العصبية الشوكية أسفل النخاع الشوكي تشبه ذيل الحصان وتغذي الحوض والساقين.",
+    "descEn": "Bundle of lumbar and sacral nerve roots descending below the conus medullaris."
+  },
+  "Cauda equina.r": {
+    "ar": "ذيل الفرس (الأعصاب الشوكية القطنية والعجزية) (الأيمن)",
+    "descAr": "حزمة من الجذور العصبية الشوكية أسفل النخاع الشوكي تشبه ذيل الحصان وتغذي الحوض والساقين.",
+    "descEn": "Bundle of lumbar and sacral nerve roots descending below the conus medullaris."
+  },
+  "caudate nucleus": {
+    "ar": "النواة المذنبة (العقد القاعدية في المخ)",
+    "descAr": "جزء رئيسي من العقد القاعدية يلعب دوراً محورياً في التخطيط الحركي والتعلم والذاكرة.",
+    "descEn": "Component of the basal ganglia involved in motor planning and associative learning."
+  },
+  "Falx cerebri": {
+    "ar": "منجل المخ (الأم الجافية بين نصفي المخ)",
+    "descAr": "ثنية مزدوجة من السحايا تفصل بين نصفي الكرة المخية الأيمن والأيسر وتحمي الدماغ.",
+    "descEn": "Sickle-shaped fold of dura mater separating the right and left cerebral hemispheres."
+  },
+  "falx cerebri": {
+    "ar": "منجل المخ (الأم الجافية بين نصفي المخ)",
+    "descAr": "ثنية مزدوجة من السحايا تفصل بين نصفي الكرة المخية الأيمن والأيسر وتحمي الدماغ.",
+    "descEn": "Sickle-shaped fold of dura mater separating the right and left cerebral hemispheres."
+  },
+  "Falx cerebri.l": {
+    "ar": "منجل المخ (الأم الجافية بين نصفي المخ) (الأيسر)",
+    "descAr": "ثنية مزدوجة من السحايا تفصل بين نصفي الكرة المخية الأيمن والأيسر وتحمي الدماغ.",
+    "descEn": "Sickle-shaped fold of dura mater separating the right and left cerebral hemispheres."
+  },
+  "Falx cerebri.r": {
+    "ar": "منجل المخ (الأم الجافية بين نصفي المخ) (الأيمن)",
+    "descAr": "ثنية مزدوجة من السحايا تفصل بين نصفي الكرة المخية الأيمن والأيسر وتحمي الدماغ.",
+    "descEn": "Sickle-shaped fold of dura mater separating the right and left cerebral hemispheres."
+  },
+  "Tentorium cerebelli": {
+    "ar": "خيمة المخيخ (سحايا الدماغ)",
+    "descAr": "امتداد سحائي جافي يفصل بين فصوص المخ القذالية والمخيخ.",
+    "descEn": "Dural partition separating the occipital lobes from the cerebellum."
+  },
+  "tentorium cerebelli": {
+    "ar": "خيمة المخيخ (سحايا الدماغ)",
+    "descAr": "امتداد سحائي جافي يفصل بين فصوص المخ القذالية والمخيخ.",
+    "descEn": "Dural partition separating the occipital lobes from the cerebellum."
+  },
+  "Tentorium cerebelli.l": {
+    "ar": "خيمة المخيخ (سحايا الدماغ) (الأيسر)",
+    "descAr": "امتداد سحائي جافي يفصل بين فصوص المخ القذالية والمخيخ.",
+    "descEn": "Dural partition separating the occipital lobes from the cerebellum."
+  },
+  "Tentorium cerebelli.r": {
+    "ar": "خيمة المخيخ (سحايا الدماغ) (الأيمن)",
+    "descAr": "امتداد سحائي جافي يفصل بين فصوص المخ القذالية والمخيخ.",
+    "descEn": "Dural partition separating the occipital lobes from the cerebellum."
+  },
+  "fourth ventricle": {
+    "ar": "البطين الرابع للدماغ",
+    "descAr": "تجويف يقع بين جذع الدماغ والمخيخ يمر عبره السائل الدماغي الشوكي إلى الحبل الشوكي.",
+    "descEn": "Diamond-shaped cavity between brainstem and cerebellum circulating CSF."
+  },
+  "Lingula of cerebellum": {
+    "ar": "لسين المخيخ",
+    "descAr": "لسان فصيصي دقيق في مقدمة الدودة المخيخية يرتكز فوق الشراع النخاعي العلوي.",
+    "descEn": "Small tongue-like tonguelet of the anterior cerebellar vermis."
+  },
+  "lingula of cerebellum": {
+    "ar": "لسين المخيخ",
+    "descAr": "لسان فصيصي دقيق في مقدمة الدودة المخيخية يرتكز فوق الشراع النخاعي العلوي.",
+    "descEn": "Small tongue-like tonguelet of the anterior cerebellar vermis."
+  },
+  "Lingula of cerebellum.l": {
+    "ar": "لسين المخيخ (الأيسر)",
+    "descAr": "لسان فصيصي دقيق في مقدمة الدودة المخيخية يرتكز فوق الشراع النخاعي العلوي.",
+    "descEn": "Small tongue-like tonguelet of the anterior cerebellar vermis."
+  },
+  "Lingula of cerebellum.r": {
+    "ar": "لسين المخيخ (الأيمن)",
+    "descAr": "لسان فصيصي دقيق في مقدمة الدودة المخيخية يرتكز فوق الشراع النخاعي العلوي.",
+    "descEn": "Small tongue-like tonguelet of the anterior cerebellar vermis."
+  },
+  "medulla oblongata": {
+    "ar": "النخاع المستطيل (البصلة السيسائية في جذع الدماغ)",
+    "descAr": "مركز التنظيم الحيوي الذاتي؛ يتحكم في نبضات القلب وضغط الدم ومعدل التنفس والبلع.",
+    "descEn": "Autonomic reflex center controlling cardiac output, vasomotor tone, and respiration."
+  },
+  "midbrain": {
+    "ar": "الدماغ المتوسط (جذع الدماغ العلوي)",
+    "descAr": "يربط الدماغ البيني بالحبل الشوكي ويحتوي على مراكز المنعكسات البصرية والسمعية.",
+    "descEn": "Rostral brainstem division containing visual and auditory reflex relays."
+  },
+  "pons": {
+    "ar": "الجسر (قنطرة جذع الدماغ)",
+    "descAr": "جسر عصبي يربط المخ بالمخيخ وينظم حركة الوجه والنوم وتنظيم إيقاع التنفس.",
+    "descEn": "Brainstem structure relaying cerebral motor signals to cerebellum and assisting respiration."
+  },
+  "olive": {
+    "ar": "الزيتونة (النخاع المستطيل)",
+    "descAr": "بروز بيضاوي على النخاع المستطيل يشارك في التحكم الحركي الدقيق والإدراك السمعي.",
+    "descEn": "Prominence on the medulla oblongata involved in precision motor coordination."
+  },
+  "optic chiasm": {
+    "ar": "التصالب البصري (مفترق الألياف البصرية للعينين)",
+    "descAr": "موقع تصالب ألياف العصب البصري الأنفية بين العينين لنقل مجالات الرؤية المجسمة 3D.",
+    "descEn": "X-shaped crossing point of optic nerve fibers enabling stereoscopic vision."
+  },
+  "optic tract": {
+    "ar": "السبيل البصري",
+    "descAr": "حزمة الألياف البصرية التي تنقل المعلومات بعد التصالب إلى الجسم الركبي والباحة البصرية.",
+    "descEn": "Continuation of the optic pathways transmitting visual signals to lateral geniculate body."
+  },
+  "Optic nerve (II)": {
+    "ar": "العصب البصري (العصب القحفي الثاني II للعين)",
+    "descAr": "العصب الحسي الذي ينقل الإشارات الضوئية العصبية من شبكية العين إلى الدماغ.",
+    "descEn": "Second cranial nerve transmitting visual sensory inputs from retina to brain."
+  },
+  "optic nerve (ii)": {
+    "ar": "العصب البصري (العصب القحفي الثاني II للعين)",
+    "descAr": "العصب الحسي الذي ينقل الإشارات الضوئية العصبية من شبكية العين إلى الدماغ.",
+    "descEn": "Second cranial nerve transmitting visual sensory inputs from retina to brain."
+  },
+  "Optic nerve (II).l": {
+    "ar": "العصب البصري (العصب القحفي الثاني II للعين) (الأيسر)",
+    "descAr": "العصب الحسي الذي ينقل الإشارات الضوئية العصبية من شبكية العين إلى الدماغ.",
+    "descEn": "Second cranial nerve transmitting visual sensory inputs from retina to brain."
+  },
+  "Optic nerve (II).r": {
+    "ar": "العصب البصري (العصب القحفي الثاني II للعين) (الأيمن)",
+    "descAr": "العصب الحسي الذي ينقل الإشارات الضوئية العصبية من شبكية العين إلى الدماغ.",
+    "descEn": "Second cranial nerve transmitting visual sensory inputs from retina to brain."
+  },
+  "Suspensory ligament of eyeball": {
+    "ar": "الرباط المعلق لمقلة العين (رباط لوكوود)",
+    "descAr": "حزام ليفي معلق يدعم مقلة العين ويحفظ ارتفاعها في التجويف العظمي الحجاجي.",
+    "descEn": "Sling-like hammock supporting and positioning the eyeball in the orbit."
+  },
+  "suspensory ligament of eyeball": {
+    "ar": "الرباط المعلق لمقلة العين (رباط لوكوود)",
+    "descAr": "حزام ليفي معلق يدعم مقلة العين ويحفظ ارتفاعها في التجويف العظمي الحجاجي.",
+    "descEn": "Sling-like hammock supporting and positioning the eyeball in the orbit."
+  },
+  "Suspensory ligament of eyeball.l": {
+    "ar": "الرباط المعلق لمقلة العين (رباط لوكوود) (الأيسر)",
+    "descAr": "حزام ليفي معلق يدعم مقلة العين ويحفظ ارتفاعها في التجويف العظمي الحجاجي.",
+    "descEn": "Sling-like hammock supporting and positioning the eyeball in the orbit."
+  },
+  "Suspensory ligament of eyeball.r": {
+    "ar": "الرباط المعلق لمقلة العين (رباط لوكوود) (الأيمن)",
+    "descAr": "حزام ليفي معلق يدعم مقلة العين ويحفظ ارتفاعها في التجويف العظمي الحجاجي.",
+    "descEn": "Sling-like hammock supporting and positioning the eyeball in the orbit."
+  },
+  "pyramid of medulla oblongata": {
+    "ar": "هرم النخاع المستطيل (المسار الحركي)",
+    "descAr": "بروزان يحملان الألياف القشرية النخاعية؛ موقع تصالب السبيل الحركي الرئيسي للجسم.",
+    "descEn": "Paired anterior ridges of medulla containing decussating corticospinal fibers."
+  },
+  "Acromioclavicular ligament": {
+    "ar": "الرباط الأخرمي الترقوي",
+    "descAr": "رباط متين يربط الطرف الخارجي لعظم الترقوة بالنتوء الأخرمي للوح الكتف.",
+    "descEn": "Ligament stabilizing the articulation between clavicle and acromion process."
+  },
+  "acromioclavicular ligament": {
+    "ar": "الرباط الأخرمي الترقوي",
+    "descAr": "رباط متين يربط الطرف الخارجي لعظم الترقوة بالنتوء الأخرمي للوح الكتف.",
+    "descEn": "Ligament stabilizing the articulation between clavicle and acromion process."
+  },
+  "Acromioclavicular ligament.l": {
+    "ar": "الرباط الأخرمي الترقوي (الأيسر)",
+    "descAr": "رباط متين يربط الطرف الخارجي لعظم الترقوة بالنتوء الأخرمي للوح الكتف.",
+    "descEn": "Ligament stabilizing the articulation between clavicle and acromion process."
+  },
+  "Acromioclavicular ligament.r": {
+    "ar": "الرباط الأخرمي الترقوي (الأيمن)",
+    "descAr": "رباط متين يربط الطرف الخارجي لعظم الترقوة بالنتوء الأخرمي للوح الكتف.",
+    "descEn": "Ligament stabilizing the articulation between clavicle and acromion process."
+  },
+  "Annular ligament of radius": {
+    "ar": "الرباط الحلقي للكعبرة",
+    "descAr": "طوق ليفي يحيط برأس الكعبرة ويثبته مع عظم الزند، مما يسمح بحركة دوران اليد وكبها.",
+    "descEn": "Strong band encircling head of radius allowing pronation and supination."
+  },
+  "annular ligament of radius": {
+    "ar": "الرباط الحلقي للكعبرة",
+    "descAr": "طوق ليفي يحيط برأس الكعبرة ويثبته مع عظم الزند، مما يسمح بحركة دوران اليد وكبها.",
+    "descEn": "Strong band encircling head of radius allowing pronation and supination."
+  },
+  "Annular ligament of radius.l": {
+    "ar": "الرباط الحلقي للكعبرة (الأيسر)",
+    "descAr": "طوق ليفي يحيط برأس الكعبرة ويثبته مع عظم الزند، مما يسمح بحركة دوران اليد وكبها.",
+    "descEn": "Strong band encircling head of radius allowing pronation and supination."
+  },
+  "Annular ligament of radius.r": {
+    "ar": "الرباط الحلقي للكعبرة (الأيمن)",
+    "descAr": "طوق ليفي يحيط برأس الكعبرة ويثبته مع عظم الزند، مما يسمح بحركة دوران اليد وكبها.",
+    "descEn": "Strong band encircling head of radius allowing pronation and supination."
+  },
+  "Anterior cruciate ligament": {
+    "ar": "الرباط الصليبي الأمامي للركبة (ACL)",
+    "descAr": "رباط رئيسي داخل مفصل الركبة يمنع الانزلاق الأمامي لعظم القصبة ويؤمن ثبات المفصل.",
+    "descEn": "Crucial intra-articular knee ligament restraining anterior tibial translation."
+  },
+  "anterior cruciate ligament": {
+    "ar": "الرباط الصليبي الأمامي للركبة (ACL)",
+    "descAr": "رباط رئيسي داخل مفصل الركبة يمنع الانزلاق الأمامي لعظم القصبة ويؤمن ثبات المفصل.",
+    "descEn": "Crucial intra-articular knee ligament restraining anterior tibial translation."
+  },
+  "Anterior cruciate ligament.l": {
+    "ar": "الرباط الصليبي الأمامي للركبة (ACL) (الأيسر)",
+    "descAr": "رباط رئيسي داخل مفصل الركبة يمنع الانزلاق الأمامي لعظم القصبة ويؤمن ثبات المفصل.",
+    "descEn": "Crucial intra-articular knee ligament restraining anterior tibial translation."
+  },
+  "Anterior cruciate ligament.r": {
+    "ar": "الرباط الصليبي الأمامي للركبة (ACL) (الأيمن)",
+    "descAr": "رباط رئيسي داخل مفصل الركبة يمنع الانزلاق الأمامي لعظم القصبة ويؤمن ثبات المفصل.",
+    "descEn": "Crucial intra-articular knee ligament restraining anterior tibial translation."
+  },
+  "Posterior cruciate ligament": {
+    "ar": "الرباط الصليبي الخلفي للركبة (PCL)",
+    "descAr": "أقوى أربطة مفصل الركبة، يمنع انزلاق عظم الظنبوب للخلف تحت عظم الفخذ.",
+    "descEn": "Strongest knee stabilizer preventing posterior displacement of tibia."
+  },
+  "posterior cruciate ligament": {
+    "ar": "الرباط الصليبي الخلفي للركبة (PCL)",
+    "descAr": "أقوى أربطة مفصل الركبة، يمنع انزلاق عظم الظنبوب للخلف تحت عظم الفخذ.",
+    "descEn": "Strongest knee stabilizer preventing posterior displacement of tibia."
+  },
+  "Posterior cruciate ligament.l": {
+    "ar": "الرباط الصليبي الخلفي للركبة (PCL) (الأيسر)",
+    "descAr": "أقوى أربطة مفصل الركبة، يمنع انزلاق عظم الظنبوب للخلف تحت عظم الفخذ.",
+    "descEn": "Strongest knee stabilizer preventing posterior displacement of tibia."
+  },
+  "Posterior cruciate ligament.r": {
+    "ar": "الرباط الصليبي الخلفي للركبة (PCL) (الأيمن)",
+    "descAr": "أقوى أربطة مفصل الركبة، يمنع انزلاق عظم الظنبوب للخلف تحت عظم الفخذ.",
+    "descEn": "Strongest knee stabilizer preventing posterior displacement of tibia."
+  },
+  "Anterior ligament of fibular head": {
+    "ar": "الرباط الأمامي لرأس الشظية",
+    "descAr": "يربط رأس عظم الشظية بالجانب الخارجي لعظم القصبة في مفصل الركبة.",
+    "descEn": "Fibrous ligament stabilizing the proximal tibiofibular joint."
+  },
+  "anterior ligament of fibular head": {
+    "ar": "الرباط الأمامي لرأس الشظية",
+    "descAr": "يربط رأس عظم الشظية بالجانب الخارجي لعظم القصبة في مفصل الركبة.",
+    "descEn": "Fibrous ligament stabilizing the proximal tibiofibular joint."
+  },
+  "Anterior ligament of fibular head.l": {
+    "ar": "الرباط الأمامي لرأس الشظية (الأيسر)",
+    "descAr": "يربط رأس عظم الشظية بالجانب الخارجي لعظم القصبة في مفصل الركبة.",
+    "descEn": "Fibrous ligament stabilizing the proximal tibiofibular joint."
+  },
+  "Anterior ligament of fibular head.r": {
+    "ar": "الرباط الأمامي لرأس الشظية (الأيمن)",
+    "descAr": "يربط رأس عظم الشظية بالجانب الخارجي لعظم القصبة في مفصل الركبة.",
+    "descEn": "Fibrous ligament stabilizing the proximal tibiofibular joint."
+  },
+  "Anterior longitudinal ligament.l": {
+    "ar": "الرباط الطولي الأمامي للعمود الفقري (الأيسر)",
+    "descAr": "شريط ليفي عريض يمتد بطول الأسطح الأمامية لأجسام الفقرات لمنع فرط بسط العمود الفقري.",
+    "descEn": "Broad band along anterior vertebral bodies limiting hyperextension of spine."
+  },
+  "Anterior longitudinal ligament.r": {
+    "ar": "الرباط الطولي الأمامي للعمود الفقري (الأيمن)",
+    "descAr": "شريط ليفي عريض يمتد بطول الأسطح الأمامية لأجسام الفقرات لمنع فرط بسط العمود الفقري.",
+    "descEn": "Broad band along anterior vertebral bodies limiting hyperextension of spine."
+  },
+  "Anterior meniscotibial ligament (Lateral meniscus)": {
+    "ar": "الرباط الهلالي الظنبوبي الأمامي (الغضروف الهلالي الوحشي)",
+    "descAr": "يربط القرن الأمامي للغضروف الهلالي الوحشي بهضبة عظم الظنبوب لامتصاص الصدمات.",
+    "descEn": "Anchors anterior horn of lateral meniscus to tibial plateau."
+  },
+  "anterior meniscotibial ligament (lateral meniscus)": {
+    "ar": "الرباط الهلالي الظنبوبي الأمامي (الغضروف الهلالي الوحشي)",
+    "descAr": "يربط القرن الأمامي للغضروف الهلالي الوحشي بهضبة عظم الظنبوب لامتصاص الصدمات.",
+    "descEn": "Anchors anterior horn of lateral meniscus to tibial plateau."
+  },
+  "Anterior meniscotibial ligament (Lateral meniscus).l": {
+    "ar": "الرباط الهلالي الظنبوبي الأمامي (الغضروف الهلالي الوحشي) (الأيسر)",
+    "descAr": "يربط القرن الأمامي للغضروف الهلالي الوحشي بهضبة عظم الظنبوب لامتصاص الصدمات.",
+    "descEn": "Anchors anterior horn of lateral meniscus to tibial plateau."
+  },
+  "Anterior meniscotibial ligament (Lateral meniscus).r": {
+    "ar": "الرباط الهلالي الظنبوبي الأمامي (الغضروف الهلالي الوحشي) (الأيمن)",
+    "descAr": "يربط القرن الأمامي للغضروف الهلالي الوحشي بهضبة عظم الظنبوب لامتصاص الصدمات.",
+    "descEn": "Anchors anterior horn of lateral meniscus to tibial plateau."
+  },
+  "Anterior meniscotibial ligament (Medial meniscus)": {
+    "ar": "الرباط الهلالي الظنبوبي الأمامي (الغضروف الهلالي الإنسي)",
+    "descAr": "يربط الغضروف الهلالي الإنسي بقمة عظم الظنبوب لتوزيع أحمال وزن الجسم على الركبة.",
+    "descEn": "Anchors medial meniscus firmly to the tibia for knee load transmission."
+  },
+  "anterior meniscotibial ligament (medial meniscus)": {
+    "ar": "الرباط الهلالي الظنبوبي الأمامي (الغضروف الهلالي الإنسي)",
+    "descAr": "يربط الغضروف الهلالي الإنسي بقمة عظم الظنبوب لتوزيع أحمال وزن الجسم على الركبة.",
+    "descEn": "Anchors medial meniscus firmly to the tibia for knee load transmission."
+  },
+  "Anterior meniscotibial ligament (Medial meniscus).l": {
+    "ar": "الرباط الهلالي الظنبوبي الأمامي (الغضروف الهلالي الإنسي) (الأيسر)",
+    "descAr": "يربط الغضروف الهلالي الإنسي بقمة عظم الظنبوب لتوزيع أحمال وزن الجسم على الركبة.",
+    "descEn": "Anchors medial meniscus firmly to the tibia for knee load transmission."
+  },
+  "Anterior meniscotibial ligament (Medial meniscus).r": {
+    "ar": "الرباط الهلالي الظنبوبي الأمامي (الغضروف الهلالي الإنسي) (الأيمن)",
+    "descAr": "يربط الغضروف الهلالي الإنسي بقمة عظم الظنبوب لتوزيع أحمال وزن الجسم على الركبة.",
+    "descEn": "Anchors medial meniscus firmly to the tibia for knee load transmission."
+  },
+  "Anterior sacro-iliac ligament": {
+    "ar": "الرباط العجزي الحرقفي الأمامي",
+    "descAr": "أربطة سميكة أمامية تربط عظم العجز بحرقفة الحوض وتدعم ثبات مفصل الحوض.",
+    "descEn": "Strong anterior ligament supporting the sacroiliac joint stability."
+  },
+  "anterior sacro-iliac ligament": {
+    "ar": "الرباط العجزي الحرقفي الأمامي",
+    "descAr": "أربطة سميكة أمامية تربط عظم العجز بحرقفة الحوض وتدعم ثبات مفصل الحوض.",
+    "descEn": "Strong anterior ligament supporting the sacroiliac joint stability."
+  },
+  "Anterior sacro-iliac ligament.l": {
+    "ar": "الرباط العجزي الحرقفي الأمامي (الأيسر)",
+    "descAr": "أربطة سميكة أمامية تربط عظم العجز بحرقفة الحوض وتدعم ثبات مفصل الحوض.",
+    "descEn": "Strong anterior ligament supporting the sacroiliac joint stability."
+  },
+  "Anterior sacro-iliac ligament.r": {
+    "ar": "الرباط العجزي الحرقفي الأمامي (الأيمن)",
+    "descAr": "أربطة سميكة أمامية تربط عظم العجز بحرقفة الحوض وتدعم ثبات مفصل الحوض.",
+    "descEn": "Strong anterior ligament supporting the sacroiliac joint stability."
+  },
+  "Anterior sternoclavicular ligament": {
+    "ar": "الرباط القصي الترقوي الأمامي",
+    "descAr": "شريط عريض يربط النهاية الإنسية للترقوة بقبضة القص لربط حزام الكتف بالجذع.",
+    "descEn": "Broad ligament securing the clavicle to the manubrium sterni."
+  },
+  "anterior sternoclavicular ligament": {
+    "ar": "الرباط القصي الترقوي الأمامي",
+    "descAr": "شريط عريض يربط النهاية الإنسية للترقوة بقبضة القص لربط حزام الكتف بالجذع.",
+    "descEn": "Broad ligament securing the clavicle to the manubrium sterni."
+  },
+  "Anterior sternoclavicular ligament.l": {
+    "ar": "الرباط القصي الترقوي الأمامي (الأيسر)",
+    "descAr": "شريط عريض يربط النهاية الإنسية للترقوة بقبضة القص لربط حزام الكتف بالجذع.",
+    "descEn": "Broad ligament securing the clavicle to the manubrium sterni."
+  },
+  "Anterior sternoclavicular ligament.r": {
+    "ar": "الرباط القصي الترقوي الأمامي (الأيمن)",
+    "descAr": "شريط عريض يربط النهاية الإنسية للترقوة بقبضة القص لربط حزام الكتف بالجذع.",
+    "descEn": "Broad ligament securing the clavicle to the manubrium sterni."
+  },
+  "Anterior talocalcaneal ligament": {
+    "ar": "الرباط القعبي العقبي الأمامي (الكاحل)",
+    "descAr": "رباط كاحلي يربط عظم الكاحل (القعب) بعظم الكعب لموازنة دوران القدم.",
+    "descEn": "Short ligament stabilizing the subtalar joint between talus and calcaneus."
+  },
+  "anterior talocalcaneal ligament": {
+    "ar": "الرباط القعبي العقبي الأمامي (الكاحل)",
+    "descAr": "رباط كاحلي يربط عظم الكاحل (القعب) بعظم الكعب لموازنة دوران القدم.",
+    "descEn": "Short ligament stabilizing the subtalar joint between talus and calcaneus."
+  },
+  "Anterior talocalcaneal ligament.l": {
+    "ar": "الرباط القعبي العقبي الأمامي (الكاحل) (الأيسر)",
+    "descAr": "رباط كاحلي يربط عظم الكاحل (القعب) بعظم الكعب لموازنة دوران القدم.",
+    "descEn": "Short ligament stabilizing the subtalar joint between talus and calcaneus."
+  },
+  "Anterior talocalcaneal ligament.r": {
+    "ar": "الرباط القعبي العقبي الأمامي (الكاحل) (الأيمن)",
+    "descAr": "رباط كاحلي يربط عظم الكاحل (القعب) بعظم الكعب لموازنة دوران القدم.",
+    "descEn": "Short ligament stabilizing the subtalar joint between talus and calcaneus."
+  },
+  "Anterior tibiofibular ligament.l": {
+    "ar": "الرباط الظنبوبي الشظوي الأمامي (الأيسر)",
+    "descAr": "رباط ليفي مسطح يربط النهاية السفلية للقصبة والشظية فوق مفصل الكاحل مباشرة.",
+    "descEn": "Flat fibrous band uniting lower ends of tibia and fibula at the syndesmosis."
+  },
+  "Anterior tibiofibular ligament.r": {
+    "ar": "الرباط الظنبوبي الشظوي الأمامي (الأيمن)",
+    "descAr": "رباط ليفي مسطح يربط النهاية السفلية للقصبة والشظية فوق مفصل الكاحل مباشرة.",
+    "descEn": "Flat fibrous band uniting lower ends of tibia and fibula at the syndesmosis."
+  },
+  "Posterior tibiofibular ligament.l": {
+    "ar": "الرباط الظنبوبي الشظوي الخلفي (الأيسر)",
+    "descAr": "رباط خلفي متين يحمي استقرار شوكة الكاحل ويمنع تباعد عظمي الساق.",
+    "descEn": "Posterior ligament stabilizing ankle mortise against rotational shearing."
+  },
+  "Posterior tibiofibular ligament.r": {
+    "ar": "الرباط الظنبوبي الشظوي الخلفي (الأيمن)",
+    "descAr": "رباط خلفي متين يحمي استقرار شوكة الكاحل ويمنع تباعد عظمي الساق.",
+    "descEn": "Posterior ligament stabilizing ankle mortise against rotational shearing."
+  },
+  "Articular capsule of hip joint.l": {
+    "ar": "المحفظة المفصلية لمفصل الورك (الأيسر)",
+    "descAr": "غلاف ليفي أسطواني قوي يحيط بمفصل الورك بأكمله ويفرز السائل الزلالي لحركة سلسة.",
+    "descEn": "Dense fibrous capsule enclosing the femoral head and acetabulum."
+  },
+  "Articular capsule of hip joint.r": {
+    "ar": "المحفظة المفصلية لمفصل الورك (الأيمن)",
+    "descAr": "غلاف ليفي أسطواني قوي يحيط بمفصل الورك بأكمله ويفرز السائل الزلالي لحركة سلسة.",
+    "descEn": "Dense fibrous capsule enclosing the femoral head and acetabulum."
+  },
+  "Articular capsule of knee joint": {
+    "ar": "المحفظة المفصلية لمفصل الركبة",
+    "descAr": "كبسولة مفصلية ليفية زلالية كبرى تحيط بالركبة وتحتوي على الغضاريف الهلالية والسائل المزلق.",
+    "descEn": "Extensive capsule surrounding knee joint bathed in synovial fluid."
+  },
+  "articular capsule of knee joint": {
+    "ar": "المحفظة المفصلية لمفصل الركبة",
+    "descAr": "كبسولة مفصلية ليفية زلالية كبرى تحيط بالركبة وتحتوي على الغضاريف الهلالية والسائل المزلق.",
+    "descEn": "Extensive capsule surrounding knee joint bathed in synovial fluid."
+  },
+  "Articular capsule of knee joint.l": {
+    "ar": "المحفظة المفصلية لمفصل الركبة (الأيسر)",
+    "descAr": "كبسولة مفصلية ليفية زلالية كبرى تحيط بالركبة وتحتوي على الغضاريف الهلالية والسائل المزلق.",
+    "descEn": "Extensive capsule surrounding knee joint bathed in synovial fluid."
+  },
+  "Articular capsule of knee joint.r": {
+    "ar": "المحفظة المفصلية لمفصل الركبة (الأيمن)",
+    "descAr": "كبسولة مفصلية ليفية زلالية كبرى تحيط بالركبة وتحتوي على الغضاريف الهلالية والسائل المزلق.",
+    "descEn": "Extensive capsule surrounding knee joint bathed in synovial fluid."
+  },
+  "Articular capsule of elbow joint": {
+    "ar": "المحفظة المفصلية لمفصل المرفق",
+    "descAr": "غلاف مفصلي يحيط بلقمات العضد ومفصلي الكعبرة والزند لتسهيل الثني والمد.",
+    "descEn": "Fibrous sleeve enclosing humeroulnar and humeroradial joints."
+  },
+  "articular capsule of elbow joint": {
+    "ar": "المحفظة المفصلية لمفصل المرفق",
+    "descAr": "غلاف مفصلي يحيط بلقمات العضد ومفصلي الكعبرة والزند لتسهيل الثني والمد.",
+    "descEn": "Fibrous sleeve enclosing humeroulnar and humeroradial joints."
+  },
+  "Articular capsule of elbow joint.l": {
+    "ar": "المحفظة المفصلية لمفصل المرفق (الأيسر)",
+    "descAr": "غلاف مفصلي يحيط بلقمات العضد ومفصلي الكعبرة والزند لتسهيل الثني والمد.",
+    "descEn": "Fibrous sleeve enclosing humeroulnar and humeroradial joints."
+  },
+  "Articular capsule of elbow joint.r": {
+    "ar": "المحفظة المفصلية لمفصل المرفق (الأيمن)",
+    "descAr": "غلاف مفصلي يحيط بلقمات العضد ومفصلي الكعبرة والزند لتسهيل الثني والمد.",
+    "descEn": "Fibrous sleeve enclosing humeroulnar and humeroradial joints."
+  },
+  "Articular capsule of glenohumeral joint": {
+    "ar": "المحفظة المفصلية لمفصل الكتف",
+    "descAr": "كبسولة متسعة تحيط برأس عظم العضد والتجويف الحقاني للوح الكتف، تسمح بأقصى مدى حركي.",
+    "descEn": "Loose fibrous envelope granting maximum multi-axial range of motion to shoulder."
+  },
+  "articular capsule of glenohumeral joint": {
+    "ar": "المحفظة المفصلية لمفصل الكتف",
+    "descAr": "كبسولة متسعة تحيط برأس عظم العضد والتجويف الحقاني للوح الكتف، تسمح بأقصى مدى حركي.",
+    "descEn": "Loose fibrous envelope granting maximum multi-axial range of motion to shoulder."
+  },
+  "Articular capsule of glenohumeral joint.l": {
+    "ar": "المحفظة المفصلية لمفصل الكتف (الأيسر)",
+    "descAr": "كبسولة متسعة تحيط برأس عظم العضد والتجويف الحقاني للوح الكتف، تسمح بأقصى مدى حركي.",
+    "descEn": "Loose fibrous envelope granting maximum multi-axial range of motion to shoulder."
+  },
+  "Articular capsule of glenohumeral joint.r": {
+    "ar": "المحفظة المفصلية لمفصل الكتف (الأيمن)",
+    "descAr": "كبسولة متسعة تحيط برأس عظم العضد والتجويف الحقاني للوح الكتف، تسمح بأقصى مدى حركي.",
+    "descEn": "Loose fibrous envelope granting maximum multi-axial range of motion to shoulder."
+  },
+  "Articular disc of temporomandibular joint": {
+    "ar": "القرص المفصلي لمفصل الفك الصدغي (TMJ)",
+    "descAr": "وسادة غضروفية ليفية بيضاوية تفصل بين لقمة الفك السفلي وعظم الصدغ لتسهيل المضغ والكلام.",
+    "descEn": "Biconcave fibrocartilaginous disc cushioning the jaw joint during mastication."
+  },
+  "articular disc of temporomandibular joint": {
+    "ar": "القرص المفصلي لمفصل الفك الصدغي (TMJ)",
+    "descAr": "وسادة غضروفية ليفية بيضاوية تفصل بين لقمة الفك السفلي وعظم الصدغ لتسهيل المضغ والكلام.",
+    "descEn": "Biconcave fibrocartilaginous disc cushioning the jaw joint during mastication."
+  },
+  "Articular disc of temporomandibular joint.l": {
+    "ar": "القرص المفصلي لمفصل الفك الصدغي (TMJ) (الأيسر)",
+    "descAr": "وسادة غضروفية ليفية بيضاوية تفصل بين لقمة الفك السفلي وعظم الصدغ لتسهيل المضغ والكلام.",
+    "descEn": "Biconcave fibrocartilaginous disc cushioning the jaw joint during mastication."
+  },
+  "Articular disc of temporomandibular joint.r": {
+    "ar": "القرص المفصلي لمفصل الفك الصدغي (TMJ) (الأيمن)",
+    "descAr": "وسادة غضروفية ليفية بيضاوية تفصل بين لقمة الفك السفلي وعظم الصدغ لتسهيل المضغ والكلام.",
+    "descEn": "Biconcave fibrocartilaginous disc cushioning the jaw joint during mastication."
+  },
+  "Articular disc of distal radio-ulnar joint": {
+    "ar": "القرص المفصلي لمفصل الكعبرة والزند السفلي (المعصم)",
+    "descAr": "غضروف مثلثي يفصل بين عظام الساعد وعظام الرسغ، ركيزة محورية لحركة اليد.",
+    "descEn": "Triangular fibrocartilage complex cushioning wrist and stabilizing forearm bones."
+  },
+  "articular disc of distal radio-ulnar joint": {
+    "ar": "القرص المفصلي لمفصل الكعبرة والزند السفلي (المعصم)",
+    "descAr": "غضروف مثلثي يفصل بين عظام الساعد وعظام الرسغ، ركيزة محورية لحركة اليد.",
+    "descEn": "Triangular fibrocartilage complex cushioning wrist and stabilizing forearm bones."
+  },
+  "Articular disc of distal radio-ulnar joint.l": {
+    "ar": "القرص المفصلي لمفصل الكعبرة والزند السفلي (المعصم) (الأيسر)",
+    "descAr": "غضروف مثلثي يفصل بين عظام الساعد وعظام الرسغ، ركيزة محورية لحركة اليد.",
+    "descEn": "Triangular fibrocartilage complex cushioning wrist and stabilizing forearm bones."
+  },
+  "Articular disc of distal radio-ulnar joint.r": {
+    "ar": "القرص المفصلي لمفصل الكعبرة والزند السفلي (المعصم) (الأيمن)",
+    "descAr": "غضروف مثلثي يفصل بين عظام الساعد وعظام الرسغ، ركيزة محورية لحركة اليد.",
+    "descEn": "Triangular fibrocartilage complex cushioning wrist and stabilizing forearm bones."
+  },
+  "Conoid ligament": {
+    "ar": "الرباط المخروطي (الرباط الغرابي الترقوي)",
+    "descAr": "حزمة كثيفة مخروطية الشكل تثبت عظم الترقوة مع النتوء الغرابي وتمنع انخلاع الكتف.",
+    "descEn": "Posterior division of coracoclavicular ligament suspending scapula from clavicle."
+  },
+  "conoid ligament": {
+    "ar": "الرباط المخروطي (الرباط الغرابي الترقوي)",
+    "descAr": "حزمة كثيفة مخروطية الشكل تثبت عظم الترقوة مع النتوء الغرابي وتمنع انخلاع الكتف.",
+    "descEn": "Posterior division of coracoclavicular ligament suspending scapula from clavicle."
+  },
+  "Conoid ligament.l": {
+    "ar": "الرباط المخروطي (الرباط الغرابي الترقوي) (الأيسر)",
+    "descAr": "حزمة كثيفة مخروطية الشكل تثبت عظم الترقوة مع النتوء الغرابي وتمنع انخلاع الكتف.",
+    "descEn": "Posterior division of coracoclavicular ligament suspending scapula from clavicle."
+  },
+  "Conoid ligament.r": {
+    "ar": "الرباط المخروطي (الرباط الغرابي الترقوي) (الأيمن)",
+    "descAr": "حزمة كثيفة مخروطية الشكل تثبت عظم الترقوة مع النتوء الغرابي وتمنع انخلاع الكتف.",
+    "descEn": "Posterior division of coracoclavicular ligament suspending scapula from clavicle."
+  },
+  "Trapezoid ligament": {
+    "ar": "الرباط شبه المنحرف",
+    "descAr": "الجزء الأمامي من الرباط الغرابي الترقوي، يمنع زحزحة الترقوة لأعلى أثناء رفع الأثقال.",
+    "descEn": "Anterior component of coracoclavicular ligament maintaining shoulder integrity."
+  },
+  "trapezoid ligament": {
+    "ar": "الرباط شبه المنحرف",
+    "descAr": "الجزء الأمامي من الرباط الغرابي الترقوي، يمنع زحزحة الترقوة لأعلى أثناء رفع الأثقال.",
+    "descEn": "Anterior component of coracoclavicular ligament maintaining shoulder integrity."
+  },
+  "Trapezoid ligament.l": {
+    "ar": "الرباط شبه المنحرف (الأيسر)",
+    "descAr": "الجزء الأمامي من الرباط الغرابي الترقوي، يمنع زحزحة الترقوة لأعلى أثناء رفع الأثقال.",
+    "descEn": "Anterior component of coracoclavicular ligament maintaining shoulder integrity."
+  },
+  "Trapezoid ligament.r": {
+    "ar": "الرباط شبه المنحرف (الأيمن)",
+    "descAr": "الجزء الأمامي من الرباط الغرابي الترقوي، يمنع زحزحة الترقوة لأعلى أثناء رفع الأثقال.",
+    "descEn": "Anterior component of coracoclavicular ligament maintaining shoulder integrity."
+  },
+  "Interosseous membrane of leg.l": {
+    "ar": "الغشاء بين العظمين للساق (الأيسر)",
+    "descAr": "صفيحة ليفية متينة تمتد بين القصبة والشظية لربطهما وتوفير مرتكز واسع لعضلات الساق.",
+    "descEn": "Dense fibrous aponeurosis connecting tibia and fibula and anchoring leg muscles."
+  },
+  "Interosseous membrane of leg.r": {
+    "ar": "الغشاء بين العظمين للساق (الأيمن)",
+    "descAr": "صفيحة ليفية متينة تمتد بين القصبة والشظية لربطهما وتوفير مرتكز واسع لعضلات الساق.",
+    "descEn": "Dense fibrous aponeurosis connecting tibia and fibula and anchoring leg muscles."
+  },
+  "Interosseous membrane of forearm": {
+    "ar": "الغشاء بين العظمين للساعد",
+    "descAr": "صفيحة ليفية تفصل وتصل بين الكعبرة والزند وتنقل القوى الضاغطة من اليد للكتف.",
+    "descEn": "Fibrous sheet uniting radius and ulna, transferring mechanical loads up the limb."
+  },
+  "interosseous membrane of forearm": {
+    "ar": "الغشاء بين العظمين للساعد",
+    "descAr": "صفيحة ليفية تفصل وتصل بين الكعبرة والزند وتنقل القوى الضاغطة من اليد للكتف.",
+    "descEn": "Fibrous sheet uniting radius and ulna, transferring mechanical loads up the limb."
+  },
+  "Interosseous membrane of forearm.l": {
+    "ar": "الغشاء بين العظمين للساعد (الأيسر)",
+    "descAr": "صفيحة ليفية تفصل وتصل بين الكعبرة والزند وتنقل القوى الضاغطة من اليد للكتف.",
+    "descEn": "Fibrous sheet uniting radius and ulna, transferring mechanical loads up the limb."
+  },
+  "Interosseous membrane of forearm.r": {
+    "ar": "الغشاء بين العظمين للساعد (الأيمن)",
+    "descAr": "صفيحة ليفية تفصل وتصل بين الكعبرة والزند وتنقل القوى الضاغطة من اليد للكتف.",
+    "descEn": "Fibrous sheet uniting radius and ulna, transferring mechanical loads up the limb."
   }
 }

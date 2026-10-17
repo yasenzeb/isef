@@ -11,6 +11,7 @@ const PhysicsLab = lazy(() => import('./components/PhysicsLab').then(m => ({ def
 const ChemistryLab = lazy(() => import('./components/ChemistryLab').then(m => ({ default: m.ChemistryLab })));
 const BiologyLab = lazy(() => import('./components/BiologyLab').then(m => ({ default: m.BiologyLab })));
 const GeologyLab = lazy(() => import('./components/GeologyLab').then(m => ({ default: m.GeologyLab })));
+const AstronomyLab = lazy(() => import('./components/AstronomyLab').then(m => ({ default: m.AstronomyLab })));
 const ClassroomMode = lazy(() => import('./components/ClassroomMode').then(m => ({ default: m.ClassroomMode })));
 
 const ModuleFallback = () => (
@@ -51,6 +52,7 @@ const AppContent: React.FC = () => {
             {currentTab === 'chemistry' && <ChemistryLab />}
             {currentTab === 'biology' && <BiologyLab />}
             {currentTab === 'geology' && <GeologyLab />}
+            {currentTab === 'astronomy' && <AstronomyLab />}
           </Suspense>
         </main>
       </div>

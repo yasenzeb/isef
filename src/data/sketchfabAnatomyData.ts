@@ -5,7 +5,7 @@ export interface AnatomyAtlasModel {
   titleAr: string;
   system: string;
   systemAr: string;
-  category: 'cell' | 'organ' | 'system' | 'tissue';
+  category: 'cell' | 'organ' | 'system' | 'tissue' | 'organism' | 'astronomy';
   thumbnail: string;
   author: string;
   descriptionEn: string;
@@ -314,5 +314,80 @@ export const SKETCHFAB_ANATOMY_COLLECTION: AnatomyAtlasModel[] = [
     descriptionEn: 'Coronal cross-section of the human kidney exhibiting the renal cortex, medullary pyramids, renal papillae, minor and major calyces, renal pelvis, ureter, and renal artery/vein.',
     descriptionAr: 'مقطع تشريحي دقيق للكلية يوضح القشرة الكلوية، الأهرامات النخاعية، الحويضات الكلوية الصغرى والكبرى، حوض الكلية، وبداية الحالب مع الشريان والوريد الكلويين.',
     keywords: ['kidney', 'renal', 'nephron', 'ureter', 'cortex', 'كلية', 'الكلية', 'كلى', 'كلوية', 'حالب']
+  },
+  {
+    id: 'euglena-microorganism',
+    slug: 'euglena-5bc051acc7994d0b843f5535efa7fffd',
+    sketchfabUid: '5bc051acc7994d0b843f5535efa7fffd',
+    titleEn: 'Euglena Gracilis - Unicellular Flagellate',
+    titleAr: 'اليوجلينا الخضراء (كائن وحيد الخلية سوطي)',
+    system: 'Microbiology & Protistology',
+    systemAr: 'علم الأحياء الدقيقة والطلائعيات',
+    category: 'organism',
+    thumbnail: 'https://media.sketchfab.com/models/5bc051acc7994d0b843f5535efa7fffd/thumbnails/6b8563c7885b46e3a63f350ffaa33fc0/blob.jpeg',
+    author: 'Medical3D',
+    descriptionEn: 'Detailed 3D model of Euglena gracilis. Habitat: Freshwater ponds and ditches rich in organic nutrients. Locomotion: Whip-like anterior flagellum pulling through water and bodily peristaltic metaboly. Functions: Mixotrophic (photosynthesis via chloroplasts in light, pinocytosis in dark), red eyespot (stigma) for phototaxis, contractile vacuole for osmoregulation.',
+    descriptionAr: 'مجسم ثلاثي الأبعاد دقيق لليوجلينا. الموطن: برك ومستنقعات المياه العذبة الراكدة الغنية بالمواد العضوية. طريقة الحركة: السوط الأمامي بحركة دورانية لولبية ساحبة للماء، مع مرونة الغشاء البروتيني (Pellicle) للحركة اليوجلينية. الوظائف الحيوية: تغذية مختلطة (ذاتية بالبناء الضوئي عبر البلاستيدات نهاراً وغير ذاتية بالامتصاص ليلاً)، بقعة عينية حساسة للضوء، وفجوة منقبضة لتنظيم الضغط الإسموزي.',
+    keywords: ['euglena', 'flagellum', 'chloroplast', 'stigma', 'eyespot', 'protist', 'microorganism', 'يوجلينا', 'سوط', 'بقعة عينية', 'بلاستيدة خضراء', 'طلائعيات']
+  },
+  {
+    id: 'structure-of-amoeba',
+    slug: 'structure-of-amoeba-8df6e9add2c24beaa989b3278d96245a',
+    sketchfabUid: '8df6e9add2c24beaa989b3278d96245a',
+    titleEn: 'Structure of Amoeba Proteus',
+    titleAr: 'التركيب التشريحي لكائن الأميبا (لحميات الحركة)',
+    system: 'Microbiology & Sarcodina',
+    systemAr: 'علم الأحياء الدقيقة واللحميات',
+    category: 'organism',
+    thumbnail: 'https://media.sketchfab.com/models/8df6e9add2c24beaa989b3278d96245a/thumbnails/26a9f4c398684eb8a8ce7fdc762cf4c3/blob.jpeg',
+    author: 'ScientificVisuals',
+    descriptionEn: 'High-detail 3D anatomy of Amoeba proteus. Habitat: Freshwater ponds, decomposing organic matter, and slow streams. Locomotion: Amoeboid movement via pseudopodia (cytoplasmic streaming between gel ectoplasm and sol endoplasm). Functions: Heterotrophic phagocytosis forming food vacuoles, lysosomal enzymatic digestion, contractile vacuole for excess water expulsion.',
+    descriptionAr: 'تشريح ثلاثي الأبعاد متكامل للأميبا الحرة. الموطن: قيعان برك المياه العذبة والطين الرطب الغني بالمواد المتحللة. طريقة الحركة: حركة أميبية باستخدام الأقدام الكاذبة (Pseudopodia) الناتجة عن تدفق السيتوبلازم وتغير لزوجته بين الإكتوبلازم والإندوبلازم. الوظائف الحيوية: التغذية بالبلعمة لاقتناص البكتيريا وهضمها داخل فجوات غذائية بالإنزيمات، وفجوة منقبضة لطرد الماء الفائض.',
+    keywords: ['amoeba', 'pseudopodia', 'phagocytosis', 'endoplasm', 'ectoplasm', 'vacuole', 'أميبا', 'أقدام كاذبة', 'بلعمة', 'فجوة غذائية', 'طلائعيات']
+  },
+  {
+    id: 'paramecium-caudatum',
+    slug: 'paramecium-7cb325a9ac5346be943ef7ddd41de51e',
+    sketchfabUid: '7cb325a9ac5346be943ef7ddd41de51e',
+    titleEn: 'Paramecium Caudatum - Ciliated Protist',
+    titleAr: 'البراميسيوم (الهدبيات وحيدة الخلية)',
+    system: 'Microbiology & Ciliophora',
+    systemAr: 'علم الأحياء الدقيقة والهدبيات',
+    category: 'organism',
+    thumbnail: 'https://media.sketchfab.com/models/7cb325a9ac5346be943ef7ddd41de51e/thumbnails/8f09079a4da943ad9f0c2e91da2149b2/blob.jpeg',
+    author: 'BioModels',
+    descriptionEn: 'Full 3D anatomical specimen of Paramecium caudatum. Habitat: Freshwater lakes, stagnant ponds, and puddles rich in decaying vegetation. Locomotion: Coordinated metachronal beating of thousands of surface cilia propelling it in a spiral trajectory. Functions: Ciliary feeding current along the oral groove to cytostome, dual nuclei (macronucleus for vegetative metabolic control and micronucleus for sexual conjugation), two radial contractile vacuoles.',
+    descriptionAr: 'مجسم ثلاثي الأبعاد متكامل لكائن البراميسيوم الشفاف. الموطن: المستنقعات والبرك الغنية بالنباتات المتحللة والبكتيريا. طريقة الحركة: حركة إيقاعية موجية متناسقة لآلاف الأهداب السطحية تدفع الكائن في مسار حلزوني سريع. الوظائف الحيوية: الميزاب الفموي لتجميع الغذاء نحو الفم الخلوي، وجود نواتين (نواة كبيرة للعمليات الحيوية اليومية ونواة صغيرة للتكاثر والاقتران الجيني)، وفجوتان منقبضتان شعاعيتان لتنظيم الماء.',
+    keywords: ['paramecium', 'cilia', 'oral groove', 'macronucleus', 'micronucleus', 'ciliate', 'براميسيوم', 'أهداب', 'ميزاب فموي', 'نواة كبيرة', 'هدبيات']
+  },
+  {
+    id: 'solar-system-3d',
+    slug: 'solar-system-fad1f8a62d3848d0be664339e6f3b1a2',
+    sketchfabUid: 'fad1f8a62d3848d0be664339e6f3b1a2',
+    titleEn: 'Interactive 3D Solar System & Planetary Orbits',
+    titleAr: 'المجموعة الشمسية والمدارات الكوكبية ثلاثية الأبعاد',
+    system: 'Astronomy & Astrophysics',
+    systemAr: 'علم الفلك والفيزياء الفلكية',
+    category: 'astronomy',
+    thumbnail: 'https://media.sketchfab.com/models/fad1f8a62d3848d0be664339e6f3b1a2/thumbnails/e979a7bc015f4585975e53303cbe033f/blob.jpeg',
+    author: 'Akram',
+    descriptionEn: 'Astronomically scaled 3D model of the Solar System featuring the central Sun and orbiting terrestrial planets (Mercury, Venus, Earth, Mars) and gas giants (Jupiter, Saturn, Uranus, Neptune) with accurate relative orbital inclination and planetary textures.',
+    descriptionAr: 'نموذج ثلاثي الأبعاد متكامل للنظام الشمسي يوضح الشمس المركزية ومدارات الكواكب الصخرية الأربعة (عطارد، الزهرة، الأرض، المريخ) والعمالقة الغازية والجليدية (المشتري، زحل بحلقاته، أورانوس، نبتون) ببيانات علمية دقيقة.',
+    keywords: ['solar system', 'planets', 'sun', 'orbit', 'astronomy', 'نظام شمسي', 'كواكب', 'شمس', 'مدار', 'فلك', 'أرض', 'مشتري']
+  },
+  {
+    id: 'lunar-phases-3d',
+    slug: 'moon-phases-b27c3d9a184e4f71a9db9405d63f0d23',
+    sketchfabUid: 'b27c3d9a184e4f71a9db9405d63f0d23',
+    titleEn: 'Lunar Surface Topography & Moon Phases',
+    titleAr: 'تضاريس سطح القمر وأطواره السنوية ثلاثية الأبعاد',
+    system: 'Lunar Science & Selenology',
+    systemAr: 'علم القمر وسيلينولوجيا الفضاء',
+    category: 'astronomy',
+    thumbnail: 'https://media.sketchfab.com/models/b27c3d9a184e4f71a9db9405d63f0d23/thumbnails/b73229b47e8b4e728e21cf81b15aa229/blob.jpeg',
+    author: 'NASA / SpaceVisuals',
+    descriptionEn: 'High-fidelity 3D lunar topographical globe displaying impact craters (Tycho, Copernicus), basaltic lunar maria (Sea of Tranquility), and real-time solar terminator shadows across synodic lunar phases.',
+    descriptionAr: 'مجسم ثلاثي الأبعاد فائق الدقة لسطح القمر يوضح الفوهات الصدمية الشهيرة (تيكو، كوبرنيكوس)، والبحار القمرية البازلتية (بحر الهدوء)، مع محاكاة لخط الغسق وتغير أطوار القمر على مدار الشهر القمري.',
+    keywords: ['moon', 'lunar', 'craters', 'phases', 'moon phases', 'قمر', 'أطوار القمر', 'فوهات', 'بدر', 'هلال']
   }
 ];

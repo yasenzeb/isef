@@ -237,7 +237,7 @@ export const PhysicsLab: React.FC = () => {
   const projectilesIframeRef = useRef<HTMLIFrameElement>(null);
   const opticsIframeRef = useRef<HTMLIFrameElement>(null);
 
-  const simLocale = language === 'ar' ? 'ar' : 'en';
+  const simLocale = language === 'ar' ? 'ar' : language === 'fr' ? 'fr' : language === 'de' ? 'de' : 'en';
 
   const getSimUrl = (base: string, params: string = '') => {
     const separator = base.includes('?') ? '&' : '?';

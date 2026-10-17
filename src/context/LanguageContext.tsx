@@ -12,7 +12,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
-    const saved = (localStorage.getItem('scinexa_language') || localStorage.getItem('isef_language')) as Language;
+    const saved = localStorage.getItem('scinexa_language') as Language;
     return saved && ['en', 'ar', 'fr', 'de'].includes(saved) ? saved : 'en';
   });
 

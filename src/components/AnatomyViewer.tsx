@@ -1080,11 +1080,120 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           }
         }
 
-        // Domain-specific scientific intelligence for Brain, Nervous, Cardiovascular, and Joints
+        // Domain-specific scientific intelligence for Brain, Eyes, Nervous System, Cardiovascular, and Joints
         if (!nameAr || nameAr === cleanName) {
           const lower = cleanName.toLowerCase();
-          if (sysId === 'nervous') {
-            if (lower.includes('ventricle')) {
+          
+          // 1. EYES & VISUAL ANATOMY (العينين والتشريح البصري)
+          if (lower.includes('cornea')) {
+            nameAr = `قرنية العين (Cornea)`;
+            descAr = 'الطبقة الشفافة المقوسة في مقدمة العين المسؤولة عن ثلثي القوة الانكسارية البصرية للعين لتركيز الضوء على الشبكية.';
+            descEn = 'Transparent anterior curved segment of the fibrous tunic providing two-thirds of the eye’s total refractive power.';
+          } else if (lower.includes('retina')) {
+            nameAr = `شبكية العين (Retina)`;
+            descAr = 'الغشاء الحسي العصبي المبطن لقاع العين المحتوي على ملايين المستقبلات الضوئية (العصي والمخاريط) لتحويل الضوء لإشارات عصبية.';
+            descEn = 'Neurosensory inner tunic containing rod and cone photoreceptors that convert photons into neurochemical impulses.';
+          } else if (lower.includes('lens') && (lower.includes('eye') || lower.includes('crystal') || sysId === 'nervous' || sysId === 'visceral')) {
+            nameAr = `عدسة العين البلورية (Crystalline Lens)`;
+            descAr = 'عدسة مرنة شفافة ثنائية التحدب تغير تقوسها بفعل العضلة الهدبية لإجراء المطابقة البصرية وتعديل البعد البؤري.';
+            descEn = 'Biconvex flexible transparent optical element capable of active accommodation driven by the ciliary muscle.';
+          } else if (lower.includes('sclera')) {
+            nameAr = `صلبة العين (بياض العين - Sclera)`;
+            descAr = 'الغلاف الليفي الكولاجيني الأبيض المعتم الذي يحمي محتويات مقلة العين الداخلية ويوفر مرتكزاً للعضلات المحركة للعين.';
+            descEn = 'Tough opaque fibrous outer tunic maintaining intraocular shape and providing insertion for extraocular muscles.';
+          } else if (lower.includes('iris')) {
+            nameAr = `قزحية العين (Iris)`;
+            descAr = 'القرص الصبغي الملون المنظم لحجم حدقة العين عبر العضلة المضيقة والموسعة للتحكم بكمية الضوء الداخلة.';
+            descEn = 'Pigmented contractile diaphragm regulating pupil aperture to control retinal illumination.';
+          } else if (lower.includes('pupil')) {
+            nameAr = `بؤبؤ / حدقة العين (Pupil)`;
+            descAr = 'الفتحة المركزية المتغيرة القطر في منتصف القزحية يمر الضوء من خلالها إلى العدسة والشبكية.';
+            descEn = 'Central variable aperture within the iris through which light enters the posterior ocular segment.';
+          } else if (lower.includes('vitreous')) {
+            nameAr = `الجسم الزجاجي للعين (Vitreous Body)`;
+            descAr = 'هلام مائي شفاف يملأ الحجرة الخلفية بين العدسة والشبكية للحفاظ على كروية مقلة العين وثبات الشبكية.';
+            descEn = 'Transparent gelatinous hydrogel filling the vitreous chamber to maintain intraocular retinal adherence.';
+          } else if (lower.includes('choroid')) {
+            nameAr = `مشيمية العين (Choroid)`;
+            descAr = 'الطبقة الوعائية الغنية بالأوعية الدموية والشعيرات المغذية لطبقات الشبكية الخارجية والصباغ الممتص للضوء الزائد.';
+            descEn = 'Vascular layer of the uveal tract supplying oxygen and nutrients to outer retinal layers.';
+          } else if (lower.includes('eyeball') || lower.includes('bulbus oculi')) {
+            nameAr = `مقلة العين (Eyeball)`;
+            descAr = 'عضو الإبصار الحسي الكروي الواقع داخل حجاج الجمجمة، متصل بالعصب البصري والدماغ.';
+            descEn = 'Specialized spherical sensory organ situated in the bony orbit, housing optics and neuroretinal tunic.';
+          }
+          
+          // 2. BRAIN & NERVOUS SYSTEM (الدماغ والمخ والأعصاب)
+          else if (sysId === 'nervous' || lower.includes('brain') || lower.includes('nerve') || lower.includes('cerebr')) {
+            if (lower.includes('pons')) {
+              nameAr = `جسر فارول / قنطرة الدماغ (Pons)`;
+              descAr = 'جزء حيوي من جذع الدماغ يربط المخيخ بالنخاع المستطيل والقشرة، ويحتوي نوى الأعصاب القحفية ومراكز تنظيم التنفس.';
+              descEn = 'Metencephalic brainstem structure bridging cerebral cortex and cerebellum, housing respiratory control pneumotaxic centers.';
+            } else if (lower.includes('medulla') || lower.includes('oblongata')) {
+              nameAr = `النخاع المستطيل (Medulla Oblongata)`;
+              descAr = 'الجزء السفلي من جذع الدماغ المتحكم بالمراكز الذاتية الحيوية اللاإرادية كضربات القلب وضغط الدم وسرعة التنفس والبلع.';
+              descEn = 'Myelencephalic brainstem center regulating autonomic autonomic cardiac rate, vasomotor tone, and respiration.';
+            } else if (lower.includes('midbrain') || lower.includes('mesencephalon')) {
+              nameAr = `الدماغ المتوسط (Midbrain)`;
+              descAr = 'أعلى أجزاء جذع الدماغ، يحوي السقيفة والأكيمات العلوية والسفلية ومحطات معالجة المنعكسات السمعية والبصرية والمادة السوداء.';
+              descEn = 'Rostral brainstem segment containing superior and inferior colliculi, substantia nigra, and motor conduits.';
+            } else if (lower.includes('thalamus')) {
+              nameAr = `المهاد الدماغي (Thalamus)`;
+              descAr = 'محطة الترحيل والمعالجة المركزية لجميع الإشارات الحسية القادمة من الجسم إلى القشرة المخية (عدا حاسة الشم).';
+              descEn = 'Primary sensory relay and gating station routing somatosensory, visual, and auditory streams to the cortex.';
+            } else if (lower.includes('hypothalamus')) {
+              nameAr = `تحت المهاد / الوطاء (Hypothalamus)`;
+              descAr = 'المركز الرئيسي لضبط الاتزان الداخلي والتوازن الهرموني وحرارة الجسم والجوع والعطش وضبط الغدة النخامية.';
+              descEn = 'Neuroendocrine control hub coordinating autonomic homeostasis, thermoregulation, and hypophyseal hormones.';
+            } else if (lower.includes('cerebell')) {
+              nameAr = `المخيخ (Cerebellum)`;
+              descAr = 'المسؤول عن التوازن الحركي والتنسيق الدقيق بين العضلات ومعايرة توقيت الحركات الإرادية وتثبيت القامة.';
+              descEn = 'Metencephalic center for motor learning, equilibrium, proprioceptive coordination, and fine kinetic timing.';
+            } else if (lower.includes('cerebrum') || lower.includes('cerebral hemisphere')) {
+              nameAr = `نصف الكرة المخية (Cerebral Hemisphere)`;
+              descAr = 'أعلى مراكز التفكير الواعي والإدراك الحسي والتخطيط واللغة والذاكرة والتفكير المجرد.';
+              descEn = 'Telencephalic hemisphere executing conscious sensory perception, executive planning, language, and cognition.';
+            } else if (lower.includes('corpus callosum')) {
+              nameAr = `الجسم الثفني (Corpus Callosum)`;
+              descAr = 'الجسر العصبي العريض من الألياف البيضاء الذي يربط نصفي الكرة المخية ويؤمن تبادل المعلومات بينهما.';
+              descEn = 'Massive commissural white-matter tract interconnecting homologous cortical regions of both hemispheres.';
+            } else if (lower.includes('hippocampus')) {
+              nameAr = `قرن آمون / الحصين (Hippocampus)`;
+              descAr = 'بنية عصبية عميقة بالجهاز الحوفي أساسية في ترسيخ الذكريات من قصيرة الأمد إلى طويلة الأمد والملاحة المكانية.';
+              descEn = 'Limbic structure crucial for long-term memory consolidation and spatial navigational cognitive mapping.';
+            } else if (lower.includes('amygdala')) {
+              nameAr = `اللوزة الدماغية (Amygdala)`;
+              descAr = 'النواة العصبية المركزية المسؤولة عن معالجة المشاعر والانفعالات وخاصة الخوف واستجابة الكر والفر.';
+              descEn = 'Subcortical nuclear group coordinating emotional salience, threat detection, and fear-conditioned behavior.';
+            } else if (lower.includes('optic chiasm') || lower.includes('optic chiasma')) {
+              nameAr = `التصالب البصري (Optic Chiasm)`;
+              descAr = 'نقطة تقاطع ألياف العصب البصري القادمة من نصفي الشبكية الأنفية لتأمين الرؤية المجسمة ثلاثية الأبعاد.';
+              descEn = 'X-shaped anatomical junction where decussating nasal hemiretinal axons cross to the contralateral optic tract.';
+            } else if (lower.includes('optic tract')) {
+              nameAr = `السبيل البصري (Optic Tract)`;
+              descAr = 'مسار الألياف العصبية الممتد من التصالب البصري نحو الجسم الركبي الجانبي لنقل المشاهد البصرية للقشرة القذالية.';
+              descEn = 'Axonal tract relaying visual signals from the chiasm to the lateral geniculate nucleus of the metathalamus.';
+            } else if (lower.includes('optic nerve') || lower.includes('cranial nerve ii')) {
+              nameAr = `العصب البصري (Optic Nerve - CN II)`;
+              descAr = 'العصب القحفي الثاني ينقل نبضات الضوء الكهروكيميائية من الشبكية مباشرة إلى مراكز الإبصار الدماغية.';
+              descEn = 'Second cranial nerve carrying special sensory visual afferents from retinal ganglion cells directly to the brain.';
+            } else if (lower.includes('vagus') || lower.includes('cranial nerve x')) {
+              nameAr = `العصب الحائر / المبهم (Vagus Nerve - CN X)`;
+              descAr = 'العصب القحفي العاشر الرئيسي في الجهاز الباراسمبثاوي، يغذي القلب والرئتين ومعظم أحشاء الجهاز الهضمي.';
+              descEn = 'Tenth cranial nerve supplying parasympathetic innervation to thoracic viscera and gastrointestinal organs.';
+            } else if (lower.includes('trigeminal') || lower.includes('cranial nerve v')) {
+              nameAr = `العصب ثلاثي التوائم (Trigeminal Nerve - CN V)`;
+              descAr = 'العصب القحفي الخامس المسؤول عن الإحساس في الوجه والقرنية والأسنان والتحكم الحركي بعضلات المضغ.';
+              descEn = 'Fifth cranial nerve providing sensory supply to facial dermatomes and motor control to masticatory muscles.';
+            } else if (lower.includes('facial nerve') || lower.includes('cranial nerve vii')) {
+              nameAr = `العصب الوجهي (Facial Nerve - CN VII)`;
+              descAr = 'العصب القحفي السابع المغذي لعضلات التعبير الوجهي والتذوق في الثلثين الأماميين من اللسان والغدد اللعابية.';
+              descEn = 'Seventh cranial nerve governing muscles of facial expression and gustatory sensation of anterior tongue.';
+            } else if (lower.includes('sciatic')) {
+              nameAr = `العصب الوركي (عرق النسا - Sciatic Nerve)`;
+              descAr = 'أكبر وأطول عصب في جسم الإنسان، يمتد من الضفيرة القطنية العجزية ليغذي عضلات الفخذ والساق والقدم.';
+              descEn = 'Largest peripheral nerve in the body originating from the lumbosacral plexus to innervate the lower limb.';
+            } else if (lower.includes('ventricle')) {
               nameAr = `بطين دماغي (${cleanName})`;
               descAr = 'تجويف دماغي مبطن بالضفيرة المشيمية مسؤول عن إفراز وتدوير السائل الدماغي الشوكي (CSF) لامتصاص الصدمات وحماية المراكز العصبية.';
               descEn = 'Cerebral ventricle producing and circulating cerebrospinal fluid (CSF) for mechanical cushioning and metabolic homeostasis.';
@@ -1092,46 +1201,56 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
               nameAr = `نواة عصبية (${cleanName})`;
               descAr = 'تجمع عصبي متخصص في الجهاز العصبي المركزي يعمل كمحطة معالجة وترحيل للإشارات الحسية والحركية الدقيقة.';
               descEn = 'Dedicated central nervous system neuronal cluster serving as a sensorimotor signal integration hub.';
-            } else if (lower.includes('sulcus')) {
-              nameAr = `ثلم قشري مخي (${cleanName})`;
-              descAr = 'أخدود قشري يفصل بين تلافيف الدماغ ويزيد المساحة السطحية للقشرة المخية المنظمة للوظائف العقلية العليا.';
-              descEn = 'Cortical sulcus dividing cerebral gyri and expanding cortical surface area for cognitive processing.';
-            } else if (lower.includes('gyrus')) {
-              nameAr = `تلفيف مخي (${cleanName})`;
-              descAr = 'طية بارزة من القشرة المخية تحتوي على شبكات عصبية مخصصة للمهام المعرفية والحسية والحركية.';
-              descEn = 'Elevated cortical convolution containing dense synaptic networks for neurological and cognitive functions.';
             } else if (lower.includes('nerve')) {
-              nameAr = `عصب عصبي (${cleanName})`;
+              const cleanPart = cleanName.replace(/nerve/gi, '').replace(/\(Left\)/gi, '').replace(/\(Right\)/gi, '').trim();
+              nameAr = `العصب ${cleanPart || cleanName}`;
               descAr = 'حزمة ألياف عصبية تنقل السيالات الكهروكيميائية بين الدماغ أو النخاع الشوكي وأعضاء الجسم.';
-              descEn = 'Peripheral nerve bundle transmitting electrochemical signals between the central nervous system and target tissues.';
-            } else if (lower.includes('tract') || lower.includes('fasciculus')) {
-              nameAr = `سبيل عصبي (${cleanName})`;
-              descAr = 'مسار ألياف عصبية بيضاء يربط بين المراكز العصبية المختلفة في الدماغ والنخاع الشوكي.';
-              descEn = 'White matter axonal pathway linking neural centers across the neuroaxis.';
-            } else if (lower.includes('cerebell')) {
-              nameAr = `بنية مخيخية (${cleanName})`;
-              descAr = 'بنية دقيقة تتبع المخيخ، تسهم في التوازن والتنسيق الحركي الدقيق ومعايرة الحركات الإرادية.';
-              descEn = 'Cerebellar anatomical subunit contributing to equilibrium, balance, and motor coordination.';
+              descEn = 'Peripheral nerve bundle transmitting electrochemical impulses between the central nervous system and target organs.';
             }
-          } else if (sysId === 'cardiovascular') {
+          }
+          
+          // 3. JOINTS & CARTILAGE (المفاصل والغضاريف والأربطة)
+          else if (sysId === 'joints' || lower.includes('joint') || lower.includes('ligament') || lower.includes('cartilage') || lower.includes('capsule')) {
+            if (lower.includes('capsule') || lower.includes('articular capsule')) {
+              nameAr = `المحفظة المفصلية الزلالية (Articular Capsule)`;
+              descAr = 'غلاف ليفي يحيط بتجويف المفصل الزلالي مبطن بغشاء زلالي يفرز السائل المفصلي لتزييت الحركة ومنع تآكل الغضاريف.';
+              descEn = 'Envelope enclosing synovial joint cavity composed of an outer fibrous layer and inner lubricating synovial membrane.';
+            } else if (lower.includes('cartilage')) {
+              nameAr = `غضروف مفصلي زجاجي (Articular Hyaline Cartilage)`;
+              descAr = 'نسيج غضروفي أملس ومرن يغطي نهايات العظام المفصلية لامتصاص الصدمات وتقليل الاحتكاك لأدنى حد ممكن.';
+              descEn = 'Smooth avascular hyaline connective tissue lining articulating bony ends to dissipate mechanical friction.';
+            } else if (lower.includes('meniscus')) {
+              nameAr = `الغضروف الهلالي المفصلي (Articular Meniscus)`;
+              descAr = 'غضروف ليفي هلالي الشكل في مفصل الركبة يوزع ثقل الجسم على السطح المفصلي ويثبت المفصل أثناء الحركة.';
+              descEn = 'Crescentic fibrocartilaginous structure deepening joint congruity and dispersing axial compressive forces.';
+            } else if (lower.includes('disc') || lower.includes('intervertebral')) {
+              nameAr = `القرص الغضروفي المفصلي (Intervertebral Disc)`;
+              descAr = 'وسادة غضروفية ليفية ذات نواة لبية مرنة بين الفقرات تمتص الصدمات العمودية وتسمح بانثناء العمود الفقري.';
+              descEn = 'Fibrocartilaginous cushion with an inner nucleus pulposus facilitating spinal flexibility and cushioning.';
+            } else if (lower.includes('cruciate')) {
+              nameAr = `الرباط الصليبي (Cruciate Ligament)`;
+              descAr = 'رباط ليفي داخلي قوي في مفصل الركبة (أمامي وخلفي) يمنع انزلاق عظم القصبة بالنسبة لعظم الفخذ.';
+              descEn = 'Intra-articular ligament regulating anteroposterior tibial glide and rotational knee joint stability.';
+            } else if (lower.includes('ligament')) {
+              const cleanPart = cleanName.replace(/ligament/gi, '').replace(/\(Left\)/gi, '').replace(/\(Right\)/gi, '').trim();
+              nameAr = `رباط ${cleanPart || cleanName}`;
+              descAr = 'شريط ليفي كولاجيني متين يربط العظام ببعضها ويثبت استقرار المفصل ويمنع فرط الحركة والانخلاع.';
+              descEn = 'Dense regular collagenous band connecting bone to bone, maintaining joint kinematics and mechanical integrity.';
+            }
+          }
+          
+          // 4. CARDIOVASCULAR SYSTEM (الأوعية والشرايين والأوردة)
+          else if (sysId === 'cardiovascular') {
             if (lower.includes('artery') || lower.includes('arterial')) {
-              nameAr = `شريان وعائي (${cleanName})`;
+              const cleanPart = cleanName.replace(/artery/gi, '').replace(/\(Left\)/gi, '').replace(/\(Right\)/gi, '').trim();
+              nameAr = `شريان ${cleanPart || cleanName}`;
               descAr = 'وعاء دموي عضلي ينقل الدم المؤكسج تحت ضغط عالٍ من القلب إلى أنسجة وأعضاء الجسم.';
               descEn = 'Muscular arterial vessel transporting oxygenated blood under systemic pressure to peripheral tissues.';
             } else if (lower.includes('vein') || lower.includes('venous')) {
-              nameAr = `وريد وعائي (${cleanName})`;
+              const cleanPart = cleanName.replace(/vein/gi, '').replace(/\(Left\)/gi, '').replace(/\(Right\)/gi, '').trim();
+              nameAr = `وريد ${cleanPart || cleanName}`;
               descAr = 'وعاء دموي وريدي مزود بصمامات يضمن عودة الدم غير المؤكسج بكفاءة إلى القلب.';
               descEn = 'Venous capacitance vessel ensuring efficient return of deoxygenated blood to the cardiac chambers.';
-            }
-          } else if (sysId === 'joints') {
-            if (lower.includes('ligament')) {
-              nameAr = `رباط مفصلي (${cleanName})`;
-              descAr = 'شريط ليفي كولاجيني متين يربط العظام ببعضها ويثبت استقرار المفصل ويمنع فرط الحركة.';
-              descEn = 'Dense regular collagenous band connecting bone to bone, maintaining joint stability and kinematics.';
-            } else if (lower.includes('disc') || lower.includes('meniscus')) {
-              nameAr = `غضروف هلالي / قرص مفصلي (${cleanName})`;
-              descAr = 'غضروف ليفي ممتص للصدمات يقلل الاحتكاك ويوزع الأحمال الميكانيكية بالتساوي على أسطح المفصل.';
-              descEn = 'Fibrocartilaginous structure dampening compressive impact and reducing frictional wear in joint articulations.';
             }
           }
         }
@@ -1383,7 +1502,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           </div>
 
           {/* Canvas Mount */}
-          <div ref={mountRef} className="w-full flex-1 cursor-grab active:cursor-grabbing" />
+          <div ref={mountRef} className="w-full flex-1 cursor-grab active:cursor-grabbing" style={{ touchAction: 'none' }} />
 
           {/* Callout Indicator HUD */}
           <div className="absolute top-16 right-4 z-10 sci-card p-3 max-w-xs border border-sky-500/30">

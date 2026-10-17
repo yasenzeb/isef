@@ -11,6 +11,7 @@ export interface Translations {
     physics: string;
     chemistry: string;
     geology: string;
+    astronomy: string;
     classroom: string;
     searchPlaceholder: string;
   };
@@ -41,6 +42,8 @@ export interface Translations {
     geologyDesc: string;
     biologyTitle: string;
     biologyDesc: string;
+    astronomyTitle: string;
+    astronomyDesc: string;
     classroomTitle: string;
     classroomDesc: string;
     launch: string;
@@ -210,6 +213,7 @@ export const translations: Record<Language, Translations> = {
       physics: "Physics Lab",
       chemistry: "Periodic Table",
       geology: "Earth Science",
+      astronomy: "Astronomy & Space",
       classroom: "Classroom Mode",
       searchPlaceholder: "Search concepts, simulations, elements...",
     },
@@ -240,6 +244,8 @@ export const translations: Record<Language, Translations> = {
       geologyDesc: "Explorable 3D Earth cross-section, crust-to-core thermal gradients, plate tectonics, seismic wave propagation, and the rock cycle.",
       biologyTitle: "Cellular Biology & Human Systems",
       biologyDesc: "Interactive 3D plant and animal cell organelles, DNA double-helix genetics, photosynthesis Calvin cycle, and physiological systems.",
+      astronomyTitle: "Astronomy & Planetary Space Sciences",
+      astronomyDesc: "Interactive 3D Solar System celestial orbits, planetary telemetry, and real-time annual Moon phase orbital illumination simulator.",
       classroomTitle: "Classroom & Projector Mode",
       classroomDesc: "Full-screen optimized presentation view for interactive whiteboards and school projectors with high-contrast guided steps.",
       launch: "Launch Module",
@@ -408,6 +414,7 @@ export const translations: Record<Language, Translations> = {
       physics: "مختبر الفيزياء",
       chemistry: "الجدول الدوري",
       geology: "علوم الأرض والجيولوجيا",
+      astronomy: "علم الفلك والفضاء",
       classroom: "وضع الفصل الذكي",
       searchPlaceholder: "ابحث عن مفاهيم، تجارب، عناصر كيميائية...",
     },
@@ -438,6 +445,8 @@ export const translations: Record<Language, Translations> = {
       geologyDesc: "مقطع عرضي تفاعلي للكرة الأرضية من القشرة إلى اللب، وحركة الصفائح التكتونية، والموجات الزلزالية ودورة الصخور.",
       biologyTitle: "علم الأحياء الخلوي ووظائف الأعضاء",
       biologyDesc: "عضيات الخلية النباتية والحيوانية ثلاثية الأبعاد، والشريط الوراثي DNA، ومسار البناء الضوئي، والأجهزة الحيوية للإنسان.",
+      astronomyTitle: "علوم الفلك والنظام الشمسي",
+      astronomyDesc: "محاكاة 3D تفاعلية لحركة كواكب المجموعة الشمسية ومداراتها، ومحاكاة حية لأطوار القمر السنوية وإضاءته الشمسية.",
       classroomTitle: "وضع الفصل والشاشات الذكية",
       classroomDesc: "شاشة كاملة مخصصة للشاشات التفاعلية وأجهزة العرض المدرسية مع خطوط واضحة وخطوات تعليمية إرشادية.",
       launch: "تشغيل المختبر",
@@ -587,7 +596,7 @@ export const translations: Record<Language, Translations> = {
       restart: "إعادة الاختبار",
     },
     footer: {
-      tagline: "منصة آيسف للعلوم — صممت لتمكين التعلم العلمي الاستقصائي والتطبيقي مجاناً.",
+      tagline: "منصة ساي نكسا (SciNexa) للعلوم — صممت لتمكين التعلم العلمي الاستقصائي والتطبيقي مجاناً.",
       sources: "المصادر والمراجع العلمية: مشروع Z-Anatomy، وBodyParts3D (DBCLS)، والاتحاد الدولي للكيمياء IUPAC، وهيئة المسح الجيولوجي الأمريكية USGS.",
       credits: "نسب الأصول البرمجية والنماذج: BodyParts3D بموجب CC BY 4.0، وZ-Anatomy بموجب CC BY-SA 4.0.",
       license: "ترخيص البرنامج: رخصة MIT مفتوحة المصدر.",
@@ -606,6 +615,7 @@ export const translations: Record<Language, Translations> = {
       physics: "Laboratoire de Physique",
       chemistry: "Tableau Périodique",
       geology: "Sciences de la Terre",
+      astronomy: "Astronomie & Espace",
       classroom: "Mode Salle de Classe",
       searchPlaceholder: "Rechercher concepts, simulations, éléments...",
     },
@@ -636,6 +646,8 @@ export const translations: Record<Language, Translations> = {
       geologyDesc: "Coupe interactive du globe terrestre, tectonique des plaques, ondes sismiques P et S, et cycle des roches.",
       biologyTitle: "Biologie Cellulaire et Physiologie",
       biologyDesc: "Organites cellulaires 3D végétaux et animaux, double hélice d'ADN, photosynthèse et grands systèmes corporels.",
+      astronomyTitle: "Astronomie & Sciences Spatiales",
+      astronomyDesc: "Système solaire 3D interactif, orbites planétaires et simulateur d'éclairage des phases lunaires annuelles.",
       classroomTitle: "Mode Tableau Blanc & Classe",
       classroomDesc: "Interface plein écran simplifiée pour vidéoprojecteurs scolaires et tableaux interactifs avec navigation séquentielle.",
       launch: "Ouvrir le Module",
@@ -804,6 +816,7 @@ export const translations: Record<Language, Translations> = {
       physics: "Physiklabor",
       chemistry: "Periodensystem",
       geology: "Geowissenschaften",
+      astronomy: "Astronomie & Raumfahrt",
       classroom: "Klassenraum-Modus",
       searchPlaceholder: "Konzepte, Simulationen, Elemente suchen...",
     },
@@ -834,6 +847,8 @@ export const translations: Record<Language, Translations> = {
       geologyDesc: "Erkundbarer 3D-Erdquerschnitt, Plattentektonik, seismische Wellen und der Gesteinskreislauf.",
       biologyTitle: "Zellbiologie & Physiologie",
       biologyDesc: "Interaktive 3D-Zellorganellen von Tier und Pflanze, DNA-Doppelhelix und Organfunktion.",
+      astronomyTitle: "Astronomie & Planetenwissenschaften",
+      astronomyDesc: "Interaktives 3D-Sonnensystem, Himmelsbahnen und Echtzeit-Mondphasen-Simulator.",
       classroomTitle: "Präsentations- & Smartboard-Modus",
       classroomDesc: "Für Beamer und interaktive Tafeln optimierte Vollbildansicht mit kontrastreichen Schritten.",
       launch: "Modul Starten",

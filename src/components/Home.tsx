@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import {
   Activity,
@@ -13,13 +13,12 @@ import {
   Layers,
   Database,
   Terminal,
-  Compass,
+  Orbit,
   Zap,
   PlayCircle,
-  TrendingUp,
-  Clock,
+  Download,
   Sparkles,
-  Download
+  Bot
 } from 'lucide-react';
 
 interface HomeProps {
@@ -27,9 +26,105 @@ interface HomeProps {
   onOpenOfflineModal?: () => void;
 }
 
+interface AIIntent {
+  tab: string;
+  matchedTerm: string;
+  labNameEn: string;
+  labNameAr: string;
+  confidence: number;
+}
+
+// AI Smart Keyword Knowledge Base
+const AI_SEARCH_RULES: { keywords: string[]; tab: string; labNameEn: string; labNameAr: string }[] = [
+  {
+    keywords: [
+      'قلب', 'دماغ', 'مخ', 'عصب', 'عين', 'جمجمة', 'عظم', 'كلية', 'كبد', 'معدة', 'رئة', 'تشريح', 'غضروف', 'مفصل', 'عضلة', 'أعصاب', 'شريان', 'وريد', 'جهاز عصبي', 'قرنية', 'شبكية', 'نخاع', 'رئتين',
+      'heart', 'brain', 'nerve', 'eye', 'skull', 'bone', 'kidney', 'liver', 'stomach', 'lung', 'anatomy', 'cartilage', 'joint', 'muscle', 'artery', 'vein', 'cornea', 'retina', 'medulla', 'pons'
+    ],
+    tab: 'anatomy',
+    labNameEn: 'Human 3D Anatomy Atlas',
+    labNameAr: 'أطلس تشريح جسم الإنسان ثلاثي الأبعاد'
+  },
+  {
+    keywords: [
+      'فيزياء', 'قوة', 'تسارع', 'حركة', 'مقذوف', 'دائرة', 'أوم', 'كيرشوف', 'مقاومة', 'جهد', 'تيار', 'انكسار', 'عدسة', 'سنيل', 'موجة', 'وتر', 'phet', 'تردد', 'سعة', 'كهرباء', 'سرعة',
+      'physics', 'force', 'acceleration', 'motion', 'projectile', 'circuit', 'ohm', 'kirchhoff', 'resistor', 'voltage', 'current', 'refraction', 'snell', 'wave', 'string', 'frequency', 'amplitude'
+    ],
+    tab: 'physics',
+    labNameEn: 'Physics & Circuit Simulation Lab',
+    labNameAr: 'مختبر الفيزياء والدوائر والموجات'
+  },
+  {
+    keywords: [
+      'كيمياء', 'جدول دوري', 'عنصر', 'ذرة', 'بروتون', 'إلكترون', 'نيوترون', 'مدار', 'توزيع', 'هيدروجين', 'أكسجين', 'كربون', 'تفاعل', 'مركب', 'مجموعة ذرية', 'بوهر',
+      'chemistry', 'periodic table', 'element', 'atom', 'proton', 'electron', 'neutron', 'orbital', 'bohr', 'hydrogen', 'oxygen', 'carbon', 'reaction', 'radical'
+    ],
+    tab: 'chemistry',
+    labNameEn: 'Interactive Periodic Table & 3D Atoms',
+    labNameAr: 'الجدول الدوري ونماذج الذرة ثلاثية الأبعاد'
+  },
+  {
+    keywords: [
+      'أحياء', 'خلية', 'نواة', 'ميتوكوندريا', 'بلاستيدة', 'جدار خلوي', 'dna', 'حمض نووي', 'وراثة', 'أميبا', 'يوجلينا', 'براميسيوم', 'بكتيريا', 'أهداب', 'سوط', 'أقدام كاذبة', 'بلعمة',
+      'biology', 'cell', 'nucleus', 'mitochondria', 'chloroplast', 'dna', 'genetics', 'amoeba', 'euglena', 'paramecium', 'microorganism', 'cilia', 'flagellum', 'pseudopodia'
+    ],
+    tab: 'biology',
+    labNameEn: 'Cytology & Molecular Genetics Lab',
+    labNameAr: 'مختبر الأحياء والخلية والكائنات الدقيقة'
+  },
+  {
+    keywords: [
+      'جيولوجيا', 'أرض', 'زلزال', 'تسونامي', 'طبقات الأرض', 'لب', 'وشاح', 'قشرة', 'انهيار', 'مبنى', 'صدع', 'ريختر', 'صخور', 'صفائح', 'ليمان',
+      'geology', 'earth', 'earthquake', 'tsunami', 'layers', 'core', 'mantle', 'crust', 'collapse', 'building', 'fault', 'richter', 'seismic', 'tectonics'
+    ],
+    tab: 'geology',
+    labNameEn: 'Geology & 3D Structural Collapse Simulator',
+    labNameAr: 'علوم الأرض ومحاكاة انهيار المباني'
+  },
+  {
+    keywords: [
+      'فلك', 'فضاء', 'شمس', 'قمر', 'كواكب', 'نظام شمسي', 'أطوار القمر', 'مدار', 'عطارد', 'الزهرة', 'المريخ', 'المشتري', 'زحل', 'أورانوس', 'نبتون', 'كيبلر', 'جاذبية', 'مد وجزر', 'محاق', 'بدر',
+      'astronomy', 'space', 'sun', 'moon', 'planets', 'solar system', 'moon phases', 'orbit', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'kepler', 'tides'
+    ],
+    tab: 'astronomy',
+    labNameEn: 'Astronomy & 3D Solar System Lab',
+    labNameAr: 'مختبر علوم الفلك والنظام الشمسي'
+  },
+  {
+    keywords: [
+      'فصل', 'شاشة', 'عرض', 'سبورة', 'بروجكتور', 'معلم', 'سمارت',
+      'classroom', 'presentation', 'smartboard', 'projector', 'teacher'
+    ],
+    tab: 'classroom',
+    labNameEn: 'Smartboard Presentation & Classroom HUD',
+    labNameAr: 'وضع الفصل والشاشات الذكية التفاعلية'
+  }
+];
+
 export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) => {
   const { t, isRTL, language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
+
+  // AI Intent Classifier: Analyzes natural query to detect student destination
+  const detectedAIIntent: AIIntent | null = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (q.length < 2) return null;
+
+    for (const rule of AI_SEARCH_RULES) {
+      for (const kw of rule.keywords) {
+        if (q.includes(kw.toLowerCase()) || kw.toLowerCase().includes(q)) {
+          return {
+            tab: rule.tab,
+            matchedTerm: kw,
+            labNameEn: rule.labNameEn,
+            labNameAr: rule.labNameAr,
+            confidence: 96,
+          };
+        }
+      }
+    }
+    return null;
+  }, [searchQuery]);
 
   const disciplines = [
     {
@@ -38,8 +133,8 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
       title: t.features.anatomyTitle,
       desc: t.features.anatomyDesc,
       icon: Activity,
-      spec: '8 Biometric Layers · Draco 3D Acceleration',
-      status: 'CALIBRATED',
+      spec: '2,821 Anatomical Structures · 8 Layers · Draco 3D',
+      status: 'VERIFIED',
     },
     {
       id: 'physics',
@@ -47,7 +142,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
       title: t.features.physicsTitle,
       desc: t.features.physicsDesc,
       icon: Atom,
-      spec: 'Interactive Circuits · Forces & Motion · Ballistics · Optics',
+      spec: 'MNA Circuit Solver · Projectiles · Snell Optics · PhET Wave Engine',
       status: 'ONLINE',
     },
     {
@@ -56,8 +151,8 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
       title: t.features.chemistryTitle,
       desc: t.features.chemistryDesc,
       icon: Zap,
-      spec: '118 IUPAC Periodic Elements · Atomic Shells',
-      status: 'VERIFIED',
+      spec: '118 IUPAC Elements · 3D Rotating Bohr Orbitals · Polyatomic Ions',
+      status: 'CALIBRATED',
     },
     {
       id: 'biology',
@@ -65,7 +160,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
       title: t.features.biologyTitle,
       desc: t.features.biologyDesc,
       icon: Dna,
-      spec: '3D Organelle Streaming & DNA Helix Engine',
+      spec: '3D Plant & Animal Cells · DNA Helix · Euglena · Amoeba · Paramecium',
       status: 'ACTIVE',
     },
     {
@@ -74,16 +169,25 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
       title: t.features.geologyTitle,
       desc: t.features.geologyDesc,
       icon: Globe2,
-      spec: 'Seismic Telemetry & Structural Base-Isolation',
+      spec: 'Real Building Collapse Physics · 3D Tsunami Surge · Earth Cutaway',
       status: 'MONITORING',
     },
     {
-      id: 'classroom',
+      id: 'astronomy',
       code: 'SYS-06',
+      title: t.features.astronomyTitle,
+      desc: t.features.astronomyDesc,
+      icon: Orbit,
+      spec: '3D Solar System · Planetary Orbits · Annual Moon Phases · Keplerian Math',
+      status: 'COMPUTED',
+    },
+    {
+      id: 'classroom',
+      code: 'SYS-07',
       title: t.features.classroomTitle,
       desc: t.features.classroomDesc,
       icon: Presentation,
-      spec: 'Interactive Teacher HUD & Live Experiment Sync',
+      spec: 'Teacher Smartboard Projector Mode · High Contrast HUD · Step-by-Step',
       status: 'STANDBY',
     },
   ];
@@ -120,7 +224,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 space-y-12 pb-24">
       
-      {/* 1. TOP STATUS BANNER (Exact equivalent to 'System Nominal HEALTHY' in image) */}
+      {/* 1. TOP STATUS BANNER */}
       <div className="tech-status-banner">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
@@ -129,14 +233,14 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
           <div>
             <div className="flex items-center gap-2">
               <span className="font-mono text-xs font-bold text-white tracking-wide">
-                {language === 'ar' ? 'النظام العلمي متصل وحسابي بالكامل' : 'Core Simulation Matrix Nominal'}
+                {language === 'ar' ? 'النظام العلمي متصل وحسابي بالكامل' : 'SciNexa Core Simulation Matrix Nominal'}
               </span>
               <span className="tech-badge tech-badge-emerald">HEALTHY</span>
             </div>
             <p className="text-[11px] text-slate-400 font-mono mt-0.5">
               {language === 'ar' 
-                ? 'جميع محركات MNA، التشريح ثلاثي الأبعاد، ومحاكي الموجات تعمل ضمن المعايير المثالية.' 
-                : 'All physics solvers, 3D anatomical meshes, and periodic tables verified.'}
+                ? 'جميع محركات MNA، التشريح 3D، كيمياء بوهر، وفيزياء انهيار المنشآت تعمل بدقة كاملة.' 
+                : 'All physics solvers, 3D anatomical meshes, chemistry Bohr models, and collapse physics operational.'}
             </p>
           </div>
         </div>
@@ -152,10 +256,10 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
         </div>
       </div>
 
-      {/* 2. MAIN HERO SPLIT SECTION (Left: Typography & CTAs, Right: System Pillars List) */}
+      {/* 2. MAIN HERO SPLIT SECTION */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-4">
         
-        {/* LEFT COLUMN: Industrial Title & Metrics (Matching image left layout) */}
+        {/* LEFT COLUMN: Industrial Title & Metrics */}
         <div className="lg:col-span-7 space-y-6">
           <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-white/[0.04] border border-white/[0.1] text-[11px] font-mono text-slate-400">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -171,7 +275,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
             {t.hero.subtitle}
           </p>
 
-          {/* Action Buttons (Silver Primary & Black/Silver Secondary) */}
+          {/* Action Buttons */}
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <button
               onClick={() => onNavigate('physics')}
@@ -200,38 +304,38 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
             )}
           </div>
 
-          {/* Telemetry Metrics (Matching 94.8% / 14d / 99.98% from image) */}
+          {/* Telemetry Metrics (Verified Accurate Numbers) */}
           <div className="grid grid-cols-3 gap-4 pt-6 border-t border-white/[0.08] max-w-lg">
             <div>
               <div className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
-                {language === 'ar' ? 'دقة النماذج' : 'ENGINE ACCURACY'}
+                {language === 'ar' ? 'البنى التشريحية' : 'ANATOMY ENTITIES'}
               </div>
               <div className="text-2xl sm:text-3xl font-extrabold text-white font-mono mt-0.5">
-                99.8%
+                2,821+
               </div>
             </div>
 
             <div>
               <div className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
-                {language === 'ar' ? 'تحديث الإطارات' : 'SOLVER TICK'}
+                {language === 'ar' ? 'عناصر الجدول الدوري' : 'IUPAC ELEMENTS'}
               </div>
               <div className="text-2xl sm:text-3xl font-extrabold text-white font-mono mt-0.5">
-                60Hz
+                118
               </div>
             </div>
 
             <div>
               <div className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
-                {language === 'ar' ? 'العناصر والتجارب' : 'TOTAL MODULES'}
+                {language === 'ar' ? 'معدل التحديث' : 'SOLVER TICK'}
               </div>
               <div className="text-2xl sm:text-3xl font-extrabold text-white font-mono mt-0.5">
-                {t.hero.statsSimulations}
+                60 FPS
               </div>
             </div>
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Stacked Industrial Cards (Matching SYSTEM PILLARS in image) */}
+        {/* RIGHT COLUMN: Stacked Industrial Cards */}
         <div className="lg:col-span-5 space-y-3">
           <div className="flex items-center gap-2 mb-2">
             <span className="w-4 h-[1px] bg-white/20" />
@@ -259,47 +363,107 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
             );
           })}
 
-          {/* Interactive Live Banner Box (Matching the blue/cyber mini-banner in reference) */}
+          {/* Interactive Live Banner Box */}
           <div className="relative overflow-hidden rounded-xl border border-white/15 bg-gradient-to-r from-[#070b14] to-[#0d1627] p-4 text-white flex items-center justify-between">
             <div className="space-y-1">
               <span className="tech-badge tech-badge-emerald text-[9px]">LIVE TELEMETRY ACTIVE</span>
-              <div className="text-xs font-bold font-mono">PhET Wave Mechanics Engine Ready</div>
-              <p className="text-[10px] text-slate-400">Sinusoidal harmonics & real-time wave tension metrics</p>
+              <div className="text-xs font-bold font-mono">3D Building Collapse & Wave Physics</div>
+              <p className="text-[10px] text-slate-400">Richter failure thresholds & hydrodynamic tsunami drag</p>
             </div>
             <button
-              onClick={() => onNavigate('physics')}
+              onClick={() => onNavigate('geology')}
               className="px-3 py-1.5 rounded-lg bg-white text-black text-xs font-bold font-mono hover:bg-slate-200"
             >
-              TRY
+              TEST
             </button>
           </div>
         </div>
       </div>
 
-      {/* 3. SEARCH & MATRIX SECTION HEADER */}
-      <div className="pt-8 border-t border-white/[0.08] flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-slate-400" />
-            <span className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">
-              EXPERIMENTAL SUITES & VIRTUAL LABORATORIES
-            </span>
+      {/* 3. AI SMART SEARCH & MATRIX SECTION HEADER */}
+      <div className="pt-8 border-t border-white/[0.08] space-y-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+              <span className="text-[11px] font-mono text-cyan-400 uppercase tracking-wider font-bold">
+                AI SMART SEARCH & VIRTUAL LABORATORIES
+              </span>
+            </div>
+            <h2 className="text-2xl font-bold text-white tracking-tight mt-1">
+              {t.features.sectionTitle}
+            </h2>
           </div>
-          <h2 className="text-2xl font-bold text-white tracking-tight mt-1">
-            {t.features.sectionTitle}
-          </h2>
+
+          {/* AI Search input */}
+          <div className="relative w-full md:w-96">
+            <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-500" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && detectedAIIntent) {
+                  onNavigate(detectedAIIntent.tab);
+                }
+              }}
+              placeholder={language === 'ar' ? 'ابحث بالذكاء الاصطناعي (مثل: قلب، أميبا، تسونامي، كواكب...)' : 'AI Smart Search (e.g. heart, amoeba, tsunami, moon)...'}
+              className="w-full bg-[#08090c] border border-white/10 rounded-xl pl-9 pr-8 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 font-mono transition-colors"
+            />
+            <Bot className="absolute right-2.5 top-2.5 w-4 h-4 text-cyan-400" />
+          </div>
         </div>
 
-        {/* Search input in dark industrial style */}
-        <div className="relative w-full md:w-80">
-          <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-500" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t.nav.searchPlaceholder}
-            className="w-full bg-[#08090c] border border-white/10 rounded-lg pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-white/30 font-mono"
-          />
+        {/* AI Intent Detection Interactive Banner */}
+        {detectedAIIntent && (
+          <div 
+            onClick={() => onNavigate(detectedAIIntent.tab)}
+            className="cursor-pointer p-3.5 rounded-xl bg-gradient-to-r from-cyan-950/80 via-slate-900 to-indigo-950/80 border border-cyan-400/50 flex items-center justify-between text-white shadow-lg shadow-cyan-500/10 hover:border-cyan-300 transition-all"
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-cyan-500/20 flex items-center justify-center text-cyan-300">
+                <Sparkles className="w-4 h-4" />
+              </div>
+              <div>
+                <span className="text-[11px] font-mono text-cyan-400 block font-bold">
+                  {language === 'ar' ? '🤖 تم التعرف على مقصدك بالذكاء الاصطناعي:' : '🤖 AI Intent Auto-Detected:'}
+                </span>
+                <span className="text-xs font-bold text-white">
+                  {language === 'ar' 
+                    ? `البحث عن "${detectedAIIntent.matchedTerm}" → الانتقال المباشر إلى ${detectedAIIntent.labNameAr}`
+                    : `Query "${detectedAIIntent.matchedTerm}" → Navigate directly to ${detectedAIIntent.labNameEn}`}
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center gap-1 text-xs font-bold font-mono text-cyan-300 bg-cyan-500/10 px-3 py-1.5 rounded-lg border border-cyan-500/30">
+              <span>{language === 'ar' ? 'انتقال فوري' : 'Launch'}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </div>
+          </div>
+        )}
+
+        {/* AI Quick Query Chips */}
+        <div className="flex flex-wrap items-center gap-2 pt-1 text-xs font-mono">
+          <span className="text-slate-500 text-[11px] flex items-center gap-1">
+            <Sparkles className="w-3 h-3 text-cyan-400" />
+            <span>{language === 'ar' ? 'استكشاف سريع:' : 'Quick Jump:'}</span>
+          </span>
+          {[
+            { label: language === 'ar' ? '🫀 تشريح القلب والرئتين' : '🫀 Heart & Lungs', tab: 'anatomy' },
+            { label: language === 'ar' ? '⚡ الدوائر والموجات' : '⚡ Circuits & Waves', tab: 'physics' },
+            { label: language === 'ar' ? '🧪 الذرة والجدول الدوري' : '🧪 3D Atom & Elements', tab: 'chemistry' },
+            { label: language === 'ar' ? '🔬 الأميبا واليوجلينا' : '🔬 Amoeba & Euglena', tab: 'biology' },
+            { label: language === 'ar' ? '🌋 انهيار المباني والتسونامي' : '🌋 Earthquake Collapse', tab: 'geology' },
+            { label: language === 'ar' ? '🪐 النظام الشمسي وأطوار القمر' : '🪐 Solar System & Moon', tab: 'astronomy' },
+          ].map((chip, idx) => (
+            <button
+              key={idx}
+              onClick={() => onNavigate(chip.tab)}
+              className="px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/10 hover:border-cyan-400/50 hover:bg-white/[0.08] text-slate-300 transition-all text-[11px]"
+            >
+              {chip.label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -363,3 +527,4 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
     </div>
   );
 };
+export default Home;

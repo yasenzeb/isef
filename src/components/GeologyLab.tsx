@@ -1,262 +1,630 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import * as THREE from 'three';
+import { OrbitControls } from 'three-stdlib';
 import { useLanguage } from '../context/LanguageContext';
 import { calculateTsunamiSpeed, calculateSeismicTravelTimes, calculateEarthquakeEnergyJoules } from '../simulators/geophysicsSolver';
-import { calculateStructuralResponse } from '../simulators/structuralSolver';
+import { Globe2, AlertTriangle, Waves, Award, Building2, Box, Play, Pause, Hammer, Compass, Layers, ShieldCheck, ShieldAlert } from 'lucide-react';
+import { GeologyModelViewer, getBuildingThreshold } from './GeologyModelViewer';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
-import { Globe2, AlertTriangle, Waves, Award, Building2, Box, Play, Pause } from 'lucide-react';
-import { GeologyModelViewer } from './GeologyModelViewer';
 
-// Available GLB models for the geology lab
+// Available 3D Building models with realistic structural engineering ratings (Beach scene removed as requested)
 const GEOLOGY_MODELS = [
-  { label: 'Modern Apartment', labelAr: 'شقة حديثة', url: '/models/geology/modern_apartment.glb', type: 'residential' },
-  { label: 'Construction Site', labelAr: 'موقع بناء', url: '/models/geology/construction_site.glb', type: 'construction' },
-  { label: 'Wooden Cottage', labelAr: 'كوخ خشبي', url: '/models/geology/wooden_cottage.glb', type: 'wood' },
-  { label: 'Tall Building', labelAr: 'مبنى شاهق', url: '/models/geology/tall_building.glb', type: 'highrise' },
-  { label: 'Abandoned Building', labelAr: 'مبنى مهجور', url: '/models/geology/abandoned_building.glb', type: 'old' },
-  { label: 'Beach Scene', labelAr: 'مشهد شاطئي', url: '/models/geology/beach_scene.glb', type: 'coastal' },
+  { 
+    id: 'abandoned',
+    label: 'Abandoned Building', 
+    labelAr: 'مبنى مهجور غير مدعم', 
+    url: '/models/geology/abandoned_building.glb', 
+    type: 'unreinforced',
+    threshold: 3.5,
+    waveThresholdM: 3.0,
+    descAr: 'هيكل حجري متآكل بدون تسليح - ينهار عند زلازل ضعيفة (3.5+ ريختر)',
+    descEn: 'Unreinforced deteriorating masonry. Collapses at low seismic intensity (3.5+).'
+  },
+  { 
+    id: 'wood',
+    label: 'Wooden Timber Cottage', 
+    labelAr: 'كوخ خشبي ريفي', 
+    url: '/models/geology/wooden_cottage.glb', 
+    type: 'timber',
+    threshold: 4.8,
+    waveThresholdM: 4.2,
+    descAr: 'هيكل خشبي خفيف - مرن ولكن يفشل تحت قوى القص العالية وأمواج التسونامي المباشرة (4.8+ ريختر)',
+    descEn: 'Lightweight timber frame. Resilient to minor tremors, vulnerable to shear & water surge (4.8+).'
+  },
+  { 
+    id: 'construction',
+    label: 'Construction Site', 
+    labelAr: 'موقع بناء وهيكل خرساني', 
+    url: '/models/geology/construction_site.glb', 
+    type: 'construction',
+    threshold: 6.0,
+    waveThresholdM: 5.5,
+    descAr: 'أعمدة وسقالات بدون جدران قص داعمة - تفشل الأعمدة غير المكتملة عند 6.0 ريختر',
+    descEn: 'Incomplete reinforced concrete frame without shear walls. Fails at moderate tremor (6.0+).'
+  },
+  { 
+    id: 'residential',
+    label: 'Modern Apartment', 
+    labelAr: 'عمارة سكنية حديثة', 
+    url: '/models/geology/modern_apartment.glb', 
+    type: 'residential',
+    threshold: 7.5,
+    waveThresholdM: 7.5,
+    descAr: 'هيكل خرساني مسلح متوافق مع كود البناء - يقاوم حتى 7.5 ريختر',
+    descEn: 'Reinforced concrete frame with shear walls following modern seismic code (7.5+).'
+  },
+  { 
+    id: 'highrise',
+    label: 'Tall Highrise Tower', 
+    labelAr: 'برج شاهق مع عوازل زلزالية', 
+    url: '/models/geology/tall_building.glb', 
+    type: 'highrise',
+    threshold: 8.8,
+    waveThresholdM: 9.0,
+    descAr: 'برج هندسي متطور بأوتاد خرسانية عميقة ونظام تخميد الكتلة - يقاوم حتى 8.8 ريختر',
+    descEn: 'Engineered highrise with deep piles & tuned mass dampers. Withstands up to 8.8 Richter.'
+  },
 ];
 
 interface EarthLayer {
   id: string;
   nameEn: string;
   nameAr: string;
+  radiusKm: number;
   depthKm: string;
   tempC: string;
+  pressureGPa: string;
+  densityGcm3: string;
   compositionEn: string;
   compositionAr: string;
   stateEn: string;
-  color: string;
+  stateAr: string;
+  colorHex: number;
 }
 
-const EARTH_LAYERS: EarthLayer[] = [
+const EARTH_LAYERS_3D: EarthLayer[] = [
   {
-    id: 'crust',
-    nameEn: 'Crust (Continental & Oceanic)',
-    nameAr: 'القشرة الأرضية (القارية والمحيطية)',
-    depthKm: '0 - 70 km',
-    tempC: '0 - 400 °C',
-    compositionEn: 'Silicates, granite, basalt, aluminium minerals.',
-    compositionAr: 'سيليكات، جرانيت، بازلت، ومعادن الألومنيوم.',
-    stateEn: 'Solid brittle lithosphere',
-    color: 'bg-amber-600',
-  },
-  {
-    id: 'mantle',
-    nameEn: 'Mantle (Upper & Lower)',
-    nameAr: 'الوشاح (العلوي والسفلي)',
-    depthKm: '70 - 2,890 km',
-    tempC: '1,000 - 3,700 °C',
-    compositionEn: 'Peridotite, magnesium-iron silicates, bridgmanite.',
-    compositionAr: 'بيريدوتيت، سيليكات الحديد والماغنسيوم، وبريدجمانيت.',
-    stateEn: 'Viscous solid undergoing mantle convection',
-    color: 'bg-orange-600',
+    id: 'inner_core',
+    nameEn: 'Inner Core (Solid Iron-Nickel)',
+    nameAr: 'اللب الداخلي (حديد ونيكل صلب متبلور)',
+    radiusKm: 1220,
+    depthKm: '5,150 - 6,371 km',
+    tempC: '5,400 - 6,000 °C',
+    pressureGPa: '330 - 360 GPa',
+    densityGcm3: '12.8 - 13.1 g/cm³',
+    compositionEn: 'Crystalline nickel-iron alloy under immense pressure.',
+    compositionAr: 'سبيكة صلبة من الحديد والنيكل متبلورة تحت ضغط يعادل 3.5 مليون ضغط جوي.',
+    stateEn: 'Solid crystal (Discovered by Inge Lehmann, 1936)',
+    stateAr: 'صلب متبلور نتيجة الضغط الهائل (اكتشفته إنجي ليمان 1936)',
+    colorHex: 0xfef08a,
   },
   {
     id: 'outer_core',
-    nameEn: 'Outer Core',
-    nameAr: 'اللب الخارجي السائل',
+    nameEn: 'Outer Core (Liquid Magma Dynamo)',
+    nameAr: 'اللب الخارجي (مصهور سائل يولد المغناطيسية)',
+    radiusKm: 3480,
     depthKm: '2,890 - 5,150 km',
     tempC: '4,000 - 5,000 °C',
-    compositionEn: 'Molten iron (80%) and nickel.',
-    compositionAr: 'حديد مصهور (80%) ونيكل يولد المجال المغناطيسي.',
-    stateEn: "Liquid fluid generating Earth's magnetic field",
-    color: 'bg-rose-600',
+    pressureGPa: '135 - 330 GPa',
+    densityGcm3: '9.9 - 12.2 g/cm³',
+    compositionEn: 'Molten iron (85%), nickel (10%), and light elements (S, O).',
+    compositionAr: 'حديد مصهور ونيكل في حالة سائلة يتدفق حرارياً لتوليد المجال المغناطيسي للأرض.',
+    stateEn: 'Vigorously convecting liquid metal (Geodynamo)',
+    stateAr: 'سائل معدني متحرك بالحث الحراري (الدينامو الجيولوجي)',
+    colorHex: 0xf97316,
   },
   {
-    id: 'inner_core',
-    nameEn: 'Inner Core',
-    nameAr: 'اللب الداخلي الصلب',
-    depthKm: '5,150 - 6,371 km',
-    tempC: '5,200 - 6,000 °C',
-    compositionEn: 'Solid crystalline nickel-iron alloy.',
-    compositionAr: 'سبيكة صلبة متبلورة من الحديد والنيكل تحت ضغط هائل.',
-    stateEn: 'Solid due to 330+ GPa pressure (Lehmann 1936)',
-    color: 'bg-yellow-500',
+    id: 'mantle',
+    nameEn: 'Mantle (Viscous Convective Silicates)',
+    nameAr: 'الوشاح (سيليكات لدنة وحمل حراري)',
+    radiusKm: 6300,
+    depthKm: '35 - 2,890 km',
+    tempC: '1,000 - 3,700 °C',
+    pressureGPa: '1.4 - 135 GPa',
+    densityGcm3: '3.4 - 5.6 g/cm³',
+    compositionEn: 'Peridotite, magnesium-iron silicates, and bridgmanite.',
+    compositionAr: 'صخور البيريدوتيت وسيليكات الماغنسيوم والحديد التي تدفع حركة الصفائح التكتونية.',
+    stateEn: 'Viscous solid undergoing slow mantle convection',
+    stateAr: 'صلب لدن يتحرك ببطء عبر تيارات الحمل الحراري ليدير الصفائح',
+    colorHex: 0xd97706,
+  },
+  {
+    id: 'crust',
+    nameEn: 'Crust & Lithosphere',
+    nameAr: 'القشرة الأرضية والغلاف الصخري',
+    radiusKm: 6371,
+    depthKm: '0 - 70 km',
+    tempC: '0 - 400 °C',
+    pressureGPa: '0 - 1.4 GPa',
+    densityGcm3: '2.7 - 3.0 g/cm³',
+    compositionEn: 'Granite (continental) and basalt (oceanic), alumino-silicates.',
+    compositionAr: 'صخور الجرانيت القارية والبازلت المحيطي الغنية بالسيليكا والألومنيوم.',
+    stateEn: 'Brittle solid segmented into tectonic plates',
+    stateAr: 'غلاف صخري صلب مقسم لصفائح تكتونية تطفو فوق الأثينوسفير',
+    colorHex: 0x38bdf8,
   },
 ];
 
 export const GeologyLab: React.FC = () => {
   const { t, language } = useLanguage();
-  const [activeModule, setActiveModule] = useState<'layers' | 'tsunami' | 'earthquake' | 'structural' | 'interactive3d'>('layers');
-  const [selectedLayer, setSelectedLayer] = useState<EarthLayer>(EARTH_LAYERS[0]);
-
-  // Tsunami simulator parameters
-  const [oceanDepth, setOceanDepth] = useState(4000);
-  const tsunamiSpeed = calculateTsunamiSpeed(oceanDepth);
-
-  // Earthquake simulator parameters
-  const [quakeMagnitude, setQuakeMagnitude] = useState(7.2);
-  const [epicenterDistKm, setEpicenterDistKm] = useState(150);
-  const seismicTimes = calculateSeismicTravelTimes(epicenterDistKm, 15);
-  const quakeEnergyJoules = calculateEarthquakeEnergyJoules(quakeMagnitude);
-
-  // Structural base isolation parameters
-  const [floors, setFloors] = useState(10);
-  const [groundFrequency, setGroundFrequency] = useState(1.2);
-  const [isIsolated, setIsIsolated] = useState(false);
-  const structuralMetrics = calculateStructuralResponse(floors, groundFrequency, 0.35, isIsolated);
-
-  // 3D Interactive viewer state
+  const [activeModule, setActiveModule] = useState<'disaster3d' | 'earthCutaway3d' | 'tsunamiShoal3d'>('disaster3d');
+  
+  // 3D Disaster Simulator State
   const [selectedModelUrl, setSelectedModelUrl] = useState<string>(GEOLOGY_MODELS[0].url);
-  const [simType, setSimType] = useState<'earthquake' | 'tsunami'>('earthquake');
-  const [simIntensity, setSimIntensity] = useState(5);
-  const [isSimRunning, setIsSimRunning] = useState(false);
+  const [disasterType, setDisasterType] = useState<'earthquake' | 'tsunami'>('earthquake');
+  const [simIntensity, setSimIntensity] = useState<number>(5.5);
+  const [isSimRunning, setIsSimRunning] = useState<boolean>(true);
+  const [structuralIntegrity, setStructuralIntegrity] = useState<number>(100);
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
-  // Compute viewer intensity
+  // Selected building configuration
+  const currentBuilding = GEOLOGY_MODELS.find(m => m.url === selectedModelUrl) || GEOLOGY_MODELS[0];
+
+  // Viewer intensity (0 when paused)
   const viewerIntensity = isSimRunning ? (simIntensity / 10) : 0;
 
-  // Damage assessment based on intensity & building type
-  const selectedModel = GEOLOGY_MODELS.find(m => m.url === selectedModelUrl) || GEOLOGY_MODELS[0];
-  const getDamageLevel = () => {
-    if (!isSimRunning) return { level: '-', color: '#64748b', descAr: 'أوقف المحاكاة لتبدأ', descEn: 'Start simulation to see effects' };
-    const base = simIntensity;
-    const typeMultiplier = selectedModel.type === 'wood' ? 1.3 : selectedModel.type === 'old' ? 1.5 : selectedModel.type === 'construction' ? 1.4 : selectedModel.type === 'highrise' ? 0.8 : selectedModel.type === 'coastal' ? (simType === 'tsunami' ? 1.6 : 0.9) : 1.0;
-    const damage = Math.min(10, base * typeMultiplier);
-    if (damage < 3) return { level: language === 'ar' ? 'طفيف' : 'Minor', color: '#34d399', descAr: 'أضرار سطحية بسيطة - تشققات طفيفة في الجدران', descEn: 'Minor surface cracks, cosmetic damage only' };
-    if (damage < 5) return { level: language === 'ar' ? 'متوسط' : 'Moderate', color: '#fbbf24', descAr: 'تشققات في الجدران الحاملة - يحتاج إصلاح', descEn: 'Structural cracks, repair needed before occupancy' };
-    if (damage < 7) return { level: language === 'ar' ? 'شديد' : 'Severe', color: '#f97316', descAr: 'أضرار هيكلية كبيرة - خطر الانهيار الجزئي', descEn: 'Major structural damage, partial collapse risk' };
-    return { level: language === 'ar' ? 'كارثي' : 'Catastrophic', color: '#ef4444', descAr: 'انهيار كامل أو شبه كامل للمبنى', descEn: 'Total or near-total structural collapse' };
-  };
-  const damage = getDamageLevel();
+  // Selected Earth Layer for 3D Cutaway
+  const [selectedLayer, setSelectedLayer] = useState<EarthLayer>(EARTH_LAYERS_3D[0]);
+  const cutawayCanvasRef = useRef<HTMLDivElement | null>(null);
+
+  // 3D Interactive Earth Cutaway Scene
+  useEffect(() => {
+    if (activeModule !== 'earthCutaway3d') return;
+    const container = cutawayCanvasRef.current;
+    if (!container) return;
+
+    const width = container.clientWidth || 700;
+    const height = container.clientHeight || 500;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x050a1a);
+
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+    camera.position.set(4, 2.5, 5.5);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
+    container.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.minDistance = 2.5;
+    controls.maxDistance = 15;
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.9));
+    const sun = new THREE.DirectionalLight(0xfff5e6, 2.0);
+    sun.position.set(10, 15, 10);
+    scene.add(sun);
+
+    // Earth Layers Group with a 90° Cutaway opening
+    const globeGroup = new THREE.Group();
+    scene.add(globeGroup);
+
+    // 1. Inner Core (Solid sphere)
+    const icGeo = new THREE.SphereGeometry(0.7, 32, 32, 0, Math.PI * 1.5);
+    const icMat = new THREE.MeshStandardMaterial({
+      color: 0xfef08a,
+      emissive: 0xeab308,
+      emissiveIntensity: 0.35,
+      roughness: 0.3,
+      side: THREE.DoubleSide
+    });
+    const icMesh = new THREE.Mesh(icGeo, icMat);
+    globeGroup.add(icMesh);
+
+    // 2. Outer Core (Liquid shell)
+    const ocGeo = new THREE.SphereGeometry(1.25, 32, 32, 0, Math.PI * 1.5);
+    const ocMat = new THREE.MeshStandardMaterial({
+      color: 0xf97316,
+      emissive: 0xc2410c,
+      emissiveIntensity: 0.2,
+      transparent: true,
+      opacity: 0.85,
+      side: THREE.DoubleSide
+    });
+    const ocMesh = new THREE.Mesh(ocGeo, ocMat);
+    globeGroup.add(ocMesh);
+
+    // 3. Mantle (Convective shell)
+    const mGeo = new THREE.SphereGeometry(1.9, 32, 32, 0, Math.PI * 1.5);
+    const mMat = new THREE.MeshStandardMaterial({
+      color: 0xd97706,
+      roughness: 0.8,
+      side: THREE.DoubleSide
+    });
+    const mMesh = new THREE.Mesh(mGeo, mMat);
+    globeGroup.add(mMesh);
+
+    // 4. Crust & Oceanic surface
+    const cGeo = new THREE.SphereGeometry(2.1, 48, 48, 0, Math.PI * 1.5);
+    const cMat = new THREE.MeshStandardMaterial({
+      color: 0x0284c7,
+      roughness: 0.6,
+      metalness: 0.1,
+      side: THREE.DoubleSide
+    });
+    const cMesh = new THREE.Mesh(cGeo, cMat);
+    globeGroup.add(cMesh);
+
+    let animId: number;
+    const animate = () => {
+      animId = requestAnimationFrame(animate);
+      globeGroup.rotation.y += 0.002;
+      controls.update();
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    const handleResize = () => {
+      if (!container) return;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      if (w === 0 || h === 0) return;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    };
+
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(container);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      resizeObserver.disconnect();
+      renderer.dispose();
+      icGeo.dispose();
+      ocGeo.dispose();
+      mGeo.dispose();
+      cGeo.dispose();
+    };
+  }, [activeModule]);
 
   const lehmann = REAL_SCIENTISTS.find(s => s.id === 'lehmann');
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 space-y-6">
       
+      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
         <div>
           <span className="sci-badge">
-            {language === 'ar' ? 'الجيوديناميكا وعلم الزلازل وهندسة المنشآت' : 'Geodynamics, Seismology & Earthquake Engineering'}
+            {language === 'ar' ? 'الجيولوجيا الفيزيائية وهندسة مقاومة الزلازل والتسونامي' : 'Physical Geology & Structural Disaster Engineering'}
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-1" style={{ fontFamily: 'var(--font-display)' }}>{t.geology.title}</h1>
-          <p className="text-xs text-slate-400 mt-0.5">{t.geology.subtitle}</p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-1" style={{ fontFamily: 'var(--font-display)' }}>
+            {language === 'ar' ? 'مختبر علوم الأرض والزلازل والمنشآت ثلاثي الأبعاد' : '3D Geology, Seismology & Structural Dynamics Lab'}
+          </h1>
+          <p className="text-xs text-slate-400 mt-0.5">
+            {language === 'ar' 
+              ? 'محاكاة 3D حية لانهيار المباني تحت الزلازل والتسونامي، ومقطع باطن الأرض التفاعلي' 
+              : 'Interactive 3D building structural collapse under seismic & tsunami forces, and planetary cutaway'}
+          </p>
         </div>
 
-        {/* Sub-module switcher */}
-        <div className="flex flex-wrap items-center gap-1.5 sci-surface p-1.5">
+        {/* Module Switcher: ONLY 3D Interactive Simulations */}
+        <div className="flex items-center space-x-2 sci-surface p-1.5">
           <button
-            onClick={() => setActiveModule('layers')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              activeModule === 'layers' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
+            onClick={() => setActiveModule('disaster3d')}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
+              activeModule === 'disaster3d' ? 'bg-white text-black font-bold shadow' : 'text-slate-400 hover:text-white'
             }`}
-            style={activeModule === 'layers' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
           >
-            {t.geology.earthLayers}
+            <Building2 className="w-3.5 h-3.5" style={{ color: activeModule === 'disaster3d' ? 'black' : '#f43f5e' }} />
+            <span>{language === 'ar' ? 'محاكاة انهيار المباني (الزلازل والتسونامي)' : '3D Building Disaster Simulation'}</span>
           </button>
           <button
-            onClick={() => setActiveModule('tsunami')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 ${
-              activeModule === 'tsunami' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
+            onClick={() => setActiveModule('earthCutaway3d')}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
+              activeModule === 'earthCutaway3d' ? 'bg-white text-black font-bold shadow' : 'text-slate-400 hover:text-white'
             }`}
-            style={activeModule === 'tsunami' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
           >
-            <Waves className="w-3.5 h-3.5" />
-            <span>{language === 'ar' ? 'موجات تسونامي' : 'Tsunami Simulator'}</span>
-          </button>
-          <button
-            onClick={() => setActiveModule('earthquake')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 ${
-              activeModule === 'earthquake' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
-            }`}
-            style={activeModule === 'earthquake' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
-          >
-            <AlertTriangle className="w-3.5 h-3.5" />
-            <span>{language === 'ar' ? 'الموجات الزلزالية' : 'Seismic Waves'}</span>
-          </button>
-          <button
-            onClick={() => setActiveModule('structural')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 ${
-              activeModule === 'structural' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
-            }`}
-            style={activeModule === 'structural' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
-          >
-            <Building2 className="w-3.5 h-3.5" />
-            <span>{language === 'ar' ? 'مقاومة الزلازل للمنشآت' : 'Seismic Base Isolation'}</span>
-          </button>
-          <button
-            onClick={() => setActiveModule('interactive3d')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 ${
-              activeModule === 'interactive3d' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
-            }`}
-            style={activeModule === 'interactive3d' ? { background: 'linear-gradient(135deg, #a855f7, #f43f5e)' } : undefined}
-          >
-            <Box className="w-3.5 h-3.5" />
-            <span>{language === 'ar' ? 'المحاكاة التفاعلية ثلاثية الأبعاد' : '3D Interactive Simulation'}</span>
+            <Globe2 className="w-3.5 h-3.5" style={{ color: activeModule === 'earthCutaway3d' ? 'black' : '#818cf8' }} />
+            <span>{language === 'ar' ? 'مقطع طبقات الأرض 3D' : '3D Earth Interior Cutaway'}</span>
           </button>
         </div>
       </div>
 
-      {/* MODULE 1: EARTH STRATA */}
-      {activeModule === 'layers' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 sci-card p-6 flex flex-col justify-between space-y-4">
-            <div style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }} className="pb-3">
-              <h3 className="text-base font-bold text-white">
-                {language === 'ar' ? 'مقطع طبقات الأرض الداخلية الجيوفيزيائي' : 'Planetary Earth Interior Layers'}
-              </h3>
-              <span className="text-xs text-slate-400">
-                {language === 'ar' ? 'اختر أي طبقة لفحص الأعماق والخواص الحرارية' : 'Select any layer to inspect geophysics metrics'}
+      {/* MODULE 1: 3D STRUCTURAL COLLAPSE & DISASTER SIMULATOR */}
+      {activeModule === 'disaster3d' && (
+        <div className="space-y-6">
+          
+          {/* Top Building Selection Carousel */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                <Building2 className="w-3.5 h-3.5 text-indigo-400" />
+                <span>{language === 'ar' ? 'اختر نوع المبنى لاختبار قوة تحمله ومقاومته للانهيار:' : 'Select Structure to Test Seismic & Tsunami Failure Threshold:'}</span>
+              </span>
+              <span className="text-[11px] font-mono text-indigo-400">
+                {language === 'ar' ? 'حد الانهيار موضح لكل مبنى' : 'Collapse threshold calibrated'}
               </span>
             </div>
 
-            <div className="space-y-3">
-              {EARTH_LAYERS.map((layer) => {
-                const isSelected = selectedLayer.id === layer.id;
+            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+              {GEOLOGY_MODELS.map((b) => {
+                const isSelected = b.url === selectedModelUrl;
                 return (
-                  <div
-                    key={layer.id}
-                    onClick={() => setSelectedLayer(layer)}
-                    className={`p-4 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
-                      isSelected ? 'bg-slate-800 shadow-xl' : 'bg-slate-950/80 border-slate-800 hover:bg-slate-800/40'
+                  <button
+                    key={b.id}
+                    onClick={() => setSelectedModelUrl(b.url)}
+                    className={`p-3.5 rounded-2xl border text-left transition-all relative overflow-hidden ${
+                      isSelected
+                        ? 'bg-gradient-to-b from-indigo-950/90 to-slate-900 border-indigo-400/80 shadow-lg shadow-indigo-500/20'
+                        : 'bg-slate-950/60 border-white/5 hover:border-white/20'
                     }`}
-                    style={isSelected ? { borderColor: 'rgba(99,102,241,0.5)' } : undefined}
                   >
-                    <div className="flex items-center space-x-3">
-                      <div className={`w-4 h-4 rounded-full ${layer.color}`} />
-                      <span className="text-sm font-bold text-white">
-                        {language === 'ar' ? layer.nameAr : layer.nameEn}
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-xs font-bold text-white">
+                        {language === 'ar' ? b.labelAr : b.label}
+                      </span>
+                      <span className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                        b.threshold < 5 ? 'bg-rose-500/20 text-rose-300' : b.threshold < 7 ? 'bg-amber-500/20 text-amber-300' : 'bg-emerald-500/20 text-emerald-300'
+                      }`}>
+                        {b.threshold} R
                       </span>
                     </div>
-                    <span className="text-xs font-mono text-slate-400">{layer.depthKm}</span>
-                  </div>
+                    <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">
+                      {language === 'ar' ? b.descAr : b.descEn}
+                    </p>
+                  </button>
                 );
               })}
             </div>
+          </div>
 
-            <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 text-xs text-slate-300 flex items-center justify-between">
-              <span>{language === 'ar' ? 'متوسط نصف قطر الأرض: 6,371 كم' : 'Mean Earth Radius: 6,371 km'}</span>
-              <span style={{ color: '#818cf8' }} className="font-mono">{language === 'ar' ? 'حرارة اللب المركزي: ~6,000 °م' : 'Core Temp: ~6,000 °C'}</span>
+          {/* Interactive Simulation Controls Bar */}
+          <div className="sci-card p-5 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+              
+              {/* Disaster Mode Switcher */}
+              <div className="space-y-1.5">
+                <span className="text-xs font-bold text-slate-300 block">
+                  {language === 'ar' ? 'نوع الكارثة الطبيعية:' : 'Disaster Phenomenon:'}
+                </span>
+                <div className="flex items-center space-x-2 sci-surface p-1">
+                  <button
+                    onClick={() => setDisasterType('earthquake')}
+                    className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center space-x-1.5 transition-all ${
+                      disasterType === 'earthquake' ? 'bg-amber-600 text-white shadow' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <AlertTriangle className="w-3.5 h-3.5" />
+                    <span>{language === 'ar' ? 'زلزال وهزات قص' : 'Earthquake (Shear)'}</span>
+                  </button>
+                  <button
+                    onClick={() => setDisasterType('tsunami')}
+                    className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center space-x-1.5 transition-all ${
+                      disasterType === 'tsunami' ? 'bg-cyan-600 text-white shadow' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <Waves className="w-3.5 h-3.5" />
+                    <span>{language === 'ar' ? 'موجة تسونامي هادرة' : 'Tsunami Surge Wave'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Force Intensity Slider */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-bold text-slate-300">
+                    {disasterType === 'earthquake' 
+                      ? (language === 'ar' ? 'قوة الزلزال (مقياس ريختر):' : 'Earthquake Magnitude (Richter):')
+                      : (language === 'ar' ? 'ارتفاع وقوة موجة تسونامي:' : 'Tsunami Wave Height & Force:')}
+                  </span>
+                  <span className={`font-mono font-bold text-sm ${
+                    simIntensity > currentBuilding.threshold ? 'text-rose-400 animate-pulse' : 'text-emerald-400'
+                  }`}>
+                    {disasterType === 'earthquake' 
+                      ? `${simIntensity.toFixed(1)} Richter` 
+                      : `${(simIntensity * 3).toFixed(1)} m wave (${simIntensity.toFixed(1)}/10)`}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={1.0}
+                  max={10.0}
+                  step={0.1}
+                  value={simIntensity}
+                  onChange={(e) => setSimIntensity(parseFloat(e.target.value))}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                  <span>1.0 (طفيف)</span>
+                  <span className="text-rose-400 font-bold">حد انهيار هذا المبنى: {currentBuilding.threshold}</span>
+                  <span>10.0 (كارثي)</span>
+                </div>
+              </div>
+
+              {/* Play/Pause & Disaster Status */}
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setIsSimRunning(!isSimRunning)}
+                  className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-md ${
+                    isSimRunning
+                      ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500/30'
+                      : 'bg-emerald-600 text-white hover:bg-emerald-500 shadow-emerald-500/25'
+                  }`}
+                >
+                  {isSimRunning ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                  <span>{isSimRunning ? (language === 'ar' ? 'إيقاف مؤقت' : 'Pause Simulation') : (language === 'ar' ? 'بدء المحاكاة' : 'Start Simulation')}</span>
+                </button>
+              </div>
             </div>
           </div>
 
-          <div className="space-y-6">
-            <div className="sci-card p-6 space-y-4">
-              <div style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }} className="pb-3">
-                <span className="text-xs text-slate-400 block uppercase tracking-wider">
-                  {language === 'ar' ? 'بيانات الطبقة' : 'Layer Telemetry'}
+          {/* MAIN 3D DISASTER VIEWER WITH REAL COLLAPSE PHYSICS */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div className="lg:col-span-3">
+              <GeologyModelViewer
+                key={selectedModelUrl}
+                modelUrl={selectedModelUrl}
+                intensity={viewerIntensity}
+                disasterType={disasterType}
+                onIntegrityChange={(integrity, collapsed) => {
+                  setStructuralIntegrity(integrity);
+                  setIsCollapsed(collapsed);
+                }}
+              />
+            </div>
+
+            {/* Live Disaster Damage Telemetry Column */}
+            <div className="space-y-4">
+              <div className="sci-card p-5 space-y-3">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                  {language === 'ar' ? 'التحليل الإنشائي اللحظي' : 'Live Structural Telemetry'}
                 </span>
-                <h3 className="text-xl font-black text-white mt-1">
-                  {language === 'ar' ? selectedLayer.nameAr : selectedLayer.nameEn}
-                </h3>
+
+                <h4 className="text-base font-bold text-white">
+                  {language === 'ar' ? currentBuilding.labelAr : currentBuilding.label}
+                </h4>
+
+                {/* Collapse Failure Explanation Card */}
+                <div className={`p-3.5 rounded-xl border text-xs leading-relaxed ${
+                  simIntensity > currentBuilding.threshold
+                    ? 'bg-rose-950/70 border-rose-500/50 text-rose-200'
+                    : 'bg-emerald-950/70 border-emerald-500/50 text-emerald-200'
+                }`}>
+                  {simIntensity > currentBuilding.threshold ? (
+                    <div>
+                      <span className="font-bold block mb-1">
+                        ⚠️ {language === 'ar' ? 'القوة تجاوزت حد المقاومة:' : 'Threshold Exceeded - Failure Mode:'}
+                      </span>
+                      <span>
+                        {disasterType === 'earthquake'
+                          ? (language === 'ar' 
+                              ? `قوة الزلزال (${simIntensity.toFixed(1)}) تجاوزت قدرة تحمل هذا المبنى (${currentBuilding.threshold}). تنهار القواعد الخرسانية وتتصدع الأعمدة وينهار المبنى بالكامل!`
+                              : `Seismic intensity (${simIntensity.toFixed(1)}) exceeded resistance limit (${currentBuilding.threshold}). Foundation buckles causing total structural collapse!`)
+                          : (language === 'ar'
+                              ? `موجة التسونامي (${(simIntensity * 3).toFixed(1)} م) اجتاحت المبنى بقوة هيدروديناميكية جارفة تخطت قدرة تحمله (${currentBuilding.threshold}). يتم جرف المبنى وسقوطه في مياه الفيضان!`
+                              : `Tsunami surge wave (${(simIntensity * 3).toFixed(1)}m) produced hydrodynamic drag exceeding threshold (${currentBuilding.threshold}). Building collapses and washes away!`)}
+                      </span>
+                    </div>
+                  ) : (
+                    <div>
+                      <span className="font-bold block mb-1">
+                        ✓ {language === 'ar' ? 'المبنى متماسك وقائم:' : 'Structure Resilient & Standing:'}
+                      </span>
+                      <span>
+                        {language === 'ar'
+                          ? `القوة المؤثرة (${simIntensity.toFixed(1)}) ما زالت أقل من حد الانهيار (${currentBuilding.threshold}). المبنى يهتز ولكنه متماسك ولم يسقط.`
+                          : `Applied force (${simIntensity.toFixed(1)}) is within tolerance limit (${currentBuilding.threshold}). Building vibrates but remains standing.`}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Energy & Physics Numbers */}
+                <div className="space-y-2 pt-1 text-xs font-mono">
+                  <div className="flex justify-between py-1.5 border-b border-white/5">
+                    <span className="text-slate-400">{language === 'ar' ? 'حد الانهيار الحرج' : 'Failure Threshold'}</span>
+                    <span className="text-rose-400 font-bold">{currentBuilding.threshold} Richter</span>
+                  </div>
+                  <div className="flex justify-between py-1.5 border-b border-white/5">
+                    <span className="text-slate-400">{language === 'ar' ? 'طاقة الزلزال التقديرية' : 'Earthquake Energy'}</span>
+                    <span className="text-indigo-300 font-bold">
+                      {(calculateEarthquakeEnergyJoules(simIntensity)).toExponential(2)} J
+                    </span>
+                  </div>
+                  <div className="flex justify-between py-1.5 border-b border-white/5">
+                    <span className="text-slate-400">{language === 'ar' ? 'سرعة موجة تسونامي' : 'Wave Velocity'}</span>
+                    <span className="text-cyan-300 font-bold">
+                      {(calculateTsunamiSpeed(4000).speedKmh * (simIntensity / 10)).toFixed(0)} km/h
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between py-1.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <span className="text-slate-400">{language === 'ar' ? 'العمق' : 'Depth Boundary'}</span>
-                  <span className="font-mono text-white">{selectedLayer.depthKm}</span>
+              {/* Educational Comparison Guide */}
+              <div className="sci-card p-4 space-y-2.5">
+                <span className="text-[11px] font-bold text-amber-400 uppercase tracking-wider block">
+                  {language === 'ar' ? '📊 جدول مقارنة مقاومة المباني' : '📊 Comparative Failure Matrix'}
+                </span>
+                <div className="space-y-1.5 text-[11px]">
+                  {GEOLOGY_MODELS.map(m => (
+                    <div key={m.id} className="flex justify-between items-center py-1 border-b border-white/5">
+                      <span className="text-slate-300 truncate max-w-[130px]">
+                        {language === 'ar' ? m.labelAr : m.label}
+                      </span>
+                      <span className="font-mono font-bold text-rose-400">{m.threshold} R</span>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex justify-between py-1.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODULE 2: 3D EARTH PLANETARY CUTAWAY */}
+      {activeModule === 'earthCutaway3d' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 sci-card overflow-hidden flex flex-col h-[560px] border border-indigo-500/30">
+            <div className="bg-[#08090c] px-5 py-3 border-b border-white/10 flex items-center justify-between z-10">
+              <span className="text-xs font-mono font-bold text-white flex items-center gap-2">
+                <Globe2 className="w-4 h-4 text-cyan-400" />
+                <span>{language === 'ar' ? 'المجسم التفاعلي ثلاثي الأبعاد لمقطع طبقات الأرض' : 'Interactive 3D Earth Interior Cutaway'}</span>
+              </span>
+              <span className="text-[11px] font-mono text-cyan-400">
+                Inge Lehmann 1936 Geophysics Model
+              </span>
+            </div>
+
+            <div 
+              ref={cutawayCanvasRef} 
+              className="w-full flex-1 bg-[#050a1a] cursor-grab active:cursor-grabbing"
+              style={{ touchAction: 'none' }}
+            />
+          </div>
+
+          {/* Interactive Layer Selection & Telemetry */}
+          <div className="space-y-4">
+            <div className="sci-card p-5 space-y-3">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                {language === 'ar' ? 'اختر طبقة لفحص خواصها الفيزيائية' : 'Select Layer to Inspect Geophysics'}
+              </span>
+
+              <div className="space-y-2">
+                {EARTH_LAYERS_3D.map((layer) => {
+                  const isSelected = selectedLayer.id === layer.id;
+                  return (
+                    <button
+                      key={layer.id}
+                      onClick={() => setSelectedLayer(layer)}
+                      className={`w-full p-3 rounded-xl border text-left flex items-center justify-between transition-all ${
+                        isSelected
+                          ? 'bg-gradient-to-r from-indigo-950/80 to-slate-900 border-indigo-400 text-white shadow'
+                          : 'bg-slate-950/60 border-white/5 text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <span className="text-xs font-bold">
+                        {language === 'ar' ? layer.nameAr : layer.nameEn}
+                      </span>
+                      <span className="text-[10px] font-mono opacity-75">{layer.depthKm}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Layer Telemetry Readout */}
+              <div className="pt-3 border-t border-white/10 space-y-2 text-xs">
+                <div className="flex justify-between py-1 border-b border-white/5">
                   <span className="text-slate-400">{language === 'ar' ? 'درجة الحرارة' : 'Temperature'}</span>
-                  <span className="font-mono" style={{ color: '#818cf8' }}>{selectedLayer.tempC}</span>
+                  <span className="font-mono text-rose-400 font-bold">{selectedLayer.tempC}</span>
                 </div>
-              </div>
-
-              <div>
-                <span className="text-xs font-semibold text-slate-400 block mb-1">
-                  {language === 'ar' ? 'التركيب الكيميائي' : 'Composition'}
-                </span>
-                <p className="text-xs text-slate-200 leading-relaxed bg-slate-950/70 p-3 rounded-xl" style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
+                <div className="flex justify-between py-1 border-b border-white/5">
+                  <span className="text-slate-400">{language === 'ar' ? 'الضغط الصخري' : 'Lithostatic Pressure'}</span>
+                  <span className="font-mono text-indigo-300 font-bold">{selectedLayer.pressureGPa}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-white/5">
+                  <span className="text-slate-400">{language === 'ar' ? 'الكثافة النوعية' : 'Density'}</span>
+                  <span className="font-mono text-emerald-400 font-bold">{selectedLayer.densityGcm3}</span>
+                </div>
+                <p className="text-[11px] text-slate-300 leading-relaxed bg-slate-950/70 p-3 rounded-xl border border-white/5 mt-2">
                   {language === 'ar' ? selectedLayer.compositionAr : selectedLayer.compositionEn}
                 </p>
               </div>
@@ -264,441 +632,17 @@ export const GeologyLab: React.FC = () => {
 
             {/* Inge Lehmann Card */}
             {lehmann && (
-              <div className="sci-card p-5 space-y-3">
-                <div className="flex items-center space-x-2" style={{ color: '#fbbf24' }}>
-                  <Award className="w-4 h-4" />
-                  <h4 className="text-xs font-bold uppercase tracking-wider">
-                    {language === 'ar' ? 'رائدة علم الزلازل والجيوفيزياء' : 'Scientific Pioneer'}
-                  </h4>
+              <div className="sci-card p-4 space-y-2 border-l-4 border-l-amber-500">
+                <div className="flex items-center gap-1.5 text-amber-400 text-xs font-bold">
+                  <Award className="w-3.5 h-3.5" />
+                  <span>{language === 'ar' ? 'رائدة علم الزلازل الكوكبي' : 'Geophysics Pioneer'}</span>
                 </div>
-                <div>
-                  <span className="text-sm font-bold text-white block">{lehmann.name}</span>
-                  <span className="text-[11px] text-slate-400">{lehmann.dates} • {lehmann.field}</span>
-                </div>
-                <p className="text-xs text-slate-300 leading-relaxed">
+                <span className="text-xs font-bold text-white block">{lehmann.name}</span>
+                <p className="text-[11px] text-slate-300 leading-relaxed">
                   {language === 'ar' ? lehmann.contributionsAr : lehmann.contributionsEn}
                 </p>
-                <span className="text-[10px] text-slate-500 font-mono block">
-                  {lehmann.citation}
-                </span>
               </div>
             )}
-          </div>
-        </div>
-      )}
-
-      {/* MODULE 2: TSUNAMI PROPAGATION */}
-      {activeModule === 'tsunami' && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="sci-card p-6 space-y-5">
-            <h3 className="text-base font-bold text-white pb-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-              {language === 'ar' ? 'محرك انتشار موجات تسونامي في المياه الضحلة' : 'Shallow-Water Tsunami Propagation Engine'}
-            </h3>
-
-            <div>
-              <div className="flex justify-between text-xs font-semibold mb-1">
-                <span className="text-slate-300">
-                  {language === 'ar' ? 'عمق عمود الماء بالمحيط (h):' : 'Ocean Column Bathymetric Depth (h):'}
-                </span>
-                <span style={{ color: '#818cf8' }} className="font-mono">{oceanDepth} m</span>
-              </div>
-              <input
-                type="range"
-                min="50"
-                max="8000"
-                step="50"
-                value={oceanDepth}
-                onChange={(e) => setOceanDepth(Number(e.target.value))}
-                className="w-full"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 pt-2">
-              <div className="metric-card">
-                <span className="text-xs text-slate-400 block mb-1">
-                  {language === 'ar' ? 'سرعة الطور المحسوبة (c)' : 'Calculated Phase Speed (c)'}
-                </span>
-                <span className="text-2xl font-black font-mono" style={{ color: '#818cf8' }}>{tsunamiSpeed.speedMs.toFixed(1)} m/s</span>
-                <span className="text-[10px] text-slate-500 block mt-1">c = &radic;(g &times; h)</span>
-              </div>
-              <div className="metric-card">
-                <span className="text-xs text-slate-400 block mb-1">
-                  {language === 'ar' ? 'السرعة بالكم / ساعة' : 'Speed (km/h)'}
-                </span>
-                <span className="text-2xl font-black font-mono" style={{ color: '#22d3ee' }}>{tsunamiSpeed.speedKmh.toFixed(0)} km/h</span>
-                <span className="text-[10px] text-slate-500 block mt-1">
-                  {language === 'ar' ? 'سرعة طائرة ركاب نفاثة' : 'Jet Airliner Velocity'}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="sci-card p-6 flex flex-col justify-between">
-            <div>
-              <h3 className="text-base font-bold text-white mb-2">
-                {language === 'ar' ? 'النموذج الهيدروديناميكي وقانون جرين للتضخم' : "Hydrodynamic Model & Green's Law"}
-              </h3>
-              <p className="text-xs text-slate-300 leading-relaxed mb-4">
-                {language === 'ar' 
-                  ? 'نظراً لأن الطول الموجي لتسونامي يتجاوز مئات الكيلومترات، فإنه يسلك سلوك أمواج المياه الضحلة حتى في أعماق المحيط. وعند الاقتراب من السواحل، يؤدي انخفاض العمق لتباطؤ السرعة وتضخم ارتفاع الموجة عمودياً للحفاظ على تدفق الطاقة (Green\'s Law).'
-                  : "Because tsunami wavelengths exceed hundreds of kilometers, they behave as shallow-water waves. As waves approach coastline shallows, depth decreases, wave speed slows, and conservation of energy flux dramatically increases wave height (shoaling)."}
-              </p>
-              <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs font-mono text-slate-200 space-y-1">
-                <div>• c = &radic;(g &times; h) (Phase velocity)</div>
-                <div>• H&#8322; / H&#8321; = (h&#8321; / h&#8322;)&frac14; (Green's Law of Shoaling)</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* MODULE 3: SEISMIC TRAVEL TIMES */}
-      {activeModule === 'earthquake' && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="sci-card p-6 space-y-5">
-            <h3 className="text-base font-bold text-white pb-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-              {language === 'ar' ? 'حساب أزمنة وصول الموجات الزلزالية P و S' : 'Seismic P-Wave & S-Wave Arrival Times'}
-            </h3>
-
-            <div>
-              <div className="flex justify-between text-xs font-semibold mb-1">
-                <span className="text-slate-300">
-                  {language === 'ar' ? 'المسافة إلى المركز السطحي (Δ):' : 'Epicentral Distance (Δ):'}
-                </span>
-                <span style={{ color: '#818cf8' }} className="font-mono">{epicenterDistKm} km</span>
-              </div>
-              <input
-                type="range"
-                min="20"
-                max="800"
-                value={epicenterDistKm}
-                onChange={(e) => setEpicenterDistKm(Number(e.target.value))}
-                className="w-full"
-              />
-            </div>
-
-            <div>
-              <div className="flex justify-between text-xs font-semibold mb-1">
-                <span className="text-slate-300">
-                  {language === 'ar' ? 'مقدار الزلزال (Moment Magnitude Mw):' : 'Moment Magnitude (M_w):'}
-                </span>
-                <span style={{ color: '#f87171' }} className="font-mono">{quakeMagnitude} M_w</span>
-              </div>
-              <input
-                type="range"
-                min="4.0"
-                max="9.0"
-                step="0.1"
-                value={quakeMagnitude}
-                onChange={(e) => setQuakeMagnitude(Number(e.target.value))}
-                className="w-full"
-              />
-            </div>
-
-            <div className="grid grid-cols-3 gap-3 pt-2">
-              <div className="metric-card">
-                <span className="text-[10px] text-slate-400 uppercase tracking-wider block">
-                  {language === 'ar' ? 'وصول موجة P' : 'P-Wave Arrival'}
-                </span>
-                <span className="text-base font-bold font-mono" style={{ color: '#34d399' }}>{seismicTimes.pArrivalTimeSec} s</span>
-              </div>
-              <div className="metric-card">
-                <span className="text-[10px] text-slate-400 uppercase tracking-wider block">
-                  {language === 'ar' ? 'وصول موجة S' : 'S-Wave Arrival'}
-                </span>
-                <span className="text-base font-bold font-mono" style={{ color: '#fbbf24' }}>{seismicTimes.sArrivalTimeSec} s</span>
-              </div>
-              <div className="metric-card">
-                <span className="text-[10px] text-slate-400 uppercase tracking-wider block">
-                  {language === 'ar' ? 'فارق S - P' : 'S - P Interval'}
-                </span>
-                <span className="text-base font-bold font-mono" style={{ color: '#f87171' }}>{seismicTimes.sMinusPDurationSec} s</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="sci-card p-6 flex flex-col justify-between">
-            <div>
-              <h3 className="text-base font-bold text-white mb-2">
-                {language === 'ar' ? 'طاقة الزلزال وتحديد البؤرة' : 'Earthquake Energy & Triangulation'}
-              </h3>
-              <p className="text-xs text-slate-300 leading-relaxed mb-4">
-                {language === 'ar'
-                  ? 'الموجات الأولية P (تضاغطية طولية) تنتقل بسرعة أكبر (~6.5 كم/ث)، بينما الموجات الثانوية S (قصّية مستعرضة) أبطأ (~3.75 كم/ث) ولا تمر عبر السوائل. يتيح فارق توقيت وصول S-P تحديد المسافة الدقيقة إلى بؤرة الزلزال.'
-                  : 'P-waves (compressional) travel fastest through crustal rock (~6.5 km/s). S-waves (shear) are slower (~3.75 km/s) and cannot traverse liquids. The S-P arrival time difference determines the precise hypocenter distance via Wadati diagrams.'}
-              </p>
-              <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs font-mono text-slate-200 space-y-1">
-                <div>• Energy Released: {quakeEnergyJoules.toExponential(2)} Joules</div>
-                <div>• log₁₀(E) = 4.8 + 1.5 &middot; M (Gutenberg-Richter)</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* MODULE 4: EARTHQUAKE-RESISTANT STRUCTURES & BASE ISOLATION */}
-      {activeModule === 'structural' && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="sci-card p-6 space-y-5">
-            <h3 className="text-base font-bold text-white pb-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-              {language === 'ar' ? 'محاكي الاهتزاز وعزل القواعد الزلزالي للمباني' : 'Structural Vibration & Base Isolation Simulator'}
-            </h3>
-
-            <div>
-              <div className="flex justify-between text-xs font-semibold mb-1">
-                <span className="text-slate-300">
-                  {language === 'ar' ? 'عدد طوابق المبنى:' : 'Building Floor Count:'}
-                </span>
-                <span style={{ color: '#818cf8' }} className="font-mono">{floors} floors</span>
-              </div>
-              <input
-                type="range"
-                min="2"
-                max="30"
-                value={floors}
-                onChange={(e) => setFloors(Number(e.target.value))}
-                className="w-full"
-              />
-            </div>
-
-            <div>
-              <div className="flex justify-between text-xs font-semibold mb-1">
-                <span className="text-slate-300">
-                  {language === 'ar' ? 'تردد الهزة الأرضية (Hz):' : 'Ground Motion Frequency (Hz):'}
-                </span>
-                <span style={{ color: '#818cf8' }} className="font-mono">{groundFrequency} Hz</span>
-              </div>
-              <input
-                type="range"
-                min="0.2"
-                max="4.0"
-                step="0.1"
-                value={groundFrequency}
-                onChange={(e) => setGroundFrequency(Number(e.target.value))}
-                className="w-full"
-              />
-            </div>
-
-            <div className="flex items-center justify-between p-3 rounded-xl bg-slate-950 border border-slate-800">
-              <span className="text-xs font-bold text-white">
-                {language === 'ar' ? 'تفعيل نظام عزل القواعد الزلزالي (Base Isolation):' : 'Activate Base Isolation Bearings:'}
-              </span>
-              <button
-                onClick={() => setIsIsolated(!isIsolated)}
-                className="px-4 py-1.5 rounded-lg text-xs font-bold transition-all"
-                style={isIsolated ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)', color: 'white' } : { background: '#1e293b', color: '#94a3b8' }}
-              >
-                {isIsolated ? (language === 'ar' ? 'مفعل (محمي)' : 'Active (Protected)') : (language === 'ar' ? 'غير مفعل (قواعد ثابتة)' : 'Fixed Base')}
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 pt-2">
-              <div className="metric-card">
-                <span className="text-[10px] text-slate-400 uppercase tracking-wider block">
-                  {language === 'ar' ? 'إزاحة القمة المتذبذبة' : 'Peak Relative Drift'}
-                </span>
-                <span className="text-base font-bold font-mono" style={{ color: isIsolated ? '#34d399' : '#f87171' }}>
-                  {structuralMetrics.peakRelativeDispMm} mm
-                </span>
-              </div>
-              <div className="metric-card">
-                <span className="text-[10px] text-slate-400 uppercase tracking-wider block">
-                  {language === 'ar' ? 'قوة القص القاعدي' : 'Peak Base Shear'}
-                </span>
-                <span className="text-base font-bold font-mono" style={{ color: isIsolated ? '#34d399' : '#f87171' }}>
-                  {structuralMetrics.peakBaseShearKn} kN
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="sci-card p-6 flex flex-col justify-between">
-            <div>
-              <h3 className="text-base font-bold text-white mb-2">
-                {language === 'ar' ? 'المبادئ الهندسية لتخميد الزلازل' : 'Earthquake Engineering Principles'}
-              </h3>
-              <p className="text-xs text-slate-300 leading-relaxed mb-4">
-                {language === 'ar'
-                  ? 'يعمل عزل القواعد على إطالة زمن الدورة الطبيعية للمبنى (T > 2.0s)، مما يزحزح استجابة المنشأ بعيداً عن حيز التردد الرنيني للهزة الأرضية العنيفة ويزيد التخميد اللزوجي (&zeta; &asymp; 18%)، مما يقلل قوى القص القاعدي والتسارع بنسبة تصل إلى 70%.'
-                  : 'Base isolation decouples the superstructure from ground shaking by lengthening the natural structural period (T > 2.0s) and increasing viscous damping. This shifts building resonance away from predominant earthquake frequencies, reducing seismic base shear by up to 70%.'}
-              </p>
-              <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs font-mono text-slate-200 space-y-1">
-                <div>• Natural Frequency (f_n): {structuralMetrics.naturalFrequencyHz} Hz</div>
-                <div>• Damping Ratio (&zeta;): {structuralMetrics.dampingRatio}</div>
-                <div>• Dynamic Amplification (DAF): {structuralMetrics.displacementAmplification}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* MODULE 5: INTERACTIVE 3D SIMULATION */}
-      {activeModule === 'interactive3d' && (
-        <div className="space-y-6">
-          {/* Model selector row */}
-          <div className="sci-card p-5">
-            <div className="flex flex-col md:flex-row md:items-center gap-4">
-              <div className="flex-1">
-                <h3 className="text-base font-bold text-white mb-1" style={{ fontFamily: 'var(--font-display)' }}>
-                  {language === 'ar' ? 'المحاكاة التفاعلية ثلاثية الأبعاد للكوارث الطبيعية' : '3D Interactive Natural Disaster Simulation'}
-                </h3>
-                <p className="text-xs text-slate-400">
-                  {language === 'ar'
-                    ? 'اختر نموذج مبنى وتحكم في قوة الزلزال أو التسونامي لمشاهدة التأثير لحظياً'
-                    : 'Select a structure model and control earthquake or tsunami intensity to see live effects'}
-                </p>
-              </div>
-              <div className="flex items-center gap-3">
-                <select
-                  value={selectedModelUrl}
-                  onChange={(e) => setSelectedModelUrl(e.target.value)}
-                  className="text-xs rounded-xl px-3 py-2"
-                  style={{ background: 'rgba(17,24,39,0.9)', border: '1px solid rgba(99,102,241,0.3)', color: 'white', minWidth: '180px' }}
-                >
-                  {GEOLOGY_MODELS.map((m) => (
-                    <option key={m.url} value={m.url} style={{ background: '#111827' }}>
-                      {language === 'ar' ? m.labelAr : m.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* 3D Viewer */}
-            <div className="lg:col-span-2 sci-card overflow-hidden" style={{ minHeight: '500px' }}>
-              <GeologyModelViewer modelUrl={selectedModelUrl} intensity={viewerIntensity} disasterType={simType} />
-            </div>
-
-            {/* Controls Panel */}
-            <div className="space-y-4">
-              {/* Simulation Type Toggle */}
-              <div className="sci-card p-5 space-y-4">
-                <h4 className="text-sm font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
-                  {language === 'ar' ? 'نوع الكارثة' : 'Disaster Type'}
-                </h4>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    onClick={() => setSimType('earthquake')}
-                    className="px-3 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2"
-                    style={simType === 'earthquake'
-                      ? { background: 'linear-gradient(135deg, #f59e0b, #f43f5e)', color: 'white', boxShadow: '0 0 16px rgba(245,158,11,0.3)' }
-                      : { background: 'rgba(255,255,255,0.04)', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.07)' }}
-                  >
-                    <AlertTriangle className="w-4 h-4" />
-                    {language === 'ar' ? 'زلزال' : 'Earthquake'}
-                  </button>
-                  <button
-                    onClick={() => setSimType('tsunami')}
-                    className="px-3 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2"
-                    style={simType === 'tsunami'
-                      ? { background: 'linear-gradient(135deg, #06b6d4, #6366f1)', color: 'white', boxShadow: '0 0 16px rgba(6,182,212,0.3)' }
-                      : { background: 'rgba(255,255,255,0.04)', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.07)' }}
-                  >
-                    <Waves className="w-4 h-4" />
-                    {language === 'ar' ? 'تسونامي' : 'Tsunami'}
-                  </button>
-                </div>
-              </div>
-
-              {/* Intensity Slider */}
-              <div className="sci-card p-5 space-y-4">
-                <div className="flex justify-between items-center">
-                  <h4 className="text-sm font-bold text-white">
-                    {simType === 'earthquake'
-                      ? (language === 'ar' ? 'قوة الزلزال' : 'Earthquake Magnitude')
-                      : (language === 'ar' ? 'قوة التسونامي' : 'Tsunami Force')}
-                  </h4>
-                  <span className="text-lg font-black font-mono" style={{ color: simIntensity > 7 ? '#ef4444' : simIntensity > 4 ? '#f59e0b' : '#34d399' }}>
-                    {simIntensity}/10
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min="1"
-                  max="10"
-                  step="1"
-                  value={simIntensity}
-                  onChange={(e) => setSimIntensity(Number(e.target.value))}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-[10px] text-slate-500">
-                  <span>{language === 'ar' ? 'ضعيف' : 'Mild'}</span>
-                  <span>{language === 'ar' ? 'متوسط' : 'Moderate'}</span>
-                  <span>{language === 'ar' ? 'مدمر' : 'Devastating'}</span>
-                </div>
-              </div>
-
-              {/* Play/Pause */}
-              <button
-                onClick={() => setIsSimRunning(!isSimRunning)}
-                className="w-full py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all"
-                style={isSimRunning
-                  ? { background: 'rgba(244,63,94,0.15)', color: '#f87171', border: '1px solid rgba(244,63,94,0.3)' }
-                  : { background: 'linear-gradient(135deg, #6366f1, #06b6d4)', color: 'white', boxShadow: '0 0 20px rgba(99,102,241,0.4)' }}
-              >
-                {isSimRunning ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                {isSimRunning
-                  ? (language === 'ar' ? 'إيقاف المحاكاة' : 'Stop Simulation')
-                  : (language === 'ar' ? 'بدء المحاكاة' : 'Start Simulation')}
-              </button>
-
-              {/* Damage Assessment */}
-              <div className="sci-card p-5 space-y-3">
-                <h4 className="text-sm font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
-                  {language === 'ar' ? 'تقييم الأضرار' : 'Damage Assessment'}
-                </h4>
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 rounded-full glow-pulse" style={{ backgroundColor: damage.color, boxShadow: `0 0 8px ${damage.color}` }} />
-                  <span className="text-base font-bold" style={{ color: damage.color }}>{damage.level}</span>
-                </div>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  {language === 'ar' ? damage.descAr : damage.descEn}
-                </p>
-
-                <div className="grid grid-cols-2 gap-2 pt-2">
-                  <div className="metric-card">
-                    <div className="text-[10px] text-slate-500 uppercase">{language === 'ar' ? 'نوع المبنى' : 'Structure'}</div>
-                    <div className="text-xs font-bold text-white mt-0.5">{language === 'ar' ? selectedModel.labelAr : selectedModel.label}</div>
-                  </div>
-                  <div className="metric-card">
-                    <div className="text-[10px] text-slate-500 uppercase">{language === 'ar' ? 'شدة الاهتزاز' : 'Shake Force'}</div>
-                    <div className="text-xs font-bold mt-0.5" style={{ color: '#818cf8', fontFamily: 'var(--font-mono)' }}>
-                      {isSimRunning ? `${(viewerIntensity * 100).toFixed(0)}%` : '0%'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Info cards row */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="sci-card p-4 space-y-2">
-              <span className="sci-badge">{language === 'ar' ? 'نماذج ثلاثية الأبعاد' : '3D Models'}</span>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                {language === 'ar'
-                  ? '6 نماذج واقعية تشمل مبانٍ سكنية وتجارية وكوخ خشبي وموقع بناء ومشهد شاطئي لمحاكاة تأثيرات الكوارث المختلفة.'
-                  : '6 realistic GLB models including residential, commercial, wooden, construction, and coastal scenes for diverse disaster simulation.'}
-              </p>
-            </div>
-            <div className="sci-card p-4 space-y-2">
-              <span className="sci-badge sci-badge-warning">{language === 'ar' ? 'محاكاة لحظية' : 'Real-Time Physics'}</span>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                {language === 'ar'
-                  ? 'اهتزاز واقعي يعتمد على شدة القوة المطبقة مع تقييم فوري للأضرار بناءً على نوع المبنى ونوع الكارثة.'
-                  : 'Realistic shaking animation proportional to force intensity with instant damage assessment based on structure type and disaster category.'}
-              </p>
-            </div>
-            <div className="sci-card p-4 space-y-2">
-              <span className="sci-badge sci-badge-success">{language === 'ar' ? 'تعليم تفاعلي' : 'Interactive Learning'}</span>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                {language === 'ar'
-                  ? 'قارن بين استجابة المباني المختلفة للزلازل والتسونامي لفهم أهمية التصميم الإنشائي المقاوم للكوارث.'
-                  : 'Compare how different structures respond to earthquakes vs. tsunamis to understand the importance of disaster-resistant engineering.'}
-              </p>
-            </div>
           </div>
         </div>
       )}
@@ -706,3 +650,4 @@ export const GeologyLab: React.FC = () => {
     </div>
   );
 };
+export default GeologyLab;

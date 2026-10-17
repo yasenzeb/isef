@@ -7,7 +7,8 @@ import {
   MapPin,
   Menu,
   X,
-  Download
+  Download,
+  Presentation
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -33,7 +34,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'chemistry', num: '04', label: t.nav.chemistry },
     { id: 'biology', num: '05', label: t.nav.biology },
     { id: 'geology', num: '06', label: t.nav.geology },
-    { id: 'classroom', num: '07', label: t.nav.classroom, highlight: true },
+    { id: 'astronomy', num: '07', label: t.nav.astronomy },
   ];
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -68,24 +69,40 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </div>
 
-          {/* Center: Industrial Pill Navigation */}
-          <nav className="hidden lg:flex items-center p-1 bg-[#090a0d] border border-white/[0.08] rounded-full gap-0.5">
-            {navItems.map((item) => {
-              const isActive = currentTab === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => setCurrentTab(item.id)}
-                  className={`tech-tab-pill ${isActive ? 'active' : ''}`}
-                >
-                  <span className={`font-mono text-[10px] opacity-60 ${isActive ? 'text-black' : 'text-slate-400'}`}>
-                    {item.num}
-                  </span>
-                  <span>{item.label}</span>
-                </button>
-              );
-            })}
-          </nav>
+          {/* Center: Industrial Pill Navigation & Separated Classroom Presentation Button */}
+          <div className="hidden lg:flex items-center gap-3">
+            <nav className="flex items-center p-1 bg-[#090a0d] border border-white/[0.08] rounded-full gap-0.5">
+              {navItems.map((item) => {
+                const isActive = currentTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setCurrentTab(item.id)}
+                    className={`tech-tab-pill ${isActive ? 'active' : ''}`}
+                  >
+                    <span className={`font-mono text-[10px] opacity-60 ${isActive ? 'text-black' : 'text-slate-400'}`}>
+                      {item.num}
+                    </span>
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+
+            {/* Distinct Separated Classroom Mode Button (Amber / Gold Accent) */}
+            <button
+              onClick={() => setCurrentTab('classroom')}
+              title={t.nav.classroom}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold transition-all shadow-md ${
+                currentTab === 'classroom'
+                  ? 'bg-amber-400 text-black shadow-amber-400/40 ring-2 ring-amber-300'
+                  : 'bg-amber-500/10 text-amber-300 border border-amber-500/30 hover:bg-amber-500/20 hover:border-amber-400/60 shadow-amber-500/10'
+              }`}
+            >
+              <Presentation className="w-3.5 h-3.5 text-amber-400" />
+              <span>{t.nav.classroom}</span>
+            </button>
+          </div>
 
           {/* Right: Telemetry & Controls */}
           <div className="hidden sm:flex items-center gap-2.5">
@@ -177,6 +194,27 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             );
           })}
+
+          {/* Separated Mobile Classroom Button */}
+          <button
+            onClick={() => {
+              setCurrentTab('classroom');
+              setMobileMenuOpen(false);
+            }}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-mono font-bold transition-all my-1.5 ${
+              currentTab === 'classroom'
+                ? 'bg-amber-400 text-black shadow-md'
+                : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <Presentation className="w-4 h-4 text-amber-400" />
+              <span>{t.nav.classroom}</span>
+            </span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-400/20 text-amber-300">
+              SMARTBOARD
+            </span>
+          </button>
 
           <div className="pt-2 flex items-center justify-between border-t border-white/[0.06] mt-2">
             <button
