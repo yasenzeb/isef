@@ -387,7 +387,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
               <span className="text-[11px] font-mono text-cyan-400 uppercase tracking-wider font-bold">
-                AI SMART SEARCH & VIRTUAL LABORATORIES
+                {language === 'ar' ? 'المختبرات العلمية والمعامل التفاعلية' : 'STEM VIRTUAL LABORATORIES'}
               </span>
             </div>
             <h2 className="text-2xl font-bold text-white tracking-tight mt-1">
@@ -395,7 +395,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
             </h2>
           </div>
 
-          {/* AI Search input */}
+          {/* Search input */}
           <div className="relative w-full md:w-96">
             <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-500" />
             <input
@@ -407,10 +407,9 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
                   onNavigate(detectedAIIntent.tab);
                 }
               }}
-              placeholder={language === 'ar' ? 'ابحث بالذكاء الاصطناعي (مثل: قلب، أميبا، تسونامي، كواكب...)' : 'AI Smart Search (e.g. heart, amoeba, tsunami, moon)...'}
-              className="w-full bg-[#08090c] border border-white/10 rounded-xl pl-9 pr-8 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 font-mono transition-colors"
+              placeholder={language === 'ar' ? 'ابحث في المعامل (مثل: قلب، أميبا، تسونامي، كواكب، عناصر)...' : 'Search labs (e.g. heart, amoeba, tsunami, moon, atom)...'}
+              className="w-full bg-[#08090c] border border-white/10 rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 font-mono transition-colors"
             />
-            <Bot className="absolute right-2.5 top-2.5 w-4 h-4 text-cyan-400" />
           </div>
         </div>
 
@@ -426,12 +425,12 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
               </div>
               <div>
                 <span className="text-[11px] font-mono text-cyan-400 block font-bold">
-                  {language === 'ar' ? '🤖 تم التعرف على مقصدك بالذكاء الاصطناعي:' : '🤖 AI Intent Auto-Detected:'}
+                  {language === 'ar' ? '🔍 اقتراح الانتقال المباشر للمختبر:' : '🔍 Direct Lab Navigation:'}
                 </span>
                 <span className="text-xs font-bold text-white">
                   {language === 'ar' 
-                    ? `البحث عن "${detectedAIIntent.matchedTerm}" → الانتقال المباشر إلى ${detectedAIIntent.labNameAr}`
-                    : `Query "${detectedAIIntent.matchedTerm}" → Navigate directly to ${detectedAIIntent.labNameEn}`}
+                    ? `الانتقال إلى ${detectedAIIntent.labNameAr} بناءً على "${detectedAIIntent.matchedTerm}"`
+                    : `Query "${detectedAIIntent.matchedTerm}" → Navigate to ${detectedAIIntent.labNameEn}`}
                 </span>
               </div>
             </div>

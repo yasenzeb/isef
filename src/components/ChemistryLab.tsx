@@ -525,29 +525,94 @@ export const ChemistryLab: React.FC = () => {
               </select>
             </div>
 
-            {/* Elements Grid */}
-            <div className="grid grid-cols-6 sm:grid-cols-9 md:grid-cols-12 gap-1.5 min-w-[500px]">
-              {filteredElements.map((el) => {
-                const isSelected = selectedElement.number === el.number;
-                return (
-                  <button
-                    key={el.number}
-                    onClick={() => setSelectedElement(el)}
-                    className={`flex flex-col items-center justify-center p-2 rounded-xl border transition-all text-center relative ${
-                      isSelected 
-                        ? 'bg-indigo-500/25 border-cyan-400 ring-2 ring-cyan-400/80 scale-105 z-10 shadow-lg' 
-                        : 'bg-slate-950/80 border-slate-800 hover:border-indigo-500/40 hover:scale-102'
-                    }`}
-                  >
-                    <span className="text-[9px] font-mono text-slate-400 absolute top-1 left-1.5">{el.number}</span>
-                    <span className="text-base font-black text-white mt-2">{el.symbol}</span>
-                    <span className="text-[10px] text-slate-300 truncate max-w-full font-medium">
-                      {ar ? el.nameAr : el.nameEn}
-                    </span>
-                    <span className="text-[8px] font-mono text-slate-500 mt-0.5">{el.atomicMass}</span>
-                  </button>
-                );
-              })}
+            {/* Real 18-Column Authentic Periodic Table Layout */}
+            <div className="overflow-x-auto pb-4">
+              <div 
+                className="grid gap-1 min-w-[950px] p-2 bg-[#030611] rounded-2xl border border-white/10"
+                style={{
+                  gridTemplateColumns: 'repeat(18, minmax(46px, 1fr))',
+                  gridTemplateRows: 'repeat(10, minmax(54px, auto))',
+                }}
+              >
+                {/* 18 Group Numbers Header */}
+                {Array.from({ length: 18 }, (_, i) => (
+                  <div key={`grp-${i + 1}`} className="text-center font-mono text-[10px] text-slate-500 font-bold py-0.5" style={{ gridColumn: i + 1, gridRow: 1 }}>
+                    {i + 1}
+                  </div>
+                ))}
+
+                {/* Main Table Elements (Periods 1 to 7) */}
+                {elements.map((el) => {
+                  const isSelected = selectedElement.number === el.number;
+                  const isVisible = filteredElements.some(f => f.number === el.number);
+                  const isLanthanide = el.category === 'lanthanide';
+                  const isActinide = el.category === 'actinide';
+
+                  // Lanthanides & Actinides are placed below in row 9 and 10
+                  let gridRow = el.period + 1; // +1 for group headers
+                  let gridCol = el.group;
+
+                  if (isLanthanide) {
+                    gridRow = 9;
+                    gridCol = (el.number - 57) + 3; // 57 (La) starts at col 3
+                  } else if (isActinide) {
+                    gridRow = 10;
+                    gridCol = (el.number - 89) + 3; // 89 (Ac) starts at col 3
+                  }
+
+                  // Category styling colors
+                  let catColor = 'border-slate-800 bg-[#090d1a]';
+                  if (el.category === 'noble-gas') catColor = 'border-purple-500/40 bg-purple-950/20 text-purple-300';
+                  else if (el.category === 'alkali-metal') catColor = 'border-red-500/40 bg-red-950/20 text-red-300';
+                  else if (el.category === 'alkaline-earth') catColor = 'border-orange-500/40 bg-orange-950/20 text-orange-300';
+                  else if (el.category === 'transition-metal') catColor = 'border-blue-500/40 bg-blue-950/20 text-blue-300';
+                  else if (el.category === 'metalloid') catColor = 'border-teal-500/40 bg-teal-950/20 text-teal-300';
+                  else if (el.category === 'nonmetal') catColor = 'border-emerald-500/40 bg-emerald-950/20 text-emerald-300';
+                  else if (el.category === 'post-transition') catColor = 'border-indigo-500/40 bg-indigo-950/20 text-indigo-300';
+                  else if (el.category === 'lanthanide') catColor = 'border-pink-500/40 bg-pink-950/20 text-pink-300';
+                  else if (el.category === 'actinide') catColor = 'border-amber-500/40 bg-amber-950/20 text-amber-300';
+
+                  return (
+                    <button
+                      key={el.number}
+                      onClick={() => setSelectedElement(el)}
+                      style={{
+                        gridColumn: gridCol,
+                        gridRow: gridRow,
+                      }}
+                      className={`flex flex-col items-center justify-center p-1 rounded-lg border transition-all text-center relative ${catColor} ${
+                        !isVisible ? 'opacity-25 grayscale' : 'opacity-100'
+                      } ${
+                        isSelected 
+                          ? 'ring-2 ring-cyan-400 scale-105 z-20 shadow-lg shadow-cyan-500/30' 
+                          : 'hover:scale-105 hover:z-10'
+                      }`}
+                    >
+                      <span className="text-[8px] font-mono text-slate-400 absolute top-0.5 left-1 leading-none">{el.number}</span>
+                      <span className="text-sm font-black text-white mt-1.5 leading-none">{el.symbol}</span>
+                      <span className="text-[9px] text-slate-300 truncate max-w-full font-medium leading-tight">
+                        {ar ? el.nameAr : el.nameEn}
+                      </span>
+                    </button>
+                  );
+                })}
+
+                {/* Lanthanide & Actinide placeholders in main body (Period 6 & 7, Group 3) */}
+                <div 
+                  style={{ gridColumn: 3, gridRow: 7 }} 
+                  className="flex flex-col items-center justify-center p-1 rounded-lg border border-pink-500/30 bg-pink-950/20 text-[9px] font-mono text-pink-300 text-center"
+                >
+                  <span className="font-bold">57-71</span>
+                  <span className="text-[7px]">La-Lu</span>
+                </div>
+                <div 
+                  style={{ gridColumn: 3, gridRow: 8 }} 
+                  className="flex flex-col items-center justify-center p-1 rounded-lg border border-amber-500/30 bg-amber-950/20 text-[9px] font-mono text-amber-300 text-center"
+                >
+                  <span className="font-bold">89-103</span>
+                  <span className="text-[7px]">Ac-Lr</span>
+                </div>
+              </div>
             </div>
           </div>
 

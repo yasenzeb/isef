@@ -758,6 +758,16 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
               return;
             }
 
+            // Move nasal cartilage from skeletal layer to joints and cartilage layer
+            const isNasalCartilage = /nasal.*cartilage|cartilage.*nasal|septal.*cartilage|cartilago.*nasi|alar.*cartilage/i.test(name);
+            if (isNasalCartilage) {
+              if (sysConfig.id === 'skeletal') {
+                mesh.visible = false;
+                mesh.raycast = () => {};
+                return;
+              }
+            }
+
             // Specialized authentic organ & muscle color shading
             if (name.includes('liver')) {
               matColor = 0x78281f; // Deep rich hepatic reddish-brown
@@ -1153,6 +1163,38 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
               nameAr = `نصف الكرة المخية (Cerebral Hemisphere)`;
               descAr = 'أعلى مراكز التفكير الواعي والإدراك الحسي والتخطيط واللغة والذاكرة والتفكير المجرد.';
               descEn = 'Telencephalic hemisphere executing conscious sensory perception, executive planning, language, and cognition.';
+            } else if (lower.includes('frontal lobe')) {
+              nameAr = `الفص الجبهي للمخ (Frontal Lobe)`;
+              descAr = 'مركز الوظائف التنفيذية العليا، التخطيط، اتخاذ القرار، الشخصية، والتحكم بالحركات الإرادية عبر الباحة الحركية الأولية.';
+              descEn = 'Anterior cerebral lobe governing executive functions, working memory, reasoning, and primary voluntary motor commands.';
+            } else if (lower.includes('parietal lobe')) {
+              nameAr = `الفص الجداري للمخ (Parietal Lobe)`;
+              descAr = 'مركز معالجة الإحساس الجسدي اللمسي، الإدراك المكاني ثلاثي الأبعاد، والتكامل الحسي للغة.';
+              descEn = 'Cerebral region integrating somatosensory input, spatial orientation, temperature, and nociception.';
+            } else if (lower.includes('temporal lobe')) {
+              nameAr = `الفص الصدغي للمخ (Temporal Lobe)`;
+              descAr = 'مركز معالجة السمع، إدراك وفهم الكلام واللغة (منطقة فيرنيكه)، وتثبيت الذكريات عبر الحصين.';
+              descEn = 'Lateral cerebral cortex mediating auditory processing, language comprehension, and declarative memory formation.';
+            } else if (lower.includes('occipital lobe')) {
+              nameAr = `الفص القذالي للمخ (Occipital Lobe)`;
+              descAr = 'المركز البصري الرئيسي في الدماغ المسؤول عن معالجة المشاهد المرئية، الألوان، الأشكال، والتعرف على الوجوه.';
+              descEn = 'Posterior cerebral cortex housing primary visual area V1 for retinotopic map synthesis and visual perception.';
+            } else if (lower.includes('insula') || lower.includes('insular')) {
+              nameAr = `فص الجزيرة الدماغي (Insular Cortex)`;
+              descAr = 'قشرة دماغية عميقة داخل الثلم الوحشي مسؤولة عن الإدراك الحشوي الذاتي، التذوق، والتعاطف الوجداني.';
+              descEn = 'Deep cortical structure mediating interoceptive awareness, visceral sensation, taste, and emotional processing.';
+            } else if (lower.includes('basal ganglia') || lower.includes('striatum') || lower.includes('putamen') || lower.includes('caudate')) {
+              nameAr = `العقد القاعدية (Basal Ganglia)`;
+              descAr = 'مجموعة نوى تحت قشرية تنظم سلاسة الحركة الإرادية، كبح الحركات غير المرغوبة، والتعلم الإجرائي.';
+              descEn = 'Subcortical nuclei modulating initiation and smooth execution of motor programs and habitual learning.';
+            } else if (lower.includes('internal capsule')) {
+              nameAr = `المحفظة الداخلية (Internal Capsule)`;
+              descAr = 'حزمة ضخمة من الألياف العصبية البيضاء الصاعدة والهابطة تربط القشرة المخية بجذع الدماغ والنخاع الشوكي.';
+              descEn = 'Massive white-matter pathway carrying corticospinal motor and thalamocortical sensory projections.';
+            } else if (lower.includes('pituitary') || lower.includes('hypophysis')) {
+              nameAr = `الغدة النخامية (Pituitary Gland)`;
+              descAr = 'سيدة الغدد الصماء الواقعة في قاع الجمجمة عند السرج التركي، تفرز هرمونات النمو وضبط باقي غدد الجسم.';
+              descEn = 'Master endocrine gland situated in the sella turcica regulating systemic growth, metabolism, and reproduction.';
             } else if (lower.includes('corpus callosum')) {
               nameAr = `الجسم الثفني (Corpus Callosum)`;
               descAr = 'الجسر العصبي العريض من الألياف البيضاء الذي يربط نصفي الكرة المخية ويؤمن تبادل المعلومات بينهما.';

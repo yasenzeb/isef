@@ -206,47 +206,55 @@ export const GeologyLab: React.FC = () => {
     const globeGroup = new THREE.Group();
     scene.add(globeGroup);
 
-    // 1. Inner Core (Solid sphere)
-    const icGeo = new THREE.SphereGeometry(0.7, 32, 32, 0, Math.PI * 1.5);
+    // Load real Earth surface & cross-section textures uploaded by user
+    const texLoader = new THREE.TextureLoader();
+    const earthLayersTex = texLoader.load('/textures/earth/earth_cutaway_layers.jpg');
+    earthLayersTex.colorSpace = THREE.SRGBColorSpace;
+
+    // 1. Inner Core (Solid glowing incandescent sphere)
+    const icGeo = new THREE.SphereGeometry(0.7, 40, 40, 0, Math.PI * 1.5);
     const icMat = new THREE.MeshStandardMaterial({
-      color: 0xfef08a,
-      emissive: 0xeab308,
-      emissiveIntensity: 0.35,
-      roughness: 0.3,
+      color: 0xfffbeb,
+      emissive: 0xfef08a,
+      emissiveIntensity: 0.8,
+      roughness: 0.2,
       side: THREE.DoubleSide
     });
     const icMesh = new THREE.Mesh(icGeo, icMat);
     globeGroup.add(icMesh);
 
-    // 2. Outer Core (Liquid shell)
-    const ocGeo = new THREE.SphereGeometry(1.25, 32, 32, 0, Math.PI * 1.5);
+    // 2. Outer Core (Liquid incandescent shell with molten texture)
+    const ocGeo = new THREE.SphereGeometry(1.25, 40, 40, 0, Math.PI * 1.5);
     const ocMat = new THREE.MeshStandardMaterial({
       color: 0xf97316,
-      emissive: 0xc2410c,
-      emissiveIntensity: 0.2,
-      transparent: true,
-      opacity: 0.85,
+      emissive: 0xea580c,
+      emissiveIntensity: 0.45,
+      map: earthLayersTex,
+      roughness: 0.35,
       side: THREE.DoubleSide
     });
     const ocMesh = new THREE.Mesh(ocGeo, ocMat);
     globeGroup.add(ocMesh);
 
-    // 3. Mantle (Convective shell)
-    const mGeo = new THREE.SphereGeometry(1.9, 32, 32, 0, Math.PI * 1.5);
+    // 3. Mantle (Silicate convective mantle with natural striations)
+    const mGeo = new THREE.SphereGeometry(1.9, 48, 48, 0, Math.PI * 1.5);
     const mMat = new THREE.MeshStandardMaterial({
       color: 0xd97706,
-      roughness: 0.8,
+      emissive: 0x9a3412,
+      emissiveIntensity: 0.2,
+      map: earthLayersTex,
+      roughness: 0.75,
       side: THREE.DoubleSide
     });
     const mMesh = new THREE.Mesh(mGeo, mMat);
     globeGroup.add(mMesh);
 
-    // 4. Crust & Oceanic surface
-    const cGeo = new THREE.SphereGeometry(2.1, 48, 48, 0, Math.PI * 1.5);
+    // 4. Crust & Oceanic surface (Real continents and oceans)
+    const cGeo = new THREE.SphereGeometry(2.1, 64, 64, 0, Math.PI * 1.5);
     const cMat = new THREE.MeshStandardMaterial({
-      color: 0x0284c7,
-      roughness: 0.6,
-      metalness: 0.1,
+      map: earthLayersTex,
+      roughness: 0.55,
+      metalness: 0.05,
       side: THREE.DoubleSide
     });
     const cMesh = new THREE.Mesh(cGeo, cMat);
@@ -579,6 +587,27 @@ export const GeologyLab: React.FC = () => {
               className="w-full flex-1 bg-[#050a1a] cursor-grab active:cursor-grabbing"
               style={{ touchAction: 'none' }}
             />
+
+            {/* Authentic Geological Cross-Section Reference Banner */}
+            <div className="bg-[#040714] p-3 border-t border-white/10 flex items-center gap-3">
+              <div className="w-20 h-16 rounded-lg overflow-hidden border border-white/10 flex-shrink-0 bg-black">
+                <img
+                  src="/textures/earth/earth_diagram_labeled.jpg"
+                  alt="Earth Layers Geological Reference"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="text-[11px] leading-tight">
+                <span className="text-amber-400 font-bold block mb-0.5">
+                  {language === 'ar' ? '📖 المرجع الجيولوجي المعتمد لطبقات الأرض' : '📖 Standard Lithospheric Cross-Section'}
+                </span>
+                <span className="text-slate-400">
+                  {language === 'ar'
+                    ? 'القشرة الأرضية (السيال والسيما) • غلاف الوشاح الصخري • اللب الخارجي المنصهر • اللب الداخلي الصلب.'
+                    : 'Continental/Oceanic Crust • Asthenosphere & Mesosphere • Outer Molten Core • Solid Fe-Ni Inner Core.'}
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Interactive Layer Selection & Telemetry */}

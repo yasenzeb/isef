@@ -354,61 +354,25 @@ export const AstronomyLab: React.FC = () => {
     // Procedural Moon Sphere with craters and highlands
     const moonGeo = new THREE.SphereGeometry(1.35, 64, 64);
     
-    // Create high-fidelity canvas texture for Moon surface
-    const texCanvas = document.createElement('canvas');
-    texCanvas.width = 1024;
-    texCanvas.height = 512;
-    const ctx = texCanvas.getContext('2d');
-    if (ctx) {
-      // Base basalt grey
-      ctx.fillStyle = '#64748b';
-      ctx.fillRect(0, 0, 1024, 512);
-
-      // Dark basalt maria (lunar seas)
-      ctx.fillStyle = '#334155';
-      const maria = [
-        { x: 350, y: 180, r: 90 }, // Mare Tranquillitatis
-        { x: 480, y: 160, r: 80 }, // Mare Serenitatis
-        { x: 260, y: 220, r: 120 }, // Oceanus Procellarum
-        { x: 420, y: 270, r: 70 }, // Mare Imbrium
-        { x: 620, y: 230, r: 65 }, // Mare Crisium
-      ];
-      maria.forEach(m => {
-        ctx.beginPath();
-        ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
-        ctx.filter = 'blur(12px)';
-        ctx.fill();
-        ctx.filter = 'none';
-      });
-
-      // Bright craters and ejecta rays (Tycho & Copernicus)
-      ctx.fillStyle = '#cbd5e1';
-      for (let c = 0; c < 70; c++) {
-        const cx = Math.random() * 1024;
-        const cy = Math.random() * 512;
-        const cr = Math.random() * 8 + 2;
-        ctx.beginPath();
-        ctx.arc(cx, cy, cr, 0, Math.PI * 2);
-        ctx.fill();
+    // Load authentic high-resolution photographic lunar texture uploaded by user
+    const textureLoader = new THREE.TextureLoader();
+    const realMoonTexture = textureLoader.load(
+      '/textures/moon/moon_real_highres.webp',
+      (texture) => {
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.ClampToEdgeWrapping;
+        texture.repeat.set(2, 1);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.needsUpdate = true;
       }
+    );
 
-      // Prominent Tycho crater rays
-      ctx.strokeStyle = 'rgba(241, 245, 249, 0.4)';
-      ctx.lineWidth = 1.5;
-      for (let r = 0; r < 12; r++) {
-        const angle = (r * Math.PI) / 6;
-        ctx.beginPath();
-        ctx.moveTo(512, 380);
-        ctx.lineTo(512 + Math.cos(angle) * 140, 380 + Math.sin(angle) * 140);
-        ctx.stroke();
-      }
-    }
-
-    const moonTexture = new THREE.CanvasTexture(texCanvas);
     const moonMat = new THREE.MeshStandardMaterial({
-      map: moonTexture,
-      roughness: 0.9,
-      metalness: 0.05,
+      map: realMoonTexture,
+      bumpMap: realMoonTexture,
+      bumpScale: 0.04,
+      roughness: 0.95,
+      metalness: 0.02,
     });
 
     const moonMesh = new THREE.Mesh(moonGeo, moonMat);
@@ -449,7 +413,7 @@ export const AstronomyLab: React.FC = () => {
       renderer.dispose();
       moonGeo.dispose();
       moonMat.dispose();
-      moonTexture.dispose();
+      realMoonTexture.dispose();
     };
   }, [activeModule, moonViewMode]);
 
@@ -772,6 +736,24 @@ export const AstronomyLab: React.FC = () => {
                   />
                 </div>
               )}
+
+              {/* Real Moon Phases Photographic Strip */}
+              <div className="sci-card p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-white flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>{language === 'ar' ? 'أطلس رصد أطوار القمر الواقعية' : 'Real Astrophotography Lunar Strip'}</span>
+                  </span>
+                  <span className="text-[10px] font-mono text-slate-400">NASA & OBSERVATORY SPECTRA</span>
+                </div>
+                <div className="rounded-xl overflow-hidden border border-white/10 bg-black">
+                  <img
+                    src="/textures/moon/moon_phases_strip.jpg"
+                    alt="Real Lunar Phases Astrophotography"
+                    className="w-full h-28 object-contain object-center hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Scientific Details & Tidal Dynamics */}
