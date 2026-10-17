@@ -49,12 +49,13 @@ export const OfflineDownloadModal: React.FC<OfflineDownloadModalProps> = ({ isOp
       '/models/geology/construction_site.glb',
       '/models/geology/abandoned_building.glb',
       '/models/geology/tall_building.glb',
-      '/models/geology/beach_scene.glb'
+      '/models/geology/apartment_facade.glb',
+      '/models/geology/timber_cottage.glb'
     ];
 
     try {
       if ('caches' in window) {
-        const cache = await caches.open('scinexa-offline-v1');
+        const cache = await caches.open('scinexa-offline-v2');
         let loaded = 0;
         for (const url of essentialUrls) {
           try {
@@ -178,9 +179,29 @@ export const OfflineDownloadModal: React.FC<OfflineDownloadModalProps> = ({ isOp
             )}
 
             {cachingStatus === 'complete' && (
-              <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center gap-2 text-xs font-semibold">
-                <CheckCircle2 className="w-4 h-4" />
-                <span>{language === 'ar' ? 'تم الحفظ بنجاح! جاهز للعمل بدون نت.' : 'Ready for complete offline usage!'}</span>
+              <div className="space-y-2">
+                <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center gap-2 text-xs font-semibold">
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>{language === 'ar' ? 'تم الحفظ بنجاح! جاهز للعمل بدون نت.' : 'Ready for complete offline usage!'}</span>
+                </div>
+                <button
+                  onClick={async () => {
+                    if ('caches' in window) {
+                      const keys = await caches.keys();
+                      await Promise.all(keys.map(k => caches.delete(k)));
+                    }
+                    if ('serviceWorker' in navigator) {
+                      const regs = await navigator.serviceWorker.getRegistrations();
+                      for (const reg of regs) {
+                        await reg.unregister();
+                      }
+                    }
+                    window.location.reload();
+                  }}
+                  className="w-full py-1.5 px-3 rounded-lg text-[11px] font-mono text-slate-400 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] transition-colors text-center block border border-white/5"
+                >
+                  {language === 'ar' ? '🔄 تحديث وحذف الذاكرة القديمة (Force Refresh)' : '🔄 Purge Cache & Update Now'}
+                </button>
               </div>
             )}
           </div>
