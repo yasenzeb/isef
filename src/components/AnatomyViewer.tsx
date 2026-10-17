@@ -1038,11 +1038,13 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         let cleanName = rawClean;
         let resolvedArabicName: string | null = null;
 
-        // Fallback spatial resolution ONLY for models with generic placeholder names (Object_3, SubTool, Decimation)
-        if (cleanName.includes('Object') || cleanName.includes('Decimation') || cleanName.includes('SubTool') || cleanName.startsWith('mesh_')) {
-          const muscleRes = resolveMuscleFromHit(hit, hitPoint);
-          cleanName = muscleRes.en;
-          resolvedArabicName = muscleRes.ar;
+        // Explicit Override: Nasal Cartilage is strictly Cartilage (غضروف الأنف), NOT an organ or bone
+        const lowerRaw = (cleanName + ' ' + (hit.name || '')).toLowerCase();
+        if (lowerRaw.includes('nose') || lowerRaw.includes('nasal') || lowerRaw.includes('septum') || lowerRaw.includes('alar')) {
+          if (lowerRaw.includes('cartilage') || lowerRaw.includes('sept') || lowerRaw.includes('alar') || lowerRaw.includes('nose') || sysId === 'joints') {
+            cleanName = 'Nasal Cartilage (Cartilago nasi)';
+            resolvedArabicName = 'غضروف الأنف (Nasal Cartilage)';
+          }
         }
 
         // Comprehensive anatomical lookup
@@ -1253,7 +1255,11 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           
           // 3. JOINTS & CARTILAGE (المفاصل والغضاريف والأربطة)
           else if (sysId === 'joints' || lower.includes('joint') || lower.includes('ligament') || lower.includes('cartilage') || lower.includes('capsule')) {
-            if (lower.includes('capsule') || lower.includes('articular capsule')) {
+            if (lower.includes('nasal') || lower.includes('cartilago nasi') || lower.includes('alar') || lower.includes('septum')) {
+              nameAr = `غضروف الأنف (Nasal Cartilage)`;
+              descAr = 'بنية غضروفية زجاجية ومرنة تشكل الطرف الأمامي وجناحي الأنف والحاجز الأنفي، تحافظ على مجرى التنفس مفتوحاً وتمنحه مرونته وشكله المميز.';
+              descEn = 'Flexible hyaline cartilaginous framework forming the nasal septum, lateral walls, and alae to support the airway.';
+            } else if (lower.includes('capsule') || lower.includes('articular capsule')) {
               nameAr = `المحفظة المفصلية الزلالية (Articular Capsule)`;
               descAr = 'غلاف ليفي يحيط بتجويف المفصل الزلالي مبطن بغشاء زلالي يفرز السائل المفصلي لتزييت الحركة ومنع تآكل الغضاريف.';
               descEn = 'Envelope enclosing synovial joint cavity composed of an outer fibrous layer and inner lubricating synovial membrane.';

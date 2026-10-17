@@ -333,60 +333,16 @@ export const PERIODIC_ELEMENTS: ChemicalElement[] = [
   },
 ];
 
-// Helper to generate full list of 118 elements with scientific standard IUPAC fallback
+import { ALL_118_IUPAC_METADATA } from './allElementsData';
+
+// Helper to generate full list of 118 elements with complete IUPAC metadata
 export function getFullPeriodicElements(): ChemicalElement[] {
   const result: ChemicalElement[] = [...PERIODIC_ELEMENTS];
   const existingNumbers = new Set(PERIODIC_ELEMENTS.map(e => e.number));
 
-  // Names table for the remaining elements up to 118
-  const IUPAC_NAMES: Record<number, { sym: string; nameEn: string; nameAr: string; cat: ChemicalElement['category']; group: number; period: number; mass: number }> = {
-    21: { sym: 'Sc', nameEn: 'Scandium', nameAr: 'سكانديوم', cat: 'transition-metal', group: 3, period: 4, mass: 44.956 },
-    22: { sym: 'Ti', nameEn: 'Titanium', nameAr: 'تيتانيوم', cat: 'transition-metal', group: 4, period: 4, mass: 47.867 },
-    23: { sym: 'V', nameEn: 'Vanadium', nameAr: 'فاناديوم', cat: 'transition-metal', group: 5, period: 4, mass: 50.942 },
-    24: { sym: 'Cr', nameEn: 'Chromium', nameAr: 'كروم', cat: 'transition-metal', group: 6, period: 4, mass: 51.996 },
-    25: { sym: 'Mn', nameEn: 'Manganese', nameAr: 'منجنيز', cat: 'transition-metal', group: 7, period: 4, mass: 54.938 },
-    27: { sym: 'Co', nameEn: 'Cobalt', nameAr: 'كوبالت', cat: 'transition-metal', group: 9, period: 4, mass: 58.933 },
-    28: { sym: 'Ni', nameEn: 'Nickel', nameAr: 'نيكل', cat: 'transition-metal', group: 10, period: 4, mass: 58.693 },
-    31: { sym: 'Ga', nameEn: 'Gallium', nameAr: 'جاليوم', cat: 'post-transition', group: 13, period: 4, mass: 69.723 },
-    32: { sym: 'Ge', nameEn: 'Germanium', nameAr: 'جرمانيوم', cat: 'metalloid', group: 14, period: 4, mass: 72.630 },
-    33: { sym: 'As', nameEn: 'Arsenic', nameAr: 'زرنيخ', cat: 'metalloid', group: 15, period: 4, mass: 74.922 },
-    34: { sym: 'Se', nameEn: 'Selenium', nameAr: 'سيلينيوم', cat: 'nonmetal', group: 16, period: 4, mass: 78.971 },
-    35: { sym: 'Br', nameEn: 'Bromine', nameAr: 'بروم', cat: 'nonmetal', group: 17, period: 4, mass: 79.904 },
-    36: { sym: 'Kr', nameEn: 'Krypton', nameAr: 'كريبتون', cat: 'noble-gas', group: 18, period: 4, mass: 83.798 },
-    37: { sym: 'Rb', nameEn: 'Rubidium', nameAr: 'روبيديوم', cat: 'alkali-metal', group: 1, period: 5, mass: 85.468 },
-    38: { sym: 'Sr', nameEn: 'Strontium', nameAr: 'سترونشيوم', cat: 'alkaline-earth', group: 2, period: 5, mass: 87.62 },
-    39: { sym: 'Y', nameEn: 'Yttrium', nameAr: 'إتريوم', cat: 'transition-metal', group: 3, period: 5, mass: 88.906 },
-    40: { sym: 'Zr', nameEn: 'Zirconium', nameAr: 'زركونيوم', cat: 'transition-metal', group: 4, period: 5, mass: 91.224 },
-    41: { sym: 'Nb', nameEn: 'Niobium', nameAr: 'نيوبيوم', cat: 'transition-metal', group: 5, period: 5, mass: 92.906 },
-    42: { sym: 'Mo', nameEn: 'Molybdenum', nameAr: 'موليبدنوم', cat: 'transition-metal', group: 6, period: 5, mass: 95.95 },
-    43: { sym: 'Tc', nameEn: 'Technetium', nameAr: 'تكنيشيوم', cat: 'transition-metal', group: 7, period: 5, mass: 98 },
-    44: { sym: 'Ru', nameEn: 'Ruthenium', nameAr: 'روثينيوم', cat: 'transition-metal', group: 8, period: 5, mass: 101.07 },
-    45: { sym: 'Rh', nameEn: 'Rhodium', nameAr: 'روديوم', cat: 'transition-metal', group: 9, period: 5, mass: 102.91 },
-    46: { sym: 'Pd', nameEn: 'Palladium', nameAr: 'بالاديوم', cat: 'transition-metal', group: 10, period: 5, mass: 106.42 },
-    48: { sym: 'Cd', nameEn: 'Cadmium', nameAr: 'كادميوم', cat: 'transition-metal', group: 12, period: 5, mass: 112.41 },
-    49: { sym: 'In', nameEn: 'Indium', nameAr: 'إنديوم', cat: 'post-transition', group: 13, period: 5, mass: 114.82 },
-    50: { sym: 'Sn', nameEn: 'Tin', nameAr: 'قصدير', cat: 'post-transition', group: 14, period: 5, mass: 118.71 },
-    51: { sym: 'Sb', nameEn: 'Antimony', nameAr: 'إثمد (أنتيمون)', cat: 'metalloid', group: 15, period: 5, mass: 121.76 },
-    52: { sym: 'Te', nameEn: 'Tellurium', nameAr: 'تيلوريوم', cat: 'metalloid', group: 16, period: 5, mass: 127.60 },
-    53: { sym: 'I', nameEn: 'Iodine', nameAr: 'يود', cat: 'nonmetal', group: 17, period: 5, mass: 126.90 },
-    54: { sym: 'Xe', nameEn: 'Xenon', nameAr: 'زينون', cat: 'noble-gas', group: 18, period: 5, mass: 131.29 },
-    55: { sym: 'Cs', nameEn: 'Caesium', nameAr: 'سيزيوم', cat: 'alkali-metal', group: 1, period: 6, mass: 132.91 },
-    56: { sym: 'Ba', nameEn: 'Barium', nameAr: 'باريوم', cat: 'alkaline-earth', group: 2, period: 6, mass: 137.33 },
-    57: { sym: 'La', nameEn: 'Lanthanum', nameAr: 'لانثانوم', cat: 'lanthanide', group: 3, period: 6, mass: 138.91 },
-    58: { sym: 'Ce', nameEn: 'Cerium', nameAr: 'سيريوم', cat: 'lanthanide', group: 3, period: 6, mass: 140.12 },
-    59: { sym: 'Pr', nameEn: 'Praseodymium', nameAr: 'براسيوديميوم', cat: 'lanthanide', group: 3, period: 6, mass: 140.91 },
-    60: { sym: 'Nd', nameEn: 'Neodymium', nameAr: 'نيوديميوم', cat: 'lanthanide', group: 3, period: 6, mass: 144.24 },
-    74: { sym: 'W', nameEn: 'Tungsten', nameAr: 'تنجستن', cat: 'transition-metal', group: 6, period: 6, mass: 183.84 },
-    78: { sym: 'Pt', nameEn: 'Platinum', nameAr: 'بلاتين', cat: 'transition-metal', group: 10, period: 6, mass: 195.08 },
-    80: { sym: 'Hg', nameEn: 'Mercury', nameAr: 'زئبق', cat: 'transition-metal', group: 12, period: 6, mass: 200.59 },
-    86: { sym: 'Rn', nameEn: 'Radon', nameAr: 'رادون', cat: 'noble-gas', group: 18, period: 6, mass: 222 },
-    94: { sym: 'Pu', nameEn: 'Plutonium', nameAr: 'بلوتونيوم', cat: 'actinide', group: 3, period: 7, mass: 244 },
-    118: { sym: 'Og', nameEn: 'Oganesson', nameAr: 'أوجانيسون', cat: 'noble-gas', group: 18, period: 7, mass: 294 },
-  };
-
   for (let z = 1; z <= 118; z++) {
     if (!existingNumbers.has(z)) {
-      const known = IUPAC_NAMES[z];
+      const known = ALL_118_IUPAC_METADATA[z];
       const sym = known?.sym || `E${z}`;
       const nameEn = known?.nameEn || `Element ${z}`;
       const nameAr = known?.nameAr || `عنصر ${z}`;
@@ -410,9 +366,9 @@ export function getFullPeriodicElements(): ChemicalElement[] {
         electronConfig: `[Z=${z}] valence configuration`,
         electronegativity: 1.5,
         summaryEn: `${nameEn} is a recognized chemical element with atomic number ${z}.`,
-        summaryAr: `${nameAr} عنصر كيميائي معترف به من الاتحاد الدولي للكيمياء برقم ذري ${z}.`,
-        commonUsesEn: 'Specialized scientific research, high-energy particle physics.',
-        commonUsesAr: 'أبحاث الفيزياء النووية المتقدمة وتطبيقات العلوم الدقيقة.',
+        summaryAr: `${nameAr} عنصر كيميائي معتمد رسمياً في الجدول الدوري بكتلة ذرية تقريبية ${mass}.`,
+        commonUsesEn: 'Specialized scientific research, nuclear chemistry, and modern materials.',
+        commonUsesAr: 'الأبحاث العلمية المتقدمة، الكيمياء النووية وتطوير المواد الحديثة.',
         shells: [2, 8, 18, 32],
       });
     }

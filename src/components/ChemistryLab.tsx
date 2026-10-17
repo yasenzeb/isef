@@ -488,50 +488,118 @@ export const ChemistryLab: React.FC = () => {
       </div>
 
       {/* VIEW 1: PERIODIC TABLE & 3D ATOM MODEL */}
+      {/* VIEW 1: PERIODIC TABLE & 3D ATOM MODEL */}
       {activeTab === 'periodic' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column: Interactive Periodic Table Grid */}
-          <div className="lg:col-span-2 sci-card p-4 overflow-x-auto space-y-4">
-            
-            <div className="flex flex-wrap items-center gap-2 pb-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-              <div className="relative flex-1 min-w-[200px]">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={t.chemistry.searchPlaceholder}
-                  className={`w-full bg-slate-950/80 border border-slate-700 rounded-xl py-2 text-xs text-white focus:outline-none focus:border-indigo-400 ${
-                    isRTL ? "pr-8 text-right" : "pl-9"
-                  }`}
-                />
-              </div>
-
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-slate-950/80 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
-              >
-                <option value="all">{t.chemistry.allCategories}</option>
-                <option value="alkali-metal">{t.chemistry.alkaliMetal}</option>
-                <option value="alkaline-earth">{t.chemistry.alkalineEarth}</option>
-                <option value="transition-metal">{t.chemistry.transitionMetal}</option>
-                <option value="post-transition">{t.chemistry.postTransition}</option>
-                <option value="metalloid">{t.chemistry.metalloid}</option>
-                <option value="nonmetal">{t.chemistry.nonmetal}</option>
-                <option value="noble-gas">{t.chemistry.nobleGas}</option>
-                <option value="lanthanide">{t.chemistry.lanthanide}</option>
-                <option value="actinide">{t.chemistry.actinide}</option>
-              </select>
+        <div className="space-y-6">
+          {/* Top: 3D Selected Element Showcase & Bohr Model */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-1">
+              <Atom3DViewer element={selectedElement} language={language} />
             </div>
 
-            {/* Real 18-Column Authentic Periodic Table Layout */}
+            <div className="lg:col-span-2 sci-card p-6 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between pb-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+                  <div className="flex items-center gap-4">
+                    <span className="text-4xl font-black text-white font-mono px-4 py-1.5 rounded-xl bg-white/5 border border-white/10">
+                      {selectedElement.symbol}
+                    </span>
+                    <div>
+                      <h3 className="text-2xl font-bold text-cyan-400">
+                        {ar ? selectedElement.nameAr : selectedElement.nameEn}
+                      </h3>
+                      <span className="text-xs text-slate-400 font-mono">
+                        {selectedElement.nameEn} • {selectedElement.category}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs text-slate-400 block">{t.chemistry.atomicNumber}</span>
+                    <span className="text-3xl font-mono font-black text-white">#{selectedElement.number}</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 text-xs">
+                  <div className="metric-card">
+                    <span className="text-slate-400 block text-[10px]">{ar ? 'الكتلة الذرية' : 'Atomic Mass'}</span>
+                    <span className="font-mono text-white font-bold">{selectedElement.atomicMass} u</span>
+                  </div>
+                  <div className="metric-card">
+                    <span className="text-slate-400 block text-[10px]">{ar ? 'الدورة / المجموعة' : 'Period / Group'}</span>
+                    <span className="font-mono text-cyan-300 font-bold">P{selectedElement.period} · G{selectedElement.group}</span>
+                  </div>
+                  <div className="metric-card">
+                    <span className="text-slate-400 block text-[10px]">{ar ? 'التوزيع الإلكتروني' : 'Config'}</span>
+                    <span className="font-mono text-amber-300 font-bold text-[11px] truncate">{selectedElement.electronConfig}</span>
+                  </div>
+                  <div className="metric-card">
+                    <span className="text-slate-400 block text-[10px]">{ar ? 'السالبية الكهربية' : 'Electronegativity'}</span>
+                    <span className="font-mono text-emerald-300 font-bold">{selectedElement.electronegativity || '—'}</span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/70 p-3 rounded-xl border border-white/5 mt-4">
+                  {ar ? selectedElement.summaryAr : selectedElement.summaryEn}
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
+                <span>{ar ? 'الاستخدامات الشائعة:' : 'Common Applications:'}</span>
+                <span className="text-slate-200 font-medium">{ar ? selectedElement.commonUsesAr : selectedElement.commonUsesEn}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom: Full-Width Authentic 18-Column Interactive Periodic Table */}
+          <div className="sci-card p-4 space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 pb-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
+                <h3 className="text-base font-bold text-white font-mono">
+                  {ar ? 'الجدول الدوري الحديث للعناصر (معايير IUPAC العالمية)' : 'Official IUPAC Periodic Table of Elements (1-118)'}
+                </h3>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <div className="relative w-48 sm:w-64">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder={t.chemistry.searchPlaceholder}
+                    className={`w-full bg-slate-950/80 border border-slate-700 rounded-xl py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400 ${
+                      isRTL ? "pr-8 text-right" : "pl-9"
+                    }`}
+                  />
+                </div>
+
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="bg-slate-950/80 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none"
+                >
+                  <option value="all">{t.chemistry.allCategories}</option>
+                  <option value="alkali-metal">{t.chemistry.alkaliMetal}</option>
+                  <option value="alkaline-earth">{t.chemistry.alkalineEarth}</option>
+                  <option value="transition-metal">{t.chemistry.transitionMetal}</option>
+                  <option value="post-transition">{t.chemistry.postTransition}</option>
+                  <option value="metalloid">{t.chemistry.metalloid}</option>
+                  <option value="nonmetal">{t.chemistry.nonmetal}</option>
+                  <option value="noble-gas">{t.chemistry.nobleGas}</option>
+                  <option value="lanthanide">{t.chemistry.lanthanide}</option>
+                  <option value="actinide">{t.chemistry.actinide}</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Real 18-Column Grid */}
             <div className="overflow-x-auto pb-4">
               <div 
-                className="grid gap-1 min-w-[950px] p-2 bg-[#030611] rounded-2xl border border-white/10"
+                className="grid gap-1 min-w-[960px] p-2 bg-[#02040a] rounded-2xl border border-white/10"
                 style={{
-                  gridTemplateColumns: 'repeat(18, minmax(46px, 1fr))',
-                  gridTemplateRows: 'repeat(10, minmax(54px, auto))',
+                  gridTemplateColumns: 'repeat(18, minmax(48px, 1fr))',
+                  gridTemplateRows: 'repeat(10, minmax(52px, auto))',
                 }}
               >
                 {/* 18 Group Numbers Header */}
@@ -616,89 +684,27 @@ export const ChemistryLab: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column: 3D Atom Model & Element Details */}
-          <div className="space-y-6">
-            
-            {/* 3D Orbiting Atom Viewer */}
-            <Atom3DViewer element={selectedElement} language={language} />
-
-            {/* Detailed Properties Card */}
-            <div className="sci-card p-6 space-y-4">
-              <div className="flex items-center justify-between pb-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-                <div>
-                  <span className="text-3xl font-black text-white font-mono">{selectedElement.symbol}</span>
-                  <h3 className="text-lg font-bold text-cyan-400">
-                    {ar ? selectedElement.nameAr : selectedElement.nameEn}
-                  </h3>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs text-slate-400 block">{t.chemistry.atomicNumber}</span>
-                  <span className="text-2xl font-mono font-bold text-white">#{selectedElement.number}</span>
-                </div>
+          {/* Mendeleev Card */}
+          {mendeleev && (
+            <div className="sci-card p-5 space-y-3">
+              <div className="flex items-center space-x-2 text-amber-400">
+                <Award className="w-4 h-4" />
+                <h4 className="text-xs font-bold uppercase tracking-wider">
+                  {ar ? 'مؤسس الجدول الدوري' : 'Scientific Pioneer'}
+                </h4>
               </div>
-
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between py-1" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <span className="text-slate-400">{ar ? 'الكتلة الذرية القياسية' : 'Atomic Mass'}</span>
-                  <span className="font-mono text-white">{selectedElement.atomicMass} u</span>
-                </div>
-                <div className="flex justify-between py-1" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <span className="text-slate-400">{ar ? 'التوزيع الإلكتروني' : 'Electron Configuration'}</span>
-                  <span className="font-mono text-cyan-400">{selectedElement.electronConfig}</span>
-                </div>
-                <div className="flex justify-between py-1" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <span className="text-slate-400">{ar ? 'السالبية الكهربائية' : 'Electronegativity'}</span>
-                  <span className="font-mono text-white">{selectedElement.electronegativity ?? 'N/A'}</span>
-                </div>
-                <div className="flex justify-between py-1" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <span className="text-slate-400">{ar ? 'الفئة والمجموعة' : 'Block & Group'}</span>
-                  <span className="font-mono text-indigo-300">Block {selectedElement.block?.toUpperCase()} · Group {selectedElement.group}</span>
-                </div>
-              </div>
-
               <div>
-                <span className="text-xs font-bold text-slate-300 uppercase tracking-wider block mb-1">
-                  {ar ? 'نبذة علمية وتطبيقات' : 'Overview & Occurrence'}
-                </span>
-                <p className="text-xs text-slate-300 leading-relaxed p-3 rounded-xl" style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                  {ar ? selectedElement.summaryAr : selectedElement.summaryEn}
-                </p>
+                <span className="text-sm font-bold text-white block">{mendeleev.name}</span>
+                <span className="text-[11px] text-slate-400">{mendeleev.dates} • {mendeleev.field}</span>
               </div>
-
-              {selectedElement.commonUsesAr && (
-                <div>
-                  <span className="text-xs font-bold text-slate-300 uppercase tracking-wider block mb-1">
-                    {ar ? 'أبرز الاستخدامات الصناعية والطبية' : 'Industrial & Practical Uses'}
-                  </span>
-                  <p className="text-xs text-slate-300 leading-relaxed p-3 rounded-xl" style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                    {ar ? selectedElement.commonUsesAr : selectedElement.commonUsesEn}
-                  </p>
-                </div>
-              )}
+              <p className="text-xs text-slate-300 leading-relaxed">
+                {ar ? mendeleev.contributionsAr : mendeleev.contributionsEn}
+              </p>
+              <span className="text-[10px] text-slate-500 font-mono block">
+                {mendeleev.citation}
+              </span>
             </div>
-
-            {/* Mendeleev Card */}
-            {mendeleev && (
-              <div className="sci-card p-5 space-y-3">
-                <div className="flex items-center space-x-2 text-amber-400">
-                  <Award className="w-4 h-4" />
-                  <h4 className="text-xs font-bold uppercase tracking-wider">
-                    {ar ? 'مؤسس الجدول الدوري' : 'Scientific Pioneer'}
-                  </h4>
-                </div>
-                <div>
-                  <span className="text-sm font-bold text-white block">{mendeleev.name}</span>
-                  <span className="text-[11px] text-slate-400">{mendeleev.dates} • {mendeleev.field}</span>
-                </div>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  {ar ? mendeleev.contributionsAr : mendeleev.contributionsEn}
-                </p>
-                <span className="text-[10px] text-slate-500 font-mono block">
-                  {mendeleev.citation}
-                </span>
-              </div>
-            )}
-          </div>
+          )}
         </div>
       )}
 
