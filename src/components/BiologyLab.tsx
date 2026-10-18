@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three-stdlib';
 import { useLanguage } from '../context/LanguageContext';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
-import { Dna, Award, Check, Eye, EyeOff, Layers, Scissors, ShieldAlert, Sparkles, Maximize2 } from 'lucide-react';
+import { Dna, Award, Check, Eye, EyeOff, Layers, Scissors, ShieldAlert, Sparkles, Maximize2, Wifi, WifiOff, Globe, RotateCcw, AlertTriangle } from 'lucide-react';
 import { SKETCHFAB_ANATOMY_COLLECTION, AnatomyAtlasModel } from '../data/sketchfabAnatomyData';
 import { SketchfabViewerModal } from './SketchfabViewerModal';
 
@@ -202,6 +202,288 @@ const MICROORGANISMS_DATA: MicroorganismInfo[] = [
   }
 ];
 
+function MicroorganismCanvas({ microbeId, language }: { microbeId: string; language: string }) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const animRef = useRef<number>(0);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let time = 0;
+
+    const render = () => {
+      time += 0.03;
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Deep microscopic water background
+      const bgGrad = ctx.createRadialGradient(cx, cy, 40, cx, cy, w / 2);
+      bgGrad.addColorStop(0, '#041624');
+      bgGrad.addColorStop(1, '#02070e');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Floating microscopic dust particles
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.2)';
+      for (let i = 0; i < 20; i++) {
+        const px = (cx + Math.sin(time * 0.5 + i * 2) * (180 + (i % 5) * 20)) % w;
+        const py = (cy + Math.cos(time * 0.3 + i * 1.5) * (120 + (i % 4) * 25)) % h;
+        ctx.beginPath();
+        ctx.arc(px, py, 1.5 + (i % 3), 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      if (microbeId === 'euglena') {
+        // EUGLENA GRACILIS
+        const bodyLen = 140;
+        const bodyWid = 45;
+        const flex = Math.sin(time * 2) * 8;
+
+        ctx.save();
+        ctx.translate(cx, cy);
+
+        // Flexible Euglena body
+        ctx.beginPath();
+        ctx.moveTo(-bodyLen * 0.6, 0);
+        ctx.bezierCurveTo(-bodyLen * 0.3, -bodyWid + flex, bodyLen * 0.2, -bodyWid * 0.8 - flex, bodyLen * 0.5, -bodyWid * 0.2);
+        ctx.lineTo(bodyLen * 0.55, 0);
+        ctx.bezierCurveTo(bodyLen * 0.2, bodyWid * 0.8 + flex, -bodyLen * 0.3, bodyWid - flex, -bodyLen * 0.6, 0);
+        ctx.closePath();
+
+        const eugGrad = ctx.createLinearGradient(-bodyLen, 0, bodyLen, 0);
+        eugGrad.addColorStop(0, '#15803d');
+        eugGrad.addColorStop(0.5, '#22c55e');
+        eugGrad.addColorStop(1, '#4ade80');
+        ctx.fillStyle = eugGrad;
+        ctx.fill();
+        ctx.strokeStyle = '#86efac';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        // Chloroplasts (green discs)
+        ctx.fillStyle = '#166534';
+        for (let i = -3; i <= 3; i++) {
+          ctx.beginPath();
+          ctx.ellipse(i * 18, Math.sin(i + time) * 10, 8, 5, i * 0.2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Nucleus
+        ctx.beginPath();
+        ctx.arc(-15, 0, 16, 0, Math.PI * 2);
+        ctx.fillStyle = '#1e3a8a';
+        ctx.fill();
+        ctx.strokeStyle = '#60a5fa';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(-15, 0, 6, 0, Math.PI * 2);
+        ctx.fillStyle = '#93c5fd';
+        ctx.fill();
+
+        // Red Eyespot (Stigma) near reservoir
+        ctx.beginPath();
+        ctx.arc(bodyLen * 0.42, -10, 5.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#ef4444';
+        ctx.fill();
+
+        // Contractile Vacuole (pulsing)
+        const vacPulse = 7 + Math.sin(time * 3) * 3;
+        ctx.beginPath();
+        ctx.arc(bodyLen * 0.38, 8, Math.max(2, vacPulse), 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+        ctx.fill();
+        ctx.strokeStyle = '#38bdf8';
+        ctx.stroke();
+
+        // Undulating Flagellum (whiplash motion)
+        ctx.beginPath();
+        ctx.moveTo(bodyLen * 0.55, 0);
+        let fx = bodyLen * 0.55;
+        let fy = 0;
+        for (let s = 1; s <= 20; s++) {
+          fx += 8;
+          fy = Math.sin(time * 6 - s * 0.5) * (18 + s * 1.5);
+          ctx.lineTo(fx, fy);
+        }
+        ctx.strokeStyle = 'rgba(240, 253, 244, 0.9)';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        ctx.restore();
+
+      } else if (microbeId === 'amoeba') {
+        // AMOEBA PROTEUS
+        ctx.save();
+        ctx.translate(cx, cy);
+
+        ctx.beginPath();
+        const baseR = 85;
+        const pts = 24;
+        for (let i = 0; i <= pts; i++) {
+          const a = (i / pts) * Math.PI * 2;
+          const pseudopod = Math.sin(a * 3 + time * 1.5) * 28 + Math.cos(a * 5 - time) * 16;
+          const r = baseR + pseudopod;
+          const x = Math.cos(a) * r;
+          const y = Math.sin(a) * r;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+
+        const amGrad = ctx.createRadialGradient(0, 0, 20, 0, 0, 120);
+        amGrad.addColorStop(0, '#0369a1');
+        amGrad.addColorStop(0.7, '#0284c7');
+        amGrad.addColorStop(1, '#38bdf8');
+        ctx.fillStyle = amGrad;
+        ctx.fill();
+        ctx.strokeStyle = '#bae6fd';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        // Granules
+        ctx.fillStyle = '#bae6fd';
+        for (let i = 0; i < 18; i++) {
+          const gx = Math.sin(i * 1.7 + time * 0.8) * 45;
+          const gy = Math.cos(i * 2.3 + time * 0.6) * 35;
+          ctx.beginPath();
+          ctx.arc(gx, gy, 3.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Nucleus
+        ctx.beginPath();
+        ctx.arc(-22, -14, 18, 0, Math.PI * 2);
+        ctx.fillStyle = '#1e3a8a';
+        ctx.fill();
+        ctx.strokeStyle = '#60a5fa';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(-22, -14, 6, 0, Math.PI * 2);
+        ctx.fillStyle = '#93c5fd';
+        ctx.fill();
+
+        // Contractile Vacuole
+        const vacR = 12 + Math.sin(time * 2.5) * 6;
+        ctx.beginPath();
+        ctx.arc(28, 18, Math.max(3, vacR), 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+        ctx.fill();
+        ctx.strokeStyle = '#38bdf8';
+        ctx.stroke();
+
+        ctx.restore();
+
+      } else {
+        // PARAMECIUM CAUDATUM
+        ctx.save();
+        ctx.translate(cx, cy);
+
+        // Body shape (slipper-shaped)
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 130, 48, -0.15, 0, Math.PI * 2);
+        const parGrad = ctx.createLinearGradient(-130, 0, 130, 0);
+        parGrad.addColorStop(0, '#0284c7');
+        parGrad.addColorStop(0.5, '#0ea5e9');
+        parGrad.addColorStop(1, '#38bdf8');
+        ctx.fillStyle = parGrad;
+        ctx.fill();
+        ctx.strokeStyle = '#e0f2fe';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        // Beating Cilia Fringe
+        ctx.strokeStyle = 'rgba(224, 242, 254, 0.85)';
+        ctx.lineWidth = 1.5;
+        const ciliaCount = 64;
+        for (let i = 0; i < ciliaCount; i++) {
+          const a = (i / ciliaCount) * Math.PI * 2;
+          const rx = Math.cos(a) * 132;
+          const ry = Math.sin(a) * 50;
+          const ciliaLen = 10 + Math.sin(a * 8 + time * 10) * 4;
+          const tipX = rx + Math.cos(a + 0.3) * ciliaLen;
+          const tipY = ry + Math.sin(a + 0.3) * ciliaLen;
+          ctx.beginPath();
+          ctx.moveTo(rx, ry);
+          ctx.lineTo(tipX, tipY);
+          ctx.stroke();
+        }
+
+        // Oral Groove
+        ctx.beginPath();
+        ctx.ellipse(15, 22, 40, 14, 0.2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(2, 6, 23, 0.45)';
+        ctx.fill();
+        ctx.strokeStyle = '#38bdf8';
+        ctx.stroke();
+
+        // Macronucleus
+        ctx.beginPath();
+        ctx.ellipse(-20, -5, 24, 15, -0.2, 0, Math.PI * 2);
+        ctx.fillStyle = '#1e3a8a';
+        ctx.fill();
+        ctx.strokeStyle = '#60a5fa';
+        ctx.stroke();
+
+        // Micronucleus
+        ctx.beginPath();
+        ctx.arc(-26, 8, 5, 0, Math.PI * 2);
+        ctx.fillStyle = '#f43f5e';
+        ctx.fill();
+
+        // Dual Star Contractile Vacuoles
+        [-75, 75].forEach((vx, idx) => {
+          const vy = (idx === 0) ? -10 : 8;
+          const pulse = 9 + Math.sin(time * 4 + idx * Math.PI) * 4;
+          ctx.beginPath();
+          ctx.arc(vx, vy, Math.max(3, pulse), 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+          ctx.fill();
+          ctx.strokeStyle = '#38bdf8';
+          ctx.stroke();
+
+          for (let r = 0; r < 6; r++) {
+            const ra = (r / 6) * Math.PI * 2 + time;
+            ctx.beginPath();
+            ctx.moveTo(vx + Math.cos(ra) * pulse, vy + Math.sin(ra) * pulse);
+            ctx.lineTo(vx + Math.cos(ra) * (pulse + 10), vy + Math.sin(ra) * (pulse + 10));
+            ctx.strokeStyle = '#7dd3fc';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+          }
+        });
+
+        ctx.restore();
+      }
+
+      animRef.current = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => cancelAnimationFrame(animRef.current);
+  }, [microbeId]);
+
+  return (
+    <div className="w-full h-full relative">
+      <canvas ref={canvasRef} width={700} height={480} className="w-full h-full block object-contain" />
+      <div className="absolute bottom-3 left-3 bg-slate-950/80 backdrop-blur-md px-3 py-1 rounded-lg border border-white/10 text-[11px] text-cyan-300 font-mono flex items-center gap-1.5">
+        <Sparkles className="w-3 h-3 text-cyan-400 animate-spin" />
+        <span>{language === 'ar' ? 'محاكاة حيوية تفاعلية 60FPS (أوفلاين 100%)' : '60FPS Biological Simulation (100% Offline)'}</span>
+      </div>
+    </div>
+  );
+}
+
 export const BiologyLab: React.FC = () => {
   const { t, language } = useLanguage();
   const [activeTab, setActiveTab] = useState<'sketchfab_cell' | 'dna' | 'microorganisms'>('sketchfab_cell');
@@ -210,6 +492,28 @@ export const BiologyLab: React.FC = () => {
   const [selectedOrganelle, setSelectedOrganelle] = useState<OrganelleData>(ORGANELLES_3D[0]);
   const [isCrossSection, setIsCrossSection] = useState(true);
   const [selectedSketchfabModel, setSelectedSketchfabModel] = useState<AnatomyAtlasModel | null>(null);
+
+  // View modes: Default to 100% offline local engines so nothing ever breaks without internet
+  const [cellViewMode, setCellViewMode] = useState<'local_3d' | 'cloud_embed'>('local_3d');
+  const [dnaViewMode, setDnaViewMode] = useState<'local_3d' | 'cloud_embed'>('local_3d');
+  const [microbeViewMode, setMicrobeViewMode] = useState<'local_canvas' | 'cloud_embed'>('local_canvas');
+  const [isOnline, setIsOnline] = useState<boolean>(() => typeof navigator !== 'undefined' ? navigator.onLine : true);
+
+  useEffect(() => {
+    const onOnline = () => setIsOnline(true);
+    const onOffline = () => {
+      setIsOnline(false);
+      setCellViewMode('local_3d');
+      setDnaViewMode('local_3d');
+      setMicrobeViewMode('local_canvas');
+    };
+    window.addEventListener('online', onOnline);
+    window.addEventListener('offline', onOffline);
+    return () => {
+      window.removeEventListener('online', onOnline);
+      window.removeEventListener('offline', onOffline);
+    };
+  }, []);
 
   // DNA Interactive Base-Pairing State
   const [selectedBase, setSelectedBase] = useState<'A' | 'T' | 'C' | 'G'>('A');
@@ -541,7 +845,7 @@ export const BiologyLab: React.FC = () => {
         mount.removeChild(renderer.domElement);
       }
     };
-  }, [activeTab, cellType, isCrossSection]);
+  }, [activeTab, cellType, isCrossSection, cellViewMode]);
 
   // 3D DNA Helix Render
   useEffect(() => {
@@ -633,7 +937,7 @@ export const BiologyLab: React.FC = () => {
         mount.removeChild(renderer.domElement);
       }
     };
-  }, [activeTab]);
+  }, [activeTab, dnaViewMode]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 space-y-6">
@@ -686,22 +990,55 @@ export const BiologyLab: React.FC = () => {
       {/* VIEW 2: 3D ANIMATED DNA MOLECULAR DOUBLE HELIX MODEL */}
       {activeTab === 'dna' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 sci-card overflow-hidden relative flex flex-col h-[560px] border border-white/10">
-            <div className="bg-[#08090c] px-4 py-3 border-b border-white/10 flex items-center justify-between z-10">
+          <div className="lg:col-span-2 sci-card overflow-hidden relative flex flex-col h-[560px] border border-white/10 shadow-2xl">
+            <div className="bg-[#08090c] px-4 py-3 border-b border-white/10 flex flex-wrap items-center justify-between gap-2 z-10">
               <span className="text-xs font-mono font-bold text-white flex items-center gap-2">
                 <Dna className="w-4 h-4 text-emerald-400" />
                 <span>{language === 'ar' ? 'المجسم الحقيقي المتحرك للحمض النووي (DNA Double Helix)' : 'Realistic Animated DNA Molecular Helix'}</span>
               </span>
-              <span className="text-[11px] font-mono text-emerald-400">PDB Certified Structure • Double Stranded</span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => setDnaViewMode('local_3d')}
+                  className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all ${
+                    dnaViewMode === 'local_3d' ? 'bg-white text-black shadow' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {language === 'ar' ? '⚡ محلي 3D (أوفلاين)' : '⚡ Local 3D'}
+                </button>
+                <button
+                  onClick={() => setDnaViewMode('cloud_embed')}
+                  className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all ${
+                    dnaViewMode === 'cloud_embed' ? 'bg-white text-black shadow' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {language === 'ar' ? '🌐 سحابي' : '🌐 Cloud'}
+                </button>
+              </div>
             </div>
-            <div className="w-full flex-1 bg-black relative">
-              <iframe
-                title="DNA Molecular Double Helix"
-                className="w-full h-full border-0"
-                src="https://sketchfab.com/models/3aafb51201ab414b86d231a1ee4c32a8/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0&ui_help=0&ui_settings=0&ui_inspector=1&ui_stop=0"
-                allow="autoplay; fullscreen; xr-spatial-tracking"
-                allowFullScreen
-              />
+
+            <div className="w-full flex-1 bg-[#060b18] relative flex items-center justify-center">
+              {dnaViewMode === 'local_3d' ? (
+                <div ref={dnaMountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+              ) : !isOnline ? (
+                <div className="max-w-md p-6 text-center space-y-4 rounded-2xl bg-slate-950/90 border border-amber-500/30">
+                  <WifiOff className="w-8 h-8 mx-auto text-amber-400" />
+                  <h4 className="text-sm font-bold text-white">{language === 'ar' ? 'وضع عدم الاتصال (Offline)' : 'Offline Mode'}</h4>
+                  <p className="text-xs text-slate-400">
+                    {language === 'ar' ? 'النموذج السحابي يتطلب اتصالاً بالإنترنت. يمكنك الآن استخدام المحاكي المحلي ثلاثي الأبعاد المدمج الذي يعمل 100% بدون إنترنت.' : 'Cloud models require internet. Use native 3D engine.'}
+                  </p>
+                  <button onClick={() => setDnaViewMode('local_3d')} className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 shadow">
+                    {language === 'ar' ? 'التبديل إلى المحاكي المحلي 3D' : 'Switch to Local 3D'}
+                  </button>
+                </div>
+              ) : (
+                <iframe
+                  title="DNA Molecular Double Helix"
+                  className="w-full h-full border-0"
+                  src="https://sketchfab.com/models/3aafb51201ab414b86d231a1ee4c32a8/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0&ui_help=0&ui_settings=0&ui_inspector=1&ui_stop=0"
+                  allow="autoplay; fullscreen; xr-spatial-tracking"
+                  allowFullScreen
+                />
+              )}
             </div>
           </div>
 
@@ -803,8 +1140,8 @@ export const BiologyLab: React.FC = () => {
             {/* Main Interactive Viewer & Biological Telemetry */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* 3D Model Display */}
-              <div className="lg:col-span-2 sci-card overflow-hidden flex flex-col h-[580px] border border-cyan-500/30">
-                <div className="bg-[#08090c] px-5 py-3 border-b border-white/10 flex items-center justify-between z-10">
+              <div className="lg:col-span-2 sci-card overflow-hidden flex flex-col h-[580px] border border-cyan-500/30 shadow-2xl">
+                <div className="bg-[#08090c] px-4 py-3 border-b border-white/10 flex flex-wrap items-center justify-between gap-2 z-10">
                   <div className="flex items-center space-x-2">
                     <Sparkles className="w-4 h-4 text-cyan-400" />
                     <span className="text-sm font-bold text-white">
@@ -814,20 +1151,53 @@ export const BiologyLab: React.FC = () => {
                       • {language === 'ar' ? currentMicrobe.phylumAr : currentMicrobe.phylumEn}
                     </span>
                   </div>
-                  <span className="text-[11px] font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded">
-                    3D Interactive Specimen
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => setMicrobeViewMode('local_canvas')}
+                      className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all ${
+                        microbeViewMode === 'local_canvas' ? 'bg-white text-black shadow' : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      {language === 'ar' ? '⚡ محاكي حيوي 60FPS (أوفلاين)' : '⚡ 60FPS Bio Sim (Offline)'}
+                    </button>
+                    <button
+                      onClick={() => setMicrobeViewMode('cloud_embed')}
+                      className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all ${
+                        microbeViewMode === 'cloud_embed' ? 'bg-white text-black shadow' : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      {language === 'ar' ? '🌐 سحابي (Sketchfab)' : '🌐 Cloud 3D'}
+                    </button>
+                  </div>
                 </div>
 
-                <div className="w-full flex-1 bg-black relative">
-                  <iframe
-                    key={currentMicrobe.id}
-                    title={currentMicrobe.nameEn}
-                    className="w-full h-full border-0"
-                    src={`https://sketchfab.com/models/${currentMicrobe.sketchfabUid}/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0&ui_help=0&ui_settings=0&ui_inspector=1&ui_stop=0`}
-                    allow="autoplay; fullscreen; xr-spatial-tracking"
-                    allowFullScreen
-                  />
+                <div className="w-full flex-1 bg-black relative flex items-center justify-center">
+                  {microbeViewMode === 'local_canvas' ? (
+                    <MicroorganismCanvas microbeId={currentMicrobe.id} language={language} />
+                  ) : !isOnline ? (
+                    <div className="max-w-md p-6 text-center space-y-4 rounded-2xl bg-slate-950/90 border border-amber-500/30">
+                      <WifiOff className="w-8 h-8 mx-auto text-amber-400" />
+                      <h4 className="text-sm font-bold text-white">{language === 'ar' ? 'وضع عدم الاتصال (Offline)' : 'Offline Mode'}</h4>
+                      <p className="text-xs text-slate-400">
+                        {language === 'ar' ? 'النموذج السحابي يتطلب اتصالاً بالإنترنت. يمكنك الآن استخدام المحاكي الحيوي المباشر المدمج الذي يعمل 100% بدون نت.' : 'Cloud models require internet. Switch to local offline simulator.'}
+                      </p>
+                      <button
+                        onClick={() => setMicrobeViewMode('local_canvas')}
+                        className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-cyan-600 shadow"
+                      >
+                        {language === 'ar' ? 'التبديل إلى المحاكي الحيوي المباشر' : 'Switch to Offline Simulator'}
+                      </button>
+                    </div>
+                  ) : (
+                    <iframe
+                      key={currentMicrobe.id}
+                      title={currentMicrobe.nameEn}
+                      className="w-full h-full border-0"
+                      src={`https://sketchfab.com/models/${currentMicrobe.sketchfabUid}/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0&ui_help=0&ui_settings=0&ui_inspector=1&ui_stop=0`}
+                      allow="autoplay; fullscreen; xr-spatial-tracking"
+                      allowFullScreen
+                    />
+                  )}
                 </div>
               </div>
 
@@ -915,56 +1285,189 @@ export const BiologyLab: React.FC = () => {
       {/* VIEW 4: FULL REALISTIC 3D ANIMAL & PLANT CELL SPECIMENS */}
       {activeTab === 'sketchfab_cell' && (
         <div className="space-y-6">
-          <div className="sci-card overflow-hidden h-[620px] flex flex-col border border-sky-500/25">
-            <div className="bg-slate-950/90 px-5 py-3 border-b border-sky-500/15 flex flex-wrap items-center justify-between gap-3 z-10">
+          <div className="sci-card overflow-hidden h-[640px] flex flex-col border border-sky-500/25 shadow-2xl relative">
+            <div className="bg-slate-950/90 px-4 py-3 border-b border-sky-500/15 flex flex-wrap items-center justify-between gap-3 z-10">
               <div className="flex items-center space-x-2">
                 <span className="sci-badge flex items-center space-x-1">
                   <Sparkles className="w-3.5 h-3.5 text-sky-400" />
                   <span>
                     {cellType === 'plant' 
-                      ? (language === 'ar' ? 'مجسم الخلية النباتية الحقيقي 3D' : 'Authentic 3D Plant Cell Specimen')
-                      : (language === 'ar' ? 'مجسم الخلية الحيوانية الحقيقي 3D' : 'Authentic 3D Animal Cell Specimen')}
+                      ? (language === 'ar' ? 'مجسم الخلية النباتية 3D' : 'Authentic 3D Plant Cell Specimen')
+                      : (language === 'ar' ? 'مجسم الخلية الحيوانية 3D' : 'Authentic 3D Animal Cell Specimen')}
                   </span>
                 </span>
                 <span className="text-xs text-slate-400">
-                  {cellType === 'plant'
-                    ? (language === 'ar' ? 'جدار خلوي، فجوة عصارية، وبلاستيدات خضراء' : 'Cellulose wall, turgor vacuole & chloroplasts')
-                    : (language === 'ar' ? 'نموذج كامل بتشريح وتفاصيل العضيات' : 'Interactive Cell Dissection & Organelles')}
+                  {cellViewMode === 'local_3d' 
+                    ? (language === 'ar' ? '⚡ محاكي محلي 3D أوفلاين 100%' : '⚡ 100% Offline 3D Engine')
+                    : '🌐 Cloud Stream'}
                 </span>
               </div>
 
-              {/* Plant vs Animal Toggle */}
-              <div className="flex items-center space-x-2 sci-surface p-1">
-                <button
-                  onClick={() => setCellType('plant')}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                    cellType === 'plant' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  {language === 'ar' ? 'الخلية النباتية' : 'Plant Cell'}
-                </button>
-                <button
-                  onClick={() => setCellType('animal')}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                    cellType === 'animal' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  {language === 'ar' ? 'الخلية الحيوانية' : 'Animal Cell'}
-                </button>
+              {/* Controls Toolbar */}
+              <div className="flex items-center flex-wrap gap-2">
+                {/* Plant vs Animal Toggle */}
+                <div className="flex items-center space-x-1 sci-surface p-1">
+                  <button
+                    onClick={() => setCellType('plant')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                      cellType === 'plant' ? 'bg-emerald-600 text-white shadow' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {language === 'ar' ? 'الخلية النباتية' : 'Plant Cell'}
+                  </button>
+                  <button
+                    onClick={() => setCellType('animal')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                      cellType === 'animal' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {language === 'ar' ? 'الخلية الحيوانية' : 'Animal Cell'}
+                  </button>
+                </div>
+
+                {/* Cross section toggle if in local mode */}
+                {cellViewMode === 'local_3d' && (
+                  <button
+                    onClick={() => setIsCrossSection(!isCrossSection)}
+                    className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold border transition-all ${
+                      isCrossSection ? 'bg-sky-600/30 text-sky-300 border-sky-500/40' : 'bg-white/5 text-slate-400 border-white/10'
+                    }`}
+                  >
+                    <Scissors className="w-3.5 h-3.5" />
+                    <span>{isCrossSection ? (language === 'ar' ? 'قطاع تشريحي' : 'Cross-Section') : (language === 'ar' ? 'خلية كاملة' : 'Full Cell')}</span>
+                  </button>
+                )}
+
+                {/* Local vs Cloud Switcher */}
+                <div className="flex items-center gap-1 bg-white/5 p-1 rounded-lg border border-white/10">
+                  <button
+                    onClick={() => setCellViewMode('local_3d')}
+                    className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all ${
+                      cellViewMode === 'local_3d' ? 'bg-white text-black shadow' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {language === 'ar' ? '⚡ محلي 3D (أوفلاين)' : '⚡ Local 3D'}
+                  </button>
+                  <button
+                    onClick={() => setCellViewMode('cloud_embed')}
+                    className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all ${
+                      cellViewMode === 'cloud_embed' ? 'bg-white text-black shadow' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {language === 'ar' ? '🌐 سحابي' : '🌐 Cloud'}
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div className="flex-1 bg-black relative">
-              <iframe
-                key={cellType}
-                title={cellType === 'plant' ? "Plant Cell 3D" : "Animal Cell 3D"}
-                className="w-full h-full border-0"
-                src={cellType === 'plant' 
-                  ? "https://sketchfab.com/models/1c5ce80d03d149208d30cc5aeb6e42fb/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0&ui_help=0&ui_settings=0&ui_inspector=1&ui_stop=0"
-                  : "https://sketchfab.com/models/3a90e22871004d92a020c54e8964938c/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0&ui_help=0&ui_settings=0&ui_inspector=1&ui_stop=0"}
-                allow="autoplay; fullscreen; xr-spatial-tracking"
-                allowFullScreen
-              />
+            {/* Main View Area */}
+            {cellViewMode === 'local_3d' ? (
+              <div className="flex-1 bg-[#060b18] relative">
+                <div ref={cellMountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+                <div className="absolute bottom-4 left-4 z-10 pointer-events-none bg-slate-950/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-[11px] text-slate-400 flex items-center gap-2">
+                  <Eye className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>{language === 'ar' ? 'اسحب للتدوير 360° • عجلة الفأرة للتقريب • انقر على أي عضية لاستكشافها' : 'Drag to rotate 360° • Scroll to zoom • Click any organelle to inspect'}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="flex-1 bg-black relative flex items-center justify-center">
+                {!isOnline ? (
+                  <div className="max-w-md p-6 text-center space-y-4 rounded-2xl bg-slate-950/90 border border-amber-500/30 shadow-2xl">
+                    <div className="w-12 h-12 mx-auto rounded-full bg-amber-500/10 flex items-center justify-center text-amber-400">
+                      <WifiOff className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-white">
+                        {language === 'ar' ? 'أنت في وضع عدم الاتصال (Offline)' : 'No Internet Connection'}
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                        {language === 'ar' 
+                          ? 'النموذج السحابي يتطلب اتصالاً بالإنترنت. يمكنك الآن استخدام المحاكي المحلي ثلاثي الأبعاد المدمج الذي يعمل بكفاءة 100% بدون إنترنت.'
+                          : 'Cloud models require internet access. Use SciNexa’s native 3D cell simulator which works 100% offline.'}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setCellViewMode('local_3d')}
+                      className="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-sky-600 hover:opacity-90 shadow-lg transition-all"
+                    >
+                      {language === 'ar' ? 'التبديل إلى المحاكي المحلي 3D الآن' : 'Switch to Local 3D Cell'}
+                    </button>
+                  </div>
+                ) : (
+                  <iframe
+                    key={cellType}
+                    title={cellType === 'plant' ? "Plant Cell 3D" : "Animal Cell 3D"}
+                    className="w-full h-full border-0"
+                    src={cellType === 'plant' 
+                      ? "https://sketchfab.com/models/1c5ce80d03d149208d30cc5aeb6e42fb/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0&ui_help=0&ui_settings=0&ui_inspector=1&ui_stop=0"
+                      : "https://sketchfab.com/models/3a90e22871004d92a020c54e8964938c/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0&ui_help=0&ui_settings=0&ui_inspector=1&ui_stop=0"}
+                    allow="autoplay; fullscreen; xr-spatial-tracking"
+                    allowFullScreen
+                  />
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Organelles Explorer Carousel */}
+          <div className="sci-card p-5 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-bold text-white flex items-center space-x-2">
+                <Layers className="w-4 h-4 text-sky-400" />
+                <span>{language === 'ar' ? 'استكشاف عضيات الخلية وتفاصيلها الحيوية' : 'Cytological Organelles & Functional Roles'}</span>
+              </h3>
+              <span className="text-xs font-mono text-slate-400">{activeOrganelles.length} {language === 'ar' ? 'عضية' : 'organelles'}</span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
+              {activeOrganelles.map(org => {
+                const isSel = selectedOrganelle.id === org.id;
+                return (
+                  <button
+                    key={org.id}
+                    onClick={() => setSelectedOrganelle(org)}
+                    className={`p-3 rounded-xl border text-center transition-all ${
+                      isSel
+                        ? 'bg-sky-950/80 border-sky-400 text-white shadow-lg shadow-sky-500/20'
+                        : 'bg-slate-950/50 border-white/5 text-slate-400 hover:text-white hover:border-white/20'
+                    }`}
+                  >
+                    <div 
+                      className="w-6 h-6 mx-auto rounded-full mb-1.5 flex items-center justify-center font-bold text-[10px]"
+                      style={{ backgroundColor: `#${org.color.toString(16).padStart(6, '0')}`, color: '#000' }}
+                    >
+                      ●
+                    </div>
+                    <span className="text-xs font-bold block truncate">
+                      {language === 'ar' ? org.nameAr : org.nameEn}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Selected Organelle Card */}
+            <div className="p-4 rounded-2xl bg-slate-950/70 border border-sky-500/20 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+              <div className="md:col-span-2 space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: `#${selectedOrganelle.color.toString(16).padStart(6, '0')}` }} />
+                  <h4 className="text-sm font-bold text-white">{language === 'ar' ? selectedOrganelle.nameAr : selectedOrganelle.nameEn}</h4>
+                  <span className="text-[10px] px-2 py-0.5 rounded bg-white/5 text-slate-400 font-mono">{selectedOrganelle.sizeNm}</span>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed pt-1">
+                  {language === 'ar' ? selectedOrganelle.roleAr : selectedOrganelle.roleEn}
+                </p>
+              </div>
+              <div className="p-3 rounded-xl bg-white/5 border border-white/5 text-center text-xs">
+                <span className="text-slate-400 block text-[10px] uppercase">{language === 'ar' ? 'التواجد الخلوي' : 'Found in'}</span>
+                <span className="font-bold text-sky-300">
+                  {selectedOrganelle.foundIn === 'both' 
+                    ? (language === 'ar' ? 'النباتية والحيوانية معاً' : 'Plant & Animal Cells')
+                    : selectedOrganelle.foundIn === 'plant' 
+                    ? (language === 'ar' ? 'الخلية النباتية فقط' : 'Plant Cell Only')
+                    : (language === 'ar' ? 'الخلية الحيوانية فقط' : 'Animal Cell Only')}
+                </span>
+              </div>
             </div>
           </div>
 
