@@ -13,7 +13,16 @@ import {
   Target,
   Compass,
   Layers,
-  Sparkles
+  Sparkles,
+  Camera,
+  Download,
+  Eye,
+  Trash2,
+  Clock,
+  CheckCircle2,
+  Columns,
+  X,
+  ShieldCheck
 } from 'lucide-react';
 
 function WaveSimulator({ language }: { language: string }) {
@@ -257,6 +266,113 @@ export const PhysicsLab: React.FC = () => {
   const projectilesIframeRef = useRef<HTMLIFrameElement>(null);
   const opticsIframeRef = useRef<HTMLIFrameElement>(null);
 
+  interface SavedCircuitData {
+    count: number;
+    wires: number;
+    batteries: number;
+    lightBulbs: number;
+    resistors: number;
+    switches: number;
+    hasCurrent: boolean;
+    screenshot: string | null;
+    timestamp: number;
+  }
+
+  const [savedCircuit, setSavedCircuit] = useState<SavedCircuitData | null>(() =>
+    loadState<SavedCircuitData | null>('saved_circuit', null)
+  );
+  const [isSidePinned, setIsSidePinned] = useState<boolean>(false);
+  const [previewModalOpen, setPreviewModalOpen] = useState<boolean>(false);
+  const [saveSuccessNotification, setSaveSuccessNotification] = useState<boolean>(false);
+
+  // Listen to auto-save messages from the circuit iframe
+  useEffect(() => {
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data && e.data.type === 'SCINEXA_CIRCUIT_AUTOSAVE' && e.data.payload) {
+        setSavedCircuit(e.data.payload);
+        saveState('saved_circuit', e.data.payload);
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
+  // Prevent accidental exit if the user has an active circuit with elements
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (savedCircuit && savedCircuit.count > 0) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [savedCircuit]);
+
+  const triggerManualSave = () => {
+    try {
+      const win = circuitsIframeRef.current?.contentWindow as any;
+      if (win?.phet?.joist?.sim) {
+        const sim = win.phet.joist.sim;
+        let screenshot: string | null = null;
+        if (win.phet.joist.ScreenshotGenerator) {
+          screenshot = win.phet.joist.ScreenshotGenerator.generateScreenshot(sim, 'image/jpeg');
+        }
+        const screens = sim.simScreens || sim.screens;
+        const screen = (sim.selectedScreenProperty && sim.selectedScreenProperty.value) || screens?.[0];
+        const circuit = screen?.model?.circuit;
+        const elements = circuit?.circuitElements;
+        const count = (elements?.length !== undefined) ? elements.length : (elements?.count || 0);
+        let wires = 0, batteries = 0, lightBulbs = 0, resistors = 0, switches = 0;
+        let hasCurrent = false;
+
+        for (let i = 0; i < count; i++) {
+          const el = elements.get ? elements.get(i) : elements[i];
+          if (!el) continue;
+          const t = el.type || '';
+          if (t === 'wire') wires++;
+          else if (t === 'battery') batteries++;
+          else if (t === 'lightBulb') lightBulbs++;
+          else if (t === 'resistor') resistors++;
+          else if (t === 'switch') switches++;
+          if (el.currentProperty && Math.abs(el.currentProperty.value || 0) > 0.001) {
+            hasCurrent = true;
+          }
+        }
+
+        const data: SavedCircuitData = {
+          count: count || 1,
+          wires,
+          batteries,
+          lightBulbs,
+          resistors,
+          switches,
+          hasCurrent,
+          screenshot,
+          timestamp: Date.now()
+        };
+        setSavedCircuit(data);
+        saveState('saved_circuit', data);
+        setSaveSuccessNotification(true);
+        setTimeout(() => setSaveSuccessNotification(false), 2500);
+      }
+    } catch (err) {}
+  };
+
+  const downloadSchematic = () => {
+    if (!savedCircuit?.screenshot) return;
+    const link = document.createElement('a');
+    link.href = savedCircuit.screenshot;
+    link.download = `scinexa-circuit-${new Date().toISOString().slice(0, 10)}.jpg`;
+    link.click();
+  };
+
+  const clearCircuitBackup = () => {
+    setSavedCircuit(null);
+    saveState('saved_circuit', null);
+    setIsSidePinned(false);
+  };
+
   const simLocale = language === 'ar' ? 'ar' : language === 'fr' ? 'fr' : language === 'de' ? 'de' : 'en';
 
   const getSimUrl = (base: string, params: string = '') => {
@@ -363,9 +479,24 @@ export const PhysicsLab: React.FC = () => {
               <span className="text-[10px] px-2 py-0.5 rounded-md" style={{ background: 'rgba(99,102,241,0.15)', color: '#818cf8', border: '1px solid rgba(99,102,241,0.3)' }}>
                 {language === 'ar' ? 'المختبر الكامل' : 'Full Workbench'}
               </span>
+              {saveSuccessNotification && (
+                <span className="flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 animate-pulse">
+                  <CheckCircle2 className="w-3 h-3" />
+                  {language === 'ar' ? 'تم حفظ مسودة الدائرة!' : 'Circuit Draft Saved!'}
+                </span>
+              )}
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center flex-wrap gap-2">
+              <button
+                onClick={triggerManualSave}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-emerald-300 hover:text-emerald-100 transition-colors"
+                style={{ background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.3)' }}
+                title={language === 'ar' ? 'حفظ لقطة فورية من الدائرة الحالية' : 'Capture instant snapshot'}
+              >
+                <Camera className="w-3.5 h-3.5" />
+                <span>{language === 'ar' ? 'حفظ نقطة عمل' : 'Save Snapshot'}</span>
+              </button>
               <button
                 onClick={() => handleReload(circuitsIframeRef, getSimUrl('/simulations/circuit-construction-kit-dc_ar.html'))}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-colors"
@@ -395,19 +526,221 @@ export const PhysicsLab: React.FC = () => {
             </div>
           </div>
 
-          {/* Simulation Frame */}
-          <div className="sci-card p-2 sm:p-3 overflow-hidden shadow-2xl">
-            <div className="relative w-full rounded-xl overflow-hidden bg-[#030712] border border-white/10" style={{ height: '720px' }}>
-              <iframe
-                ref={circuitsIframeRef}
-                key={`circuits-${simLocale}`}
-                src={getSimUrl('/simulations/circuit-construction-kit-dc_ar.html')}
-                title={language === 'ar' ? 'مختبر الدوائر التفاعلي' : 'Interactive Circuit Lab'}
-                className="w-full h-full border-0 block"
-                allow="fullscreen; autoplay"
-              />
+          {/* Auto-Saved Circuit Workspace Banner */}
+          {savedCircuit && savedCircuit.count > 0 && (
+            <div className="sci-card p-4 rounded-2xl border border-indigo-500/30 bg-gradient-to-r from-indigo-950/40 via-cyan-950/30 to-slate-900/60 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                {savedCircuit.screenshot && (
+                  <div 
+                    onClick={() => setPreviewModalOpen(true)}
+                    className="relative group w-20 h-14 rounded-lg overflow-hidden border border-white/20 cursor-pointer flex-shrink-0 bg-black/60 shadow hover:border-indigo-400 transition-all"
+                    title={language === 'ar' ? 'انقر لتكبير المخطط' : 'Click to enlarge'}
+                  >
+                    <img src={savedCircuit.screenshot} alt="Saved Circuit" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                      <Eye className="w-4 h-4 text-white" />
+                    </div>
+                  </div>
+                )}
+                <div>
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                    <span className="text-xs font-bold text-white">
+                      {language === 'ar' ? 'تم استعادة آخر دائرة قيد العمل تلقائياً' : 'Last active circuit auto-restored'}
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold">
+                      {savedCircuit.hasCurrent 
+                        ? (language === 'ar' ? '⚡ تيار متدفق' : '⚡ Current Flowing')
+                        : (language === 'ar' ? '⚪ دائرة مفتوحة' : '⚪ Open Circuit')}
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 mt-1.5 text-[11px] text-slate-300">
+                    <span>🔋 {savedCircuit.batteries} {language === 'ar' ? 'بطارية' : 'battery'}</span>
+                    <span>•</span>
+                    <span>💡 {savedCircuit.lightBulbs} {language === 'ar' ? 'مصباح' : 'bulb'}</span>
+                    <span>•</span>
+                    <span>⚡ {savedCircuit.wires} {language === 'ar' ? 'سلك' : 'wire'}</span>
+                    {savedCircuit.resistors > 0 && <><span>•</span><span>🎛️ {savedCircuit.resistors} {language === 'ar' ? 'مقاومة' : 'resistor'}</span></>}
+                    {savedCircuit.switches > 0 && <><span>•</span><span>🔌 {savedCircuit.switches} {language === 'ar' ? 'مفتاح' : 'switch'}</span></>}
+                    <span>•</span>
+                    <span className="text-slate-400 font-mono text-[10px]">
+                      <Clock className="w-3 h-3 inline mr-1" />
+                      {new Date(savedCircuit.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center flex-wrap gap-2 w-full md:w-auto justify-end">
+                <button
+                  onClick={() => setPreviewModalOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-200 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-all"
+                  title={language === 'ar' ? 'معاينة المخطط' : 'Preview Schematic'}
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>{language === 'ar' ? 'معاينة المخطط' : 'Preview'}</span>
+                </button>
+                <button
+                  onClick={downloadSchematic}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-200 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-all"
+                  title={language === 'ar' ? 'تحميل كصورة PNG' : 'Download PNG'}
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>{language === 'ar' ? 'تصدير PNG' : 'Export PNG'}</span>
+                </button>
+                <button
+                  onClick={() => setIsSidePinned(!isSidePinned)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
+                    isSidePinned ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg' : 'text-slate-200 hover:text-white bg-white/5 hover:bg-white/10 border-white/10'
+                  }`}
+                  title={language === 'ar' ? 'تثبيت المخطط بجانب مساحة العمل أثناء التركيب' : 'Pin side-by-side reference'}
+                >
+                  <Columns className="w-3.5 h-3.5" />
+                  <span>{isSidePinned ? (language === 'ar' ? 'إغلاق المرجع' : 'Close Ref') : (language === 'ar' ? 'تثبيت كمرجع جانبي' : 'Pin Reference')}</span>
+                </button>
+                <button
+                  onClick={clearCircuitBackup}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-rose-300 hover:text-rose-100 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-all"
+                  title={language === 'ar' ? 'بدء دائرة جديدة وتفريغ الحفظ' : 'Clear and new circuit'}
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>{language === 'ar' ? 'دائرة جديدة' : 'New'}</span>
+                </button>
+              </div>
             </div>
+          )}
+
+          {/* Simulation Frame & Optional Side Reference */}
+          <div className={`grid grid-cols-1 ${isSidePinned && savedCircuit?.screenshot ? 'lg:grid-cols-12' : ''} gap-4`}>
+            <div className={`${isSidePinned && savedCircuit?.screenshot ? 'lg:col-span-8' : 'w-full'} sci-card p-2 sm:p-3 overflow-hidden shadow-2xl`}>
+              <div className="relative w-full rounded-xl overflow-hidden bg-[#030712] border border-white/10" style={{ height: '720px' }}>
+                <iframe
+                  ref={circuitsIframeRef}
+                  key={`circuits-${simLocale}`}
+                  src={getSimUrl('/simulations/circuit-construction-kit-dc_ar.html')}
+                  title={language === 'ar' ? 'مختبر الدوائر التفاعلي' : 'Interactive Circuit Lab'}
+                  className="w-full h-full border-0 block"
+                  allow="fullscreen; autoplay"
+                />
+              </div>
+            </div>
+
+            {/* Side-by-side Reference Workspace */}
+            {isSidePinned && savedCircuit?.screenshot && (
+              <div className="lg:col-span-4 sci-card p-4 flex flex-col justify-between space-y-4 shadow-2xl border border-indigo-500/30 bg-slate-950/80">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-white/10">
+                    <div className="flex items-center gap-2">
+                      <Columns className="w-4 h-4 text-indigo-400" />
+                      <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                        {language === 'ar' ? 'مرجع الدائرة المحفوظة' : 'Saved Circuit Reference'}
+                      </h4>
+                    </div>
+                    <button
+                      onClick={() => setIsSidePinned(false)}
+                      className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                      title={language === 'ar' ? 'إغلاق المرجع' : 'Close'}
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="relative rounded-xl overflow-hidden border border-white/15 bg-black/60 shadow group cursor-pointer" onClick={() => setPreviewModalOpen(true)}>
+                    <img src={savedCircuit.screenshot} alt="Reference Circuit" className="w-full h-48 object-contain bg-black/40" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white text-xs font-bold gap-1.5">
+                      <Eye className="w-4 h-4" />
+                      <span>{language === 'ar' ? 'تكبير المخطط' : 'Enlarge'}</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="p-2 rounded-lg bg-white/5 border border-white/5">
+                      <span className="text-slate-400 block text-[10px]">{language === 'ar' ? 'عدد العناصر' : 'Total Items'}</span>
+                      <span className="font-bold text-white font-mono">{savedCircuit.count}</span>
+                    </div>
+                    <div className="p-2 rounded-lg bg-white/5 border border-white/5">
+                      <span className="text-slate-400 block text-[10px]">{language === 'ar' ? 'حالة التيار' : 'State'}</span>
+                      <span className={`font-bold font-mono ${savedCircuit.hasCurrent ? 'text-emerald-400' : 'text-amber-400'}`}>
+                        {savedCircuit.hasCurrent ? (language === 'ar' ? 'مغلقة' : 'Closed') : (language === 'ar' ? 'مفتوحة' : 'Open')}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-indigo-950/30 border border-indigo-500/20 text-xs text-slate-300 space-y-1.5 font-mono">
+                    <div className="text-[10px] text-indigo-400 font-bold uppercase">{language === 'ar' ? 'قوانين الدائرة' : 'Circuit Formulas'}</div>
+                    <div>V = I × R (قانون أوم)</div>
+                    <div>Rt = R1 + R2 (توالي)</div>
+                    <div>1/Rt = 1/R1 + 1/R2 (توازي)</div>
+                  </div>
+                </div>
+
+                <div className="pt-2 flex gap-2">
+                  <button
+                    onClick={downloadSchematic}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 transition-colors shadow"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>{language === 'ar' ? 'تحميل المخطط' : 'Download'}</span>
+                  </button>
+                  <button
+                    onClick={clearCircuitBackup}
+                    className="px-3 py-2 rounded-xl text-xs font-semibold text-rose-300 hover:text-white bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-colors"
+                    title={language === 'ar' ? 'مسح المحفوظ' : 'Clear'}
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
+
+          {/* High-Resolution Schematic Modal */}
+          {previewModalOpen && savedCircuit?.screenshot && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md" onClick={() => setPreviewModalOpen(false)}>
+              <div className="relative max-w-4xl w-full sci-card p-6 rounded-3xl border border-white/20 bg-[#090d16] shadow-2xl space-y-4" onClick={e => e.stopPropagation()}>
+                <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                  <div className="flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-amber-400" />
+                    <h3 className="text-base font-bold text-white">
+                      {language === 'ar' ? 'مخطط الدائرة الكهربائية المحفوظة' : 'Saved Circuit Schematic Diagram'}
+                    </h3>
+                  </div>
+                  <button
+                    onClick={() => setPreviewModalOpen(false)}
+                    className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="rounded-2xl overflow-hidden border border-white/10 bg-black/80 flex items-center justify-center p-2">
+                  <img src={savedCircuit.screenshot} alt="Enlarged Circuit" className="max-h-[60vh] w-auto object-contain rounded-xl" />
+                </div>
+
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
+                    <span className="font-mono">{new Date(savedCircuit.timestamp).toLocaleString()}</span>
+                    <span>•</span>
+                    <span>{savedCircuit.count} {language === 'ar' ? 'عنصر مركب' : 'components'}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={downloadSchematic}
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 transition-all shadow-lg"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>{language === 'ar' ? 'تحميل كصورة عالية الدقة' : 'Download High-Res'}</span>
+                    </button>
+                    <button
+                      onClick={() => setPreviewModalOpen(false)}
+                      className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+                    >
+                      {language === 'ar' ? 'إغلاق' : 'Close'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Cards & Principles */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

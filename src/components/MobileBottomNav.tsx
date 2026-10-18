@@ -34,7 +34,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
     { id: 'chemistry', labelAr: 'الكيمياء 118 عنصر', labelEn: 'Chemistry 118', icon: Atom, color: '#f59e0b', grad: 'from-amber-500/20 to-rose-500/20' },
     { id: 'biology', labelAr: 'الأحياء والخلايا 3D', labelEn: 'Biology & Cells', icon: Dna, color: '#10b981', grad: 'from-emerald-500/20 to-teal-500/20' },
     { id: 'geology', labelAr: 'الجيولوجيا والزلازل', labelEn: 'Geology & Seismology', icon: Globe2, color: '#a855f7', grad: 'from-purple-500/20 to-indigo-500/20' },
-    { id: 'astronomy', labelAr: 'الفلك وأطوار القمر', labelEn: 'Astronomy & Moon', icon: Sparkles, color: '#eab308', grad: 'from-yellow-500/20 to-amber-500/20' },
+    { id: 'astronomy', labelAr: 'علوم الفلك والمجموعة الشمسية', labelEn: 'Astronomy & Solar System', icon: Sparkles, color: '#eab308', grad: 'from-yellow-500/20 to-amber-500/20' },
   ];
 
   const isCurrentLab = labsList.some(l => l.id === currentTab);
