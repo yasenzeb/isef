@@ -6,62 +6,119 @@ import { calculateTsunamiSpeed, calculateSeismicTravelTimes, calculateEarthquake
 import { Globe2, AlertTriangle, Waves, Award, Building2, Box, Play, Pause, Hammer, Compass, Layers, ShieldCheck, ShieldAlert } from 'lucide-react';
 import { GeologyModelViewer, getBuildingThreshold } from './GeologyModelViewer';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
+import { saveState, loadState } from '../utils/persistence';
 
-// Available 3D Building models with realistic structural engineering ratings (Beach scene removed as requested)
+// Procedural Earth surface texture generator with continents, oceans, and polar ice (zero external photo download)
+function generateProceduralEarthCrustTexture(): THREE.CanvasTexture {
+  const width = 1024;
+  const height = 512;
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d')!;
+
+  // 1. Deep Oceanic Blue gradient base
+  const oceanGrd = ctx.createLinearGradient(0, 0, 0, height);
+  oceanGrd.addColorStop(0, '#0c4a6e');
+  oceanGrd.addColorStop(0.5, '#0284c7');
+  oceanGrd.addColorStop(1, '#0c4a6e');
+  ctx.fillStyle = oceanGrd;
+  ctx.fillRect(0, 0, width, height);
+
+  // 2. Continents: Eurasia, Africa, Americas, Australia
+  // Eurasia
+  ctx.fillStyle = '#15803d';
+  ctx.beginPath();
+  ctx.ellipse(width * 0.58, height * 0.38, 130, 75, 0.08, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Africa & Arabia (Sahara/Savanna tones)
+  ctx.fillStyle = '#b45309';
+  ctx.beginPath();
+  ctx.ellipse(width * 0.52, height * 0.55, 60, 80, 0.15, 0, Math.PI * 2);
+  ctx.fill();
+
+  // North America
+  ctx.fillStyle = '#166534';
+  ctx.beginPath();
+  ctx.ellipse(width * 0.25, height * 0.34, 75, 60, -0.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // South America
+  ctx.fillStyle = '#15803d';
+  ctx.beginPath();
+  ctx.ellipse(width * 0.31, height * 0.65, 50, 75, 0.3, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Australia
+  ctx.fillStyle = '#c2410c';
+  ctx.beginPath();
+  ctx.ellipse(width * 0.82, height * 0.70, 45, 35, 0.1, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Polar Ice Caps
+  ctx.fillStyle = '#f8fafc';
+  ctx.fillRect(0, 0, width, height * 0.08);
+  ctx.fillRect(0, height * 0.92, width, height * 0.08);
+
+  // Atmospheric cloud swirls
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+  for (let s = 0; s < 12; s++) {
+    ctx.beginPath();
+    ctx.ellipse(
+      (s * 90 + 30) % width,
+      height * (0.2 + (s % 5) * 0.15),
+      40 + (s * 7) % 30,
+      12 + (s * 3) % 10,
+      0.3 * (s % 2 === 0 ? 1 : -1),
+      0,
+      Math.PI * 2
+    );
+    ctx.fill();
+  }
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.wrapT = THREE.ClampToEdgeWrapping;
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.needsUpdate = true;
+  return tex;
+}
+
+
+// Available 3D Building models with realistic structural engineering ratings
 const GEOLOGY_MODELS = [
   { 
     id: 'abandoned',
-    label: 'Abandoned Building', 
-    labelAr: 'مبنى مهجور غير مدعم', 
+    label: 'Abandoned Masonry Building', 
+    labelAr: 'مبنى قديم غير مسلح', 
     url: '/models/geology/abandoned_building.glb', 
     type: 'unreinforced',
-    threshold: 3.5,
-    waveThresholdM: 3.0,
-    descAr: 'هيكل حجري متآكل بدون تسليح - ينهار عند زلازل ضعيفة (3.5+ ريختر)',
-    descEn: 'Unreinforced deteriorating masonry. Collapses at low seismic intensity (3.5+).'
-  },
-  { 
-    id: 'wood',
-    label: 'Wooden Timber Cottage', 
-    labelAr: 'كوخ خشبي ريفي', 
-    url: '/models/geology/wooden_cottage.glb', 
-    type: 'timber',
-    threshold: 4.8,
-    waveThresholdM: 4.2,
-    descAr: 'هيكل خشبي خفيف - مرن ولكن يفشل تحت قوى القص العالية وأمواج التسونامي المباشرة (4.8+ ريختر)',
-    descEn: 'Lightweight timber frame. Resilient to minor tremors, vulnerable to shear & water surge (4.8+).'
+    threshold: 3.8,
+    waveThresholdM: 3.2,
+    descAr: 'هيكل حجري متآكل بدون تسليح - ينهار عند أدنى هزات أرضية أو اندفاع مائي مباشر (3.8+ ريختر)',
+    descEn: 'Unreinforced deteriorating masonry. Collapses at low seismic intensity or water surge (3.8+).'
   },
   { 
     id: 'construction',
-    label: 'Construction Site', 
-    labelAr: 'موقع بناء وهيكل خرساني', 
+    label: 'Reinforced Construction Site', 
+    labelAr: 'هيكل خرساني تحت الإنشاء', 
     url: '/models/geology/construction_site.glb', 
     type: 'construction',
-    threshold: 6.0,
-    waveThresholdM: 5.5,
-    descAr: 'أعمدة وسقالات بدون جدران قص داعمة - تفشل الأعمدة غير المكتملة عند 6.0 ريختر',
-    descEn: 'Incomplete reinforced concrete frame without shear walls. Fails at moderate tremor (6.0+).'
-  },
-  { 
-    id: 'residential',
-    label: 'Modern Apartment', 
-    labelAr: 'عمارة سكنية حديثة', 
-    url: '/models/geology/modern_apartment.glb', 
-    type: 'residential',
-    threshold: 7.5,
-    waveThresholdM: 7.5,
-    descAr: 'هيكل خرساني مسلح متوافق مع كود البناء - يقاوم حتى 7.5 ريختر',
-    descEn: 'Reinforced concrete frame with shear walls following modern seismic code (7.5+).'
+    threshold: 6.2,
+    waveThresholdM: 5.8,
+    descAr: 'أعمدة وسقالات خرسانية مسلحة بدون جدران قص داعمة - تفشل عند زلازل متوسطة الشدة (6.2+ ريختر)',
+    descEn: 'Reinforced concrete frame under construction. Fails at moderate ground tremor (6.2+).'
   },
   { 
     id: 'highrise',
-    label: 'Tall Highrise Tower', 
-    labelAr: 'برج شاهق مع عوازل زلزالية', 
+    label: 'Engineered Tower with Base Isolators', 
+    labelAr: 'برج هندسي ممتص للزلازل', 
     url: '/models/geology/tall_building.glb', 
     type: 'highrise',
     threshold: 8.8,
     waveThresholdM: 9.0,
-    descAr: 'برج هندسي متطور بأوتاد خرسانية عميقة ونظام تخميد الكتلة - يقاوم حتى 8.8 ريختر',
+    descAr: 'برج متطور بأوتاد عميقة ومخمدات كتلة وعوازل زلزالية - يقاوم أعتى الزلازل وأمواج التسونامي العاتية (8.8+ ريختر)',
     descEn: 'Engineered highrise with deep piles & tuned mass dampers. Withstands up to 8.8 Richter.'
   },
 ];
@@ -147,15 +204,40 @@ const EARTH_LAYERS_3D: EarthLayer[] = [
 
 export const GeologyLab: React.FC = () => {
   const { t, language } = useLanguage();
-  const [activeModule, setActiveModule] = useState<'disaster3d' | 'earthCutaway3d' | 'tsunamiShoal3d'>('disaster3d');
+  const [activeModule, setActiveModule] = useState<'disaster3d' | 'earthCutaway3d' | 'tsunamiShoal3d'>(() => 
+    loadState<'disaster3d' | 'earthCutaway3d' | 'tsunamiShoal3d'>('geology_module', 'disaster3d')
+  );
   
   // 3D Disaster Simulator State
-  const [selectedModelUrl, setSelectedModelUrl] = useState<string>(GEOLOGY_MODELS[0].url);
-  const [disasterType, setDisasterType] = useState<'earthquake' | 'tsunami'>('earthquake');
-  const [simIntensity, setSimIntensity] = useState<number>(5.5);
+  const [selectedModelUrl, setSelectedModelUrl] = useState<string>(() =>
+    loadState<string>('geology_model_url', GEOLOGY_MODELS[0].url)
+  );
+  const [disasterType, setDisasterType] = useState<'earthquake' | 'tsunami'>(() =>
+    loadState<'earthquake' | 'tsunami'>('geology_disaster_type', 'earthquake')
+  );
+  const [simIntensity, setSimIntensity] = useState<number>(() =>
+    loadState<number>('geology_sim_intensity', 5.5)
+  );
   const [isSimRunning, setIsSimRunning] = useState<boolean>(true);
   const [structuralIntegrity, setStructuralIntegrity] = useState<number>(100);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+
+  // Auto-save state
+  useEffect(() => {
+    saveState('geology_module', activeModule);
+  }, [activeModule]);
+
+  useEffect(() => {
+    saveState('geology_model_url', selectedModelUrl);
+  }, [selectedModelUrl]);
+
+  useEffect(() => {
+    saveState('geology_disaster_type', disasterType);
+  }, [disasterType]);
+
+  useEffect(() => {
+    saveState('geology_sim_intensity', simIntensity);
+  }, [simIntensity]);
 
   // Selected building configuration
   const currentBuilding = GEOLOGY_MODELS.find(m => m.url === selectedModelUrl) || GEOLOGY_MODELS[0];
@@ -206,54 +288,53 @@ export const GeologyLab: React.FC = () => {
     const globeGroup = new THREE.Group();
     scene.add(globeGroup);
 
-    // Load real Earth surface & cross-section textures uploaded by user
-    const texLoader = new THREE.TextureLoader();
-    const earthLayersTex = texLoader.load('/textures/earth/earth_cutaway_layers.jpg');
-    earthLayersTex.colorSpace = THREE.SRGBColorSpace;
+    // Procedural Earth Crust Texture (continents & oceans without external image requests)
+    const earthCrustTex = generateProceduralEarthCrustTexture();
 
-    // 1. Inner Core (Solid glowing incandescent sphere)
-    const icGeo = new THREE.SphereGeometry(0.7, 40, 40, 0, Math.PI * 1.5);
+    // 1. Inner Core (Solid glowing incandescent sphere of crystalline Fe-Ni)
+    const icGeo = new THREE.SphereGeometry(0.7, 48, 48, 0, Math.PI * 1.5);
     const icMat = new THREE.MeshStandardMaterial({
       color: 0xfffbeb,
       emissive: 0xfef08a,
-      emissiveIntensity: 0.8,
-      roughness: 0.2,
+      emissiveIntensity: 0.9,
+      roughness: 0.15,
+      metalness: 0.8,
       side: THREE.DoubleSide
     });
     const icMesh = new THREE.Mesh(icGeo, icMat);
     globeGroup.add(icMesh);
 
-    // 2. Outer Core (Liquid incandescent shell with molten texture)
-    const ocGeo = new THREE.SphereGeometry(1.25, 40, 40, 0, Math.PI * 1.5);
+    // 2. Outer Core (Turbulent liquid magma dynamo)
+    const ocGeo = new THREE.SphereGeometry(1.25, 48, 48, 0, Math.PI * 1.5);
     const ocMat = new THREE.MeshStandardMaterial({
-      color: 0xf97316,
-      emissive: 0xea580c,
-      emissiveIntensity: 0.45,
-      map: earthLayersTex,
+      color: 0xea580c,
+      emissive: 0xc2410c,
+      emissiveIntensity: 0.6,
       roughness: 0.35,
+      metalness: 0.4,
       side: THREE.DoubleSide
     });
     const ocMesh = new THREE.Mesh(ocGeo, ocMat);
     globeGroup.add(ocMesh);
 
-    // 3. Mantle (Silicate convective mantle with natural striations)
-    const mGeo = new THREE.SphereGeometry(1.9, 48, 48, 0, Math.PI * 1.5);
+    // 3. Mantle (Viscous convective silicates with natural striations)
+    const mGeo = new THREE.SphereGeometry(1.85, 48, 48, 0, Math.PI * 1.5);
     const mMat = new THREE.MeshStandardMaterial({
       color: 0xd97706,
-      emissive: 0x9a3412,
-      emissiveIntensity: 0.2,
-      map: earthLayersTex,
-      roughness: 0.75,
+      emissive: 0x78350f,
+      emissiveIntensity: 0.25,
+      roughness: 0.8,
+      metalness: 0.1,
       side: THREE.DoubleSide
     });
     const mMesh = new THREE.Mesh(mGeo, mMat);
     globeGroup.add(mMesh);
 
-    // 4. Crust & Oceanic surface (Real continents and oceans)
+    // 4. Crust & Oceanic surface (Procedural continents and oceanic crust)
     const cGeo = new THREE.SphereGeometry(2.1, 64, 64, 0, Math.PI * 1.5);
     const cMat = new THREE.MeshStandardMaterial({
-      map: earthLayersTex,
-      roughness: 0.55,
+      map: earthCrustTex,
+      roughness: 0.6,
       metalness: 0.05,
       side: THREE.DoubleSide
     });
@@ -287,9 +368,14 @@ export const GeologyLab: React.FC = () => {
       resizeObserver.disconnect();
       renderer.dispose();
       icGeo.dispose();
+      icMat.dispose();
       ocGeo.dispose();
+      ocMat.dispose();
       mGeo.dispose();
+      mMat.dispose();
       cGeo.dispose();
+      cMat.dispose();
+      earthCrustTex.dispose();
     };
   }, [activeModule]);
 
@@ -588,24 +674,48 @@ export const GeologyLab: React.FC = () => {
               style={{ touchAction: 'none' }}
             />
 
-            {/* Authentic Geological Cross-Section Reference Banner */}
-            <div className="bg-[#040714] p-3 border-t border-white/10 flex items-center gap-3">
-              <div className="w-20 h-16 rounded-lg overflow-hidden border border-white/10 flex-shrink-0 bg-black">
-                <img
-                  src="/textures/earth/earth_diagram_labeled.jpg"
-                  alt="Earth Layers Geological Reference"
-                  className="w-full h-full object-cover"
-                />
+            {/* Procedural Geological Discontinuity Profile (Zero external photo download) */}
+            <div className="bg-[#040714] p-3.5 border-t border-white/10 space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-amber-400 font-bold flex items-center gap-1.5">
+                  <Layers className="w-3.5 h-3.5 text-amber-400" />
+                  <span>{language === 'ar' ? 'مخطط الانقطاعات الزلزالية والطبقية (Geophysical Discontinuities)' : 'Geophysical Discontinuity Stratigraphy Profile'}</span>
+                </span>
+                <span className="text-[10px] font-mono text-slate-400">PREM / LEHMANN GEOPHYSICS</span>
               </div>
-              <div className="text-[11px] leading-tight">
-                <span className="text-amber-400 font-bold block mb-0.5">
-                  {language === 'ar' ? '📖 المرجع الجيولوجي المعتمد لطبقات الأرض' : '📖 Standard Lithospheric Cross-Section'}
-                </span>
-                <span className="text-slate-400">
-                  {language === 'ar'
-                    ? 'القشرة الأرضية (السيال والسيما) • غلاف الوشاح الصخري • اللب الخارجي المنصهر • اللب الداخلي الصلب.'
-                    : 'Continental/Oceanic Crust • Asthenosphere & Mesosphere • Outer Molten Core • Solid Fe-Ni Inner Core.'}
-                </span>
+              <div className="grid grid-cols-4 gap-2 text-center text-[10px] font-mono">
+                <div 
+                  onClick={() => setSelectedLayer(EARTH_LAYERS_3D[3])}
+                  className="p-1.5 rounded-lg bg-sky-950/60 border border-sky-400/30 cursor-pointer hover:border-sky-400 transition-colors"
+                >
+                  <span className="text-sky-300 font-bold block">{language === 'ar' ? 'القشرة' : 'Crust'}</span>
+                  <span className="text-slate-400 block text-[9px]">0 - 70 km</span>
+                  <span className="text-amber-400/80 text-[8px] block mt-0.5">Moho: 35 km</span>
+                </div>
+                <div 
+                  onClick={() => setSelectedLayer(EARTH_LAYERS_3D[2])}
+                  className="p-1.5 rounded-lg bg-amber-950/60 border border-amber-400/30 cursor-pointer hover:border-amber-400 transition-colors"
+                >
+                  <span className="text-amber-300 font-bold block">{language === 'ar' ? 'الوشاح' : 'Mantle'}</span>
+                  <span className="text-slate-400 block text-[9px]">70 - 2,890 km</span>
+                  <span className="text-amber-400/80 text-[8px] block mt-0.5">Convection</span>
+                </div>
+                <div 
+                  onClick={() => setSelectedLayer(EARTH_LAYERS_3D[1])}
+                  className="p-1.5 rounded-lg bg-orange-950/60 border border-orange-400/30 cursor-pointer hover:border-orange-400 transition-colors"
+                >
+                  <span className="text-orange-300 font-bold block">{language === 'ar' ? 'اللب الخارجي' : 'Outer Core'}</span>
+                  <span className="text-slate-400 block text-[9px]">2,890 - 5,150 km</span>
+                  <span className="text-rose-400/80 text-[8px] block mt-0.5">Gutenberg Disc.</span>
+                </div>
+                <div 
+                  onClick={() => setSelectedLayer(EARTH_LAYERS_3D[0])}
+                  className="p-1.5 rounded-lg bg-yellow-950/60 border border-yellow-300/30 cursor-pointer hover:border-yellow-300 transition-colors"
+                >
+                  <span className="text-yellow-200 font-bold block">{language === 'ar' ? 'اللب الداخلي' : 'Inner Core'}</span>
+                  <span className="text-slate-400 block text-[9px]">5,150 - 6,371 km</span>
+                  <span className="text-yellow-400/80 text-[8px] block mt-0.5">Lehmann: 5150 km</span>
+                </div>
               </div>
             </div>
           </div>

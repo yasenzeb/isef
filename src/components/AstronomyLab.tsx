@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three-stdlib';
 import { useLanguage } from '../context/LanguageContext';
+import { saveState, loadState } from '../utils/persistence';
 import { 
   Orbit, 
   Moon, 
@@ -15,6 +16,174 @@ import {
   Calendar,
   Activity
 } from 'lucide-react';
+
+// Generates procedural high-fidelity lunar surface textures with authentic maria, crater rims, and ray systems
+function generateProceduralMoonTextures(): { diffuse: THREE.CanvasTexture; bump: THREE.CanvasTexture } {
+  const width = 1024;
+  const height = 512;
+
+  const diffCanvas = document.createElement('canvas');
+  diffCanvas.width = width;
+  diffCanvas.height = height;
+  const ctx = diffCanvas.getContext('2d')!;
+
+  const bumpCanvas = document.createElement('canvas');
+  bumpCanvas.width = width;
+  bumpCanvas.height = height;
+  const bCtx = bumpCanvas.getContext('2d')!;
+
+  // 1. Base lunar anorthosite highlands
+  ctx.fillStyle = '#9ea3a8';
+  ctx.fillRect(0, 0, width, height);
+
+  bCtx.fillStyle = '#808080';
+  bCtx.fillRect(0, 0, width, height);
+
+  // 2. Micro-topography noise
+  const imgData = ctx.getImageData(0, 0, width, height);
+  const bData = bCtx.getImageData(0, 0, width, height);
+  for (let i = 0; i < imgData.data.length; i += 4) {
+    const n = (Math.random() - 0.5) * 24;
+    imgData.data[i] = Math.min(255, Math.max(0, imgData.data[i] + n));
+    imgData.data[i + 1] = Math.min(255, Math.max(0, imgData.data[i + 1] + n));
+    imgData.data[i + 2] = Math.min(255, Math.max(0, imgData.data[i + 2] + n));
+
+    const bn = (Math.random() - 0.5) * 18;
+    bData.data[i] = Math.min(255, Math.max(0, 128 + bn));
+    bData.data[i + 1] = Math.min(255, Math.max(0, 128 + bn));
+    bData.data[i + 2] = Math.min(255, Math.max(0, 128 + bn));
+  }
+  ctx.putImageData(imgData, 0, 0);
+  bCtx.putImageData(bData, 0, 0);
+
+  // 3. Major Lunar Maria (Oceanus Procellarum, Mare Imbrium, Tranquillitatis, etc.)
+  const maria: [number, number, number, number, number, number][] = [
+    [width * 0.35, height * 0.35, 110, 85, 0.2, 0.45],
+    [width * 0.48, height * 0.30, 75, 60, -0.1, 0.50],
+    [width * 0.60, height * 0.32, 55, 45, 0.1, 0.48],
+    [width * 0.65, height * 0.42, 60, 50, 0.0, 0.46],
+    [width * 0.72, height * 0.36, 42, 35, 0.2, 0.52],
+    [width * 0.58, height * 0.52, 48, 38, -0.2, 0.44],
+    [width * 0.50, height * 0.55, 50, 40, 0.0, 0.46],
+    [width * 0.38, height * 0.52, 60, 48, 0.3, 0.45],
+    [width * 0.42, height * 0.42, 40, 30, -0.1, 0.48],
+  ];
+
+  maria.forEach(([x, y, rx, ry, rot, dark]) => {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rot);
+    const radGrd = ctx.createRadialGradient(0, 0, rx * 0.2, 0, 0, rx);
+    radGrd.addColorStop(0, `rgba(45, 48, 54, ${dark})`);
+    radGrd.addColorStop(0.65, `rgba(58, 62, 70, ${dark * 0.8})`);
+    radGrd.addColorStop(1, 'rgba(158, 163, 168, 0)');
+    ctx.fillStyle = radGrd;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    bCtx.save();
+    bCtx.translate(x, y);
+    bCtx.rotate(rot);
+    const bGrd = bCtx.createRadialGradient(0, 0, rx * 0.1, 0, 0, rx);
+    bGrd.addColorStop(0, 'rgba(90, 90, 90, 0.35)');
+    bGrd.addColorStop(1, 'rgba(128, 128, 128, 0)');
+    bCtx.fillStyle = bGrd;
+    bCtx.beginPath();
+    bCtx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
+    bCtx.fill();
+    bCtx.restore();
+  });
+
+  // 4. Major Impact Craters with Rims & Rays (Tycho, Copernicus, Kepler, Plato)
+  const craters = [
+    { x: width * 0.48, y: height * 0.72, r: 24, rays: 16 },
+    { x: width * 0.42, y: height * 0.38, r: 18, rays: 10 },
+    { x: width * 0.34, y: height * 0.40, r: 12, rays: 6 },
+    { x: width * 0.30, y: height * 0.30, r: 14, rays: 0 },
+    { x: width * 0.52, y: height * 0.22, r: 20, rays: 0 },
+    { x: width * 0.62, y: height * 0.58, r: 16, rays: 0 },
+    { x: width * 0.50, y: height * 0.48, r: 15, rays: 0 },
+  ];
+
+  craters.forEach(({ x, y, r, rays }) => {
+    if (rays > 0) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(235, 240, 250, 0.3)';
+      ctx.lineWidth = 1.2;
+      for (let a = 0; a < rays; a++) {
+        const angle = (a / rays) * Math.PI * 2 + (Math.random() - 0.5) * 0.2;
+        const len = r * (4 + Math.random() * 8);
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + Math.cos(angle) * len, y + Math.sin(angle) * len);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    ctx.fillStyle = '#383b40';
+    ctx.beginPath();
+    ctx.arc(x, y, r * 0.75, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = '#f1f5f9';
+    ctx.lineWidth = r * 0.25;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.stroke();
+
+    bCtx.fillStyle = '#303030';
+    bCtx.beginPath();
+    bCtx.arc(x, y, r * 0.7, 0, Math.PI * 2);
+    bCtx.fill();
+
+    bCtx.strokeStyle = '#ffffff';
+    bCtx.lineWidth = r * 0.3;
+    bCtx.beginPath();
+    bCtx.arc(x, y, r, 0, Math.PI * 2);
+    bCtx.stroke();
+  });
+
+  // 5. Hundreds of realistic micro-craters
+  for (let c = 0; c < 200; c++) {
+    const cx = Math.random() * width;
+    const cy = Math.random() * height;
+    const cr = 2 + Math.random() * 4;
+
+    ctx.fillStyle = 'rgba(40, 42, 48, 0.5)';
+    ctx.beginPath();
+    ctx.arc(cx, cy, cr * 0.7, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = 'rgba(230, 235, 245, 0.65)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(cx, cy, cr, 0, Math.PI * 2);
+    ctx.stroke();
+
+    bCtx.strokeStyle = '#e2e8f0';
+    bCtx.lineWidth = 1;
+    bCtx.beginPath();
+    bCtx.arc(cx, cy, cr, 0, Math.PI * 2);
+    bCtx.stroke();
+  }
+
+  const diffTex = new THREE.CanvasTexture(diffCanvas);
+  diffTex.wrapS = THREE.RepeatWrapping;
+  diffTex.wrapT = THREE.ClampToEdgeWrapping;
+  diffTex.colorSpace = THREE.SRGBColorSpace;
+  diffTex.needsUpdate = true;
+
+  const bumpTex = new THREE.CanvasTexture(bumpCanvas);
+  bumpTex.wrapS = THREE.RepeatWrapping;
+  bumpTex.wrapT = THREE.ClampToEdgeWrapping;
+  bumpTex.needsUpdate = true;
+
+  return { diffuse: diffTex, bump: bumpTex };
+}
+
 
 interface PlanetData {
   id: string;
@@ -278,12 +447,28 @@ const LUNAR_PHASES: LunarPhase[] = [
 
 export const AstronomyLab: React.FC = () => {
   const { t, language } = useLanguage();
-  const [activeModule, setActiveModule] = useState<'solar' | 'moon'>('solar');
-  const [selectedPlanet, setSelectedPlanet] = useState<PlanetData>(PLANETS_DATA[2]); // Default Earth
+  const [activeModule, setActiveModule] = useState<'solar' | 'moon'>(() => loadState<'solar' | 'moon'>('astronomy_module', 'solar'));
+  const [selectedPlanet, setSelectedPlanet] = useState<PlanetData>(() => {
+    const savedId = loadState<string>('astronomy_planet_id', 'earth');
+    return PLANETS_DATA.find(p => p.id === savedId) || PLANETS_DATA[2];
+  });
   
   // Moon phases simulation state
-  const [lunarDay, setLunarDay] = useState<number>(14.8); // Default Full Moon
+  const [lunarDay, setLunarDay] = useState<number>(() => loadState<number>('astronomy_lunar_day', 14.8));
   const [moonViewMode, setMoonViewMode] = useState<'interactive3d' | 'sketchfab'>('interactive3d');
+
+  // Auto-save state
+  useEffect(() => {
+    saveState('astronomy_module', activeModule);
+  }, [activeModule]);
+
+  useEffect(() => {
+    saveState('astronomy_planet_id', selectedPlanet.id);
+  }, [selectedPlanet]);
+
+  useEffect(() => {
+    saveState('astronomy_lunar_day', lunarDay);
+  }, [lunarDay]);
 
   // Compute active phase
   const currentPhase = LUNAR_PHASES.reduce((prev, curr) => {
@@ -351,27 +536,17 @@ export const AstronomyLab: React.FC = () => {
     const starField = new THREE.Points(starsGeo, starsMat);
     scene.add(starField);
 
-    // Procedural Moon Sphere with craters and highlands
+    // Procedural Moon Sphere with realistic Maria and crater topography
     const moonGeo = new THREE.SphereGeometry(1.35, 64, 64);
     
-    // Load authentic high-resolution photographic lunar texture uploaded by user
-    const textureLoader = new THREE.TextureLoader();
-    const realMoonTexture = textureLoader.load(
-      '/textures/moon/moon_real_highres.webp',
-      (texture) => {
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.ClampToEdgeWrapping;
-        texture.repeat.set(2, 1);
-        texture.colorSpace = THREE.SRGBColorSpace;
-        texture.needsUpdate = true;
-      }
-    );
+    // Generate authentic procedural lunar textures (0 external downloads)
+    const { diffuse: moonDiffTex, bump: moonBumpTex } = generateProceduralMoonTextures();
 
     const moonMat = new THREE.MeshStandardMaterial({
-      map: realMoonTexture,
-      bumpMap: realMoonTexture,
-      bumpScale: 0.04,
-      roughness: 0.95,
+      map: moonDiffTex,
+      bumpMap: moonBumpTex,
+      bumpScale: 0.05,
+      roughness: 0.92,
       metalness: 0.02,
     });
 
@@ -413,7 +588,8 @@ export const AstronomyLab: React.FC = () => {
       renderer.dispose();
       moonGeo.dispose();
       moonMat.dispose();
-      realMoonTexture.dispose();
+      moonDiffTex.dispose();
+      moonBumpTex.dispose();
     };
   }, [activeModule, moonViewMode]);
 
@@ -737,21 +913,52 @@ export const AstronomyLab: React.FC = () => {
                 </div>
               )}
 
-              {/* Real Moon Phases Photographic Strip */}
+              {/* Procedural 8-Phase Synodic Orbit Navigator (Zero photo textures) */}
               <div className="sci-card p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-white flex items-center gap-2">
                     <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>{language === 'ar' ? 'أطلس رصد أطوار القمر الواقعية' : 'Real Astrophotography Lunar Strip'}</span>
+                    <span>{language === 'ar' ? 'مسار الأطوار القمرية التفاعلي (المخطط الفلكي)' : 'Interactive Synodic Lunar Phase Path'}</span>
                   </span>
-                  <span className="text-[10px] font-mono text-slate-400">NASA & OBSERVATORY SPECTRA</span>
+                  <span className="text-[10px] font-mono text-cyan-400">29.53d SYNODIC ORBIT</span>
                 </div>
-                <div className="rounded-xl overflow-hidden border border-white/10 bg-black">
-                  <img
-                    src="/textures/moon/moon_phases_strip.jpg"
-                    alt="Real Lunar Phases Astrophotography"
-                    className="w-full h-28 object-contain object-center hover:scale-105 transition-transform duration-300"
-                  />
+                <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5 p-2 rounded-xl bg-black/60 border border-white/5">
+                  {LUNAR_PHASES.map((p) => {
+                    const isSelected = currentPhase.id === p.id;
+                    return (
+                      <button
+                        key={p.id}
+                        onClick={() => setLunarDay(p.dayStart)}
+                        className={`p-2 rounded-lg text-center transition-all ${
+                          isSelected 
+                            ? 'bg-cyan-500/20 border border-cyan-400 shadow-md shadow-cyan-500/20' 
+                            : 'hover:bg-white/5 border border-transparent'
+                        }`}
+                      >
+                        {/* Procedural Moon Phase Silhouette SVG */}
+                        <div className="w-8 h-8 mx-auto mb-1 rounded-full bg-slate-900 border border-slate-700 relative overflow-hidden flex items-center justify-center">
+                          {p.illuminationPct === 0 && (
+                            <div className="w-full h-full bg-slate-950" />
+                          )}
+                          {p.illuminationPct === 100 && (
+                            <div className="w-full h-full bg-amber-100 shadow-[0_0_8px_#fef08a]" />
+                          )}
+                          {p.illuminationPct > 0 && p.illuminationPct < 100 && (
+                            <div 
+                              className={`h-full bg-amber-100 ${p.angleDeg < 180 ? 'rounded-r-full mr-auto' : 'rounded-l-full ml-auto'}`}
+                              style={{ width: `${Math.max(20, p.illuminationPct)}%` }}
+                            />
+                          )}
+                        </div>
+                        <span className="text-[10px] block font-mono text-slate-300 truncate">
+                          {language === 'ar' ? p.nameAr.split(' ')[0] : p.nameEn.split(' ')[0]}
+                        </span>
+                        <span className="text-[9px] block text-cyan-400 font-mono">
+                          {p.illuminationPct}%
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>

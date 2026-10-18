@@ -11,7 +11,8 @@ import {
   Sparkles, 
   Layers, 
   ShieldCheck,
-  AlertCircle
+  AlertCircle,
+  Usb
 } from 'lucide-react';
 
 interface OfflineDownloadModalProps {
@@ -48,9 +49,7 @@ export const OfflineDownloadModal: React.FC<OfflineDownloadModalProps> = ({ isOp
       '/models/anatomy/lymphatic.glb',
       '/models/geology/construction_site.glb',
       '/models/geology/abandoned_building.glb',
-      '/models/geology/tall_building.glb',
-      '/models/geology/apartment_facade.glb',
-      '/models/geology/timber_cottage.glb'
+      '/models/geology/tall_building.glb'
     ];
 
     try {
@@ -207,7 +206,27 @@ export const OfflineDownloadModal: React.FC<OfflineDownloadModalProps> = ({ isOp
           </div>
         </div>
 
-        {/* Technical Specification Summary for Judges */}
+        {/* Card 3: USB Flash Drive Portable Deployment */}
+        <div className="p-4 rounded-xl bg-gradient-to-r from-amber-500/10 via-indigo-500/10 to-transparent border border-amber-500/25 space-y-2.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-white font-semibold text-xs sm:text-sm">
+              <Usb className="w-4 h-4 text-amber-400" />
+              <span>{language === 'ar' ? 'تشغيل فوري من فلاشة USB بضغطة زر واحدة (Portable Flash Drive)' : 'Instant 1-Click Launch from USB Flash Drive'}</span>
+            </div>
+            <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+              0% Internet Needed
+            </span>
+          </div>
+          <p className="text-xs text-slate-300 leading-relaxed">
+            {language === 'ar'
+              ? 'انسخ مجلد المنصة كاملاً إلى أي فلاشة USB وافتحه في أي جهاز كمبيوتر (في المدرسة، المعرض، أو لجنة التحكيم) بالضغط مرتين على ملف start_offline_windows.bat ليعمل السايت فوراً بدون إنترنت وبدون الحاجة لتثبيت أي برامج!'
+              : 'Copy the platform folder to any USB drive and launch it on any computer by double-clicking "start_offline_windows.bat" — zero internet and zero installations required!'}
+          </p>
+          <div className="flex items-center gap-2 text-[11px] font-mono text-slate-400 bg-black/40 p-2 rounded-lg border border-white/5">
+            <span className="text-emerald-400 font-bold">1-Click:</span>
+            <span>start_offline_windows.bat</span>
+          </div>
+        </div>
         <div className="p-4 rounded-xl bg-black/60 border border-white/[0.06] space-y-2">
           <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
             <ShieldCheck className="w-4 h-4 text-cyan-400" />

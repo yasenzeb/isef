@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
+import { saveState, loadState } from '../utils/persistence';
 import { 
   RotateCcw, 
   Zap, 
@@ -225,12 +226,31 @@ function WaveSimulator({ language }: { language: string }) {
 
 export const PhysicsLab: React.FC = () => {
   const { t, isRTL, language } = useLanguage();
-  const [activeModule, setActiveModule] = useState<'circuits' | 'forces' | 'projectiles' | 'optics' | 'waves'>('circuits');
+  const [activeModule, setActiveModule] = useState<'circuits' | 'forces' | 'projectiles' | 'optics' | 'waves'>(() =>
+    loadState<'circuits' | 'forces' | 'projectiles' | 'optics' | 'waves'>('physics_module', 'circuits')
+  );
 
   // Sub-screens for multi-screen simulations
-  const [forcesScreen, setForcesScreen] = useState<number>(1);
-  const [pmScreen, setPmScreen] = useState<number>(3); // 3 = Drag (حركة المقذوفات ومقاومة الهواء) default
-  const [opticsScreen, setOpticsScreen] = useState<number>(1);
+  const [forcesScreen, setForcesScreen] = useState<number>(() => loadState<number>('physics_forces_screen', 1));
+  const [pmScreen, setPmScreen] = useState<number>(() => loadState<number>('physics_pm_screen', 3));
+  const [opticsScreen, setOpticsScreen] = useState<number>(() => loadState<number>('physics_optics_screen', 1));
+
+  // Auto-save physics lab state
+  useEffect(() => {
+    saveState('physics_module', activeModule);
+  }, [activeModule]);
+
+  useEffect(() => {
+    saveState('physics_forces_screen', forcesScreen);
+  }, [forcesScreen]);
+
+  useEffect(() => {
+    saveState('physics_pm_screen', pmScreen);
+  }, [pmScreen]);
+
+  useEffect(() => {
+    saveState('physics_optics_screen', opticsScreen);
+  }, [opticsScreen]);
 
   const circuitsIframeRef = useRef<HTMLIFrameElement>(null);
   const forcesIframeRef = useRef<HTMLIFrameElement>(null);
