@@ -5,7 +5,8 @@ import { useLanguage } from '../context/LanguageContext';
 import { getFullPeriodicElements, ChemicalElement } from '../data/periodicTableData';
 import { POLYATOMIC_GROUPS, PolyatomicGroup } from '../data/polyatomicGroupsData';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
-import { Search, Award, Layers, Sparkles, RotateCcw, Play, Pause, Atom, ShieldCheck, ChevronRight } from 'lucide-react';
+import { Search, Award, Layers, Sparkles, RotateCcw, Play, Pause, Atom, ShieldCheck, ChevronRight, FlaskConical } from 'lucide-react';
+import { PraxiReactionSimulator } from './PraxiReactionSimulator';
 
 interface Atom3DViewerProps {
   element: ChemicalElement;
@@ -414,7 +415,7 @@ const PolyatomicGroup3DViewer: React.FC<PolyatomicGroup3DViewerProps> = ({ group
 
 export const ChemistryLab: React.FC = () => {
   const { t, language, isRTL } = useLanguage();
-  const [activeTab, setActiveTab] = useState<'periodic' | 'atomic-groups'>('periodic');
+  const [activeTab, setActiveTab] = useState<'periodic' | 'reactions' | 'atomic-groups'>('periodic');
   const [elements] = useState<ChemicalElement[]>(() => getFullPeriodicElements());
   const [selectedElement, setSelectedElement] = useState<ChemicalElement>(elements[0]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -461,7 +462,7 @@ export const ChemistryLab: React.FC = () => {
           <p className="text-xs text-slate-400 mt-0.5">{t.chemistry.subtitle}</p>
         </div>
 
-        {/* Tab switcher: Only 2 tabs (Reactions removed) */}
+        {/* Tab switcher: 3 tabs */}
         <div className="flex items-center space-x-2 sci-surface p-1.5">
           <button
             onClick={() => setActiveTab('periodic')}
@@ -472,6 +473,17 @@ export const ChemistryLab: React.FC = () => {
           >
             <Atom className="w-3.5 h-3.5" />
             <span>{ar ? 'الجدول الدوري وبنية الذرة 3D' : 'Periodic Table & 3D Atom'}</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('reactions')}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
+              activeTab === 'reactions' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
+            }`}
+            style={activeTab === 'reactions' ? { background: 'linear-gradient(135deg, #06b6d4, #10b981)' } : undefined}
+          >
+            <FlaskConical className="w-3.5 h-3.5" />
+            <span>{ar ? 'معمل التفاعلات الكيميائية (PraxiLabs)' : 'Reaction Lab (PraxiLabs)'}</span>
           </button>
 
           <button
@@ -708,7 +720,12 @@ export const ChemistryLab: React.FC = () => {
         </div>
       )}
 
-      {/* VIEW 2: 3D POLYATOMIC GROUPS (المجموعات الذرية) */}
+      {/* VIEW 2: PRAXILABS REACTION SIMULATOR (معمل التفاعلات الكيميائية) */}
+      {activeTab === 'reactions' && (
+        <PraxiReactionSimulator />
+      )}
+
+      {/* VIEW 3: 3D POLYATOMIC GROUPS (المجموعات الذرية) */}
       {activeTab === 'atomic-groups' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column: 3D Polyatomic Group Model */}
