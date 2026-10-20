@@ -428,6 +428,18 @@ export const ChemistryLab: React.FC = () => {
   // Scientist card
   const mendeleev = REAL_SCIENTISTS.find(s => s.id === 'mendeleev');
 
+  // Listen to remote tab switch orders from Darwin (Fish Audio)
+  useEffect(() => {
+    const handleSwitch = (e: any) => {
+      const tab = e.detail?.tab;
+      if (tab && ['periodic', 'reactions', 'atomic-groups'].includes(tab)) {
+        setActiveTab(tab);
+      }
+    };
+    window.addEventListener('scinexa:switch_chemistry_tab', handleSwitch);
+    return () => window.removeEventListener('scinexa:switch_chemistry_tab', handleSwitch);
+  }, []);
+
   // Filtering for Periodic Table
   const filteredElements = elements.filter(el => {
     const matchesCategory = selectedCategory === 'all' || el.category === selectedCategory;

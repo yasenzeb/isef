@@ -249,6 +249,18 @@ export const PhysicsLab: React.FC = () => {
     saveState('physics_module', activeModule);
   }, [activeModule]);
 
+  // Listen to remote module switch orders from Darwin (Fish Audio)
+  useEffect(() => {
+    const handleSwitch = (e: any) => {
+      const mod = e.detail?.module;
+      if (mod && ['circuits', 'forces', 'projectiles', 'optics', 'waves'].includes(mod)) {
+        setActiveModule(mod);
+      }
+    };
+    window.addEventListener('scinexa:switch_physics_module', handleSwitch);
+    return () => window.removeEventListener('scinexa:switch_physics_module', handleSwitch);
+  }, []);
+
   useEffect(() => {
     saveState('physics_forces_screen', forcesScreen);
   }, [forcesScreen]);

@@ -5,35 +5,14 @@ interface FishAgentControllerProps {
   setCurrentTab: (tab: string) => void;
 }
 
-const LAB_MAP: Record<string, { ar: string; keywords: string[] }> = {
-  anatomy: {
-    ar: 'أطلس التشريح 3D',
-    keywords: ['تشريح', 'عظام', 'عضلة', 'عظم', 'جمجمة', 'قفص صدري', 'فخذ', 'جسم الإنسان', 'anatomy'],
-  },
-  physics: {
-    ar: 'مختبر الفيزياء والدوائر الكهربائية',
-    keywords: ['فيزياء', 'دوائر', 'كهرباء', 'أوم', 'فولت', 'مقاومة', 'مصباح', 'بطارية', 'physics'],
-  },
-  chemistry: {
-    ar: 'مختبر الكيمياء والجدول الدوري',
-    keywords: ['كيمياء', 'جدول دوري', 'عناصر', 'ذرة', 'تفاعل', 'صوديوم', 'كلور', 'chemistry'],
-  },
-  biology: {
-    ar: 'مختبر الأحياء والخلية',
-    keywords: ['أحياء', 'خلية', 'ميتوكوندريا', 'dna', 'وراثة', 'عضيات', 'biology'],
-  },
-  geology: {
-    ar: 'علوم الأرض والزلازل',
-    keywords: ['جيولوجيا', 'أرض', 'زلزال', 'تسونامي', 'صفائح', 'صخور', 'geology'],
-  },
-  astronomy: {
-    ar: 'علم الفلك ومدارات كبلر',
-    keywords: ['فلك', 'كواكب', 'شمس', 'كبلر', 'مدار', 'جاذبية', 'نظام شمسي', 'astronomy'],
-  },
-  home: {
-    ar: 'الصفحة الرئيسية',
-    keywords: ['رئيسية', 'البداية', 'خروج', 'القائمة', 'home'],
-  },
+const LAB_MAP: Record<string, { ar: string }> = {
+  anatomy: { ar: 'أطلس التشريح 3D' },
+  physics: { ar: 'مختبر الفيزياء والدوائر الكهربائية' },
+  chemistry: { ar: 'مختبر الكيمياء والجدول الدوري' },
+  biology: { ar: 'مختبر الأحياء والخلية' },
+  geology: { ar: 'علوم الأرض والزلازل' },
+  astronomy: { ar: 'علم الفلك ومدارات كبلر' },
+  home: { ar: 'الصفحة الرئيسية' },
 };
 
 export const FishAgentController: React.FC<FishAgentControllerProps> = ({
@@ -43,19 +22,30 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
   const currentTabRef = useRef(currentTab);
   currentTabRef.current = currentTab;
 
-  const lastProcessedTextRef = useRef<string>('');
   const latestContextRef = useRef<{ title?: string; desc?: string; type?: string }>({});
+  const processedActionIdsRef = useRef<Set<string>>(new Set());
 
-  // 1. Register global window bridge
+  // 1. Expose global window bridge for any direct scripts
   useEffect(() => {
     (window as any).SciNexa = {
-      navigate: (tab: string) => setCurrentTab(tab),
+      navigate: (tab: string, subModule?: string) => {
+        setCurrentTab(tab);
+        if (subModule) {
+          setTimeout(() => {
+            if (tab === 'physics') {
+              window.dispatchEvent(new CustomEvent('scinexa:switch_physics_module', { detail: { module: subModule } }));
+            } else if (tab === 'chemistry') {
+              window.dispatchEvent(new CustomEvent('scinexa:switch_chemistry_tab', { detail: { tab: subModule } }));
+            }
+          }, 150);
+        }
+      },
       getLab: () => currentTabRef.current,
       getContext: () => latestContextRef.current,
     };
   }, [setCurrentTab]);
 
-  // 2. Synchronize Dynamic Variables to <fish-agent> element & report state to /api/fish-tool
+  // 2. Synchronize Platform State with <fish-agent> & /api/fish-tool
   const syncPlatformState = (extraContext?: any) => {
     const tab = currentTabRef.current;
     const labMeta = LAB_MAP[tab] || LAB_MAP.home;
@@ -69,7 +59,7 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
       timestamp: Date.now(),
     };
 
-    // Update <fish-agent> DOM element dynamic-variables attribute
+    // Update <fish-agent> DOM element dynamic-variables
     const agentEl = document.querySelector('fish-agent');
     if (agentEl) {
       try {
@@ -110,63 +100,7 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
     return () => window.removeEventListener('scinexa:context', handleLabContext);
   }, []);
 
-  // 4. Observe <fish-agent> ShadowRoot for live voice/text transcript to trigger instant lab navigation
-  useEffect(() => {
-    let observer: MutationObserver | null = null;
-    let checkInterval: any = null;
-
-    const setupObserver = () => {
-      const agentEl = document.querySelector('fish-agent');
-      if (!agentEl || !agentEl.shadowRoot) return false;
-
-      observer = new MutationObserver(() => {
-        const textContent = agentEl.shadowRoot?.textContent || '';
-        if (!textContent || textContent === lastProcessedTextRef.current) return;
-
-        // Check the newly added text
-        const lower = textContent.toLowerCase();
-
-        // Check if there is an intent to open a lab
-        for (const [labId, meta] of Object.entries(LAB_MAP)) {
-          const matched = meta.keywords.some(kw => {
-            const pattern = new RegExp(`(افتح|وديني|روح|انتقل|وريني|عايز|أريد|بدنا|مختبر|معمل|عرض).*?${kw}`, 'i');
-            return pattern.test(lower) || lower.includes(`افتح ${kw}`) || lower.includes(`مختبر ${kw}`);
-          });
-
-          if (matched && currentTabRef.current !== labId) {
-            console.log(`[FishAgentController] Executing command to switch to ${labId}`);
-            setCurrentTab(labId);
-            lastProcessedTextRef.current = textContent;
-            break;
-          }
-        }
-      });
-
-      observer.observe(agentEl.shadowRoot, {
-        childList: true,
-        subtree: true,
-        characterData: true,
-      });
-
-      return true;
-    };
-
-    // Retry finding shadowRoot until widget is mounted
-    if (!setupObserver()) {
-      checkInterval = setInterval(() => {
-        if (setupObserver()) {
-          clearInterval(checkInterval);
-        }
-      }, 1000);
-    }
-
-    return () => {
-      if (observer) observer.disconnect();
-      if (checkInterval) clearInterval(checkInterval);
-    };
-  }, [setCurrentTab]);
-
-  // 5. Poll for remote webhook actions triggered by Fish Audio cloud agent
+  // 4. Poll for remote webhook actions triggered by Fish Audio cloud agent
   useEffect(() => {
     const pollInterval = setInterval(async () => {
       try {
@@ -175,18 +109,46 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
           const data = await res.json();
           if (data.actions && data.actions.length > 0) {
             for (const act of data.actions) {
-              if (act.action === 'switch_lab' && act.target_lab && LAB_MAP[act.target_lab]) {
-                setCurrentTab(act.target_lab);
+              if (processedActionIdsRef.current.has(act.id)) continue;
+              processedActionIdsRef.current.add(act.id);
+
+              if (act.action === 'switch_lab') {
+                const targetMainTab = act.main_tab;
+                const targetSubModule = act.sub_module;
+
+                // 1. Switch main lab if needed
+                if (targetMainTab && currentTabRef.current !== targetMainTab) {
+                  setCurrentTab(targetMainTab);
+                }
+
+                // 2. Switch sub-module if specified
+                if (targetSubModule) {
+                  setTimeout(() => {
+                    if (targetMainTab === 'physics') {
+                      window.dispatchEvent(
+                        new CustomEvent('scinexa:switch_physics_module', {
+                          detail: { module: targetSubModule },
+                        })
+                      );
+                    } else if (targetMainTab === 'chemistry') {
+                      window.dispatchEvent(
+                        new CustomEvent('scinexa:switch_chemistry_tab', {
+                          detail: { tab: targetSubModule },
+                        })
+                      );
+                    }
+                  }, 200);
+                }
               }
             }
           }
         }
       } catch {}
-    }, 2000);
+    }, 1500);
 
     return () => clearInterval(pollInterval);
   }, [setCurrentTab]);
 
-  // This controller renders NO UI elements of its own (preserving only the Fish Audio widget)
+  // Headless component: Renders NO UI elements (preserves ONLY the official Fish Audio widget)
   return null;
 };
