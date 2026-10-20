@@ -14,7 +14,15 @@ import {
   BrainCircuit,
   Copy,
   CheckCheck,
-  Trash2
+  Trash2,
+  Phone,
+  PhoneOff,
+  Mic,
+  MicOff,
+  Radio,
+  Waves,
+  MessageSquare,
+  Bot
 } from 'lucide-react';
 
 interface Message {
@@ -269,6 +277,15 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
   const [isThinking, setIsThinking] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
+  // Unified Voice Call & Mode State
+  const [activeTabMode, setActiveTabMode] = useState<'chat' | 'call' | 'darwin'>('chat');
+  const [isCallActive, setIsCallActive] = useState(false);
+  const [callStatus, setCallStatus] = useState<'idle' | 'listening' | 'thinking' | 'speaking'>('idle');
+  const [isMicListening, setIsMicListening] = useState(false);
+  const [callTranscript, setCallTranscript] = useState('');
+  const isCallActiveRef = useRef(false);
+  const recognitionRef = useRef<any>(null);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
   const audioQueueIndexRef = useRef<number>(0);
@@ -276,6 +293,19 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
   const audioSessionIdRef = useRef<number>(0);
 
   const labContext = LAB_CONTEXTS[currentTab] || LAB_CONTEXTS.home;
+
+  // Load Fish Audio widget script dynamically if Darwin Agent tab is selected
+  useEffect(() => {
+    if (activeTabMode === 'darwin') {
+      const existing = document.querySelector('script[src*="agent-widget-embed"]');
+      if (!existing) {
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/@fishaudio/agent-widget-embed';
+        script.async = true;
+        document.body.appendChild(script);
+      }
+    }
+  }, [activeTabMode]);
 
   // Purge any contaminated historical storage on mount
   useEffect(() => {
@@ -337,6 +367,10 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
     if (index >= chunks.length) {
       setIsSpeaking(false);
       currentAudioRef.current = null;
+      if (isCallActiveRef.current) {
+        setCallStatus('listening');
+        startCallListening();
+      }
       return;
     }
 
@@ -353,6 +387,9 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
       audio.onplay = () => {
         if (audioSessionIdRef.current === sessionId) {
           setIsSpeaking(true);
+          if (isCallActiveRef.current) {
+            setCallStatus('speaking');
+          }
         }
       };
 
@@ -393,7 +430,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
 
   // Text-To-Speech Synthesis
   const speak = (rawText: string) => {
-    if (!isVoiceEnabled) return;
+    if (!isVoiceEnabled && !isCallActiveRef.current) return;
     stopSpeaking();
 
     const cleanedText = cleanTextForSpeech(rawText);
@@ -404,6 +441,169 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
       audioQueueIndexRef.current = 0;
       playNextAudioChunk();
     }
+  };
+
+  // Speech Recognition (Web Speech API)
+  const getSpeechRecognition = () => {
+    if (typeof window === 'undefined') return null;
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) return null;
+    const recognition = new SpeechRecognition();
+    recognition.lang = ar ? 'ar-EG' : 'en-US';
+    recognition.interimResults = true;
+    recognition.continuous = false;
+    return recognition;
+  };
+
+  // Toggle Dictation Mic for Text Input
+  const toggleInputMic = () => {
+    if (isMicListening) {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch {}
+      }
+      setIsMicListening(false);
+      return;
+    }
+
+    const recognition = getSpeechRecognition();
+    if (!recognition) {
+      alert(ar ? 'خاصية الميكروفون والتعرف الصوتي غير مدعومة في متصفحك. يرجى تجربة Google Chrome أو Microsoft Edge.' : 'Speech recognition is not supported in your browser.');
+      return;
+    }
+
+    recognitionRef.current = recognition;
+    setIsMicListening(true);
+
+    recognition.onresult = (e: any) => {
+      const transcript = Array.from(e.results)
+        .map((r: any) => r[0].transcript)
+        .join('');
+      setInputText(transcript);
+    };
+
+    recognition.onerror = () => {
+      setIsMicListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsMicListening(false);
+    };
+
+    try {
+      recognition.start();
+    } catch {
+      setIsMicListening(false);
+    }
+  };
+
+  // Start Call Mode Listening Loop
+  const startCallListening = () => {
+    if (!isCallActiveRef.current) return;
+    const recognition = getSpeechRecognition();
+    if (!recognition) {
+      setCallStatus('idle');
+      return;
+    }
+
+    setCallStatus('listening');
+    setCallTranscript('');
+    recognitionRef.current = recognition;
+
+    let finalTranscript = '';
+
+    recognition.onresult = (e: any) => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const transcript = e.results[i][0].transcript;
+        if (e.results[i].isFinal) {
+          finalTranscript += transcript + ' ';
+        } else {
+          interim += transcript;
+        }
+      }
+      setCallTranscript(finalTranscript || interim);
+    };
+
+    recognition.onend = async () => {
+      if (!isCallActiveRef.current) return;
+      const spokenText = finalTranscript.trim();
+      if (spokenText) {
+        setCallStatus('thinking');
+        await handleCallConversation(spokenText);
+      } else {
+        // Restart listening if call remains active
+        setTimeout(() => {
+          if (isCallActiveRef.current && callStatus !== 'speaking') {
+            startCallListening();
+          }
+        }, 800);
+      }
+    };
+
+    recognition.onerror = (err: any) => {
+      console.warn('Call recognition error:', err);
+      if (isCallActiveRef.current && callStatus !== 'speaking') {
+        setTimeout(() => startCallListening(), 1000);
+      }
+    };
+
+    try {
+      recognition.start();
+    } catch {}
+  };
+
+  // Start Voice Call
+  const startVoiceCall = () => {
+    stopSpeaking();
+    setIsCallActive(true);
+    isCallActiveRef.current = true;
+    setActiveTabMode('call');
+    setCallStatus('listening');
+    setCallTranscript('');
+    startCallListening();
+  };
+
+  // End Voice Call
+  const endVoiceCall = () => {
+    stopSpeaking();
+    setIsCallActive(false);
+    isCallActiveRef.current = false;
+    setCallStatus('idle');
+    setCallTranscript('');
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.abort();
+      } catch {}
+    }
+  };
+
+  // Handle Voice Call Speech & Auto-Response
+  const handleCallConversation = async (spokenText: string) => {
+    const userMsg: Message = {
+      id: 'user-' + Date.now(),
+      sender: 'user',
+      text: spokenText,
+      timestamp: Date.now()
+    };
+    setMessages(prev => [...prev, userMsg]);
+    setIsThinking(true);
+
+    const result = await queryAI(spokenText);
+
+    const aiMsg: Message = {
+      id: 'ai-' + Date.now(),
+      sender: 'ai',
+      text: result.text,
+      timestamp: Date.now(),
+      modelBadge: result.modelBadge
+    };
+    setMessages(prev => [...prev, aiMsg]);
+    setIsThinking(false);
+
+    // Speak AI response with voice engine
+    speak(result.text);
   };
 
   // Copy message text
@@ -727,6 +927,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
               <button
                 onClick={() => {
                   stopSpeaking();
+                  if (isCallActive) endVoiceCall();
                   setIsOpen(false);
                 }}
                 className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
@@ -736,124 +937,360 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
             </div>
           </div>
 
-          {/* Chat Messages Body */}
+          {/* Sub-Header Mode Switcher */}
+          {!isMinimized && (
+            <div className="px-3 py-1.5 bg-[#040711] border-b border-white/10 flex items-center justify-between gap-1 text-[11px]">
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setActiveTabMode('chat')}
+                  className={`px-3 py-1 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer font-medium ${
+                    activeTabMode === 'chat'
+                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm'
+                      : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  <span>الشات العلمي 3D</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    if (!isCallActive) {
+                      startVoiceCall();
+                    } else {
+                      setActiveTabMode('call');
+                    }
+                  }}
+                  className={`px-3 py-1 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer font-medium ${
+                    activeTabMode === 'call'
+                      ? 'bg-gradient-to-r from-emerald-500/30 to-teal-500/30 text-teal-200 border border-teal-500/40 shadow-sm'
+                      : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <Phone className={`w-3.5 h-3.5 ${isCallActive ? 'text-emerald-400 animate-pulse' : ''}`} />
+                  <span>مكالمة صوتية مباشرة</span>
+                  {isCallActive && (
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block" />
+                  )}
+                </button>
+
+                <button
+                  onClick={() => {
+                    stopSpeaking();
+                    setActiveTabMode('darwin');
+                  }}
+                  className={`px-3 py-1 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer font-medium ${
+                    activeTabMode === 'darwin'
+                      ? 'bg-indigo-500/25 text-indigo-300 border border-indigo-500/40 shadow-sm'
+                      : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <Bot className="w-3.5 h-3.5 text-indigo-400" />
+                  <span>وكيل داروين</span>
+                </button>
+              </div>
+
+              {activeTabMode === 'chat' && !isCallActive && (
+                <button
+                  onClick={startVoiceCall}
+                  className="px-2.5 py-1 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-[10px] flex items-center gap-1 transition-all cursor-pointer"
+                  title="بدء مكالمة صوتية فورية"
+                >
+                  <Phone className="w-3 h-3 text-emerald-400" />
+                  <span>اتصل الآن</span>
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Modal Content */}
           {!isMinimized && (
             <>
-              <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-black/40">
-                {messages.map(msg => (
-                  <div
-                    key={msg.id}
-                    className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
-                  >
+              {/* 1. CHAT MODE */}
+              {activeTabMode === 'chat' && (
+                <>
+                  <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-black/40">
+                    {messages.map(msg => (
+                      <div
+                        key={msg.id}
+                        className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
+                      >
+                        <div
+                          className={`max-w-[90%] p-3.5 rounded-2xl text-xs leading-relaxed transition-all shadow-md ${
+                            msg.sender === 'user'
+                              ? 'bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 text-white rounded-br-sm shadow-emerald-900/30'
+                              : 'bg-slate-900/90 border border-white/10 text-slate-100 rounded-bl-sm shadow-black/50'
+                          }`}
+                        >
+                          {msg.sender === 'ai' && (
+                            <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-white/10 text-[10px] text-emerald-400 font-bold">
+                              <span className="flex items-center gap-1.5">
+                                <Sparkles className="w-3 h-3 text-emerald-400" />
+                                SciNexa AI
+                                {msg.modelBadge && (
+                                  <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 font-normal border border-emerald-500/30">
+                                    {msg.modelBadge}
+                                  </span>
+                                )}
+                              </span>
+
+                              <div className="flex items-center gap-1">
+                                {/* Copy button */}
+                                <button
+                                  onClick={() => handleCopy(msg.text, msg.id)}
+                                  className="p-1 hover:text-white text-slate-400 transition-colors cursor-pointer"
+                                  title="نسخ الشرح"
+                                >
+                                  {copiedId === msg.id ? (
+                                    <CheckCheck className="w-3.5 h-3.5 text-emerald-400" />
+                                  ) : (
+                                    <Copy className="w-3.5 h-3.5" />
+                                  )}
+                                </button>
+
+                                {/* Speak button */}
+                                <button
+                                  onClick={() => speak(msg.text)}
+                                  className="p-1 hover:text-white text-slate-400 hover:text-emerald-300 transition-colors cursor-pointer flex items-center gap-1"
+                                  title="استمع للنطق الصوتي الفصيح"
+                                >
+                                  <Volume2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Render formatted message content */}
+                          {msg.sender === 'ai' ? (
+                            <MarkdownContent content={msg.text} />
+                          ) : (
+                            <p className="whitespace-pre-line font-medium">{msg.text}</p>
+                          )}
+                        </div>
+
+                        {/* Suggestions Pills */}
+                        {msg.suggestions && msg.suggestions.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 mt-2 max-w-[95%]">
+                            {msg.suggestions.map((sug, idx) => (
+                              <button
+                                key={idx}
+                                onClick={() => handleSendMessage(sug)}
+                                className="text-[11px] px-2.5 py-1 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-200 transition-all text-right hover:scale-102 flex items-center gap-1 cursor-pointer"
+                              >
+                                <Lightbulb className="w-3 h-3 text-emerald-400 shrink-0" />
+                                <span>{sug}</span>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+
+                    {/* AI Thinking Animation */}
+                    {isThinking && (
+                      <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-slate-900/90 border border-emerald-500/30 max-w-[280px] text-xs text-emerald-400 animate-pulse">
+                        <BrainCircuit className="w-4 h-4 animate-spin text-emerald-400 shrink-0" />
+                        <span className="font-mono text-[11px]">
+                          جاري التفكير والتحليل العلمي عبر AI...
+                        </span>
+                      </div>
+                    )}
+
+                    <div ref={messagesEndRef} />
+                  </div>
+
+                  {/* Input Area */}
+                  <div className="p-3 bg-[#050811] border-t border-white/10">
+                    <form
+                      onSubmit={e => {
+                        e.preventDefault();
+                        handleSendMessage();
+                      }}
+                      className="flex items-center gap-2"
+                    >
+                      <input
+                        type="text"
+                        value={inputText}
+                        onChange={e => setInputText(e.target.value)}
+                        placeholder={`اسأل SciNexa AI أي سؤال علمي في ${labContext.ar}...`}
+                        className="flex-1 bg-slate-950/80 border border-white/15 focus:border-emerald-400 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                      />
+
+                      {/* Microphone Dictation Button */}
+                      <button
+                        type="button"
+                        onClick={toggleInputMic}
+                        className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
+                          isMicListening
+                            ? 'bg-rose-500/30 border-rose-500 text-rose-300 animate-pulse'
+                            : 'bg-white/5 border-white/10 text-slate-400 hover:text-white hover:bg-white/10'
+                        }`}
+                        title={isMicListening ? 'إيقاف الاستماع' : 'تحدث بصوتك بالميكروفون'}
+                      >
+                        {isMicListening ? (
+                          <MicOff className="w-4 h-4 text-rose-400" />
+                        ) : (
+                          <Mic className="w-4 h-4" />
+                        )}
+                      </button>
+
+                      <button
+                        type="submit"
+                        disabled={!inputText.trim()}
+                        className="p-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 disabled:opacity-40 text-white transition-all shadow-md cursor-pointer"
+                      >
+                        <Send className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`} />
+                      </button>
+                    </form>
+                  </div>
+                </>
+              )}
+
+              {/* 2. VOICE CALL MODE */}
+              {activeTabMode === 'call' && (
+                <div className="flex-1 flex flex-col items-center justify-between p-6 bg-gradient-to-b from-[#060a16] via-[#040712] to-black relative overflow-hidden">
+                  {/* Call Header Status */}
+                  <div className="text-center space-y-1.5 z-10">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[11px] text-emerald-300 font-mono">
+                      <Radio className="w-3 h-3 text-emerald-400 animate-pulse" />
+                      <span>{labContext.ar} • مكالمة صوتية تفاعلية</span>
+                    </div>
+                    <h3 className="text-lg font-black text-white">
+                      باحث SciNexa الذكي
+                    </h3>
+                    <p className="text-xs text-slate-400 max-w-[320px]">
+                      تحدث بصوتك مباشرة كأنك في مكالمة هاتفية حية، وسيجيبك المعلم الذكي فوراً
+                    </p>
+                  </div>
+
+                  {/* Futuristic Glowing Pulsing Audio Orb */}
+                  <div className="relative my-4 flex items-center justify-center">
                     <div
-                      className={`max-w-[90%] p-3.5 rounded-2xl text-xs leading-relaxed transition-all shadow-md ${
-                        msg.sender === 'user'
-                          ? 'bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 text-white rounded-br-sm shadow-emerald-900/30'
-                          : 'bg-slate-900/90 border border-white/10 text-slate-100 rounded-bl-sm shadow-black/50'
+                      className={`absolute w-44 h-44 rounded-full border border-emerald-500/20 transition-all duration-700 ${
+                        callStatus === 'speaking' || callStatus === 'listening'
+                          ? 'scale-125 animate-ping opacity-25'
+                          : 'scale-100 opacity-10'
+                      }`}
+                    />
+                    <div
+                      className={`absolute w-36 h-36 rounded-full bg-gradient-to-tr from-emerald-500/20 to-teal-500/20 blur-xl transition-all duration-500 ${
+                        callStatus === 'speaking'
+                          ? 'scale-130 opacity-70'
+                          : callStatus === 'listening'
+                          ? 'scale-115 opacity-60'
+                          : 'scale-90 opacity-30'
+                      }`}
+                    />
+
+                    {/* Center Orb */}
+                    <div
+                      className={`w-28 h-28 rounded-full flex items-center justify-center shadow-2xl transition-all duration-500 border-2 ${
+                        callStatus === 'speaking'
+                          ? 'bg-gradient-to-br from-indigo-600 via-teal-500 to-emerald-400 border-emerald-300 shadow-emerald-500/50 scale-105'
+                          : callStatus === 'thinking'
+                          ? 'bg-gradient-to-br from-amber-600 via-orange-500 to-indigo-600 border-amber-300 shadow-amber-500/50 animate-pulse'
+                          : callStatus === 'listening'
+                          ? 'bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-500 border-teal-300 shadow-teal-500/50 scale-100'
+                          : 'bg-slate-800 border-white/20'
                       }`}
                     >
-                      {msg.sender === 'ai' && (
-                        <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-white/10 text-[10px] text-emerald-400 font-bold">
-                          <span className="flex items-center gap-1.5">
-                            <Sparkles className="w-3 h-3 text-emerald-400" />
-                            SciNexa AI
-                            {msg.modelBadge && (
-                              <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 font-normal border border-emerald-500/30">
-                                {msg.modelBadge}
-                              </span>
-                            )}
-                          </span>
-
-                          <div className="flex items-center gap-1">
-                            {/* Copy button */}
-                            <button
-                              onClick={() => handleCopy(msg.text, msg.id)}
-                              className="p-1 hover:text-white text-slate-400 transition-colors cursor-pointer"
-                              title="نسخ الشرح"
-                            >
-                              {copiedId === msg.id ? (
-                                <CheckCheck className="w-3.5 h-3.5 text-emerald-400" />
-                              ) : (
-                                <Copy className="w-3.5 h-3.5" />
-                              )}
-                            </button>
-
-                            {/* Speak button */}
-                            <button
-                              onClick={() => speak(msg.text)}
-                              className="p-1 hover:text-white text-slate-400 hover:text-emerald-300 transition-colors cursor-pointer flex items-center gap-1"
-                              title="استمع للنطق الصوتي الفصيح"
-                            >
-                              <Volume2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Render formatted message content */}
-                      {msg.sender === 'ai' ? (
-                        <MarkdownContent content={msg.text} />
+                      {callStatus === 'speaking' ? (
+                        <Waves className="w-12 h-12 text-white animate-pulse" />
+                      ) : callStatus === 'thinking' ? (
+                        <BrainCircuit className="w-12 h-12 text-white animate-spin" />
+                      ) : callStatus === 'listening' ? (
+                        <Mic className="w-12 h-12 text-white animate-bounce" />
                       ) : (
-                        <p className="whitespace-pre-line font-medium">{msg.text}</p>
+                        <Phone className="w-10 h-10 text-slate-400" />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Status & Live Transcript */}
+                  <div className="w-full text-center space-y-2 z-10 px-4 min-h-[60px] flex flex-col items-center justify-center">
+                    <div className="text-xs font-bold font-mono">
+                      {callStatus === 'listening' && (
+                        <span className="text-emerald-300 animate-pulse flex items-center gap-1.5">
+                          <Mic className="w-3.5 h-3.5" />
+                          أستمع إليك الآن... تكلم بصوتك
+                        </span>
+                      )}
+                      {callStatus === 'thinking' && (
+                        <span className="text-amber-300 flex items-center gap-1.5">
+                          <BrainCircuit className="w-3.5 h-3.5 animate-spin" />
+                          جاري التحليل العلمي السريع...
+                        </span>
+                      )}
+                      {callStatus === 'speaking' && (
+                        <span className="text-teal-300 flex items-center gap-1.5">
+                          <Volume2 className="w-3.5 h-3.5 animate-pulse" />
+                          المعلم الذكي يجيبك بصوته الآن...
+                        </span>
+                      )}
+                      {callStatus === 'idle' && (
+                        <span className="text-slate-400">
+                          المكالمة متوقفة حالياً. اضغط "بدء المكالمة" للتحدث
+                        </span>
                       )}
                     </div>
 
-                    {/* Suggestions Pills */}
-                    {msg.suggestions && msg.suggestions.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5 mt-2 max-w-[95%]">
-                        {msg.suggestions.map((sug, idx) => (
-                          <button
-                            key={idx}
-                            onClick={() => handleSendMessage(sug)}
-                            className="text-[11px] px-2.5 py-1 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-200 transition-all text-right hover:scale-102 flex items-center gap-1 cursor-pointer"
-                          >
-                            <Lightbulb className="w-3 h-3 text-emerald-400 shrink-0" />
-                            <span>{sug}</span>
-                          </button>
-                        ))}
+                    {callTranscript && (
+                      <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 max-w-[90%] text-xs text-slate-200 font-medium">
+                        "{callTranscript}"
                       </div>
                     )}
                   </div>
-                ))}
 
-                {/* AI Thinking Animation */}
-                {isThinking && (
-                  <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-slate-900/90 border border-emerald-500/30 max-w-[280px] text-xs text-emerald-400 animate-pulse">
-                    <BrainCircuit className="w-4 h-4 animate-spin text-emerald-400 shrink-0" />
-                    <span className="font-mono text-[11px]">
-                      جاري التفكير والتحليل العلمي عبر AI...
-                    </span>
+                  {/* Call Controls */}
+                  <div className="flex items-center gap-3 z-10 pt-2">
+                    {isCallActive ? (
+                      <button
+                        onClick={endVoiceCall}
+                        className="px-6 py-3 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-xl shadow-rose-900/40 flex items-center gap-2 transition-all hover:scale-105 cursor-pointer"
+                      >
+                        <PhoneOff className="w-4 h-4" />
+                        <span>إنهاء المكالمة</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={startVoiceCall}
+                        className="px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs shadow-xl shadow-emerald-900/40 flex items-center gap-2 transition-all hover:scale-105 cursor-pointer"
+                      >
+                        <Phone className="w-4 h-4" />
+                        <span>بدء المكالمة الصوتية</span>
+                      </button>
+                    )}
+
+                    <button
+                      onClick={() => setActiveTabMode('chat')}
+                      className="px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/15 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5" />
+                      <span>العودة للشات</span>
+                    </button>
                   </div>
-                )}
+                </div>
+              )}
 
-                <div ref={messagesEndRef} />
-              </div>
+              {/* 3. FISH AUDIO DARWIN AGENT TAB */}
+              {activeTabMode === 'darwin' && (
+                <div className="flex-1 flex flex-col p-3 bg-black/60 relative overflow-y-auto">
+                  <div className="p-3 mb-2 rounded-xl bg-indigo-950/40 border border-indigo-500/30 text-xs text-indigo-200 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Bot className="w-4 h-4 text-indigo-400 shrink-0" />
+                      <span>وكيل داروين المباشر (Fish Audio Agent)</span>
+                    </div>
+                    <span className="text-[10px] text-slate-400 font-mono">ID: 9772063429</span>
+                  </div>
 
-              {/* Input Area */}
-              <div className="p-3 bg-[#050811] border-t border-white/10">
-                <form
-                  onSubmit={e => {
-                    e.preventDefault();
-                    handleSendMessage();
-                  }}
-                  className="flex items-center gap-2"
-                >
-                  <input
-                    type="text"
-                    value={inputText}
-                    onChange={e => setInputText(e.target.value)}
-                    placeholder={`اسأل SciNexa AI أي سؤال علمي في ${labContext.ar}...`}
-                    className="flex-1 bg-slate-950/80 border border-white/15 focus:border-emerald-400 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                  <div
+                    className="flex-1 rounded-2xl border border-white/10 bg-slate-950/90 overflow-hidden flex flex-col items-center justify-center p-2 min-h-[440px]"
+                    dangerouslySetInnerHTML={{
+                      __html: '<fish-agent agent-id="9772063429bf4e54bdec0811de4cb3f3"></fish-agent>'
+                    }}
                   />
-                  <button
-                    type="submit"
-                    disabled={!inputText.trim()}
-                    className="p-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 disabled:opacity-40 text-white transition-all shadow-md cursor-pointer"
-                  >
-                    <Send className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`} />
-                  </button>
-                </form>
-              </div>
+                </div>
+              )}
             </>
           )}
         </div>
