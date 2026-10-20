@@ -74,6 +74,15 @@ function formatContentsForGemini(messages: any[], currentQuery: string) {
   return list;
 }
 
+// Active Gemini model candidates in priority order
+const GEMINI_MODELS = [
+  'gemini-2.5-flash',
+  'gemini-2.0-flash',
+  'gemini-2.5-pro',
+  'gemini-1.5-flash-latest',
+  'gemini-pro'
+];
+
 export default async function handler(req: any, res?: any) {
   const isNode = Boolean(res && typeof res.status === 'function');
   const origin = req.headers?.origin || '*';
@@ -124,7 +133,7 @@ export default async function handler(req: any, res?: any) {
       body = await req.json();
     }
 
-    const { messages, currentLab, labName, language } = body || {};
+    const { messages, currentLab, labName } = body || {};
     const lastUserQuery = messages && messages.length > 0 ? messages[messages.length - 1].text : '';
 
     const geminiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
@@ -132,56 +141,59 @@ export default async function handler(req: any, res?: any) {
 
     const dynamicLabContext = `المعمل النشط الآن أمام المستخدم: "${labName || currentLab}".`;
 
-    // 1. Google Gemini Live API
+    // 1. Google Gemini Live API with Multi-Model Fallback
     if (geminiKey && geminiKey.trim()) {
-      try {
-        const contents = formatContentsForGemini(messages, lastUserQuery);
+      const contents = formatContentsForGemini(messages, lastUserQuery);
+      let lastErrorMsg = '';
 
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey.trim()}`;
+      for (const model of GEMINI_MODELS) {
+        try {
+          const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey.trim()}`;
 
-        const geminiRes = await fetch(geminiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            system_instruction: {
-              parts: [{ text: `${SCINEXA_SYSTEM_BRAIN}\n\n${dynamicLabContext}` }]
-            },
-            contents: contents,
-            safetySettings: [
-              { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_LOW_AND_ABOVE' },
-              { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_LOW_AND_ABOVE' },
-              { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_LOW_AND_ABOVE' },
-              { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_LOW_AND_ABOVE' }
-            ],
-            generationConfig: {
-              temperature: 0.7,
-              maxOutputTokens: 1200
-            }
-          })
-        });
-
-        if (geminiRes.ok) {
-          const data = await geminiRes.json();
-          const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (text) {
-            return sendResponse(200, {
-              reply: text.trim(),
-              model: 'gemini-1.5-flash'
-            });
-          }
-        } else {
-          const errData = await geminiRes.json().catch(() => ({}));
-          console.error('Gemini error response:', geminiRes.status, errData);
-          const errMsg = errData.error?.message || `Gemini API returned status ${geminiRes.status}`;
-          return sendResponse(200, {
-            reply: `⚠️ عذراً، واجه مفتاح Gemini خطأ أثناء الاستجابة: ${errMsg}\nيرجى التأكد من صلاحية المفتاح في إعدادات Vercel.`,
-            model: 'error'
+          const geminiRes = await fetch(geminiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              system_instruction: {
+                parts: [{ text: `${SCINEXA_SYSTEM_BRAIN}\n\n${dynamicLabContext}` }]
+              },
+              contents: contents,
+              safetySettings: [
+                { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_LOW_AND_ABOVE' },
+                { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_LOW_AND_ABOVE' },
+                { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_LOW_AND_ABOVE' },
+                { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_LOW_AND_ABOVE' }
+              ],
+              generationConfig: {
+                temperature: 0.7,
+                maxOutputTokens: 1200
+              }
+            })
           });
+
+          if (geminiRes.ok) {
+            const data = await geminiRes.json();
+            const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (text) {
+              return sendResponse(200, {
+                reply: text.trim(),
+                model: model
+              });
+            }
+          } else {
+            const errData = await geminiRes.json().catch(() => ({}));
+            lastErrorMsg = errData.error?.message || `Status ${geminiRes.status}`;
+            console.warn(`Gemini model ${model} failed:`, lastErrorMsg);
+          }
+        } catch (e: any) {
+          lastErrorMsg = e?.message || 'Network exception';
         }
-      } catch (err: any) {
-        console.error('Gemini call error:', err?.message);
+      }
+
+      // If all Gemini candidate models failed
+      if (lastErrorMsg) {
         return sendResponse(200, {
-          reply: `⚠️ تعذر الاتصال بـ Google Gemini: ${err?.message}`,
+          reply: `⚠️ عذراً، واجه مفتاح Gemini خطأ أثناء الاستجابة: ${lastErrorMsg}\nيرجى التأكد من صلاحية المفتاح في إعدادات Vercel.`,
           model: 'error'
         });
       }
@@ -226,7 +238,7 @@ export default async function handler(req: any, res?: any) {
       }
     }
 
-    // 3. Clear message if no key configured
+    // 3. Clear notice if no key configured
     return sendResponse(200, {
       reply: `⚠️ لم يتم العثور على مفتاح GEMINI_API_KEY في إعدادات البيئة.\nيرجى إضافة المفتاح في Vercel تحت اسم GEMINI_API_KEY ثم عمل Redeploy ليعمل الشات المباشر فوراً!`,
       model: 'no-key'

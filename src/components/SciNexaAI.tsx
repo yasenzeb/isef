@@ -460,10 +460,9 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
       // Fall through to client direct query
     }
 
-    // 2. Direct Gemini 1.5 Flash via Client Key (VITE_GEMINI_API_KEY)
+    // 2. Direct Gemini Live API via Client Key (VITE_GEMINI_API_KEY)
     if (geminiKey && geminiKey.trim()) {
       try {
-        // Build contents ensuring FIRST message is ALWAYS 'user'
         const contents: any[] = [];
         let hasUser = false;
         for (const m of messages.slice(-6)) {
@@ -483,45 +482,50 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
           contents.push({ role: 'user', parts: [{ text: userPrompt }] });
         }
 
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey.trim()}`;
+        const candidateModels = [
+          'gemini-2.5-flash',
+          'gemini-2.0-flash',
+          'gemini-2.5-pro',
+          'gemini-1.5-flash-latest',
+          'gemini-pro'
+        ];
 
-        const res = await fetch(geminiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            system_instruction: { parts: [{ text: systemPrompt }] },
-            contents: contents,
-            safetySettings: [
-              { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_LOW_AND_ABOVE' },
-              { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_LOW_AND_ABOVE' },
-              { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_LOW_AND_ABOVE' },
-              { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_LOW_AND_ABOVE' }
-            ],
-            generationConfig: {
-              temperature: 0.7,
-              maxOutputTokens: 1200
+        for (const model of candidateModels) {
+          try {
+            const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey.trim()}`;
+
+            const res = await fetch(geminiUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                system_instruction: { parts: [{ text: systemPrompt }] },
+                contents: contents,
+                safetySettings: [
+                  { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_LOW_AND_ABOVE' },
+                  { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_LOW_AND_ABOVE' },
+                  { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_LOW_AND_ABOVE' },
+                  { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_LOW_AND_ABOVE' }
+                ],
+                generationConfig: {
+                  temperature: 0.7,
+                  maxOutputTokens: 1200
+                }
+              }),
+              signal: AbortSignal.timeout(8000)
+            });
+
+            if (res.ok) {
+              const data = await res.json();
+              const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (reply) {
+                return {
+                  text: reply.trim(),
+                  modelBadge: model
+                };
+              }
             }
-          }),
-          signal: AbortSignal.timeout(10000)
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (reply) {
-            return {
-              text: reply.trim(),
-              modelBadge: 'Gemini 1.5'
-            };
-          }
-        } else {
-          const errData = await res.json().catch(() => ({}));
-          console.error('Client Gemini call failed:', res.status, errData);
-          if (errData.error?.message) {
-            return {
-              text: `⚠️ خطأ من Google Gemini (${res.status}): ${errData.error.message}`,
-              modelBadge: 'Gemini Error'
-            };
+          } catch {
+            // Try next candidate model
           }
         }
       } catch (e: any) {
