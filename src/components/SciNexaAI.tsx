@@ -441,14 +441,14 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
           labName: labContext.ar,
           language: language
         }),
-        signal: AbortSignal.timeout(12000)
+        signal: AbortSignal.timeout(15000)
       });
 
       if (serverRes.ok) {
         const contentType = serverRes.headers.get('content-type') || '';
         if (contentType.includes('application/json')) {
           const data = await serverRes.json();
-          if (data.reply && data.reply.trim().length > 10 && data.model !== 'system-setup') {
+          if (data.reply && data.reply.trim()) {
             return {
               text: data.reply.trim(),
               modelBadge: data.model === 'gemini-1.5-flash' ? 'Gemini 1.5' : data.model === 'gpt-4o-mini' ? 'GPT-4o' : 'SciNexa AI'
@@ -460,17 +460,28 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
       // Fall through to client direct query
     }
 
-    // 2. Direct Gemini 1.5 Flash via Environment Variable (Safe with High Safety Thresholds)
+    // 2. Direct Gemini 1.5 Flash via Client Key (VITE_GEMINI_API_KEY)
     if (geminiKey && geminiKey.trim()) {
       try {
-        const contents = [];
+        // Build contents ensuring FIRST message is ALWAYS 'user'
+        const contents: any[] = [];
+        let hasUser = false;
         for (const m of messages.slice(-6)) {
-          contents.push({
-            role: m.sender === 'user' ? 'user' : 'model',
-            parts: [{ text: m.text }]
-          });
+          if (!hasUser && m.sender !== 'user') continue;
+          hasUser = true;
+          const role = m.sender === 'user' ? 'user' : 'model';
+          const text = (m.text || '').trim();
+          if (contents.length > 0 && contents[contents.length - 1].role === role) {
+            contents[contents.length - 1].parts[0].text += '\n' + text;
+          } else {
+            contents.push({ role, parts: [{ text }] });
+          }
         }
-        contents.push({ role: 'user', parts: [{ text: userPrompt }] });
+        if (contents.length > 0 && contents[contents.length - 1].role === 'user') {
+          contents[contents.length - 1].parts[0].text = userPrompt;
+        } else {
+          contents.push({ role: 'user', parts: [{ text: userPrompt }] });
+        }
 
         const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey.trim()}`;
 
@@ -488,10 +499,10 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
             ],
             generationConfig: {
               temperature: 0.7,
-              maxOutputTokens: 1000
+              maxOutputTokens: 1200
             }
           }),
-          signal: AbortSignal.timeout(9000)
+          signal: AbortSignal.timeout(10000)
         });
 
         if (res.ok) {
@@ -503,57 +514,25 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
               modelBadge: 'Gemini 1.5'
             };
           }
-        }
-      } catch {
-        // Fall through
-      }
-    }
-
-    // 3. OpenAI GPT-4o via Environment Variable
-    if (openAIKey && openAIKey.trim()) {
-      try {
-        const chatMessages = [
-          { role: 'system', content: systemPrompt },
-          ...messages.slice(-6).map(m => ({
-            role: m.sender === 'user' ? 'user' : 'assistant',
-            content: m.text
-          })),
-          { role: 'user', content: userPrompt }
-        ];
-
-        const res = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${openAIKey.trim()}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: 'gpt-4o-mini',
-            messages: chatMessages,
-            temperature: 0.7
-          }),
-          signal: AbortSignal.timeout(8000)
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          const reply = data.choices?.[0]?.message?.content;
-          if (reply) {
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          console.error('Client Gemini call failed:', res.status, errData);
+          if (errData.error?.message) {
             return {
-              text: reply.trim(),
-              modelBadge: 'GPT-4o'
+              text: `⚠️ خطأ من Google Gemini (${res.status}): ${errData.error.message}`,
+              modelBadge: 'Gemini Error'
             };
           }
         }
-      } catch {
-        // Fall through
+      } catch (e: any) {
+        console.error('Direct Gemini error:', e?.message);
       }
     }
 
-    // 4. Safe Curated Academic Science Engine Fallback (NO UNFILTERED OPEN SEARCH)
+    // 3. Fallback when keys are missing or serverless unreachable
     return {
-      text: `### 🔬 استكشاف علمي في ${labContext.ar}:\nسؤالك حول "${userPrompt}" يرتبط بمبدأ علمي ومخبري هام.\n\nالمحاكاة الافتراضية هنا تمكنك من اختبار هذه الظاهرة عملياً بدلاً من مجرد التلقين النظري. تفقد أدوات المعمل ومحاور القياس الحية الظاهرة على الشاشة.\n\n💡 **تجربة عملية**: جرب ضبط المتغيرات وقراءة الأرقام الناتجة لملاحظة العلاقة الفيزيائية أو الكيميائية بشكل عملي مباشر!`,
-      modelBadge: 'SciNexa AI'
+      text: `⚠️ لم يتمكن الشات من الاتصال بـ Google Gemini API.\n\nيرجى التأكد من إضافة **GEMINI_API_KEY** في إعدادات Vercel Environment Variables وعمل Redeploy حتى يعمل الذكاء الاصطناعي الحي مباشرة!`,
+      modelBadge: 'Setup Required'
     };
   };
 

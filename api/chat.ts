@@ -47,11 +47,37 @@ const SCINEXA_SYSTEM_BRAIN = `أنت "SciNexa AI"، العقل المفكر وا
 4. اطرح في نهاية إجابتك سؤال تحدٍ ذكي أو اقتراح خطوة عملية تالية يجربها الطالب بنفسه.
 5. التزم التزاماً صارماً بأخلاقيات العلوم المدرسية والجامعية المحترمة وتجنب أي محتوى غير لائق.`;
 
+function formatContentsForGemini(messages: any[], currentQuery: string) {
+  const list: any[] = [];
+  let started = false;
+
+  for (const m of (messages || [])) {
+    if (!started && m.sender !== 'user') continue;
+    started = true;
+    const role = m.sender === 'user' ? 'user' : 'model';
+    const text = (m.text || '').trim();
+    if (!text) continue;
+
+    if (list.length > 0 && list[list.length - 1].role === role) {
+      list[list.length - 1].parts[0].text += '\n' + text;
+    } else {
+      list.push({ role, parts: [{ text }] });
+    }
+  }
+
+  if (list.length > 0 && list[list.length - 1].role === 'user') {
+    list[list.length - 1].parts[0].text = currentQuery;
+  } else {
+    list.push({ role: 'user', parts: [{ text: currentQuery }] });
+  }
+
+  return list;
+}
+
 export default async function handler(req: any, res?: any) {
   const isNode = Boolean(res && typeof res.status === 'function');
-
-  // Handle CORS & Options preflight
   const origin = req.headers?.origin || '*';
+
   if (req.method === 'OPTIONS') {
     if (isNode) {
       res.setHeader('Access-Control-Allow-Origin', origin);
@@ -99,24 +125,17 @@ export default async function handler(req: any, res?: any) {
     }
 
     const { messages, currentLab, labName, language } = body || {};
+    const lastUserQuery = messages && messages.length > 0 ? messages[messages.length - 1].text : '';
 
     const geminiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
     const openAIKey = process.env.OPENAI_API_KEY || process.env.VITE_OPENAI_API_KEY;
 
     const dynamicLabContext = `المعمل النشط الآن أمام المستخدم: "${labName || currentLab}".`;
 
-    // 1. Google Gemini 1.5 Flash (Primary Live Engine)
+    // 1. Google Gemini Live API
     if (geminiKey && geminiKey.trim()) {
       try {
-        const contents = [];
-        const recentMessages = (messages || []).slice(-8);
-
-        for (const m of recentMessages) {
-          contents.push({
-            role: m.sender === 'user' ? 'user' : 'model',
-            parts: [{ text: m.text }]
-          });
-        }
+        const contents = formatContentsForGemini(messages, lastUserQuery);
 
         const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey.trim()}`;
 
@@ -152,10 +171,19 @@ export default async function handler(req: any, res?: any) {
           }
         } else {
           const errData = await geminiRes.json().catch(() => ({}));
-          console.error('Gemini API returned error status:', geminiRes.status, errData);
+          console.error('Gemini error response:', geminiRes.status, errData);
+          const errMsg = errData.error?.message || `Gemini API returned status ${geminiRes.status}`;
+          return sendResponse(200, {
+            reply: `⚠️ عذراً، واجه مفتاح Gemini خطأ أثناء الاستجابة: ${errMsg}\nيرجى التأكد من صلاحية المفتاح في إعدادات Vercel.`,
+            model: 'error'
+          });
         }
       } catch (err: any) {
         console.error('Gemini call error:', err?.message);
+        return sendResponse(200, {
+          reply: `⚠️ تعذر الاتصال بـ Google Gemini: ${err?.message}`,
+          model: 'error'
+        });
       }
     }
 
@@ -198,15 +226,10 @@ export default async function handler(req: any, res?: any) {
       }
     }
 
-    // 3. Fallback when keys are missing or invalid
-    const lastUserQuery = messages && messages.length > 0 ? messages[messages.length - 1].text : '';
-    const setupNotice = language === 'en'
-      ? `### 💡 Live AI Configuration Notice:\nTo enable live conversational Gemini 1.5 responses for "${lastUserQuery}", please make sure **GEMINI_API_KEY** or **VITE_GEMINI_API_KEY** is configured in your Vercel Environment Variables and redeployed!`
-      : `### 💡 تنبيه تفعيل المحادثة الحية (Live AI):\nلكي يجيبك الذكاء الاصطناعي بشكل حي وتفاعلي ومباشر عن سؤالك "${lastUserQuery}"، يرجى التأكد من إضافة **GEMINI_API_KEY** و **VITE_GEMINI_API_KEY** في إعدادات Vercel Environment Variables ثم الضغط على Redeploy.`;
-
+    // 3. Clear message if no key configured
     return sendResponse(200, {
-      reply: setupNotice,
-      model: 'system-setup'
+      reply: `⚠️ لم يتم العثور على مفتاح GEMINI_API_KEY في إعدادات البيئة.\nيرجى إضافة المفتاح في Vercel تحت اسم GEMINI_API_KEY ثم عمل Redeploy ليعمل الشات المباشر فوراً!`,
+      model: 'no-key'
     });
   } catch (error: any) {
     console.error('Handler catch error:', error?.message);
