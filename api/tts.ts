@@ -45,22 +45,34 @@ export default async function handler(req: any, res?: any) {
     const fishKey = (process.env.FISH_AUDIO_API_KEY || process.env.VITE_FISH_AUDIO_API_KEY || '').trim();
     const rawVoiceId = (reference_id || process.env.FISH_AUDIO_VOICE_ID || process.env.VITE_FISH_AUDIO_VOICE_ID || '').trim();
     
-    // Extract clean 24-64 char hex/alphanumeric voice ID if user entered a URL or raw ID
+    // Extract clean voice ID if user entered a URL (e.g. ?modelId=... or /m/...) or raw ID
     let fishVoiceId: string | undefined = undefined;
     if (rawVoiceId) {
-      const match = rawVoiceId.match(/([a-f0-9]{24,64})/i);
-      if (match) {
-        fishVoiceId = match[1];
-      } else if (/^[a-zA-Z0-9_-]{12,64}$/.test(rawVoiceId)) {
-        fishVoiceId = rawVoiceId;
+      const modelIdMatch = rawVoiceId.match(/modelId=([a-zA-Z0-9_-]+)/i);
+      if (modelIdMatch) {
+        fishVoiceId = modelIdMatch[1];
+      } else {
+        const mMatch = rawVoiceId.match(/\/m\/([a-zA-Z0-9_-]+)/i);
+        if (mMatch) {
+          fishVoiceId = mMatch[1];
+        } else if (/^[a-zA-Z0-9_-]{12,64}$/.test(rawVoiceId)) {
+          fishVoiceId = rawVoiceId;
+        } else {
+          const hexMatch = rawVoiceId.match(/([a-f0-9]{24,64})/i);
+          if (hexMatch) fishVoiceId = hexMatch[1];
+        }
       }
     }
 
     // 1. If Fish Audio API Key is configured, use Fish Audio (https://fish.audio/)
     if (fishKey) {
-      // Determine the primary model: Free tier requires 's2.1-pro-free'
-      const primaryModel = process.env.FISH_AUDIO_MODEL || 's2.1-pro-free';
-      const modelsToTry = [primaryModel, 's2.1-pro'].filter((m, i, arr) => arr.indexOf(m) === i);
+      // Support Drama 3 (used by Darwin and custom characters) as well as S2 models
+      const modelsToTry = [
+        process.env.FISH_AUDIO_MODEL,
+        'drama-3',
+        's2.1-pro-free',
+        's2.1-pro'
+      ].filter(Boolean) as string[];
 
       for (const model of modelsToTry) {
         try {
