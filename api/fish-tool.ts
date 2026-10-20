@@ -217,6 +217,48 @@ export default async function handler(req: any, res?: any) {
     });
   }
 
+  // Tool: verify_circuit_physics
+  if (toolName === 'verify_circuit_physics' || body?.tool === 'verify_circuit_physics') {
+    const v = Number(args.voltage || 12);
+    const r = Number(args.resistance || 4);
+    const isShort = r <= 0.05;
+    const current = !isShort ? (v / r).toFixed(2) : 'Infinity (Short Circuit)';
+    const power = !isShort ? (v * (v / r)).toFixed(2) : 'Dangerous';
+
+    const result = {
+      success: true,
+      voltage_volts: v,
+      resistance_ohms: r,
+      current_amperes: current,
+      power_watts: power,
+      is_short_circuit: isShort,
+      physics_law: 'V = I * R (Ohm) | P = V * I (Power)',
+      scientific_verdict: isShort
+        ? 'تحذير: دائرة قصيرة (Short Circuit)! المقاومة صفر تقريباً مما يسبب تياراً ضخماً وخطر احتراق.'
+        : `الدائرة تعمل بانتظام. شدة التيار = ${current} أمبير، والقدرة المستهلكة = ${power} واط.`,
+    };
+    if (isNode) return res.status(200).json(result);
+    return new Response(JSON.stringify(result), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+
+  // Tool: focus_part_3d
+  if (toolName === 'focus_part_3d' || body?.tool === 'focus_part_3d') {
+    const part = args.part_name || latestPlatformState.selectedItem || 'العنصر المختار';
+    const reply = {
+      success: true,
+      focused_part: part,
+      message: `تم تسليط الكاميرا ثلاثية الأبعاد على ${part} في الشاشة بنجاح.`,
+    };
+    if (isNode) return res.status(200).json(reply);
+    return new Response(JSON.stringify(reply), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+
   // Tool: get_current_lab_status
   const isArabic = (latestPlatformState.language || 'ar') === 'ar';
   const labSummary = {
