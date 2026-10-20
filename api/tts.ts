@@ -1,5 +1,7 @@
 // Universal Vercel Serverless Function: /api/tts
-// Supports Fish Audio (https://fish.audio) S2 ultra-realistic neural TTS engine
+// Supports Fish Audio zero-shot voice cloning using darwin-voice.mp3 reference
+import * as fs from 'fs';
+import * as path from 'path';
 
 export default async function handler(req: any, res?: any) {
   const isNode = Boolean(res && typeof res.status === 'function');
@@ -138,6 +140,66 @@ export default async function handler(req: any, res?: any) {
         } catch (err: any) {
           console.error(`Fish Audio fetch exception with model ${model}:`, err?.message);
         }
+      }
+    }
+
+    // 2. Zero-shot voice cloning using darwin-voice.mp3 reference + Fish Audio key
+    // Load the local darwin-voice.mp3 reference sample and send it as base64
+    if (fishKey) {
+      try {
+        const voicePath = path.join(process.cwd(), 'public', 'darwin-voice.mp3');
+        if (fs.existsSync(voicePath)) {
+          const voiceData = fs.readFileSync(voicePath);
+          const voiceBase64 = voiceData.toString('base64');
+
+          const zeroShotPayload = {
+            text: text.trim(),
+            format: 'mp3',
+            normalize: true,
+            references: [
+              {
+                audio: voiceBase64,
+                text: 'مرحباً بكم في منصة ساينكسا. أنا مساعدك العلمي وسأشرح لك العلوم بوضوح.'
+              }
+            ]
+          };
+
+          for (const model of ['s2.1-pro-free', 's2.1-pro']) {
+            const zRes = await fetch('https://api.fish.audio/v1/tts', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${fishKey}`,
+                'Content-Type': 'application/json',
+                'model': model
+              },
+              body: JSON.stringify(zeroShotPayload)
+            });
+
+            if (zRes.ok) {
+              const audioBuffer = await zRes.arrayBuffer();
+              if (isNode) {
+                res.setHeader('Access-Control-Allow-Origin', origin);
+                res.setHeader('Content-Type', 'audio/mpeg');
+                res.setHeader('X-TTS-Engine', `Fish-ZeroShot-${model}`);
+                return res.status(200).send(Buffer.from(audioBuffer));
+              } else {
+                return new Response(audioBuffer, {
+                  status: 200,
+                  headers: {
+                    'Access-Control-Allow-Origin': origin,
+                    'Content-Type': 'audio/mpeg',
+                    'X-TTS-Engine': `Fish-ZeroShot-${model}`
+                  }
+                });
+              }
+            } else {
+              const err = await zRes.text().catch(() => '');
+              console.error(`Zero-shot TTS error (${model}):`, zRes.status, err);
+            }
+          }
+        }
+      } catch (zErr: any) {
+        console.error('Zero-shot voice cloning error:', zErr?.message);
       }
     }
 
