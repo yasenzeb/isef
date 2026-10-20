@@ -42,55 +42,90 @@ export default async function handler(req: any, res?: any) {
       return new Response(JSON.stringify({ error: 'Text is required' }), { status: 400 });
     }
 
-    const fishKey = process.env.FISH_AUDIO_API_KEY || process.env.VITE_FISH_AUDIO_API_KEY;
-    const fishVoiceId = reference_id || process.env.FISH_AUDIO_VOICE_ID || process.env.VITE_FISH_AUDIO_VOICE_ID;
-    const fishModel = process.env.FISH_AUDIO_MODEL || 's2.1-pro';
+    const fishKey = (process.env.FISH_AUDIO_API_KEY || process.env.VITE_FISH_AUDIO_API_KEY || '').trim();
+    const rawVoiceId = (reference_id || process.env.FISH_AUDIO_VOICE_ID || process.env.VITE_FISH_AUDIO_VOICE_ID || '').trim();
+    
+    // Extract clean 24-64 char hex/alphanumeric voice ID if user entered a URL or raw ID
+    let fishVoiceId: string | undefined = undefined;
+    if (rawVoiceId) {
+      const match = rawVoiceId.match(/([a-f0-9]{24,64})/i);
+      if (match) {
+        fishVoiceId = match[1];
+      } else if (/^[a-zA-Z0-9_-]{12,64}$/.test(rawVoiceId)) {
+        fishVoiceId = rawVoiceId;
+      }
+    }
 
     // 1. If Fish Audio API Key is configured, use Fish Audio (https://fish.audio/)
-    if (fishKey && fishKey.trim()) {
-      try {
-        const fishPayload: any = {
-          text: text.trim(),
-          format: 'mp3',
-          normalize: true
-        };
+    if (fishKey) {
+      // Free accounts must use 's2.1-pro-free'. Paid accounts can use 's2.1-pro'.
+      const candidateModels = [
+        process.env.FISH_AUDIO_MODEL,
+        's2.1-pro-free',
+        's2.1-pro'
+      ].filter(Boolean) as string[];
 
-        if (fishVoiceId && fishVoiceId.trim()) {
-          fishPayload.reference_id = fishVoiceId.trim();
-        }
+      for (const model of candidateModels) {
+        try {
+          const fishPayload: any = {
+            text: text.trim(),
+            format: 'mp3',
+            normalize: true
+          };
 
-        const fishRes = await fetch('https://api.fish.audio/v1/tts', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${fishKey.trim()}`,
-            'Content-Type': 'application/json',
-            'model': fishModel
-          },
-          body: JSON.stringify(fishPayload)
-        });
+          if (fishVoiceId) {
+            fishPayload.reference_id = fishVoiceId;
+          }
 
-        if (fishRes.ok) {
-          const audioBuffer = await fishRes.arrayBuffer();
+          let fishRes = await fetch('https://api.fish.audio/v1/tts', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${fishKey}`,
+              'Content-Type': 'application/json',
+              'model': model
+            },
+            body: JSON.stringify(fishPayload)
+          });
 
-          if (isNode) {
-            res.setHeader('Access-Control-Allow-Origin', origin);
-            res.setHeader('Content-Type', 'audio/mpeg');
-            return res.status(200).send(Buffer.from(audioBuffer));
-          } else {
-            return new Response(audioBuffer, {
-              status: 200,
+          // If it failed because of the custom voice ID, retry immediately without reference_id using default voice
+          if (!fishRes.ok && fishVoiceId) {
+            delete fishPayload.reference_id;
+            fishRes = await fetch('https://api.fish.audio/v1/tts', {
+              method: 'POST',
               headers: {
-                'Access-Control-Allow-Origin': origin,
-                'Content-Type': 'audio/mpeg'
-              }
+                'Authorization': `Bearer ${fishKey}`,
+                'Content-Type': 'application/json',
+                'model': model
+              },
+              body: JSON.stringify(fishPayload)
             });
           }
-        } else {
-          const errText = await fishRes.text().catch(() => '');
-          console.error('Fish Audio API error:', fishRes.status, errText);
+
+          if (fishRes.ok) {
+            const audioBuffer = await fishRes.arrayBuffer();
+
+            if (isNode) {
+              res.setHeader('Access-Control-Allow-Origin', origin);
+              res.setHeader('Content-Type', 'audio/mpeg');
+              res.setHeader('X-TTS-Engine', `Fish-Audio-${model}`);
+              return res.status(200).send(Buffer.from(audioBuffer));
+            } else {
+              return new Response(audioBuffer, {
+                status: 200,
+                headers: {
+                  'Access-Control-Allow-Origin': origin,
+                  'Content-Type': 'audio/mpeg',
+                  'X-TTS-Engine': `Fish-Audio-${model}`
+                }
+              });
+            }
+          } else {
+            const errText = await fishRes.text().catch(() => '');
+            console.error(`Fish Audio API error with model ${model}:`, fishRes.status, errText);
+          }
+        } catch (err: any) {
+          console.error(`Fish Audio fetch exception with model ${model}:`, err?.message);
         }
-      } catch (err: any) {
-        console.error('Fish Audio fetch error:', err?.message);
       }
     }
 
