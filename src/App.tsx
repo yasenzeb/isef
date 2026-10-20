@@ -6,7 +6,7 @@ import { EgyptLocationModal } from './components/EgyptLocationModal';
 import { OfflineDownloadModal } from './components/OfflineDownloadModal';
 import { Footer } from './components/Footer';
 import { MobileBottomNav } from './components/MobileBottomNav';
-import { DarwinAssistant } from './components/DarwinAssistant';
+import { FishAgentController } from './components/FishAgentController';
 import { saveState, loadState } from './utils/persistence';
 import { CheckCircle2 } from 'lucide-react';
 
@@ -109,8 +109,8 @@ const AppContent: React.FC = () => {
         onClose={() => setIsOfflineModalOpen(false)}
       />
 
-      {/* Darwin AI - Scientific Guide & Full Platform Controller */}
-      <DarwinAssistant currentTab={currentTab} setCurrentTab={setCurrentTab} />
+      {/* Headless Fish Audio Controller - empowers the official Fish Agent widget with full platform control */}
+      <FishAgentController currentTab={currentTab} setCurrentTab={setCurrentTab} />
     </div>
   );
 };
