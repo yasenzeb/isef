@@ -1146,8 +1146,23 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
                     </span>
                   </div>
 
+                  {/* Quick Connect Trigger Button */}
+                  <div className="mb-3 flex justify-center">
+                    <button
+                      onClick={() => {
+                        try {
+                          document.dispatchEvent(new CustomEvent('fish-agent:expand'));
+                        } catch {}
+                      }}
+                      className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-teal-500 via-emerald-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-bold text-xs shadow-xl shadow-teal-500/30 flex items-center gap-2 transition-all hover:scale-105 cursor-pointer animate-pulse"
+                    >
+                      <Phone className="w-4 h-4" />
+                      <span>افتح شاشة المكالمة الصوتية مع داروين 🎙️</span>
+                    </button>
+                  </div>
+
                   <div
-                    className="flex-1 rounded-2xl border border-white/10 bg-slate-950/90 overflow-hidden flex flex-col items-center justify-center p-3 min-h-[440px] relative shadow-2xl"
+                    className="flex-1 rounded-2xl border border-white/10 bg-slate-950/90 overflow-hidden flex flex-col items-center justify-center p-3 min-h-[400px] relative shadow-2xl"
                     dangerouslySetInnerHTML={{
                       __html: '<fish-agent agent-id="9772063429bf4e54bdec0811de4cb3f3"></fish-agent>'
                     }}
