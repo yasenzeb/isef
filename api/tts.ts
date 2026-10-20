@@ -1,28 +1,23 @@
 // Universal Vercel Serverless Function: /api/tts
-// Supports Fish Audio zero-shot voice cloning using darwin-voice.mp3 reference
-import * as fs from 'fs';
-import * as path from 'path';
+// Primary: Google Gemini TTS (free, same API key as chat)
+// Fallback: Google Translate TTS
 
 export default async function handler(req: any, res?: any) {
   const isNode = Boolean(res && typeof res.status === 'function');
   const origin = req.headers?.origin || '*';
 
+  const corsHeaders: Record<string, string> = {
+    'Access-Control-Allow-Origin': origin,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
+
   if (req.method === 'OPTIONS') {
     if (isNode) {
-      res.setHeader('Access-Control-Allow-Origin', origin);
-      res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+      Object.entries(corsHeaders).forEach(([k, v]) => res.setHeader(k, v));
       return res.status(200).end();
-    } else {
-      return new Response(null, {
-        status: 204,
-        headers: {
-          'Access-Control-Allow-Origin': origin,
-          'Access-Control-Allow-Methods': 'POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        }
-      });
     }
+    return new Response(null, { status: 204, headers: corsHeaders });
   }
 
   if (req.method !== 'POST') {
@@ -38,188 +33,107 @@ export default async function handler(req: any, res?: any) {
       body = await req.json();
     }
 
-    const { text, reference_id } = body || {};
+    const { text } = body || {};
     if (!text || !text.trim()) {
       if (isNode) return res.status(400).json({ error: 'Text is required' });
       return new Response(JSON.stringify({ error: 'Text is required' }), { status: 400 });
     }
 
-    const fishKey = (process.env.FISH_AUDIO_API_KEY || process.env.VITE_FISH_AUDIO_API_KEY || '').trim();
-    const rawVoiceId = (reference_id || process.env.FISH_AUDIO_VOICE_ID || process.env.VITE_FISH_AUDIO_VOICE_ID || '').trim();
-    
-    // Extract clean voice ID if user entered a URL (e.g. ?modelId=... or /m/...) or raw ID
-    let fishVoiceId: string | undefined = undefined;
-    if (rawVoiceId) {
-      const modelIdMatch = rawVoiceId.match(/modelId=([a-zA-Z0-9_-]+)/i);
-      if (modelIdMatch) {
-        fishVoiceId = modelIdMatch[1];
-      } else {
-        const mMatch = rawVoiceId.match(/\/m\/([a-zA-Z0-9_-]+)/i);
-        if (mMatch) {
-          fishVoiceId = mMatch[1];
-        } else if (/^[a-zA-Z0-9_-]{12,64}$/.test(rawVoiceId)) {
-          fishVoiceId = rawVoiceId;
-        } else {
-          const hexMatch = rawVoiceId.match(/([a-f0-9]{24,64})/i);
-          if (hexMatch) fishVoiceId = hexMatch[1];
-        }
-      }
-    }
+    const geminiKey = (process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || '').trim();
 
-    // 1. If Fish Audio API Key is configured, use Fish Audio (https://fish.audio/)
-    if (fishKey) {
-      // Support Drama 3 (used by Darwin and custom characters) as well as S2 models
-      const modelsToTry = [
-        process.env.FISH_AUDIO_MODEL,
-        'drama-3',
-        's2.1-pro-free',
-        's2.1-pro'
-      ].filter(Boolean) as string[];
+    // ── 1. PRIMARY: Gemini TTS (same free API key as chat) ──
+    if (geminiKey) {
+      // Try models in order of quality
+      const ttsModels = [
+        'gemini-2.5-flash-preview-tts',
+        'gemini-2.0-flash-preview-tts',
+        'gemini-2.5-flash-tts',
+      ];
 
-      for (const model of modelsToTry) {
+      for (const model of ttsModels) {
         try {
-          const fishPayload: any = {
-            text: text.trim(),
-            format: 'mp3',
-            normalize: true,
-            latency: 'normal'
-          };
-
-          if (fishVoiceId) {
-            fishPayload.reference_id = fishVoiceId;
-          }
-
-          let fishRes = await fetch('https://api.fish.audio/v1/tts', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${fishKey}`,
-              'Content-Type': 'application/json',
-              'model': model
-            },
-            body: JSON.stringify(fishPayload)
-          });
-
-          // If the custom voice ID caused an error (e.g. invalid or private ID), retry once without it
-          if (!fishRes.ok && fishVoiceId) {
-            const errText = await fishRes.text().catch(() => '');
-            console.warn(`Fish Audio custom voice failed with model ${model} (${fishRes.status}): ${errText}`);
-            delete fishPayload.reference_id;
-            fishRes = await fetch('https://api.fish.audio/v1/tts', {
+          const geminiRes = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`,
+            {
               method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${fishKey}`,
-                'Content-Type': 'application/json',
-                'model': model
-              },
-              body: JSON.stringify(fishPayload)
-            });
-          }
-
-          if (fishRes.ok) {
-            const audioBuffer = await fishRes.arrayBuffer();
-
-            if (isNode) {
-              res.setHeader('Access-Control-Allow-Origin', origin);
-              res.setHeader('Content-Type', 'audio/mpeg');
-              res.setHeader('X-TTS-Engine', `Fish-Audio-${model}`);
-              return res.status(200).send(Buffer.from(audioBuffer));
-            } else {
-              return new Response(audioBuffer, {
-                status: 200,
-                headers: {
-                  'Access-Control-Allow-Origin': origin,
-                  'Content-Type': 'audio/mpeg',
-                  'X-TTS-Engine': `Fish-Audio-${model}`
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [
+                  {
+                    parts: [{ text: text.trim() }]
+                  }
+                ],
+                generationConfig: {
+                  responseModalities: ['AUDIO'],
+                  speechConfig: {
+                    voiceConfig: {
+                      prebuiltVoiceConfig: {
+                        // Charon: calm, clear, educational — best for STEM Arabic content
+                        voiceName: process.env.GEMINI_TTS_VOICE || 'Charon'
+                      }
+                    }
+                  }
                 }
-              });
+              })
             }
-          } else {
-            const errText = await fishRes.text().catch(() => '');
-            console.error(`Fish Audio error with model ${model}:`, fishRes.status, errText);
-          }
-        } catch (err: any) {
-          console.error(`Fish Audio fetch exception with model ${model}:`, err?.message);
-        }
-      }
-    }
+          );
 
-    // 2. Zero-shot voice cloning using darwin-voice.mp3 reference + Fish Audio key
-    // Load the local darwin-voice.mp3 reference sample and send it as base64
-    if (fishKey) {
-      try {
-        const voicePath = path.join(process.cwd(), 'public', 'darwin-voice.mp3');
-        if (fs.existsSync(voicePath)) {
-          const voiceData = fs.readFileSync(voicePath);
-          const voiceBase64 = voiceData.toString('base64');
+          if (geminiRes.ok) {
+            const json = await geminiRes.json();
+            const audioData = json?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+            const mimeType = json?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.mimeType || 'audio/L16';
 
-          const zeroShotPayload = {
-            text: text.trim(),
-            format: 'mp3',
-            normalize: true,
-            references: [
-              {
-                audio: voiceBase64,
-                text: 'مرحباً بكم في منصة ساينكسا. أنا مساعدك العلمي وسأشرح لك العلوم بوضوح.'
-              }
-            ]
-          };
+            if (audioData) {
+              const rawPcm = Buffer.from(audioData, 'base64');
 
-          for (const model of ['s2.1-pro-free', 's2.1-pro']) {
-            const zRes = await fetch('https://api.fish.audio/v1/tts', {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${fishKey}`,
-                'Content-Type': 'application/json',
-                'model': model
-              },
-              body: JSON.stringify(zeroShotPayload)
-            });
+              // Gemini returns raw PCM (24kHz, 16-bit, mono) — wrap it in a WAV container
+              const wavBuffer = pcmToWav(rawPcm, 24000, 1, 16);
 
-            if (zRes.ok) {
-              const audioBuffer = await zRes.arrayBuffer();
               if (isNode) {
                 res.setHeader('Access-Control-Allow-Origin', origin);
-                res.setHeader('Content-Type', 'audio/mpeg');
-                res.setHeader('X-TTS-Engine', `Fish-ZeroShot-${model}`);
-                return res.status(200).send(Buffer.from(audioBuffer));
+                res.setHeader('Content-Type', 'audio/wav');
+                res.setHeader('X-TTS-Engine', `Gemini-${model}`);
+                return res.status(200).send(wavBuffer);
               } else {
-                return new Response(audioBuffer, {
+                return new Response(wavBuffer, {
                   status: 200,
                   headers: {
                     'Access-Control-Allow-Origin': origin,
-                    'Content-Type': 'audio/mpeg',
-                    'X-TTS-Engine': `Fish-ZeroShot-${model}`
+                    'Content-Type': 'audio/wav',
+                    'X-TTS-Engine': `Gemini-${model}`
                   }
                 });
               }
-            } else {
-              const err = await zRes.text().catch(() => '');
-              console.error(`Zero-shot TTS error (${model}):`, zRes.status, err);
             }
+          } else {
+            const errText = await geminiRes.text().catch(() => '');
+            console.warn(`Gemini TTS model ${model} failed (${geminiRes.status}):`, errText.slice(0, 200));
           }
+        } catch (err: any) {
+          console.warn(`Gemini TTS ${model} exception:`, err?.message);
         }
-      } catch (zErr: any) {
-        console.error('Zero-shot voice cloning error:', zErr?.message);
       }
     }
 
-    // 2. Fallback to Google Neural Audio
-    const encoded = encodeURIComponent(text.slice(0, 180));
-    const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encoded}&tl=ar&client=tw-ob`;
-    const gRes = await fetch(googleTtsUrl);
+    // ── 2. FALLBACK: Google Translate TTS ──
+    const encoded = encodeURIComponent(text.trim().slice(0, 180));
+    const fallbackUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encoded}&tl=ar&client=tw-ob`;
+    const gRes = await fetch(fallbackUrl);
 
     if (gRes.ok) {
       const gBuffer = await gRes.arrayBuffer();
       if (isNode) {
         res.setHeader('Access-Control-Allow-Origin', origin);
         res.setHeader('Content-Type', 'audio/mpeg');
+        res.setHeader('X-TTS-Engine', 'Google-Translate-Fallback');
         return res.status(200).send(Buffer.from(gBuffer));
       } else {
         return new Response(gBuffer, {
           status: 200,
           headers: {
             'Access-Control-Allow-Origin': origin,
-            'Content-Type': 'audio/mpeg'
+            'Content-Type': 'audio/mpeg',
+            'X-TTS-Engine': 'Google-Translate-Fallback'
           }
         });
       }
@@ -227,8 +141,37 @@ export default async function handler(req: any, res?: any) {
 
     if (isNode) return res.status(500).json({ error: 'TTS generation failed' });
     return new Response(JSON.stringify({ error: 'TTS generation failed' }), { status: 500 });
+
   } catch (e: any) {
+    console.error('TTS handler error:', e?.message);
     if (isNode) return res.status(500).json({ error: e?.message });
     return new Response(JSON.stringify({ error: e?.message }), { status: 500 });
   }
+}
+
+// ── Helper: wrap raw PCM bytes in a WAV file header ──
+function pcmToWav(pcmData: Buffer, sampleRate: number, channels: number, bitDepth: number): Buffer {
+  const dataLength = pcmData.length;
+  const header = Buffer.alloc(44);
+
+  // RIFF chunk
+  header.write('RIFF', 0);
+  header.writeUInt32LE(36 + dataLength, 4);
+  header.write('WAVE', 8);
+
+  // fmt sub-chunk
+  header.write('fmt ', 12);
+  header.writeUInt32LE(16, 16);           // Sub-chunk size
+  header.writeUInt16LE(1, 20);            // PCM format
+  header.writeUInt16LE(channels, 22);
+  header.writeUInt32LE(sampleRate, 24);
+  header.writeUInt32LE(sampleRate * channels * (bitDepth / 8), 28); // Byte rate
+  header.writeUInt16LE(channels * (bitDepth / 8), 32);              // Block align
+  header.writeUInt16LE(bitDepth, 34);
+
+  // data sub-chunk
+  header.write('data', 36);
+  header.writeUInt32LE(dataLength, 40);
+
+  return Buffer.concat([header, pcmData]);
 }
