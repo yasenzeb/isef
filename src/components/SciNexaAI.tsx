@@ -273,6 +273,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
   const audioQueueIndexRef = useRef<number>(0);
   const audioQueueChunksRef = useRef<string[]>([]);
+  const audioSessionIdRef = useRef<number>(0);
 
   const labContext = LAB_CONTEXTS[currentTab] || LAB_CONTEXTS.home;
 
@@ -313,6 +314,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
 
   // Speech engine stop
   const stopSpeaking = () => {
+    audioSessionIdRef.current += 1;
     audioQueueChunksRef.current = [];
     audioQueueIndexRef.current = 0;
     if (currentAudioRef.current) {
@@ -326,10 +328,11 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
     setIsSpeaking(false);
   };
 
-  // Play next chunk in audio queue
+  // Play next chunk in audio queue with Fish Audio / Neural TTS support
   const playNextAudioChunk = () => {
     const chunks = audioQueueChunksRef.current;
     const index = audioQueueIndexRef.current;
+    const sessionId = audioSessionIdRef.current;
 
     if (index >= chunks.length) {
       setIsSpeaking(false);
@@ -338,26 +341,54 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
     }
 
     const chunk = chunks[index];
-    const encoded = encodeURIComponent(chunk);
-    const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encoded}&tl=ar&client=tw-ob`;
 
-    const audio = new Audio(ttsUrl);
-    currentAudioRef.current = audio;
+    const playAudioSrc = (src: string, isBlobUrl = false) => {
+      if (audioSessionIdRef.current !== sessionId) {
+        if (isBlobUrl) URL.revokeObjectURL(src);
+        return;
+      }
+      const audio = new Audio(src);
+      currentAudioRef.current = audio;
 
-    audio.onplay = () => setIsSpeaking(true);
-    audio.onended = () => {
-      audioQueueIndexRef.current += 1;
-      playNextAudioChunk();
+      audio.onplay = () => {
+        if (audioSessionIdRef.current === sessionId) {
+          setIsSpeaking(true);
+        }
+      };
+
+      const advance = () => {
+        if (isBlobUrl) URL.revokeObjectURL(src);
+        if (audioSessionIdRef.current === sessionId) {
+          audioQueueIndexRef.current += 1;
+          playNextAudioChunk();
+        }
+      };
+
+      audio.onended = advance;
+      audio.onerror = advance;
+      audio.play().catch(advance);
     };
-    audio.onerror = () => {
-      audioQueueIndexRef.current += 1;
-      playNextAudioChunk();
-    };
 
-    audio.play().catch(() => {
-      audioQueueIndexRef.current += 1;
-      playNextAudioChunk();
-    });
+    // First attempt: call serverless /api/tts (uses Fish Audio ultra-realistic voice or server neural fallback)
+    fetch('/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: chunk })
+    })
+      .then(async (res) => {
+        if (audioSessionIdRef.current !== sessionId) return;
+        if (!res.ok) throw new Error('TTS response not ok');
+        const blob = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        playAudioSrc(blobUrl, true);
+      })
+      .catch(() => {
+        // Direct browser fallback if /api/tts is unavailable
+        if (audioSessionIdRef.current !== sessionId) return;
+        const encoded = encodeURIComponent(chunk);
+        const fallbackUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encoded}&tl=ar&client=tw-ob`;
+        playAudioSrc(fallbackUrl, false);
+      });
   };
 
   // Text-To-Speech Synthesis
