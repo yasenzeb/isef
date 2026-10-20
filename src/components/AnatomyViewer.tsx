@@ -1611,83 +1611,22 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
               </div>
             </div>
 
-            {/* Launch Detailed 3D Organ Dissection Button */}
-            {(() => {
-              const queryEn = (selectedStructure?.nameEn || '').toLowerCase();
-              const queryAr = selectedStructure?.nameAr || '';
-              const querySys = (selectedStructure?.system || '').toLowerCase();
-
-              // Only match non-cell anatomical models (organs, bones, systems, tissues)
-              const anatomySpecimens = SKETCHFAB_ANATOMY_COLLECTION.filter(m => m.category !== 'cell');
-
-              // Strict direct keyword match
-              let matchedModel = anatomySpecimens.find(m => 
-                m.keywords.some(k => {
-                  const kLow = k.toLowerCase();
-                  return queryEn.includes(kLow) || queryAr.includes(k);
-                })
-              );
-
-              // Context-specific intelligent matching (Eye, Skull, Brain, Femur, Ribs, Heart, Lung, Liver, Stomach, Kidney, Pelvis, Spine)
-              if (!matchedModel) {
-                if (queryEn.includes('eye') || queryAr.includes('عين') || queryEn.includes('orbit') || queryAr.includes('بصر')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'human-eye');
-                } else if (queryEn.includes('skull') || queryEn.includes('frontal') || queryEn.includes('mandible') || queryEn.includes('maxilla') || queryEn.includes('parietal') || queryEn.includes('temporal') || queryEn.includes('occipital') || queryEn.includes('sphenoid') || queryAr.includes('جمجمة') || queryAr.includes('جبهي') || queryAr.includes('فك') || queryAr.includes('قحف')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'human-skull-dissection');
-                } else if (queryEn.includes('femur') || queryAr.includes('فخذ')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'human-femur-dissection');
-                } else if (queryEn.includes('rib') || queryEn.includes('sternum') || queryAr.includes('ضلع') || queryAr.includes('قص') || queryAr.includes('قفص صدري')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'rib-cage-dissection');
-                } else if (queryEn.includes('vertebra') || queryEn.includes('spine') || queryAr.includes('فقرة') || queryAr.includes('عمود فقري') || queryAr.includes('عجز') || queryAr.includes('عصعص')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'human-spine-dissection');
-                } else if (queryEn.includes('pelvis') || queryEn.includes('ilium') || queryEn.includes('pubis') || queryEn.includes('ischium') || queryAr.includes('حوض') || queryAr.includes('حرقف')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'human-pelvis-dissection');
-                } else if (queryEn.includes('heart') || queryEn.includes('myocard') || queryAr.includes('قلب')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'human-heart-animated');
-                } else if (queryEn.includes('lung') || queryEn.includes('bronch') || queryEn.includes('trachea') || queryAr.includes('رئة') || queryAr.includes('قصبة')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'human-lungs-dissection');
-                } else if (queryEn.includes('liver') || queryEn.includes('gallbladder') || queryAr.includes('كبد') || queryAr.includes('مرارة')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'human-liver-dissection');
-                } else if (queryEn.includes('kidney') || queryEn.includes('renal') || queryAr.includes('كلية') || queryAr.includes('كلو')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'human-kidney-dissection');
-                } else if (queryEn.includes('stomach') || queryAr.includes('معدة')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'stomach-cross-section');
-                } else if (queryEn.includes('brain') || queryAr.includes('دماغ') || queryAr.includes('مخ')) {
-                  matchedModel = anatomySpecimens.find(m => m.id === 'brain-and-nuclei');
-                }
-              }
-
-              if (matchedModel) {
-                return (
-                  <button
-                    onClick={() => setActiveSketchfabModel(matchedModel)}
-                    className="w-full mt-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-indigo-500 via-cyan-500 to-emerald-500 hover:opacity-95 text-white font-bold text-xs flex items-center justify-center space-x-2 shadow-lg shadow-cyan-500/20 transition-all cursor-pointer"
-                  >
-                    <Sparkles className="w-4 h-4 text-white" />
-                    <span>
-                      {language === 'ar' 
-                        ? `فتح تشريح ${selectedStructure?.nameAr || 'البنية'} مجسماً 3D` 
-                        : `Open ${selectedStructure?.nameEn || 'Specimen'} Detailed 3D`}
-                    </span>
-                  </button>
-                );
-              }
-
-              // If no specific 3D dissection exists, provide the isolation & focus inspection button
-              return (
-                <button
-                  onClick={toggleIsolate}
-                  className="w-full mt-2 py-2 px-3 rounded-xl bg-slate-900 border border-slate-700 hover:border-cyan-500 text-slate-100 font-semibold text-xs flex items-center justify-center space-x-2 transition-all cursor-pointer"
-                >
-                  <Eye className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>
-                    {isIsolated 
-                      ? (language === 'ar' ? 'إلغاء العزل وإظهار الكل' : 'Exit Focus / Show All')
-                      : (language === 'ar' ? 'فحص وتقريب الجزء بمفرده (عزل 3D)' : 'Focus & Isolate Specimen Only')}
-                  </span>
-                </button>
-              );
-            })()}
+                        {/* Focus & Specimen Isolation Button (Zero network lag, 100% offline & lightweight) */}
+            <button
+              onClick={toggleIsolate}
+              className={`w-full mt-2 py-2.5 px-4 rounded-xl border font-bold text-xs flex items-center justify-center space-x-2 transition-all cursor-pointer shadow-lg ${
+                isIsolated
+                  ? 'bg-gradient-to-r from-amber-500 to-orange-600 border-amber-400 text-white'
+                  : 'bg-gradient-to-r from-indigo-600 via-cyan-600 to-emerald-600 border-cyan-400/40 text-white hover:opacity-95'
+              }`}
+            >
+              <Eye className="w-4 h-4" />
+              <span>
+                {isIsolated 
+                  ? (language === 'ar' ? 'إلغاء العزل وإظهار كامل الجسم' : 'Exit Focus / Show Full Body')
+                  : (language === 'ar' ? 'فحص وتقريب الجزء بمفرده (عزل 3D)' : 'Focus & Isolate Specimen Only')}
+              </span>
+            </button>
           </div>
 
           {/* Pioneer Card: Andreas Vesalius */}
