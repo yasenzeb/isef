@@ -20,7 +20,13 @@ import {
   BookOpen,
   Cpu,
   BrainCircuit,
-  Sliders
+  Sliders,
+  Key,
+  Eye,
+  EyeOff,
+  Play,
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
 
 interface Message {
@@ -29,7 +35,7 @@ interface Message {
   text: string;
   timestamp: number;
   suggestions?: string[];
-  source?: 'openai_gpt' | 'local_lab' | 'open_science' | 'socratic';
+  source?: 'openai_official' | 'openai_gpt' | 'local_lab' | 'open_science' | 'socratic';
 }
 
 interface SciNexaAIProps {
@@ -55,7 +61,7 @@ const SCIENTIFIC_SPEECH_MAP_AR: [string, string][] = [
   ['ATP', 'أدينوسين ثلاثي الفوسفات'],
   ['DNA', 'الحمض النووي دي إن إيه'],
   ['3D', 'ثلاثي الأبعاد'],
-  ['ISEF', 'مسابقة آيسف'],
+  ['ISEF', 'مسابقة آيسف الدولية'],
   ['DC', 'التيار المستمر'],
   ['AC', 'التيار المتردد'],
   ['Femur', 'عظم الفخذ'],
@@ -97,7 +103,6 @@ const SCIENTIFIC_SPEECH_MAP_EN: [string, string][] = [
   ['v = λ × f', 'Wave velocity equals wavelength times frequency']
 ];
 
-// Clean text and convert chemical/mathematical formulas to clear pronounceable words
 function cleanTextForSpeech(text: string, lang: 'ar' | 'en' | 'fr' = 'ar'): string {
   let cleaned = text
     .replace(/\*\*(.*?)\*\*/g, '$1')
@@ -115,12 +120,10 @@ function cleanTextForSpeech(text: string, lang: 'ar' | 'en' | 'fr' = 'ar'): stri
     cleaned = cleaned.split(key).join(val);
   }
 
-  // Remove brackets and excessive punctuation
   cleaned = cleaned.replace(/[()[\]{}]/g, ' ').replace(/\s+/g, ' ').trim();
   return cleaned;
 }
 
-// Split long text into smooth chunks (<= 150 chars) for sequential voiceover
 function chunkTextForTTS(text: string, maxLen = 150): string[] {
   const clean = text.replace(/\s+/g, ' ').trim();
   if (clean.length <= maxLen) return [clean];
@@ -171,8 +174,8 @@ export interface Persona {
 const PERSONAS: Persona[] = [
   {
     id: 'scinexa',
-    nameAr: 'SciNexa AI (GPT-4)',
-    nameEn: 'SciNexa AI (GPT-4)',
+    nameAr: 'SciNexa AI (ChatGPT)',
+    nameEn: 'SciNexa AI (ChatGPT)',
     titleAr: 'باحث ومعلم آيسف الذكي',
     titleEn: 'ISEF AI Science Scholar',
     tagAr: 'الافتراضي لمسابقة آيسف',
@@ -207,6 +210,16 @@ const PERSONAS: Persona[] = [
   }
 ];
 
+// Official OpenAI Voice Options
+const OPENAI_VOICES = [
+  { id: 'alloy', nameAr: 'Alloy (الصوت الرسمي المتوازن لشات جي بي تي)', nameEn: 'Alloy (Iconic Balanced ChatGPT Voice)', gender: 'neutral' },
+  { id: 'nova', nameAr: 'Nova (صوت نسائي مشرق وحيوي)', nameEn: 'Nova (Energetic & Bright Voice)', gender: 'female' },
+  { id: 'echo', nameAr: 'Echo (صوت رجالي رخيم وهادئ)', nameEn: 'Echo (Warm & Resonant Voice)', gender: 'male' },
+  { id: 'fable', nameAr: 'Fable (صوت تعبيري راقٍ)', nameEn: 'Fable (Expressive British/Global Accent)', gender: 'neutral' },
+  { id: 'onyx', nameAr: 'Onyx (صوت رجالي عميق وقوي)', nameEn: 'Onyx (Deep & Authoritative Voice)', gender: 'male' },
+  { id: 'shimmer', nameAr: 'Shimmer (صوت نسائي دافئ وواضح)', nameEn: 'Shimmer (Warm & Clear Female Voice)', gender: 'female' }
+];
+
 // Deep Scientific Knowledge Base covering all labs
 const LAB_KNOWLEDGE: Record<string, {
   nameAr: string;
@@ -220,8 +233,8 @@ const LAB_KNOWLEDGE: Record<string, {
   home: {
     nameAr: 'المنصة العلمية العامة',
     nameEn: 'SciNexa Matrix',
-    welcomeAr: 'مرحباً بك! أنا SciNexa AI، مدعوم بنموذج الذكاء الاصطناعي GPT-4. جاهز للإجابة بدقة ونطق صوتي فصيح عن أي سؤال أو تجربة في التشريح والفيزياء والكيمياء والأحياء والجيولوجيا والفلك!',
-    welcomeEn: 'Welcome! I am SciNexa AI, powered by GPT-4 intelligence. Ready to answer and explain any concept across 3D Anatomy, Physics, Chemistry, Biology, Geology, and Astronomy!',
+    welcomeAr: 'مرحباً بك! أنا SciNexa AI، مدعوم بتقنيات وصوت ChatGPT الرسمي. جاهز للإجابة بدقة ونطق صوتي طبيعي عن أي تجربة أو قانون في التشريح، الفيزياء، الكيمياء، الأحياء، الجيولوجيا والفلك!',
+    welcomeEn: 'Welcome! I am SciNexa AI, powered by genuine ChatGPT intelligence and voice. Ready to explain any concept across 3D Anatomy, Physics, Chemistry, Biology, Geology, and Astronomy!',
     defaultQuestionsAr: [
       'ما هي أهداف منصة SciNexa لمسابقة آيسف؟',
       'كيف أبدأ تفاعلاً كيميائياً ممتعاً؟',
@@ -240,8 +253,8 @@ const LAB_KNOWLEDGE: Record<string, {
       },
       {
         keywords: ['اسمك', 'مين انت', 'مين أنت', 'who are you', 'عنان', 'شارح', 'gpt'],
-        answerAr: 'أنا SciNexa AI، باحث ومعلم العلوم الذكي المدمج في منصة ساينكسا، مدعوم بنموذج GPT-4 ومحرك فويس أوفر ناطق باللغة العربية والإنجليزية، لمساعدتك على التفوق في التجارب والمفاهيم العلمية!',
-        answerEn: 'I am SciNexa AI, your smart science tutor powered by GPT-4 and neural voiceover to explain experiments and scientific principles!'
+        answerAr: 'أنا SciNexa AI، مساعد ومعلم العلوم الذكي المدمج في منصة ساينكسا، مدعوم بنموذج وصوت ChatGPT فائق الدقة، لمساعدتك على فهم وتطبيق التجارب المعملية بدقة متناهية!',
+        answerEn: 'I am SciNexa AI, your smart science tutor powered by ChatGPT voice and intelligence to guide your scientific investigations!'
       }
     ]
   },
@@ -464,11 +477,17 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
   const [customName, setCustomName] = useState<string>(() => {
     return localStorage.getItem('scinexa_ai_custom_name') || '';
   });
+  const [openaiApiKey, setOpenaiApiKey] = useState<string>(() => {
+    return localStorage.getItem('scinexa_openai_api_key') || (import.meta.env.VITE_OPENAI_API_KEY as string) || '';
+  });
+  const [openaiVoice, setOpenaiVoice] = useState<string>(() => {
+    return localStorage.getItem('scinexa_openai_voice') || 'alloy';
+  });
   const [voiceLanguage, setVoiceLanguage] = useState<'ar' | 'en' | 'fr' | 'auto'>(() => {
     return (localStorage.getItem('scinexa_ai_voice_lang') as any) || 'ar';
   });
-  const [speechEngineMode, setSpeechEngineMode] = useState<'hd_voiceover' | 'system_tts'>(() => {
-    return (localStorage.getItem('scinexa_ai_speech_mode') as any) || 'hd_voiceover';
+  const [speechEngineMode, setSpeechEngineMode] = useState<'openai_tts' | 'hd_voiceover' | 'system_tts'>(() => {
+    return (localStorage.getItem('scinexa_ai_speech_mode') as any) || 'openai_tts';
   });
   const [speechRate, setSpeechRate] = useState<number>(() => {
     return Number(localStorage.getItem('scinexa_ai_speech_rate')) || 1.0;
@@ -484,6 +503,8 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isThinking, setIsThinking] = useState(false);
   const [aiStatusText, setAiStatusText] = useState<string>('');
+  const [showApiKey, setShowApiKey] = useState(false);
+  const [isTestingVoice, setIsTestingVoice] = useState(false);
 
   // System voices list
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
@@ -506,6 +527,12 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
   useEffect(() => {
     localStorage.setItem('scinexa_ai_custom_name', customName);
   }, [customName]);
+  useEffect(() => {
+    localStorage.setItem('scinexa_openai_api_key', openaiApiKey);
+  }, [openaiApiKey]);
+  useEffect(() => {
+    localStorage.setItem('scinexa_openai_voice', openaiVoice);
+  }, [openaiVoice]);
   useEffect(() => {
     localStorage.setItem('scinexa_ai_voice_lang', voiceLanguage);
   }, [voiceLanguage]);
@@ -566,9 +593,54 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
       window.speechSynthesis.cancel();
     }
     setIsSpeaking(false);
+    setIsTestingVoice(false);
   };
 
-  // Play next chunk in audio queue
+  // Official OpenAI Speech (tts-1) API Caller
+  const speakViaOpenAI = async (text: string, apiKey: string, voice: string): Promise<boolean> => {
+    try {
+      const response = await fetch('https://api.openai.com/v1/audio/speech', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey.trim()}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'tts-1',
+          input: text,
+          voice: voice || 'alloy',
+          response_format: 'mp3',
+          speed: speechRate
+        })
+      });
+
+      if (!response.ok) {
+        return false;
+      }
+
+      const blob = await response.blob();
+      const audioUrl = URL.createObjectURL(blob);
+      const audio = new Audio(audioUrl);
+      currentAudioRef.current = audio;
+
+      audio.onplay = () => setIsSpeaking(true);
+      audio.onended = () => {
+        setIsSpeaking(false);
+        URL.revokeObjectURL(audioUrl);
+      };
+      audio.onerror = () => {
+        setIsSpeaking(false);
+        URL.revokeObjectURL(audioUrl);
+      };
+
+      await audio.play();
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  // Play next chunk in audio queue (Fallback neural engine)
   const playNextAudioChunk = () => {
     const chunks = audioQueueChunksRef.current;
     const index = audioQueueIndexRef.current;
@@ -594,7 +666,6 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
       playNextAudioChunk();
     };
     audio.onerror = () => {
-      // If audio stream fails (e.g. offline on USB), try offline system speech
       speakViaSystemTTS(chunk, langCode);
     };
 
@@ -604,11 +675,10 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
   };
 
   // Text-To-Speech Synthesis Router
-  const speak = (rawText: string) => {
+  const speak = async (rawText: string) => {
     if (!isVoiceEnabled) return;
     stopSpeaking();
 
-    // Determine target spoken language
     let langCode: 'ar' | 'en' | 'fr' = 'ar';
     if (voiceLanguage === 'auto') {
       const isArabic = /[\u0600-\u06FF]/.test(rawText);
@@ -620,8 +690,15 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
 
     const cleanedText = cleanTextForSpeech(rawText, langCode);
 
-    // Mode 1: High Definition Studio Voiceover with Sequential Chunking
-    if (speechEngineMode === 'hd_voiceover') {
+    // Mode 1: Genuine OpenAI ChatGPT Voice (tts-1) if API Key is configured
+    const activeKey = openaiApiKey.trim();
+    if (activeKey && (speechEngineMode === 'openai_tts' || speechEngineMode === 'hd_voiceover')) {
+      const success = await speakViaOpenAI(cleanedText, activeKey, openaiVoice);
+      if (success) return;
+    }
+
+    // Mode 2: Neural Studio Audio Queue (Free Fallback)
+    if (speechEngineMode !== 'system_tts') {
       const chunks = chunkTextForTTS(cleanedText, 140);
       if (chunks.length > 0) {
         audioQueueChunksRef.current = chunks;
@@ -632,7 +709,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
       }
     }
 
-    // Mode 2: Local System Voices (Works 100% Offline)
+    // Mode 3: Local System Voices (Works 100% Offline)
     speakViaSystemTTS(cleanedText, langCode);
   };
 
@@ -645,15 +722,12 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
     utterance.rate = speechRate;
     utterance.pitch = 1.0;
 
-    // Check if system has an Arabic voice before speaking Arabic
     const hasArabicVoice = availableVoices.some(v => v.lang.toLowerCase().startsWith('ar'));
 
     if (selectedVoiceURI) {
       const chosen = availableVoices.find(v => v.voiceURI === selectedVoiceURI);
       if (chosen) utterance.voice = chosen;
     } else if (langCode === 'ar' && !hasArabicVoice) {
-      // Do not force Arabic text onto an English voice because it will skip Arabic!
-      // In this case, try playing via HD Voiceover audio
       const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text.slice(0, 140))}&tl=ar&client=tw-ob`;
       const fallbackAudio = new Audio(audioUrl);
       fallbackAudio.play().catch(() => {});
@@ -673,13 +747,77 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
     window.speechSynthesis.speak(utterance);
   };
 
-  // Smart Query Resolver: GPT-4 + Lab Knowledge + Open Science Search Fallback
+  // Test OpenAI Voice Button Handler
+  const handleTestOpenAIVoice = async () => {
+    if (isSpeaking) {
+      stopSpeaking();
+      return;
+    }
+    setIsTestingVoice(true);
+    const sample = ar
+      ? `أهلاً بك! هذا هو الصوت الحقيقي لشات جي بي تي بصوت ${openaiVoice} في منصة ساينكسا.`
+      : `Hello! This is the genuine ChatGPT voice ${openaiVoice} speaking on SciNexa.`;
+
+    const activeKey = openaiApiKey.trim();
+    if (activeKey) {
+      const ok = await speakViaOpenAI(sample, activeKey, openaiVoice);
+      if (ok) {
+        setIsTestingVoice(false);
+        return;
+      }
+    }
+    // Fallback test
+    speak(sample);
+    setIsTestingVoice(false);
+  };
+
+  // Smart Query Resolver: OpenAI Direct API + Lab Knowledge + Open Science Search Fallback
   const handleQuery = async (userQuery: string) => {
     const cleanQuery = userQuery.toLowerCase().trim();
+    const activeKey = openaiApiKey.trim();
 
-    // 1. Direct OpenAI GPT-4 Query
+    // 1. Official OpenAI Chat Completions API if key exists
+    if (activeKey) {
+      try {
+        setAiStatusText(ar ? 'جاري الاستعلام المباشر من OpenAI API...' : 'Calling official OpenAI API...');
+        const systemPrompt = `أنت ${activeDisplayName}، خبير ومدرس العلوم في منصة SciNexa لمسابقة ISEF الدولية. المعمل الحالي هو: "${activeLab.nameAr}". أجب على سؤال الطالب بالتفصيل وبدقة علمية فائقة باللغة التي سأل بها (${ar ? 'اللغة العربية الفصيحة' : 'English'}). اشرح المفهوم العلمي بوضوح، وقدم نصيحة عملية يطبقها في المعمل.`;
+
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${activeKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: cleanQuery }
+            ],
+            temperature: 0.7
+          }),
+          signal: AbortSignal.timeout(7000)
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const answer = data.choices?.[0]?.message?.content;
+          if (answer) {
+            return {
+              answer: answer.trim(),
+              suggestions: (ar ? activeLab.defaultQuestionsAr : activeLab.defaultQuestionsEn).filter(q => q !== userQuery).slice(0, 2),
+              source: 'openai_official' as const
+            };
+          }
+        }
+      } catch {
+        // Fall through to fallback engine
+      }
+    }
+
+    // 2. Open-Source GPT-4 Query
     try {
-      setAiStatusText(ar ? 'جاري الاستعلام من نموذج OpenAI GPT-4...' : 'Querying OpenAI GPT-4 model...');
+      setAiStatusText(ar ? 'جاري الاستعلام من نموذج GPT-4...' : 'Querying GPT-4 model...');
       const gptSystemContext = `أنت ${activeDisplayName}، خبير ومدرس العلوم في منصة SciNexa لمسابقة ISEF الدولية. المعمل الحالي هو: "${activeLab.nameAr}". أجب على سؤال الطالب بالتفصيل باللغة التي سأل بها (${ar ? 'اللغة العربية الفصيحة' : 'English'}). اشرح المفهوم العلمي بوضوح تام، وقدم نصيحة مخبرية عملية يطبقها في المعمل: ${cleanQuery}`;
 
       const gptUrl = `https://text.pollinations.ai/${encodeURIComponent(gptSystemContext)}?model=openai`;
@@ -696,10 +834,10 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
         }
       }
     } catch {
-      // Graceful local fallback if offline or timeout
+      // Graceful local fallback
     }
 
-    // 2. Search in current lab knowledge base
+    // 3. Search in current lab knowledge base
     setAiStatusText(ar ? 'جاري البحث في المعمل...' : 'Searching lab database...');
     for (const item of activeLab.knowledge) {
       if (item.keywords.some(k => cleanQuery.includes(k.toLowerCase()))) {
@@ -711,7 +849,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
       }
     }
 
-    // 3. Search across other labs
+    // 4. Search across other labs
     for (const labKey of Object.keys(LAB_KNOWLEDGE)) {
       const otherLab = LAB_KNOWLEDGE[labKey];
       for (const item of otherLab.knowledge) {
@@ -728,7 +866,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
       }
     }
 
-    // 4. Dynamic Open-Source Scientific Knowledge Query (Wikipedia Peer-Reviewed Science API)
+    // 5. Dynamic Open-Source Scientific Knowledge Query
     try {
       const searchLang = ar ? 'ar' : 'en';
       const searchUrl = `https://${searchLang}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(
@@ -764,7 +902,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
       // Graceful offline fallback
     }
 
-    // 5. Intelligent Socratic Pedagogical Fallback
+    // 6. Intelligent Socratic Pedagogical Fallback
     if (ar) {
       return {
         answer: `سؤال علمي ممتاز يا بطل! في معمل "${activeLab.nameAr}" المبدأ الأساسي هو الملاحظة والتجربة المباشرة. تفقد أدوات المحاكاة، وراقب القياسات والقوانين الحاكمة. تحب نركز على أحد الأسئلة المقترحة بالأسفل؟`,
@@ -840,7 +978,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
             </div>
             <div className="text-right">
               <span className="block leading-none text-xs font-bold text-emerald-200">
-                {ar ? 'مدعوم بـ OpenAI GPT-4' : 'Powered by GPT-4'}
+                {openaiApiKey ? 'صوت ونموذج ChatGPT الرسمي' : 'مدعوم بـ ChatGPT (GPT-4)'}
               </span>
               <span className="block text-sm font-black tracking-wide">
                 {ar ? `اسأل ${activeDisplayName} 💡` : `Ask ${activeDisplayName} 💡`}
@@ -853,8 +991,8 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
       {/* Main AI Window */}
       {isOpen && (
         <div
-          className={`fixed bottom-4 ${isRTL ? 'left-4 sm:left-6' : 'right-4 sm:right-6'} z-50 w-[95vw] sm:w-[440px] rounded-3xl overflow-hidden shadow-2xl border border-emerald-500/40 bg-[#070b14]/95 backdrop-blur-xl transition-all duration-300 flex flex-col ${
-            isMinimized ? 'h-16' : 'h-[600px] max-h-[88vh]'
+          className={`fixed bottom-4 ${isRTL ? 'left-4 sm:left-6' : 'right-4 sm:right-6'} z-50 w-[95vw] sm:w-[450px] rounded-3xl overflow-hidden shadow-2xl border border-emerald-500/40 bg-[#070b14]/95 backdrop-blur-xl transition-all duration-300 flex flex-col ${
+            isMinimized ? 'h-16' : 'h-[620px] max-h-[90vh]'
           }`}
           dir={isRTL ? 'rtl' : 'ltr'}
         >
@@ -874,7 +1012,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
                   </span>
                   <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold flex items-center gap-1">
                     <Sparkles className="w-2.5 h-2.5" />
-                    GPT-4
+                    {openaiApiKey ? `ChatGPT (${openaiVoice})` : 'GPT-4'}
                   </span>
                 </div>
                 <span className="text-[10px] text-slate-400 block -mt-0.5 truncate max-w-[190px]">
@@ -904,7 +1042,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
                 }}
                 className={`p-1.5 rounded-xl border transition-colors ${
                   isVoiceEnabled
-                    ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
+                    ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300'
                     : 'bg-white/5 border-white/10 text-slate-400'
                 }`}
                 title={isVoiceEnabled ? (ar ? 'كتم الصوت' : 'Mute Voice') : (ar ? 'تفعيل الصوت' : 'Enable Voice')}
@@ -917,10 +1055,10 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
                 onClick={() => setIsSettingsOpen(!isSettingsOpen)}
                 className={`p-1.5 rounded-xl border transition-colors ${
                   isSettingsOpen
-                    ? 'bg-indigo-500/30 border-indigo-400 text-white'
+                    ? 'bg-emerald-500/30 border-emerald-400 text-white'
                     : 'text-slate-400 hover:text-white hover:bg-white/10 border-transparent'
                 }`}
-                title={ar ? 'إعدادات الصوت والشخصية وتغيير الاسم' : 'Voice & Name Settings'}
+                title={ar ? 'إعدادات صوت ChatGPT ومفتاح OpenAI API' : 'ChatGPT Voice & OpenAI Settings'}
               >
                 <Settings className="w-4 h-4" />
               </button>
@@ -948,11 +1086,105 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
 
           {/* Settings Drawer */}
           {isSettingsOpen && !isMinimized && (
-            <div className="p-3.5 bg-slate-950/95 border-b border-indigo-500/30 text-xs space-y-3 animate-in slide-in-from-top duration-200">
-              {/* Persona / Name Customization */}
+            <div className="p-3.5 bg-slate-950/98 border-b border-emerald-500/30 text-xs space-y-3.5 max-h-[360px] overflow-y-auto animate-in slide-in-from-top duration-200">
+              {/* OpenAI API Key Section */}
+              <div className="p-2.5 rounded-2xl bg-emerald-950/30 border border-emerald-500/30 space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-[11px] font-bold text-emerald-300 flex items-center gap-1.5">
+                    <Key className="w-3.5 h-3.5 text-emerald-400" />
+                    {ar ? 'مفتاح OpenAI API الرسمي (لتفعيل صوت ChatGPT الحقيقي):' : 'Official OpenAI API Key:'}
+                  </label>
+                  {openaiApiKey ? (
+                    <span className="text-[10px] text-emerald-400 flex items-center gap-1 font-bold">
+                      <CheckCircle2 className="w-3 h-3" />
+                      {ar ? 'مفعل رسمي' : 'Active'}
+                    </span>
+                  ) : (
+                    <span className="text-[10px] text-amber-400 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {ar ? 'وضع مجاني' : 'Free Mode'}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  <div className="relative flex-1">
+                    <input
+                      type={showApiKey ? 'text' : 'password'}
+                      value={openaiApiKey}
+                      onChange={e => setOpenaiApiKey(e.target.value)}
+                      placeholder="sk-proj-..."
+                      className="w-full bg-slate-900/90 border border-emerald-500/30 focus:border-emerald-400 rounded-xl px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none font-mono"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowApiKey(!showApiKey)}
+                      className="absolute right-2 top-2 text-slate-400 hover:text-white"
+                    >
+                      {showApiKey ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
+                  {openaiApiKey && (
+                    <button
+                      type="button"
+                      onClick={() => setOpenaiApiKey('')}
+                      className="px-2 py-1.5 text-[11px] rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white"
+                      title={ar ? 'مسح المفتاح' : 'Clear Key'}
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+                <p className="text-[10px] text-slate-400 leading-tight">
+                  {ar
+                    ? '💡 يمكنك وضع المفتاح هنا مباشرة أو وضعه في ملف .env باسم VITE_OPENAI_API_KEY. عند إدخال المفتاح يتم استدعاء نموذج tts-1 بصوت ChatGPT الرسمي فوراً!'
+                    : '💡 Enter your OpenAI key here or in .env as VITE_OPENAI_API_KEY to activate genuine ChatGPT tts-1 neural voice!'}
+                </p>
+              </div>
+
+              {/* Official OpenAI Voices Selector */}
               <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-[11px] font-bold text-slate-200 flex items-center gap-1">
+                    🎙️ {ar ? 'اختر صوت ChatGPT الحقيقي المفصل:' : 'Select Official ChatGPT Voice:'}
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleTestOpenAIVoice}
+                    className="text-[10px] px-2 py-0.5 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/30 font-bold flex items-center gap-1 cursor-pointer"
+                  >
+                    <Play className="w-3 h-3 fill-emerald-300" />
+                    {isTestingVoice ? (ar ? 'جاري التشغيل...' : 'Playing...') : (ar ? 'تجربة الصوت' : 'Test Voice')}
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-1.5">
+                  {OPENAI_VOICES.map(v => (
+                    <button
+                      key={v.id}
+                      onClick={() => setOpenaiVoice(v.id)}
+                      className={`px-2.5 py-1.5 rounded-xl text-left rtl:text-right border transition-all flex items-center justify-between ${
+                        openaiVoice === v.id
+                          ? 'bg-emerald-500/25 border-emerald-400 text-emerald-200 font-bold shadow-md shadow-emerald-500/10'
+                          : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-slate-200'
+                      }`}
+                    >
+                      <div className="truncate">
+                        <span className="font-bold text-[11px] block">{v.id.toUpperCase()}</span>
+                        <span className="text-[9px] text-slate-400 block truncate">
+                          {ar ? v.nameAr.split('(')[1]?.replace(')', '') || v.nameAr : v.nameEn}
+                        </span>
+                      </div>
+                      {openaiVoice === v.id && <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Persona / Name Customization */}
+              <div className="pt-2 border-t border-white/10">
                 <label className="text-[11px] font-bold text-slate-300 block mb-1.5">
-                  🏷️ {ar ? 'اختر شخصية واسم المعلم الذكي:' : 'Select Persona & Tutor Name:'}
+                  🏷️ {ar ? 'تخصيص هوية واسم المعلم:' : 'Tutor Persona & Name:'}
                 </label>
                 <div className="grid grid-cols-2 gap-1.5">
                   {PERSONAS.map(p => (
@@ -962,14 +1194,14 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
                         setSelectedPersonaId(p.id);
                         setCustomName('');
                       }}
-                      className={`px-2.5 py-1.5 rounded-xl text-left rtl:text-right border transition-all flex items-center justify-between ${
+                      className={`px-2 py-1.5 rounded-xl text-left rtl:text-right border transition-all flex items-center justify-between ${
                         selectedPersonaId === p.id && !customName
                           ? 'bg-emerald-500/20 border-emerald-400 text-emerald-200 font-bold'
                           : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
                       }`}
                     >
-                      <span className="truncate">{ar ? p.nameAr : p.nameEn}</span>
-                      {selectedPersonaId === p.id && !customName && <Check className="w-3.5 h-3.5 text-emerald-400" />}
+                      <span className="truncate text-[11px]">{ar ? p.nameAr : p.nameEn}</span>
+                      {selectedPersonaId === p.id && !customName && <Check className="w-3 h-3 text-emerald-400" />}
                     </button>
                   ))}
                 </div>
@@ -995,71 +1227,24 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
                 </div>
               </div>
 
-              {/* Voice Engine & Pronunciation Settings */}
-              <div className="pt-2 border-t border-white/10">
-                <label className="text-[11px] font-bold text-slate-300 block mb-1.5">
-                  🎙️ {ar ? 'محرك النطق الصوتي والفويس أوفر:' : 'Pronunciation & Voiceover Engine:'}
-                </label>
-                <div className="grid grid-cols-2 gap-1.5 mb-2">
+              {/* Language Selection */}
+              <div className="pt-2 border-t border-white/10 flex items-center gap-1.5">
+                <span className="text-[10px] text-slate-400 shrink-0">
+                  {ar ? 'لغة النطق:' : 'Voice Lang:'}
+                </span>
+                {(['ar', 'en', 'fr', 'auto'] as const).map(l => (
                   <button
-                    onClick={() => setSpeechEngineMode('hd_voiceover')}
-                    className={`px-2.5 py-1.5 rounded-xl text-xs border text-center transition-all ${
-                      speechEngineMode === 'hd_voiceover'
-                        ? 'bg-emerald-500/20 border-emerald-400 text-emerald-200 font-bold'
-                        : 'bg-white/5 border-white/10 text-slate-400'
+                    key={l}
+                    onClick={() => setVoiceLanguage(l)}
+                    className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border transition-colors ${
+                      voiceLanguage === l
+                        ? 'bg-emerald-500/25 border-emerald-400 text-emerald-200'
+                        : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'
                     }`}
                   >
-                    ✨ {ar ? 'فويس أوفر GPT العصبي (HD)' : 'GPT Neural Voiceover'}
+                    {l === 'ar' ? '🇸🇦 عربية' : l === 'en' ? '🇬🇧 English' : l === 'fr' ? '🇫🇷 Français' : '🌐 تلقائي'}
                   </button>
-                  <button
-                    onClick={() => setSpeechEngineMode('system_tts')}
-                    className={`px-2.5 py-1.5 rounded-xl text-xs border text-center transition-all ${
-                      speechEngineMode === 'system_tts'
-                        ? 'bg-emerald-500/20 border-emerald-400 text-emerald-200 font-bold'
-                        : 'bg-white/5 border-white/10 text-slate-400'
-                    }`}
-                  >
-                    💻 {ar ? 'أصوات النظام المحلي (Offline)' : 'Offline System TTS'}
-                  </button>
-                </div>
-
-                {/* Language Selection */}
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] text-slate-400 shrink-0">
-                    {ar ? 'لغة النطق:' : 'Voice Lang:'}
-                  </span>
-                  {(['ar', 'en', 'fr', 'auto'] as const).map(l => (
-                    <button
-                      key={l}
-                      onClick={() => setVoiceLanguage(l)}
-                      className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border transition-colors ${
-                        voiceLanguage === l
-                          ? 'bg-emerald-500/25 border-emerald-400 text-emerald-200'
-                          : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'
-                      }`}
-                    >
-                      {l === 'ar' ? '🇸🇦 عربية' : l === 'en' ? '🇬🇧 English' : l === 'fr' ? '🇫🇷 Français' : '🌐 تلقائي'}
-                    </button>
-                  ))}
-                </div>
-
-                {/* System Voices Dropdown if Offline mode selected */}
-                {speechEngineMode === 'system_tts' && availableVoices.length > 0 && (
-                  <div className="mt-2">
-                    <select
-                      value={selectedVoiceURI}
-                      onChange={e => setSelectedVoiceURI(e.target.value)}
-                      className="w-full bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-[11px] text-slate-200 focus:outline-none"
-                    >
-                      <option value="">{ar ? '-- اختيار الصوت التلقائي --' : '-- Default System Voice --'}</option>
-                      {availableVoices.map(v => (
-                        <option key={v.voiceURI} value={v.voiceURI}>
-                          {v.name} ({v.lang})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
+                ))}
               </div>
             </div>
           )}
@@ -1085,9 +1270,14 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
                           <span className="flex items-center gap-1">
                             <Sparkles className="w-3 h-3 text-emerald-400" />
                             {activeDisplayName}:
+                            {msg.source === 'openai_official' && (
+                              <span className="text-[9px] px-1 py-0.2 rounded bg-emerald-500/25 text-emerald-300 font-bold border border-emerald-500/40">
+                                OpenAI GPT-4o
+                              </span>
+                            )}
                             {msg.source === 'openai_gpt' && (
                               <span className="text-[9px] px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-normal">
-                                OpenAI GPT-4
+                                GPT-4
                               </span>
                             )}
                             {msg.source === 'open_science' && (
@@ -1099,7 +1289,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
                           <button
                             onClick={() => speak(msg.text)}
                             className="p-1 hover:text-white transition-colors flex items-center gap-1 text-[10px] text-slate-400 hover:text-emerald-300 cursor-pointer"
-                            title={ar ? 'استمع للنطق الصوتي الفصيح' : 'Listen with natural voice'}
+                            title={ar ? 'استمع بصوت ChatGPT الحقيقي' : 'Listen with ChatGPT voice'}
                           >
                             <Volume2 className="w-3.5 h-3.5" />
                             <span>{ar ? 'نطق' : 'Speak'}</span>
@@ -1129,7 +1319,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
 
                 {/* AI Thinking Animation */}
                 {isThinking && (
-                  <div className="flex items-center gap-2 p-3 rounded-2xl bg-slate-900/80 border border-white/10 max-w-[220px] text-xs text-emerald-400">
+                  <div className="flex items-center gap-2 p-3 rounded-2xl bg-slate-900/80 border border-white/10 max-w-[240px] text-xs text-emerald-400">
                     <BrainCircuit className="w-4 h-4 animate-spin text-emerald-400 shrink-0" />
                     <span className="font-mono text-[11px] truncate">
                       {aiStatusText || (ar ? 'جاري التحليل...' : 'Analyzing...')}
@@ -1155,8 +1345,8 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
                     onChange={e => setInputText(e.target.value)}
                     placeholder={
                       ar
-                        ? `اسأل ${activeDisplayName} (GPT-4) في أي تجربة أو قانون علمي...`
-                        : `Ask ${activeDisplayName} (GPT-4) any science question...`
+                        ? `اسأل ${activeDisplayName} (ChatGPT) في أي تجربة أو قانون علمي...`
+                        : `Ask ${activeDisplayName} (ChatGPT) any science question...`
                     }
                     className="flex-1 bg-slate-950/80 border border-white/15 focus:border-emerald-400 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
                   />
