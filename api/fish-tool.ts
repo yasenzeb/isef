@@ -87,7 +87,18 @@ export default async function handler(req: any, res?: any) {
 
   // Tool A: switch_lab
   if (toolName === 'switch_lab' || args.target_lab) {
-    const targetLab = (args.target_lab || '').toLowerCase().trim();
+    let rawLab = (args.target_lab || '').toLowerCase().trim();
+    
+    // Support both English IDs and Arabic names from LLM
+    let targetLab = rawLab;
+    if (rawLab.includes('تشريح') || rawLab.includes('عظام') || rawLab.includes('anatomy')) targetLab = 'anatomy';
+    else if (rawLab.includes('فيزياء') || rawLab.includes('دوائر') || rawLab.includes('كهرباء') || rawLab.includes('physics')) targetLab = 'physics';
+    else if (rawLab.includes('كيمياء') || rawLab.includes('عناصر') || rawLab.includes('جدول') || rawLab.includes('chemistry')) targetLab = 'chemistry';
+    else if (rawLab.includes('أحياء') || rawLab.includes('خلية') || rawLab.includes('dna') || rawLab.includes('biology')) targetLab = 'biology';
+    else if (rawLab.includes('جيولوجيا') || rawLab.includes('أرض') || rawLab.includes('زلزال') || rawLab.includes('geology')) targetLab = 'geology';
+    else if (rawLab.includes('فلك') || rawLab.includes('كواكب') || rawLab.includes('astronomy')) targetLab = 'astronomy';
+    else if (rawLab.includes('رئيسية') || rawLab.includes('home')) targetLab = 'home';
+
     const labNames: Record<string, string> = {
       anatomy: 'أطلس التشريح 3D',
       physics: 'مختبر الفيزياء والدوائر',
