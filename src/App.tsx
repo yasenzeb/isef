@@ -110,7 +110,7 @@ const AppContent: React.FC = () => {
       />
 
       {/* Headless Fish Audio Controller - empowers the official Fish Agent widget with full platform control */}
-      <FishAgentController currentTab={currentTab} setCurrentTab={setCurrentTab} />
+      <FishAgentController currentTab={currentTab} setCurrentTab={setCurrentTab} language={language} />
     </div>
   );
 };

@@ -1,26 +1,32 @@
 import React, { useEffect, useRef } from 'react';
+import { saveState } from '../utils/persistence';
 
 interface FishAgentControllerProps {
   currentTab: string;
   setCurrentTab: (tab: string) => void;
+  language: string;
 }
 
-const LAB_MAP: Record<string, { ar: string }> = {
-  anatomy: { ar: 'أطلس التشريح 3D' },
-  physics: { ar: 'مختبر الفيزياء والدوائر الكهربائية' },
-  chemistry: { ar: 'مختبر الكيمياء والجدول الدوري' },
-  biology: { ar: 'مختبر الأحياء والخلية' },
-  geology: { ar: 'علوم الأرض والزلازل' },
-  astronomy: { ar: 'علم الفلك ومدارات كبلر' },
-  home: { ar: 'الصفحة الرئيسية' },
+const LAB_MAP: Record<string, { ar: string; en: string }> = {
+  anatomy: { ar: 'أطلس التشريح 3D', en: '3D Anatomy Atlas' },
+  physics: { ar: 'مختبر الفيزياء والدوائر الكهربائية', en: 'Physics & Circuits Lab' },
+  chemistry: { ar: 'مختبر الكيمياء والجدول الدوري', en: 'Chemistry & Periodic Table' },
+  biology: { ar: 'مختبر الأحياء والخلية', en: 'Biology & Cell Lab' },
+  geology: { ar: 'علوم الأرض والزلازل', en: 'Geology & Earth Sciences' },
+  astronomy: { ar: 'علم الفلك ومدارات كبلر', en: 'Astronomy & Kepler Orbits' },
+  home: { ar: 'الصفحة الرئيسية', en: 'Home Screen' },
 };
 
 export const FishAgentController: React.FC<FishAgentControllerProps> = ({
   currentTab,
   setCurrentTab,
+  language,
 }) => {
   const currentTabRef = useRef(currentTab);
   currentTabRef.current = currentTab;
+
+  const languageRef = useRef(language);
+  languageRef.current = language;
 
   const latestContextRef = useRef<{ title?: string; desc?: string; type?: string }>({});
   const processedActionIdsRef = useRef<Set<string>>(new Set());
@@ -31,39 +37,57 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
       navigate: (tab: string, subModule?: string) => {
         setCurrentTab(tab);
         if (subModule) {
+          if (tab === 'physics') saveState('physics_module', subModule);
           setTimeout(() => {
             if (tab === 'physics') {
               window.dispatchEvent(new CustomEvent('scinexa:switch_physics_module', { detail: { module: subModule } }));
             } else if (tab === 'chemistry') {
               window.dispatchEvent(new CustomEvent('scinexa:switch_chemistry_tab', { detail: { tab: subModule } }));
+            } else if (tab === 'anatomy') {
+              window.dispatchEvent(new CustomEvent('scinexa:switch_anatomy_layer', { detail: { layer: subModule } }));
             }
           }, 150);
         }
       },
       getLab: () => currentTabRef.current,
+      getLanguage: () => languageRef.current,
       getContext: () => latestContextRef.current,
     };
   }, [setCurrentTab]);
 
-  // 2. Synchronize Platform State with <fish-agent> & /api/fish-tool
+  // 2. Synchronize Platform State & Language with <fish-agent> & /api/fish-tool
   const syncPlatformState = (extraContext?: any) => {
     const tab = currentTabRef.current;
+    const lang = languageRef.current;
     const labMeta = LAB_MAP[tab] || LAB_MAP.home;
     const context = extraContext || latestContextRef.current || {};
 
     const dynamicVars = {
-      current_lab: labMeta.ar,
+      current_lab: lang === 'ar' ? labMeta.ar : labMeta.en,
       active_tab_id: tab,
-      selected_item: context.title || 'تصفح عام للمختبر',
+      language: lang,
+      user_language: lang === 'ar' ? 'العربية' : 'English',
+      language_instruction:
+        lang === 'ar'
+          ? 'تحدث مع المستخدم واشرح له باللغة العربية الفصحى بشكل فوري وحصري'
+          : 'Speak with the user and explain strictly in English immediately',
+      selected_item: context.title || (lang === 'ar' ? 'تصفح عام للمختبر' : 'General lab browsing'),
       item_details: context.desc || '',
       timestamp: Date.now(),
     };
 
-    // Update <fish-agent> DOM element dynamic-variables
+    // Update <fish-agent> DOM element
     const agentEl = document.querySelector('fish-agent');
     if (agentEl) {
       try {
+        agentEl.setAttribute('language', lang);
         agentEl.setAttribute('dynamic-variables', JSON.stringify(dynamicVars));
+        agentEl.setAttribute(
+          'greeting',
+          lang === 'ar'
+            ? 'مرحباً بك! أنا داروين مرشدك العلمي لمنصة ساينكسا، كيف يمكنني مساعدتك في تجاربك اليوم؟'
+            : 'Welcome! I am Darwin, your scientific guide on SciNexa. How can I assist you with your experiments today?'
+        );
       } catch (err) {
         console.warn('Could not update fish-agent attributes:', err);
       }
@@ -76,16 +100,17 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
       body: JSON.stringify({
         currentTab: tab,
         labNameAr: labMeta.ar,
+        language: lang,
         selectedItem: context.title,
         details: context.desc,
       }),
     }).catch(() => {});
   };
 
-  // Sync on tab change
+  // Sync on tab or language change
   useEffect(() => {
     syncPlatformState();
-  }, [currentTab]);
+  }, [currentTab, language]);
 
   // 3. Listen to scinexa:context events from 3D labs
   useEffect(() => {
@@ -116,14 +141,19 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
                 const targetMainTab = act.main_tab;
                 const targetSubModule = act.sub_module;
 
-                // 1. Switch main lab if needed
+                // Pre-persist sub-module before mounting component
+                if (targetSubModule && targetMainTab === 'physics') {
+                  saveState('physics_module', targetSubModule);
+                }
+
+                // 1. Switch main lab
                 if (targetMainTab && currentTabRef.current !== targetMainTab) {
                   setCurrentTab(targetMainTab);
                 }
 
-                // 2. Switch sub-module if specified
+                // 2. Dispatch events with multi-tier timeouts to guarantee delivery after lazy-mount
                 if (targetSubModule) {
-                  setTimeout(() => {
+                  const dispatchEvents = () => {
                     if (targetMainTab === 'physics') {
                       window.dispatchEvent(
                         new CustomEvent('scinexa:switch_physics_module', {
@@ -143,14 +173,19 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
                         })
                       );
                     }
-                  }, 200);
+                  };
+
+                  // Immediate + delayed (for lazy suspense fallback)
+                  dispatchEvents();
+                  setTimeout(dispatchEvents, 150);
+                  setTimeout(dispatchEvents, 450);
                 }
               }
             }
           }
         }
       } catch {}
-    }, 1500);
+    }, 1200);
 
     return () => clearInterval(pollInterval);
   }, [setCurrentTab]);
