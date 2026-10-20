@@ -58,19 +58,17 @@ export default async function handler(req: any, res?: any) {
 
     // 1. If Fish Audio API Key is configured, use Fish Audio (https://fish.audio/)
     if (fishKey) {
-      // Free accounts must use 's2.1-pro-free'. Paid accounts can use 's2.1-pro'.
-      const candidateModels = [
-        process.env.FISH_AUDIO_MODEL,
-        's2.1-pro-free',
-        's2.1-pro'
-      ].filter(Boolean) as string[];
+      // Determine the primary model: Free tier requires 's2.1-pro-free'
+      const primaryModel = process.env.FISH_AUDIO_MODEL || 's2.1-pro-free';
+      const modelsToTry = [primaryModel, 's2.1-pro'].filter((m, i, arr) => arr.indexOf(m) === i);
 
-      for (const model of candidateModels) {
+      for (const model of modelsToTry) {
         try {
           const fishPayload: any = {
             text: text.trim(),
             format: 'mp3',
-            normalize: true
+            normalize: true,
+            latency: 'normal'
           };
 
           if (fishVoiceId) {
@@ -87,8 +85,10 @@ export default async function handler(req: any, res?: any) {
             body: JSON.stringify(fishPayload)
           });
 
-          // If it failed because of the custom voice ID, retry immediately without reference_id using default voice
+          // If the custom voice ID caused an error (e.g. invalid or private ID), retry once without it
           if (!fishRes.ok && fishVoiceId) {
+            const errText = await fishRes.text().catch(() => '');
+            console.warn(`Fish Audio custom voice failed with model ${model} (${fishRes.status}): ${errText}`);
             delete fishPayload.reference_id;
             fishRes = await fetch('https://api.fish.audio/v1/tts', {
               method: 'POST',
@@ -121,7 +121,7 @@ export default async function handler(req: any, res?: any) {
             }
           } else {
             const errText = await fishRes.text().catch(() => '');
-            console.error(`Fish Audio API error with model ${model}:`, fishRes.status, errText);
+            console.error(`Fish Audio error with model ${model}:`, fishRes.status, errText);
           }
         } catch (err: any) {
           console.error(`Fish Audio fetch exception with model ${model}:`, err?.message);

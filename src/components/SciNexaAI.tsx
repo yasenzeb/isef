@@ -397,7 +397,8 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
     stopSpeaking();
 
     const cleanedText = cleanTextForSpeech(rawText);
-    const chunks = chunkTextForTTS(cleanedText, 140);
+    // Use cohesive paragraph chunks (450 chars) so the entire answer speaks in one uniform voice
+    const chunks = chunkTextForTTS(cleanedText, 450);
     if (chunks.length > 0) {
       audioQueueChunksRef.current = chunks;
       audioQueueIndexRef.current = 0;
