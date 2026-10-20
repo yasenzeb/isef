@@ -1392,6 +1392,22 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     }
   };
 
+  // Listen to remote layer switch orders from Darwin (Fish Audio)
+  useEffect(() => {
+    const handleSwitchLayer = (e: any) => {
+      const targetId = e.detail?.layer;
+      if (!targetId) return;
+      const targetSys = SYSTEM_LAYERS.find(s => s.id === targetId || s.id.includes(targetId) || targetId.includes(s.id));
+      if (targetSys) {
+        if (!visibleSystemsRef.current[targetSys.id]) {
+          toggleSystem(targetSys);
+        }
+      }
+    };
+    window.addEventListener('scinexa:switch_anatomy_layer', handleSwitchLayer);
+    return () => window.removeEventListener('scinexa:switch_anatomy_layer', handleSwitchLayer);
+  }, []);
+
   const resetCamera = () => {
     if (cameraRef.current && controlsRef.current) {
       cameraRef.current.position.set(0, 1.2, 2.5);

@@ -136,6 +136,12 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
                           detail: { tab: targetSubModule },
                         })
                       );
+                    } else if (targetMainTab === 'anatomy') {
+                      window.dispatchEvent(
+                        new CustomEvent('scinexa:switch_anatomy_layer', {
+                          detail: { layer: targetSubModule },
+                        })
+                      );
                     }
                   }, 200);
                 }

@@ -138,10 +138,31 @@ export default async function handler(req: any, res?: any) {
       subModule = 'periodic';
       label = 'مختبر الكيمياء — الجدول الدوري التفاعلي ثلاثي الأبعاد';
     }
-    // Anatomy
-    else if (rawInput.includes('تشريح') || rawInput.includes('عظام') || rawInput.includes('عضلة') || rawInput.includes('جسم') || rawInput.includes('anatomy')) {
+    // Anatomy sub-layers
+    else if (rawInput.includes('عضل') || rawInput.includes('muscular') || rawInput.includes('muscles')) {
       mainTab = 'anatomy';
-      label = 'أطلس التشريح ثلاثي الأبعاد 3D';
+      subModule = 'muscular';
+      label = 'أطلس التشريح — الجهاز العضلي ثلاثي الأبعاد';
+    } else if (rawInput.includes('قلب') || rawInput.includes('دوري') || rawInput.includes('cardio') || rawInput.includes('شرايين')) {
+      mainTab = 'anatomy';
+      subModule = 'cardiovascular';
+      label = 'أطلس التشريح — الجهاز الدوري والقلب والأوعية الدموية';
+    } else if (rawInput.includes('عصب') || rawInput.includes('مخ') || rawInput.includes('دماغ') || rawInput.includes('nervous')) {
+      mainTab = 'anatomy';
+      subModule = 'nervous';
+      label = 'أطلس التشريح — الجهاز العصبي والدماغ';
+    } else if (rawInput.includes('مفاصل') || rawInput.includes('أربطة') || rawInput.includes('joints')) {
+      mainTab = 'anatomy';
+      subModule = 'joints';
+      label = 'أطلس التشريح — المفاصل والأربطة الهيكلية';
+    } else if (rawInput.includes('أحشاء') || rawInput.includes('هضم') || rawInput.includes('visceral')) {
+      mainTab = 'anatomy';
+      subModule = 'visceral';
+      label = 'أطلس التشريح — الأعضاء الحشوية والهضمية';
+    } else if (rawInput.includes('تشريح') || rawInput.includes('عظام') || rawInput.includes('هيكل') || rawInput.includes('anatomy') || rawInput.includes('skeletal')) {
+      mainTab = 'anatomy';
+      subModule = 'skeletal';
+      label = 'أطلس التشريح ثلاثي الأبعاد — الهيكل العظمي';
     }
     // Biology
     else if (rawInput.includes('أحياء') || rawInput.includes('خلية') || rawInput.includes('dna') || rawInput.includes('وراثة') || rawInput.includes('biology')) {
