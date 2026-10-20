@@ -1,9 +1,5 @@
-// Vercel Serverless Function: /api/chat
-// Secure server-side execution keeping API keys 100% hidden and safe
-
-export const config = {
-  runtime: 'edge', // Edge runtime for ultra-fast response
-};
+// Universal Vercel Serverless Function: /api/chat
+// Supports both Node.js Serverless and Edge Runtime on Vercel
 
 const SCINEXA_SYSTEM_BRAIN = `أنت "SciNexa AI"، العقل المفكر والمعلم العلمي والباحث الذكي التفاعلي لمنصة SciNexa في مسابقة ISEF الدولية.
 أنت لست روبوتاً تقليدياً ولا تستخدم إجابات معلبة أو نصوصاً مسبقة. لديك استيعاب كامل لكل تفاصيل المنصة وتجهيزاتها وتجاربها:
@@ -31,7 +27,7 @@ const SCINEXA_SYSTEM_BRAIN = `أنت "SciNexa AI"، العقل المفكر وا
 4. مختبر الأحياء ودراسة الخلية (Biology & Cytology Lab):
    - الخلية النباتية (جدار سيليلوزي، بلاستيدات خضراء للبناء الضوئي، فجوة عصارية كبيرة) مقابل الخلية الحيوانية (غشاء بلازمي، سنتريول).
    - الميتوكوندريا وتوليد الطاقة ATP عبر التنفس الخلوي.
-   - الحمض النووي DNA (لولب مزدوج، ارتباط القواعد: أ восстаدينين مع ثايمين، وسيتوزين مع جوانين).
+   - الحمض النووي DNA (لولب مزدوج، ارتباط القواعد: أدينين مع ثايمين، وسيتوزين مع جوانين).
    - كائنات مياه المستنقعات والميكروسكوب: الأميبا (أقدام كاذبة والبلعمة)، اليوجلينا (سوط وبقعة عينية)، والبراميسيوم (أهداب دقيقة).
 
 5. مختبر علوم الأرض والزلازل (Geology & Seismic Lab):
@@ -51,16 +47,58 @@ const SCINEXA_SYSTEM_BRAIN = `أنت "SciNexa AI"، العقل المفكر وا
 4. اطرح في نهاية إجابتك سؤال تحدٍ ذكي أو اقتراح خطوة عملية تالية يجربها الطالب بنفسه.
 5. التزم التزاماً صارماً بأخلاقيات العلوم المدرسية والجامعية المحترمة وتجنب أي محتوى غير لائق.`;
 
-export default async function handler(req: Request) {
+export default async function handler(req: any, res?: any) {
+  const isNode = Boolean(res && typeof res.status === 'function');
+
+  // Handle CORS & Options preflight
+  const origin = req.headers?.origin || '*';
+  if (req.method === 'OPTIONS') {
+    if (isNode) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+      return res.status(200).end();
+    } else {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          'Access-Control-Allow-Origin': origin,
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        }
+      });
+    }
+  }
+
+  const sendResponse = (statusCode: number, data: any) => {
+    if (isNode) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Content-Type', 'application/json');
+      return res.status(statusCode).json(data);
+    } else {
+      return new Response(JSON.stringify(data), {
+        status: statusCode,
+        headers: {
+          'Access-Control-Allow-Origin': origin,
+          'Content-Type': 'application/json'
+        }
+      });
+    }
+  };
+
   if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return sendResponse(405, { error: 'Method not allowed' });
   }
 
   try {
-    const { messages, currentLab, labName, language } = await req.json();
+    let body: any;
+    if (isNode) {
+      body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    } else {
+      body = await req.json();
+    }
+
+    const { messages, currentLab, labName, language } = body || {};
 
     const geminiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
     const openAIKey = process.env.OPENAI_API_KEY || process.env.VITE_OPENAI_API_KEY;
@@ -107,17 +145,17 @@ export default async function handler(req: Request) {
           const data = await geminiRes.json();
           const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
           if (text) {
-            return new Response(JSON.stringify({
+            return sendResponse(200, {
               reply: text.trim(),
               model: 'gemini-1.5-flash'
-            }), {
-              status: 200,
-              headers: { 'Content-Type': 'application/json' }
             });
           }
+        } else {
+          const errData = await geminiRes.json().catch(() => ({}));
+          console.error('Gemini API returned error status:', geminiRes.status, errData);
         }
       } catch (err: any) {
-        console.error('Gemini error:', err?.message);
+        console.error('Gemini call error:', err?.message);
       }
     }
 
@@ -149,37 +187,29 @@ export default async function handler(req: Request) {
           const data = await openAIRes.json();
           const text = data.choices?.[0]?.message?.content;
           if (text) {
-            return new Response(JSON.stringify({
+            return sendResponse(200, {
               reply: text.trim(),
               model: 'gpt-4o-mini'
-            }), {
-              status: 200,
-              headers: { 'Content-Type': 'application/json' }
             });
           }
         }
       } catch (err: any) {
-        console.error('OpenAI error:', err?.message);
+        console.error('OpenAI call error:', err?.message);
       }
     }
 
-    // 3. Inform user to provide key if not configured
+    // 3. Fallback when keys are missing or invalid
     const lastUserQuery = messages && messages.length > 0 ? messages[messages.length - 1].text : '';
     const setupNotice = language === 'en'
-      ? `### 💡 Live AI Configuration Notice:\nTo activate live conversational Gemini 1.5 responses for "${lastUserQuery}", please add your free **GEMINI_API_KEY** in the \`.env\` file or Vercel Environment Variables. The AI will then generate live contextual answers for all virtual labs!`
-      : `### 💡 تنبيه تفعيل المحادثة الحية (Live AI):\nلكي يجيبك الذكاء الاصطناعي بشكل حي وتفاعلي ومباشر عن سؤالك "${lastUserQuery}"، يرجى وضع مفتاحك المجاني في ملف \`.env\` أو إعدادات Vercel باسم **GEMINI_API_KEY**.\n\nبمجرد وضعه، سينطلق النموذج لتحليل كل تجارب المعامل وشرحها لك بالصوت والصورة دون أي نصوص مسبقة!`;
+      ? `### 💡 Live AI Configuration Notice:\nTo enable live conversational Gemini 1.5 responses for "${lastUserQuery}", please make sure **GEMINI_API_KEY** or **VITE_GEMINI_API_KEY** is configured in your Vercel Environment Variables and redeployed!`
+      : `### 💡 تنبيه تفعيل المحادثة الحية (Live AI):\nلكي يجيبك الذكاء الاصطناعي بشكل حي وتفاعلي ومباشر عن سؤالك "${lastUserQuery}"، يرجى التأكد من إضافة **GEMINI_API_KEY** و **VITE_GEMINI_API_KEY** في إعدادات Vercel Environment Variables ثم الضغط على Redeploy.`;
 
-    return new Response(JSON.stringify({
+    return sendResponse(200, {
       reply: setupNotice,
       model: 'system-setup'
-    }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
     });
   } catch (error: any) {
-    return new Response(JSON.stringify({ error: error?.message || 'Server error' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    console.error('Handler catch error:', error?.message);
+    return sendResponse(500, { error: error?.message || 'Server error' });
   }
 }

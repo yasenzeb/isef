@@ -430,7 +430,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
 3. استخدم اللغة العربية الفصيحة الواضحة، ونسق إجابتك بنقاط وعناوين موجزة (###).
 4. اختم بتحدٍ علمي أو سؤال ذكي يدفع الطالب للتفكير والاكتشاف المستقل.`;
 
-    // 1. Vercel Serverless Function /api/chat (Environment Variable on Server)
+    // 1. Vercel Serverless Function /api/chat (Reads GEMINI_API_KEY from Vercel)
     try {
       const serverRes = await fetch('/api/chat', {
         method: 'POST',
@@ -441,20 +441,23 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
           labName: labContext.ar,
           language: language
         }),
-        signal: AbortSignal.timeout(9000)
+        signal: AbortSignal.timeout(12000)
       });
 
       if (serverRes.ok) {
-        const data = await serverRes.json();
-        if (data.reply && data.reply.trim().length > 10) {
-          return {
-            text: data.reply.trim(),
-            modelBadge: data.model === 'gemini-1.5-flash' ? 'Gemini 1.5' : data.model === 'gpt-4o-mini' ? 'GPT-4o' : 'SciNexa AI'
-          };
+        const contentType = serverRes.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const data = await serverRes.json();
+          if (data.reply && data.reply.trim().length > 10 && data.model !== 'system-setup') {
+            return {
+              text: data.reply.trim(),
+              modelBadge: data.model === 'gemini-1.5-flash' ? 'Gemini 1.5' : data.model === 'gpt-4o-mini' ? 'GPT-4o' : 'SciNexa AI'
+            };
+          }
         }
       }
     } catch {
-      // Fall through
+      // Fall through to client direct query
     }
 
     // 2. Direct Gemini 1.5 Flash via Environment Variable (Safe with High Safety Thresholds)
