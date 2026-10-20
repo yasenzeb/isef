@@ -655,7 +655,18 @@ export const ChemistryLab: React.FC = () => {
                   return (
                     <button
                       key={el.number}
-                      onClick={() => setSelectedElement(el)}
+                      onClick={() => {
+                        setSelectedElement(el);
+                        // Darwin Context Bridge
+                        window.dispatchEvent(new CustomEvent('scinexa:context', {
+                          detail: {
+                            lab: 'chemistry',
+                            type: 'element_selected',
+                            title: ar ? el.nameAr : el.nameEn,
+                            desc: `${el.symbol} — العدد الذري: ${el.number} — ${el.category}`,
+                          }
+                        }));
+                      }}
                       style={{
                         gridColumn: gridCol,
                         gridRow: gridRow,

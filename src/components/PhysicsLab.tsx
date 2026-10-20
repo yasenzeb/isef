@@ -289,8 +289,27 @@ export const PhysicsLab: React.FC = () => {
   useEffect(() => {
     const handleMessage = (e: MessageEvent) => {
       if (e.data && e.data.type === 'SCINEXA_CIRCUIT_AUTOSAVE' && e.data.payload) {
-        setSavedCircuit(e.data.payload);
-        saveState('saved_circuit', e.data.payload);
+        const payload = e.data.payload;
+        setSavedCircuit(payload);
+        saveState('saved_circuit', payload);
+
+        // Darwin Context Bridge: notify when circuit changes
+        if (payload.count > 0) {
+          const parts = [];
+          if (payload.batteries > 0) parts.push(`${payload.batteries} بطارية`);
+          if (payload.resistors > 0) parts.push(`${payload.resistors} مقاومة`);
+          if (payload.lightBulbs > 0) parts.push(`${payload.lightBulbs} مصباح`);
+          if (payload.wires > 0) parts.push(`${payload.wires} سلك`);
+          if (payload.switches > 0) parts.push(`${payload.switches} مفتاح`);
+          window.dispatchEvent(new CustomEvent('scinexa:context', {
+            detail: {
+              lab: 'physics',
+              type: 'circuit_update',
+              title: `دائرة كهربائية (${payload.count} عنصر)`,
+              desc: parts.join('، ') + (payload.hasCurrent ? ' — التيار يجري ✓' : ' — لا يجري تيار بعد'),
+            }
+          }));
+        }
       }
     };
     window.addEventListener('message', handleMessage);

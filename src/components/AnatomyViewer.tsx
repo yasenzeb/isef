@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+﻿import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
 import { OrbitControls, GLTFLoader, DRACOLoader, FBXLoader } from 'three-stdlib';
 import { useLanguage } from '../context/LanguageContext';
@@ -1324,6 +1324,15 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           descAr: descAr,
           region: worldHitPos.y > 1.3 ? 'Cranial / Head & Neck (الرأس والعنق)' : worldHitPos.y > 0.7 ? 'Thorax & Trunk (الصدر والجذع)' : 'Lower Extremities (الأطراف السفلية)',
         });
+        // Darwin Context Bridge: notify DarwinAssistant of selected structure
+        window.dispatchEvent(new CustomEvent('scinexa:context', {
+          detail: {
+            lab: 'anatomy',
+            type: 'structure_selected',
+            title: nameAr || cleanName,
+            desc: descAr || descEn,
+          }
+        }));
       }
     };
 
