@@ -6,6 +6,7 @@ import { EgyptLocationModal } from './components/EgyptLocationModal';
 import { OfflineDownloadModal } from './components/OfflineDownloadModal';
 import { Footer } from './components/Footer';
 import { MobileBottomNav } from './components/MobileBottomNav';
+import { SharehAI } from './components/SharehAI';
 import { saveState, loadState } from './utils/persistence';
 import { CheckCircle2 } from 'lucide-react';
 
@@ -107,6 +108,9 @@ const AppContent: React.FC = () => {
         isOpen={isOfflineModalOpen}
         onClose={() => setIsOfflineModalOpen(false)}
       />
+
+      {/* Shareh AI Interactive Science Tutor & Explainer */}
+      <SharehAI currentTab={currentTab} />
     </div>
   );
 };
