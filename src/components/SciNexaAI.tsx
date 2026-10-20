@@ -943,7 +943,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => setActiveTabMode('chat')}
-                  className={`px-3 py-1 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer font-medium ${
+                  className={`px-3.5 py-1 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
                     activeTabMode === 'chat'
                       ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm'
                       : 'text-slate-400 hover:text-white hover:bg-white/5'
@@ -955,49 +955,31 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
 
                 <button
                   onClick={() => {
-                    if (!isCallActive) {
-                      startVoiceCall();
-                    } else {
-                      setActiveTabMode('call');
-                    }
+                    stopSpeaking();
+                    setActiveTabMode('darwin');
                   }}
-                  className={`px-3 py-1 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer font-medium ${
-                    activeTabMode === 'call'
-                      ? 'bg-gradient-to-r from-emerald-500/30 to-teal-500/30 text-teal-200 border border-teal-500/40 shadow-sm'
+                  className={`px-3.5 py-1 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
+                    activeTabMode === 'darwin'
+                      ? 'bg-gradient-to-r from-indigo-500/30 to-teal-500/30 text-teal-200 border border-teal-500/40 shadow-sm'
                       : 'text-slate-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <Phone className={`w-3.5 h-3.5 ${isCallActive ? 'text-emerald-400 animate-pulse' : ''}`} />
-                  <span>مكالمة صوتية مباشرة</span>
-                  {isCallActive && (
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block" />
-                  )}
+                  <Phone className="w-3.5 h-3.5 text-teal-400" />
+                  <span>مكالمة وكيل داروين الصوتي 🎙️</span>
                 </button>
+              </div>
 
+              {activeTabMode === 'chat' && (
                 <button
                   onClick={() => {
                     stopSpeaking();
                     setActiveTabMode('darwin');
                   }}
-                  className={`px-3 py-1 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer font-medium ${
-                    activeTabMode === 'darwin'
-                      ? 'bg-indigo-500/25 text-indigo-300 border border-indigo-500/40 shadow-sm'
-                      : 'text-slate-400 hover:text-white hover:bg-white/5'
-                  }`}
+                  className="px-2.5 py-1 rounded-xl bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/30 text-teal-300 text-[10px] flex items-center gap-1 transition-all cursor-pointer font-bold"
+                  title="بدء مكالمة صوتية مع داروين"
                 >
-                  <Bot className="w-3.5 h-3.5 text-indigo-400" />
-                  <span>وكيل داروين</span>
-                </button>
-              </div>
-
-              {activeTabMode === 'chat' && !isCallActive && (
-                <button
-                  onClick={startVoiceCall}
-                  className="px-2.5 py-1 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-[10px] flex items-center gap-1 transition-all cursor-pointer"
-                  title="بدء مكالمة صوتية فورية"
-                >
-                  <Phone className="w-3 h-3 text-emerald-400" />
-                  <span>اتصل الآن</span>
+                  <Phone className="w-3 h-3 text-teal-400" />
+                  <span>اتصل بداروين</span>
                 </button>
               )}
             </div>
@@ -1146,145 +1128,26 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
                 </>
               )}
 
-              {/* 2. VOICE CALL MODE */}
-              {activeTabMode === 'call' && (
-                <div className="flex-1 flex flex-col items-center justify-between p-6 bg-gradient-to-b from-[#060a16] via-[#040712] to-black relative overflow-hidden">
-                  {/* Call Header Status */}
-                  <div className="text-center space-y-1.5 z-10">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[11px] text-emerald-300 font-mono">
-                      <Radio className="w-3 h-3 text-emerald-400 animate-pulse" />
-                      <span>{labContext.ar} • مكالمة صوتية تفاعلية</span>
-                    </div>
-                    <h3 className="text-lg font-black text-white">
-                      باحث SciNexa الذكي
-                    </h3>
-                    <p className="text-xs text-slate-400 max-w-[320px]">
-                      تحدث بصوتك مباشرة كأنك في مكالمة هاتفية حية، وسيجيبك المعلم الذكي فوراً
-                    </p>
-                  </div>
-
-                  {/* Futuristic Glowing Pulsing Audio Orb */}
-                  <div className="relative my-4 flex items-center justify-center">
-                    <div
-                      className={`absolute w-44 h-44 rounded-full border border-emerald-500/20 transition-all duration-700 ${
-                        callStatus === 'speaking' || callStatus === 'listening'
-                          ? 'scale-125 animate-ping opacity-25'
-                          : 'scale-100 opacity-10'
-                      }`}
-                    />
-                    <div
-                      className={`absolute w-36 h-36 rounded-full bg-gradient-to-tr from-emerald-500/20 to-teal-500/20 blur-xl transition-all duration-500 ${
-                        callStatus === 'speaking'
-                          ? 'scale-130 opacity-70'
-                          : callStatus === 'listening'
-                          ? 'scale-115 opacity-60'
-                          : 'scale-90 opacity-30'
-                      }`}
-                    />
-
-                    {/* Center Orb */}
-                    <div
-                      className={`w-28 h-28 rounded-full flex items-center justify-center shadow-2xl transition-all duration-500 border-2 ${
-                        callStatus === 'speaking'
-                          ? 'bg-gradient-to-br from-indigo-600 via-teal-500 to-emerald-400 border-emerald-300 shadow-emerald-500/50 scale-105'
-                          : callStatus === 'thinking'
-                          ? 'bg-gradient-to-br from-amber-600 via-orange-500 to-indigo-600 border-amber-300 shadow-amber-500/50 animate-pulse'
-                          : callStatus === 'listening'
-                          ? 'bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-500 border-teal-300 shadow-teal-500/50 scale-100'
-                          : 'bg-slate-800 border-white/20'
-                      }`}
-                    >
-                      {callStatus === 'speaking' ? (
-                        <Waves className="w-12 h-12 text-white animate-pulse" />
-                      ) : callStatus === 'thinking' ? (
-                        <BrainCircuit className="w-12 h-12 text-white animate-spin" />
-                      ) : callStatus === 'listening' ? (
-                        <Mic className="w-12 h-12 text-white animate-bounce" />
-                      ) : (
-                        <Phone className="w-10 h-10 text-slate-400" />
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Status & Live Transcript */}
-                  <div className="w-full text-center space-y-2 z-10 px-4 min-h-[60px] flex flex-col items-center justify-center">
-                    <div className="text-xs font-bold font-mono">
-                      {callStatus === 'listening' && (
-                        <span className="text-emerald-300 animate-pulse flex items-center gap-1.5">
-                          <Mic className="w-3.5 h-3.5" />
-                          أستمع إليك الآن... تكلم بصوتك
-                        </span>
-                      )}
-                      {callStatus === 'thinking' && (
-                        <span className="text-amber-300 flex items-center gap-1.5">
-                          <BrainCircuit className="w-3.5 h-3.5 animate-spin" />
-                          جاري التحليل العلمي السريع...
-                        </span>
-                      )}
-                      {callStatus === 'speaking' && (
-                        <span className="text-teal-300 flex items-center gap-1.5">
-                          <Volume2 className="w-3.5 h-3.5 animate-pulse" />
-                          المعلم الذكي يجيبك بصوته الآن...
-                        </span>
-                      )}
-                      {callStatus === 'idle' && (
-                        <span className="text-slate-400">
-                          المكالمة متوقفة حالياً. اضغط "بدء المكالمة" للتحدث
-                        </span>
-                      )}
-                    </div>
-
-                    {callTranscript && (
-                      <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 max-w-[90%] text-xs text-slate-200 font-medium">
-                        "{callTranscript}"
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Call Controls */}
-                  <div className="flex items-center gap-3 z-10 pt-2">
-                    {isCallActive ? (
-                      <button
-                        onClick={endVoiceCall}
-                        className="px-6 py-3 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-xl shadow-rose-900/40 flex items-center gap-2 transition-all hover:scale-105 cursor-pointer"
-                      >
-                        <PhoneOff className="w-4 h-4" />
-                        <span>إنهاء المكالمة</span>
-                      </button>
-                    ) : (
-                      <button
-                        onClick={startVoiceCall}
-                        className="px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs shadow-xl shadow-emerald-900/40 flex items-center gap-2 transition-all hover:scale-105 cursor-pointer"
-                      >
-                        <Phone className="w-4 h-4" />
-                        <span>بدء المكالمة الصوتية</span>
-                      </button>
-                    )}
-
-                    <button
-                      onClick={() => setActiveTabMode('chat')}
-                      className="px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/15 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
-                    >
-                      <MessageSquare className="w-3.5 h-3.5" />
-                      <span>العودة للشات</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* 3. FISH AUDIO DARWIN AGENT TAB */}
+              {/* 2. DARWIN VOICE AGENT MODE */}
               {activeTabMode === 'darwin' && (
-                <div className="flex-1 flex flex-col p-3 bg-black/60 relative overflow-y-auto">
-                  <div className="p-3 mb-2 rounded-xl bg-indigo-950/40 border border-indigo-500/30 text-xs text-indigo-200 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Bot className="w-4 h-4 text-indigo-400 shrink-0" />
-                      <span>وكيل داروين المباشر (Fish Audio Agent)</span>
+                <div className="flex-1 flex flex-col p-4 bg-gradient-to-b from-[#050813] via-[#04060f] to-black relative overflow-y-auto">
+                  <div className="p-3 mb-3 rounded-2xl bg-indigo-950/40 border border-indigo-500/30 text-xs text-indigo-200 flex items-center justify-between shadow-lg">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-teal-500 flex items-center justify-center text-white shadow-md">
+                        <Bot className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="font-bold block text-white">وكيل داروين الصوتي المباشر (Darwin Voice Agent)</span>
+                        <span className="text-[10px] text-slate-400">تقنية المكالمة الصوتية الفورية من Fish Audio</span>
+                      </div>
                     </div>
-                    <span className="text-[10px] text-slate-400 font-mono">ID: 9772063429</span>
+                    <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">
+                      Live Call
+                    </span>
                   </div>
 
                   <div
-                    className="flex-1 rounded-2xl border border-white/10 bg-slate-950/90 overflow-hidden flex flex-col items-center justify-center p-2 min-h-[440px]"
+                    className="flex-1 rounded-2xl border border-white/10 bg-slate-950/90 overflow-hidden flex flex-col items-center justify-center p-3 min-h-[440px] relative shadow-2xl"
                     dangerouslySetInnerHTML={{
                       __html: '<fish-agent agent-id="9772063429bf4e54bdec0811de4cb3f3"></fish-agent>'
                     }}
