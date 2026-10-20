@@ -218,14 +218,19 @@ export default async function handler(req: any, res?: any) {
   }
 
   // Tool: get_current_lab_status
+  const isArabic = (latestPlatformState.language || 'ar') === 'ar';
   const labSummary = {
+    success: true,
     current_tab: latestPlatformState.currentTab,
     lab_name: latestPlatformState.labNameAr,
     language: latestPlatformState.language || 'ar',
-    sub_module: latestPlatformState.subModule || 'القسم الرئيسي',
-    selected_item: latestPlatformState.selectedItem || 'المستخدم يتصفح القسم الحالي',
-    details: latestPlatformState.details || 'المحاكاة جاهزة للتجربة',
+    sub_module: latestPlatformState.subModule || (isArabic ? 'القسم الرئيسي' : 'Main Section'),
+    selected_item: latestPlatformState.selectedItem || (isArabic ? 'تصفح عام للمختبر' : 'General lab browsing'),
+    item_details: latestPlatformState.details || (isArabic ? 'المحاكاة جاهزة للتجربة والاستكشاف' : 'Simulation ready for experimentation'),
     circuit_status: latestPlatformState.circuit || null,
+    instruction_for_darwin: isArabic
+      ? `اشرح للطالب فوراً تكوين ووظيفة الجزء المحدد (${latestPlatformState.selectedItem || 'المختبر الحالي'}) ودوره العلمي بإيجاز مشوق وعلمي دقيق.`
+      : `Immediately explain to the student the structure and scientific/physiological function of (${latestPlatformState.selectedItem || 'the current lab'}) in engaging detail.`,
   };
 
   if (isNode) return res.status(200).json(labSummary);
