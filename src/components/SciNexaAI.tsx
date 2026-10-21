@@ -68,7 +68,7 @@ const SCIENTIFIC_SPEECH_MAP_AR: [string, string][] = [
   ['ATP', 'أدينوسين ثلاثي الفوسفات'],
   ['DNA', 'الحمض النووي دي إن إيه'],
   ['3D', 'ثلاثي الأبعاد'],
-  ['ISEF', 'مسابقة آيسف الدولية'],
+  ['STEM', 'العلوم والتكنولوجيا والهندسة والرياضيات'],
   ['DC', 'التيار المستمر'],
   ['AC', 'التيار المتردد'],
   ['Femur', 'عظم الفخذ'],
@@ -146,9 +146,9 @@ const LAB_CONTEXTS: Record<string, { ar: string; en: string; descriptionAr: stri
   home: {
     ar: 'المنصة العلمية العامة',
     en: 'SciNexa General Science Matrix',
-    descriptionAr: 'منصة محاكاة العلوم المعتمدة لمسابقة ISEF الدولية (تشريح، فيزياء، كيمياء، أحياء، جيولوجيا، فلك).',
+    descriptionAr: 'منظومة محاكاة العلوم المعتمدة للمختبرات الافتراضية التفاعلية (تشريح، فيزياء، كيمياء، أحياء، جيولوجيا، فلك).',
     defaultPromptsAr: [
-      'ما هي أهداف وتحديات منصة SciNexa في مسابقة ISEF؟',
+      'ما هي أهداف ورؤية منظومة SciNexa في تطوير التعليم التجريبي؟',
       'كيف تساهم المعامل الافتراضية في حل عجز التجهيزات المخبرية؟',
       'اقترح علي تجربة علمية شيقة أبدأ بها اليوم!'
     ]
@@ -634,7 +634,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
     // 0. Strict Ethical & Educational Moderation Gate
     if (!isSafeQuery(userPrompt)) {
       return {
-        text: `أنا "SciNexa AI"، مساعد علمي وتعليمي مخصص حصرياً للمناهج العلمية والمختبرات الافتراضية في مسابقة ISEF الدولية (الفيزياء، الكيمياء، أطلس التشريح الطبي للأعضاء والعظام، الأحياء، علوم الأرض والفلك).\n\nيرجى طرح استفسار علمي يتعلق بالتجارب والظواهر المعملية.`,
+        text: `أنا "SciNexa AI"، مساعد علمي وتعليمي مخصص للمناهج العلمية والمختبرات الافتراضية المتقدمة (الفيزياء، الكيمياء، أطلس التشريح الطبي للأعضاء والعظام، الأحياء، علوم الأرض والفلك).\n\nيرجى طرح استفسار علمي يتعلق بالتجارب والظواهر المعملية.`,
         modelBadge: 'Safety Gate'
       };
     }
@@ -642,7 +642,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
     const geminiKey = import.meta.env.VITE_GEMINI_API_KEY as string;
     const openAIKey = import.meta.env.VITE_OPENAI_API_KEY as string;
 
-    const systemPrompt = `أنت "SciNexa AI"، العقل المفكر والمعلم العلمي والباحث الذكي التفاعلي لمنصة SciNexa في مسابقة ISEF الدولية.
+    const systemPrompt = `أنت "SciNexa AI"، العقل المفكر والمعلم العلمي والباحث الذكي التفاعلي لمنظومة SciNexa للمختبرات الافتراضية العلمية.
 أنت لست روبوتاً تقليدياً ولا تستخدم إجابات معلبة أو نصوصاً مسبقة. لديك استيعاب كامل وتفصيلي لكل معامل وأدوات وتجارب المنصة:
 
 المعمل النشط الآن أمام الطالب: "${labContext.ar}".

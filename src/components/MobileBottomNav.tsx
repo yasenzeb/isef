@@ -29,12 +29,12 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   const [labsDrawerOpen, setLabsDrawerOpen] = useState(false);
 
   const labsList = [
-    { id: 'anatomy', labelAr: 'تشريح الإنسان 3D', labelEn: '3D Anatomy', icon: Activity, color: '#ec4899', grad: 'from-pink-500/20 to-purple-500/20' },
-    { id: 'physics', labelAr: 'الفيزياء والموجات', labelEn: 'Physics & Waves', icon: Atom, color: '#38bdf8', grad: 'from-sky-500/20 to-indigo-500/20' },
-    { id: 'chemistry', labelAr: 'الكيمياء 118 عنصر', labelEn: 'Chemistry 118', icon: Atom, color: '#f59e0b', grad: 'from-amber-500/20 to-rose-500/20' },
-    { id: 'biology', labelAr: 'الأحياء والخلايا 3D', labelEn: 'Biology & Cells', icon: Dna, color: '#10b981', grad: 'from-emerald-500/20 to-teal-500/20' },
-    { id: 'geology', labelAr: 'الجيولوجيا والزلازل', labelEn: 'Geology & Seismology', icon: Globe2, color: '#a855f7', grad: 'from-purple-500/20 to-indigo-500/20' },
-    { id: 'astronomy', labelAr: 'علوم الفلك والمجموعة الشمسية', labelEn: 'Astronomy & Solar System', icon: Sparkles, color: '#eab308', grad: 'from-yellow-500/20 to-amber-500/20' },
+    { id: 'anatomy', labelAr: 'تشريح جسم الإنسان', labelEn: '3D Anatomy', icon: Activity, color: '#ec4899', grad: 'from-pink-500/20 to-purple-500/20' },
+    { id: 'physics', labelAr: 'الفيزياء والموجات والكهرباء', labelEn: 'Physics & Waves', icon: Atom, color: '#38bdf8', grad: 'from-sky-500/20 to-indigo-500/20' },
+    { id: 'chemistry', labelAr: 'الكيمياء والجدول الدوري', labelEn: 'Chemistry 118', icon: Atom, color: '#f59e0b', grad: 'from-amber-500/20 to-rose-500/20' },
+    { id: 'biology', labelAr: 'علم الأحياء والخلايا الوراثية', labelEn: 'Biology & Cells', icon: Dna, color: '#10b981', grad: 'from-emerald-500/20 to-teal-500/20' },
+    { id: 'geology', labelAr: 'علوم الأرض والزلازل', labelEn: 'Geology & Seismology', icon: Globe2, color: '#a855f7', grad: 'from-purple-500/20 to-indigo-500/20' },
+    { id: 'astronomy', labelAr: 'علوم الفلك والنظام الشمسي', labelEn: 'Astronomy & Solar System', icon: Sparkles, color: '#eab308', grad: 'from-yellow-500/20 to-amber-500/20' },
   ];
 
   const isCurrentLab = labsList.some(l => l.id === currentTab);
@@ -108,7 +108,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                       {language === 'ar' ? lab.labelAr : lab.labelEn}
                     </span>
                     <span className="text-[10px] text-slate-400 block font-mono">
-                      SciNexa Lab
+                      {language === 'ar' ? 'مختبر علمي تفاعلي' : 'SciNexa Lab'}
                     </span>
                   </div>
                 </button>
@@ -213,7 +213,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               <Download className="w-5 h-5 text-emerald-400" />
             </div>
             <span className="text-[10px] font-semibold mt-1">
-              {language === 'ar' ? 'أوفلاين' : 'Offline'}
+              {language === 'ar' ? 'بدون إنترنت' : 'Offline'}
             </span>
           </button>
         </div>

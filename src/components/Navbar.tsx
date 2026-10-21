@@ -55,16 +55,22 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Atom className="w-4 h-4 text-white" />
             </div>
             <div className={isRTL ? 'text-right' : 'text-left'}>
-              <div className="flex items-center gap-1.5">
-                <span className="font-mono text-sm font-bold tracking-tight text-white uppercase">
-                  {t.appName}
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-base sm:text-lg font-black tracking-wider text-white uppercase">
+                  SciNexa
                 </span>
-                <span className="hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-mono rounded bg-white/[0.06] border border-white/10 text-slate-400">
-                  v3.0
+                <span className="hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-mono rounded bg-white/[0.08] border border-white/15 text-slate-300 font-bold">
+                  {language === 'ar' ? 'الإصدار 3.0' : 'v3.0'}
                 </span>
               </div>
-              <span className="text-[10px] text-slate-500 font-mono tracking-tight block -mt-0.5">
-                SCIENTIFIC SIMULATION MATRIX
+              <span className="text-[10px] text-slate-400 font-mono tracking-tight block -mt-0.5 font-medium">
+                {language === 'ar' 
+                  ? 'منظومة المحاكاة العلمية' 
+                  : language === 'fr' 
+                  ? 'MATRICE DE SIMULATION SCIENTIFIQUE' 
+                  : language === 'de' 
+                  ? 'SIMULATIONSMATRIX' 
+                  : 'SCIENTIFIC SIMULATION MATRIX'}
               </span>
             </div>
           </div>
@@ -108,10 +114,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="hidden sm:flex items-center gap-2.5">
             {/* Status Telemetry */}
             <div className="hidden xl:flex items-center gap-2 font-mono text-[11px] text-slate-400 border-r border-white/10 pr-2.5">
-              <span className="text-slate-500 text-[10px]">ENGINE:</span>
+              <span className="text-slate-500 text-[10px]">
+                {language === 'ar' ? 'المحرك:' : 'ENGINE:'}
+              </span>
               <span className="text-emerald-400 font-semibold flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                PHYS-60FPS
+                {language === 'ar' ? '60 إطار/ثانية' : 'PHYS-60FPS'}
               </span>
             </div>
 
@@ -122,7 +130,9 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all"
             >
               <Download className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">{language === 'ar' ? 'أوفلاين' : 'Offline'}</span>
+              <span className="hidden md:inline">
+                {language === 'ar' ? 'بدون إنترنت' : language === 'fr' ? 'Hors ligne' : 'Offline'}
+              </span>
             </button>
 
             {/* Region / Governorate */}
@@ -157,7 +167,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={onOpenOfflineModal}
               className="p-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400"
-              title="Offline"
+              title={language === 'ar' ? 'بدون إنترنت' : 'Offline'}
             >
               <Download className="w-4 h-4" />
             </button>
@@ -212,7 +222,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>{t.nav.classroom}</span>
             </span>
             <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-400/20 text-amber-300">
-              SMARTBOARD
+              {language === 'ar' ? 'شاشة ذكية' : language === 'fr' ? 'TABLEAU INTERACTIF' : 'SMARTBOARD'}
             </span>
           </button>
 

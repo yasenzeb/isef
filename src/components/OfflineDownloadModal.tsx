@@ -103,10 +103,10 @@ export const OfflineDownloadModal: React.FC<OfflineDownloadModalProps> = ({ isOp
             </div>
             <div>
               <h3 className="text-lg font-bold text-white font-mono">
-                {language === 'ar' ? 'تحميل وتشغيل المنصة بدون إنترنت (Offline Mode)' : 'Offline Deployment & Device Installation'}
+                {language === 'ar' ? 'تحميل وتشغيل المنصة بدون إنترنت بالكامل' : 'Offline Deployment & Device Installation'}
               </h3>
               <p className="text-xs text-slate-400">
-                {language === 'ar' ? 'تشغيل جميع المحاكيات ونماذج الـ 3D محلياً على جهازك مباشرة' : 'Run all simulations and 3D models locally with zero latency'}
+                {language === 'ar' ? 'تشغيل جميع المحاكيات والنماذج ثلاثية الأبعاد محلياً على جهازك مباشرة وبدون استهلاك بيانات' : 'Run all simulations and 3D models locally with zero latency'}
               </p>
             </div>
           </div>
@@ -124,11 +124,11 @@ export const OfflineDownloadModal: React.FC<OfflineDownloadModalProps> = ({ isOp
           <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.08] space-y-3">
             <div className="flex items-center gap-2 text-white font-semibold text-sm">
               <Monitor className="w-4 h-4 text-cyan-400" />
-              <span>{language === 'ar' ? 'تثبيت كتطبيق (ويندوز & أندرويد)' : 'Install as Desktop / Mobile App'}</span>
+              <span>{language === 'ar' ? 'تثبيت كتطبيق مستقل' : 'Install as Desktop / Mobile App'}</span>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed">
               {language === 'ar'
-                ? 'تثبيت كبرنامج مستقل بدون شريط متصفح وبأداء كامل (PWA Native Execution).'
+                ? 'تثبيت المنصة كبرنامج مستقل يعمل مباشرة من سطح المكتب أو الشاشة الرئيسية بأداء فائق.'
                 : 'Installs as a standalone native-feeling application with desktop icon and no browser chrome.'}
             </p>
             <button
@@ -144,11 +144,11 @@ export const OfflineDownloadModal: React.FC<OfflineDownloadModalProps> = ({ isOp
           <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.08] space-y-3">
             <div className="flex items-center gap-2 text-white font-semibold text-sm">
               <WifiOff className="w-4 h-4 text-emerald-400" />
-              <span>{language === 'ar' ? 'حفظ البيانات محلياً (Cache)' : 'Cache All Models & Sims'}</span>
+              <span>{language === 'ar' ? 'حفظ البيانات محلياً على الجهاز' : 'Cache All Models & Sims'}</span>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed">
               {language === 'ar'
-                ? 'تحميل وحفظ جميع نماذج الـ 3D ومحاكيات الفيزياء في ذاكرة الجهاز لتعمل دون اتصال.'
+                ? 'تحميل وتخزين جميع النماذج ثلاثية الأبعاد ومحركات الفيزياء في ذاكرة الجهاز لتعمل دون اتصال.'
                 : 'Pre-caches all 3D assets and physics engines into local device storage.'}
             </p>
 
@@ -158,7 +158,7 @@ export const OfflineDownloadModal: React.FC<OfflineDownloadModalProps> = ({ isOp
                 className="w-full py-2 px-3 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 transition-colors flex items-center justify-center gap-1.5"
               >
                 <Download className="w-3.5 h-3.5" />
-                <span>{language === 'ar' ? 'بدء التخزين للمعمل أوفلاين' : 'Cache Offline Assets'}</span>
+                <span>{language === 'ar' ? 'بدء الحفظ بدون إنترنت' : 'Cache Offline Assets'}</span>
               </button>
             )}
 
@@ -181,7 +181,7 @@ export const OfflineDownloadModal: React.FC<OfflineDownloadModalProps> = ({ isOp
               <div className="space-y-2">
                 <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center gap-2 text-xs font-semibold">
                   <CheckCircle2 className="w-4 h-4" />
-                  <span>{language === 'ar' ? 'تم الحفظ بنجاح! جاهز للعمل بدون نت.' : 'Ready for complete offline usage!'}</span>
+                  <span>{language === 'ar' ? 'تم الحفظ بنجاح! جاهز للعمل بدون إنترنت.' : 'Ready for complete offline usage!'}</span>
                 </div>
                 <button
                   onClick={async () => {
@@ -199,7 +199,7 @@ export const OfflineDownloadModal: React.FC<OfflineDownloadModalProps> = ({ isOp
                   }}
                   className="w-full py-1.5 px-3 rounded-lg text-[11px] font-mono text-slate-400 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] transition-colors text-center block border border-white/5"
                 >
-                  {language === 'ar' ? '🔄 تحديث وحذف الذاكرة القديمة (Force Refresh)' : '🔄 Purge Cache & Update Now'}
+                  {language === 'ar' ? '🔄 تحديث وتفريغ الذاكرة المؤقتة' : '🔄 Purge Cache & Update Now'}
                 </button>
               </div>
             )}
@@ -211,43 +211,43 @@ export const OfflineDownloadModal: React.FC<OfflineDownloadModalProps> = ({ isOp
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-white font-semibold text-xs sm:text-sm">
               <Usb className="w-4 h-4 text-amber-400" />
-              <span>{language === 'ar' ? 'تشغيل فوري من فلاشة USB بضغطة زر واحدة (Portable Flash Drive)' : 'Instant 1-Click Launch from USB Flash Drive'}</span>
+              <span>{language === 'ar' ? 'تشغيل فوري ومباشر من وحدة التخزين المحمولة' : 'Instant 1-Click Launch from USB Flash Drive'}</span>
             </div>
             <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
-              0% Internet Needed
+              {language === 'ar' ? 'لا يتطلب إنترنت نهائياً' : '0% Internet Needed'}
             </span>
           </div>
           <p className="text-xs text-slate-300 leading-relaxed">
             {language === 'ar'
-              ? 'انسخ مجلد المنصة كاملاً إلى أي فلاشة USB وافتحه في أي جهاز كمبيوتر (في المدرسة، المعرض، أو لجنة التحكيم) بالضغط مرتين على ملف start_offline_windows.bat ليعمل السايت فوراً بدون إنترنت وبدون الحاجة لتثبيت أي برامج!'
+              ? 'يمكن نسخ ملفات المنصة إلى أي وحدة تخزين خارجية وافتتاحها على أي جهاز حاسوب في المدرسة أو القاعات التعليمية فوراً دون الحاجة لتثبيت أي متطلبات إضافية.'
               : 'Copy the platform folder to any USB drive and launch it on any computer by double-clicking "start_offline_windows.bat" — zero internet and zero installations required!'}
           </p>
           <div className="flex items-center gap-2 text-[11px] font-mono text-slate-400 bg-black/40 p-2 rounded-lg border border-white/5">
-            <span className="text-emerald-400 font-bold">1-Click:</span>
+            <span className="text-emerald-400 font-bold">{language === 'ar' ? 'تشغيل بنقرة واحدة:' : '1-Click:'}</span>
             <span>start_offline_windows.bat</span>
           </div>
         </div>
         <div className="p-4 rounded-xl bg-black/60 border border-white/[0.06] space-y-2">
           <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
             <ShieldCheck className="w-4 h-4 text-cyan-400" />
-            <span>{language === 'ar' ? 'المواصفات التقنية للتشغيل المحلي (Technical Offline Spec)' : 'Technical Offline Architecture'}</span>
+            <span>{language === 'ar' ? 'المواصفات التقنية للتشغيل المحلي' : 'Technical Offline Architecture'}</span>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono pt-1">
             <div className="p-2 rounded bg-white/[0.02] border border-white/[0.05]">
-              <span className="text-slate-500 block text-[9px]">STORAGE</span>
-              <span className="text-slate-300 font-bold">Cache API</span>
+              <span className="text-slate-500 block text-[9px]">{language === 'ar' ? 'التخزين' : 'STORAGE'}</span>
+              <span className="text-slate-300 font-bold">{language === 'ar' ? 'محلي فوري' : 'Cache API'}</span>
             </div>
             <div className="p-2 rounded bg-white/[0.02] border border-white/[0.05]">
-              <span className="text-slate-500 block text-[9px]">WORKER</span>
-              <span className="text-emerald-400 font-bold">Service Worker</span>
+              <span className="text-slate-500 block text-[9px]">{language === 'ar' ? 'الخادم المساعد' : 'WORKER'}</span>
+              <span className="text-emerald-400 font-bold">{language === 'ar' ? 'خادم متصفح' : 'Service Worker'}</span>
             </div>
             <div className="p-2 rounded bg-white/[0.02] border border-white/[0.05]">
-              <span className="text-slate-500 block text-[9px]">COMPATIBILITY</span>
-              <span className="text-cyan-400 font-bold">Win / Android / iOS</span>
+              <span className="text-slate-500 block text-[9px]">{language === 'ar' ? 'التوافقية' : 'COMPATIBILITY'}</span>
+              <span className="text-cyan-400 font-bold">{language === 'ar' ? 'جميع الأجهزة والأنظمة' : 'Win / Android / iOS'}</span>
             </div>
             <div className="p-2 rounded bg-white/[0.02] border border-white/[0.05]">
-              <span className="text-slate-500 block text-[9px]">NETWORK</span>
-              <span className="text-amber-400 font-bold">0 kbps (Offline)</span>
+              <span className="text-slate-500 block text-[9px]">{language === 'ar' ? 'الشبكة' : 'NETWORK'}</span>
+              <span className="text-amber-400 font-bold">{language === 'ar' ? 'بدون إنترنت' : '0 kbps (Offline)'}</span>
             </div>
           </div>
         </div>

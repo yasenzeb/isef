@@ -17,8 +17,7 @@ import {
   Zap,
   PlayCircle,
   Download,
-  Sparkles,
-  Bot
+  Sparkles
 } from 'lucide-react';
 
 interface HomeProps {
@@ -126,92 +125,186 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
     return null;
   }, [searchQuery]);
 
+  const isArabic = language === 'ar';
+  const isFrench = language === 'fr';
+  const isGerman = language === 'de';
+
   const disciplines = [
     {
       id: 'anatomy',
-      code: 'SYS-01',
+      code: isArabic ? 'مختبر-01' : isFrench ? 'LAB-01' : isGerman ? 'LABOR-01' : 'SYS-01',
       title: t.features.anatomyTitle,
       desc: t.features.anatomyDesc,
       icon: Activity,
-      spec: '2,821 Anatomical Structures · 8 Layers · Draco 3D',
-      status: 'VERIFIED',
+      spec: isArabic 
+        ? '٢,٨٢١ بنية تشريحية · ٨ طبقات سريرية · مجسمات ثلاثية الأبعاد' 
+        : isFrench 
+          ? '2 821 structures anatomiques · 8 couches cliniques · 3D Draco'
+          : isGerman 
+            ? '2.821 anatomische Strukturen · 8 klinische Schichten · 3D Draco'
+            : '2,821 Anatomical Structures · 8 Layers · Draco 3D',
+      status: isArabic ? 'موثق علمياً' : isFrench ? 'VÉRIFIÉ' : isGerman ? 'GEPRÜFT' : 'VERIFIED',
     },
     {
       id: 'physics',
-      code: 'SYS-02',
+      code: isArabic ? 'مختبر-02' : isFrench ? 'LAB-02' : isGerman ? 'LABOR-02' : 'SYS-02',
       title: t.features.physicsTitle,
       desc: t.features.physicsDesc,
       icon: Atom,
-      spec: 'MNA Circuit Solver · Projectiles · Snell Optics · PhET Wave Engine',
-      status: 'ONLINE',
+      spec: isArabic 
+        ? 'محلل دوائر MNA · المقذوفات · انكسار سنيل · محرك الموجات' 
+        : isFrench 
+          ? 'Solveur MNA · Projectiles · Optique de Snell · Moteur d’ondes'
+          : isGerman 
+            ? 'MNA-Schaltkreislöser · Projektile · Snellius-Optik · Wellenmotor'
+            : 'MNA Circuit Solver · Projectiles · Snell Optics · Wave Engine',
+      status: isArabic ? 'متصل ونشط' : isFrench ? 'EN LIGNE' : isGerman ? 'ONLINE' : 'ONLINE',
     },
     {
       id: 'chemistry',
-      code: 'SYS-03',
+      code: isArabic ? 'مختبر-03' : isFrench ? 'LAB-03' : isGerman ? 'LABOR-03' : 'SYS-03',
       title: t.features.chemistryTitle,
       desc: t.features.chemistryDesc,
       icon: Zap,
-      spec: '118 IUPAC Elements · 3D Rotating Bohr Orbitals · Polyatomic Ions',
-      status: 'CALIBRATED',
+      spec: isArabic 
+        ? '١١٨ عنصراً كيميائياً · مدارات بوهر ثلاثية الأبعاد · مجموعات ذرية' 
+        : isFrench 
+          ? '118 éléments IUPAC · Orbitales de Bohr 3D · Ions polyatomiques'
+          : isGerman 
+            ? '118 IUPAC-Elemente · 3D-Bohr-Orbitale · Polyatomare Ionen'
+            : '118 IUPAC Elements · 3D Rotating Bohr Orbitals · Polyatomic Ions',
+      status: isArabic ? 'مضبوط ومعاير' : isFrench ? 'ÉTALONNÉ' : isGerman ? 'KALIBRIERT' : 'CALIBRATED',
     },
     {
       id: 'biology',
-      code: 'SYS-04',
+      code: isArabic ? 'مختبر-04' : isFrench ? 'LAB-04' : isGerman ? 'LABOR-04' : 'SYS-04',
       title: t.features.biologyTitle,
       desc: t.features.biologyDesc,
       icon: Dna,
-      spec: '3D Plant & Animal Cells · DNA Helix · Euglena · Amoeba · Paramecium',
-      status: 'ACTIVE',
+      spec: isArabic 
+        ? 'خلايا نباتية وحيوانية · شريط الحمض النووي · كائنات دقيقة' 
+        : isFrench 
+          ? 'Cellules végétales et animales · Hélice d’ADN · Micro-organismes'
+          : isGerman 
+            ? 'Pflanzen- & Tierzellen · DNA-Doppelhelix · Mikroorganismen'
+            : '3D Plant & Animal Cells · DNA Helix · Microorganisms',
+      status: isArabic ? 'نشط وتفاعلي' : isFrench ? 'ACTIF' : isGerman ? 'AKTIV' : 'ACTIVE',
     },
     {
       id: 'geology',
-      code: 'SYS-05',
+      code: isArabic ? 'مختبر-05' : isFrench ? 'LAB-05' : isGerman ? 'LABOR-05' : 'SYS-05',
       title: t.features.geologyTitle,
       desc: t.features.geologyDesc,
       icon: Globe2,
-      spec: 'Real Building Collapse Physics · 3D Tsunami Surge · Earth Cutaway',
-      status: 'MONITORING',
+      spec: isArabic 
+        ? 'فيزياء الانهيار الزلزالي للمباني · اندفاع تسونامي · طبقات الأرض' 
+        : isFrench 
+          ? 'Physique de l’effondrement sismique · Tsunami 3D · Coupe de la Terre'
+          : isGerman 
+            ? 'Seismische Einsturzphysik · 3D-Tsunami · Erdaufbau'
+            : 'Real Building Collapse Physics · 3D Tsunami Surge · Earth Cutaway',
+      status: isArabic ? 'قيد الرصد' : isFrench ? 'SURVEILLANCE' : isGerman ? 'ÜBERWACHUNG' : 'MONITORING',
     },
     {
       id: 'astronomy',
-      code: 'SYS-06',
+      code: isArabic ? 'مختبر-06' : isFrench ? 'LAB-06' : isGerman ? 'LABOR-06' : 'SYS-06',
       title: t.features.astronomyTitle,
       desc: t.features.astronomyDesc,
       icon: Orbit,
-      spec: '3D Solar System · Planetary Orbits · Annual Moon Phases · Keplerian Math',
-      status: 'COMPUTED',
+      spec: isArabic 
+        ? 'نظام شمسي ثلاثي الأبعاد · مدارات كوكبية · أطوار القمر · قوانين كبلر' 
+        : isFrench 
+          ? 'Système solaire 3D · Orbites planétaires · Phases lunaires · Kepler'
+          : isGerman 
+            ? '3D-Sonnensystem · Planetenbahnen · Mondphasen · Kepler-Gesetze'
+            : '3D Solar System · Planetary Orbits · Annual Moon Phases · Keplerian Math',
+      status: isArabic ? 'محسوب فلكياً' : isFrench ? 'CALCULÉ' : isGerman ? 'BERECHNET' : 'COMPUTED',
     },
     {
       id: 'classroom',
-      code: 'SYS-07',
+      code: isArabic ? 'مختبر-07' : isFrench ? 'LAB-07' : isGerman ? 'LABOR-07' : 'SYS-07',
       title: t.features.classroomTitle,
       desc: t.features.classroomDesc,
       icon: Presentation,
-      spec: 'Teacher Smartboard Projector Mode · High Contrast HUD · Step-by-Step',
-      status: 'STANDBY',
+      spec: isArabic 
+        ? 'وضع الشاشات الذكية وأجهزة العرض · تباين عالي · شروحات منظمة' 
+        : isFrench 
+          ? 'Mode projecteur pour tableau interactif · HUD contrasté · Étape par étape'
+          : isGerman 
+            ? 'Beamer-Modus für Smartboards · Hoher Kontrast · Schritt-für-Schritt'
+            : 'Teacher Smartboard Projector Mode · High Contrast HUD · Step-by-Step',
+      status: isArabic ? 'جاهز للعرض' : isFrench ? 'PRÊT' : isGerman ? 'BEREIT' : 'STANDBY',
     },
   ];
 
   const systemPillars = [
     {
       icon: Cpu,
-      title: language === 'ar' ? 'محركات حسابية تفاعلية دقيقة' : 'Real-Time Physics & Nodal Engines',
-      subtitle: language === 'ar' ? 'معادلات MNA لحظية ومحاكاة المقذوفات والموجات بمعدل 60 إطار/ث' : '60fps simulation — MNA circuit solving, Snell optics, and wave harmonics.',
+      title: isArabic 
+        ? 'محركات فيزيائية وحسابية فورية' 
+        : isFrench 
+          ? 'Moteurs physiques et de calcul en temps réel' 
+          : isGerman 
+            ? 'Echtzeit-Physik- & Berechnungsmotoren' 
+            : 'Real-Time Physics & Nodal Engines',
+      subtitle: isArabic 
+        ? 'معادلات عقدية فورية ومحاكاة المقذوفات والموجات بمعدل ستين إطاراً في الثانية.' 
+        : isFrench 
+          ? 'Simulation à 60 ips — analyse nodale de circuits, optique de Snell et harmoniques d’ondes.' 
+          : isGerman 
+            ? '60-fps-Simulation — Schaltungsanalyse, Snellius-Optik und Wellenharmonik.' 
+            : '60fps simulation — MNA circuit solving, Snell optics, and wave harmonics.',
     },
     {
       icon: Layers,
-      title: language === 'ar' ? 'أطلس ثلاثي الأبعاد موثق علمياً' : 'Open Scientific Data Fidelity',
-      subtitle: language === 'ar' ? 'أصول تشريحية Z-Anatomy وBodyParts3D وجدول العناصر الكيميائية IUPAC' : 'Draco compressed 3D meshes, BodyParts3D 4.3, and certified IUPAC data.',
+      title: isArabic 
+        ? 'أطالس ثلاثية الأبعاد موثقة علمياً' 
+        : isFrench 
+          ? 'Précision des données scientifiques ouvertes' 
+          : isGerman 
+            ? 'Wissenschaftlich zertifizierte 3D-Daten' 
+            : 'Open Scientific Data Fidelity',
+      subtitle: isArabic 
+        ? 'مجسمات تشريحية ثلاثية الأبعاد بدقة معتمدة وجدول العناصر الكيميائية الدولي المعتمد.' 
+        : isFrench 
+          ? 'Modèles 3D compressés Draco, conformité anatomique et données certifiées IUPAC.' 
+          : isGerman 
+            ? 'Draco-komprimierte 3D-Netze, anatomische Präzision und IUPAC-zertifizierte Daten.' 
+            : 'Draco compressed 3D meshes, BodyParts3D 4.3, and certified IUPAC data.',
     },
     {
       icon: Database,
-      title: language === 'ar' ? 'تزامن الفصول ونظام التعريب' : 'Bilingual RTL & Classroom HUD',
-      subtitle: language === 'ar' ? 'دعم كامل للفصحى مع توجيه RTL واجهات العرض التقديمي للمعلمين' : 'Native Arabic typography with dual-language RTL alignment across all modules.',
+      title: isArabic 
+        ? 'تعدد اللغات الكامل ووضع المعلم' 
+        : isFrench 
+          ? 'Support multilingue et affichage pour enseignants' 
+          : isGerman 
+            ? 'Vollständige Mehrsprachigkeit & Lehrer-HUD' 
+            : 'Bilingual RTL & Classroom HUD',
+      subtitle: isArabic 
+        ? 'واجهات متكاملة تدعم التوجيه من اليمين إلى اليسار وعرض الشاشات الذكية التفاعلية.' 
+        : isFrench 
+          ? 'Alignement RTL/LTR complet et interface adaptée aux projecteurs de classe.' 
+          : isGerman 
+            ? 'Komplette RTL/LTR-Unterstützung und HUD-Präsentationsmodus für den Unterricht.' 
+            : 'Native typography with dual-language RTL alignment across all modules.',
     },
     {
       icon: Terminal,
-      title: language === 'ar' ? 'محاكاة بيئة المعامل الافتراضية' : 'Zero-Downtime Virtual Lab Access',
-      subtitle: language === 'ar' ? 'تجارب آمنة بلا تكلفة استهلاكية أو مخاطر كيميائية وميكانيكية' : 'Accessible interactive simulations replacing risky or expensive physical equipment.',
+      title: isArabic 
+        ? 'معامل افتراضية آمنة وبلا تكلفة' 
+        : isFrench 
+          ? 'Accès sécurisé aux laboratoires virtuels' 
+          : isGerman 
+            ? 'Virtuelle Labore ohne Ausfallzeiten' 
+            : 'Zero-Downtime Virtual Lab Access',
+      subtitle: isArabic 
+        ? 'تجارب علمية تفاعلية تحل محل الأجهزة المعملية المكلفة وتلغي مخاطر التجارب الواقعية.' 
+        : isFrench 
+          ? 'Simulations interactives éliminant les risques de sécurité et le coût des équipements physiques.' 
+          : isGerman 
+            ? 'Interaktive Simulationen ersetzen gefährliche Chemikalien und teure Laborgeräte.' 
+            : 'Accessible interactive simulations replacing risky or expensive physical equipment.',
     },
   ];
 
@@ -233,25 +326,41 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
           <div>
             <div className="flex items-center gap-2">
               <span className="font-mono text-xs font-bold text-white tracking-wide">
-                {language === 'ar' ? 'النظام العلمي متصل وحسابي بالكامل' : 'SciNexa Core Simulation Matrix Nominal'}
+                {isArabic 
+                  ? 'منظومة SciNexa العلمية تعمل بكفاءة تامة' 
+                  : isFrench 
+                    ? 'Matrice de Simulation SciNexa Opérationnelle' 
+                    : isGerman 
+                      ? 'SciNexa Simulationsmatrix Vollständig Betriebsbereit' 
+                      : 'SciNexa Core Simulation Matrix Nominal'}
               </span>
-              <span className="tech-badge tech-badge-emerald">HEALTHY</span>
+              <span className="tech-badge tech-badge-emerald">
+                {isArabic ? 'جاهز للعمل' : isFrench ? 'OPÉRATIONNEL' : isGerman ? 'BETRIEBSBEREIT' : 'HEALTHY'}
+              </span>
             </div>
             <p className="text-[11px] text-slate-400 font-mono mt-0.5">
-              {language === 'ar' 
-                ? 'جميع محركات MNA، التشريح 3D، كيمياء بوهر، وفيزياء انهيار المنشآت تعمل بدقة كاملة.' 
-                : 'All physics solvers, 3D anatomical meshes, chemistry Bohr models, and collapse physics operational.'}
+              {isArabic 
+                ? 'جميع محركات المحاكاة الفيزيائية، الأطالس ثلاثية الأبعاد، نماذج الذرة، ومحاكاة الزلازل تعمل بدقة حسابية عالية.' 
+                : isFrench 
+                  ? 'Tous les solveurs physiques, maillages 3D, modèles de Bohr et simulations sismiques fonctionnent.' 
+                  : isGerman 
+                    ? 'Alle Physik-Solver, anatomischen 3D-Modelle, Bohr-Atome und Erdbebensimulationen einsatzbereit.' 
+                    : 'All physics solvers, 3D anatomical meshes, chemistry Bohr models, and collapse physics operational.'}
             </p>
           </div>
         </div>
 
         <div className="hidden sm:flex items-center gap-4">
-          <span className="font-mono text-xs text-slate-400">60 FPS · LATENCY &lt; 2ms</span>
+          <span className="font-mono text-xs text-slate-400">
+            {isArabic 
+              ? '٦٠ إطار/ثانية · استجابة فائقة السرعة' 
+              : '60 FPS · LATENCY < 2ms'}
+          </span>
           <button 
             onClick={() => onNavigate('physics')} 
             className="text-xs font-mono font-semibold px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-white/30 text-white transition-colors"
           >
-            {language === 'ar' ? 'فحص المحركات ←' : 'Inspect Solvers →'}
+            {isArabic ? 'فحص المحركات العلمية ←' : isFrench ? 'Inspecter les solveurs →' : isGerman ? 'Solver prüfen →' : 'Inspect Solvers →'}
           </button>
         </div>
       </div>
@@ -263,13 +372,32 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
         <div className="lg:col-span-7 space-y-6">
           <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-white/[0.04] border border-white/[0.1] text-[11px] font-mono text-slate-400">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="tracking-widest uppercase">{t.hero.badge} · COMPREHENSIVE STEM</span>
+            <span className="tracking-widest uppercase">
+              {isArabic 
+                ? `${t.hero.badge} · منظومة المحاكاة المتكاملة` 
+                : isFrench 
+                  ? `${t.hero.badge} · SYSTÈME SCIENTIFIQUE INTÉGRÉ` 
+                  : isGerman 
+                    ? `${t.hero.badge} · INTEGRIERTE WISSENSCHAFTSPLATTFORM` 
+                    : `${t.hero.badge} · COMPREHENSIVE STEM`}
+            </span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white leading-[1.08] font-sans">
-            Interactive Science <br />
-            <span className="text-metallic-silver">Platform System</span>
-          </h1>
+          {/* PROJECT NAME IN GIANT ENGLISH ONLY */}
+          <div className="space-y-3">
+            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight text-white leading-none font-mono">
+              Sci<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-200 to-indigo-300">Nexa</span>
+            </h1>
+            <p className="text-xl sm:text-2xl font-bold text-slate-200 tracking-tight leading-snug">
+              {isArabic 
+                ? 'منظومة المحاكاة العلمية والمختبرات الافتراضية التفاعلية' 
+                : isFrench 
+                  ? 'Plateforme de Simulation Scientifique et Laboratoires Virtuels' 
+                  : isGerman 
+                    ? 'Interaktive wissenschaftliche Simulationsplattform & Virtuelle Labore' 
+                    : 'Interactive Science Simulation Matrix & Virtual Laboratories'}
+            </p>
+          </div>
 
           <p className="text-slate-400 text-sm sm:text-base leading-relaxed max-w-xl font-normal">
             {t.hero.subtitle}
@@ -282,7 +410,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
               className="btn-silver-primary"
             >
               <PlayCircle className="w-4 h-4 text-black" />
-              <span>{language === 'ar' ? 'تشغيل منصة المحاكاة' : 'Launch Simulation Engine'}</span>
+              <span>{isArabic ? 'تشغيل منصة المحاكاة' : isFrench ? 'Démarrer la simulation' : isGerman ? 'Simulation starten' : 'Launch Simulation Engine'}</span>
             </button>
 
             <button
@@ -290,7 +418,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
               className="btn-silver-secondary"
             >
               <Activity className="w-4 h-4 text-slate-300" />
-              <span>{language === 'ar' ? 'استكشاف الأطلس الطبي' : 'Inspect Anatomy Atlas'}</span>
+              <span>{isArabic ? 'استكشاف الأطلس الطبي' : isFrench ? 'Explorer l’anatomie 3D' : isGerman ? 'Anatomie-Atlas öffnen' : 'Inspect Anatomy Atlas'}</span>
             </button>
 
             {onOpenOfflineModal && (
@@ -299,37 +427,37 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
                 className="btn-silver-secondary border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60"
               >
                 <Download className="w-4 h-4 text-emerald-400" />
-                <span>{language === 'ar' ? 'تحميل الموقع أوفلاين' : 'Offline Download'}</span>
+                <span>{isArabic ? 'تحميل المنصة للعمل بدون إنترنت' : isFrench ? 'Télécharger hors-ligne' : isGerman ? 'Offline herunterladen' : 'Offline Download'}</span>
               </button>
             )}
           </div>
 
-          {/* Telemetry Metrics (Verified Accurate Numbers) */}
+          {/* Telemetry Metrics */}
           <div className="grid grid-cols-3 gap-4 pt-6 border-t border-white/[0.08] max-w-lg">
             <div>
               <div className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
-                {language === 'ar' ? 'البنى التشريحية' : 'ANATOMY ENTITIES'}
+                {isArabic ? 'البنى التشريحية' : isFrench ? 'STRUCTURES 3D' : isGerman ? 'STRUKTUREN' : 'ANATOMY ENTITIES'}
               </div>
               <div className="text-2xl sm:text-3xl font-extrabold text-white font-mono mt-0.5">
-                2,821+
+                {isArabic ? '٢,٨٢١+' : '2,821+'}
               </div>
             </div>
 
             <div>
               <div className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
-                {language === 'ar' ? 'عناصر الجدول الدوري' : 'IUPAC ELEMENTS'}
+                {isArabic ? 'العناصر الكيميائية' : isFrench ? 'ÉLÉMENTS IUPAC' : isGerman ? 'ELEMENTE' : 'IUPAC ELEMENTS'}
               </div>
               <div className="text-2xl sm:text-3xl font-extrabold text-white font-mono mt-0.5">
-                118
+                {isArabic ? '١١٨' : '118'}
               </div>
             </div>
 
             <div>
               <div className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
-                {language === 'ar' ? 'معدل التحديث' : 'SOLVER TICK'}
+                {isArabic ? 'معدل التحديث' : isFrench ? 'FRÉQUENCE IPS' : isGerman ? 'BILDWIEDERHOLUNG' : 'SOLVER TICK'}
               </div>
               <div className="text-2xl sm:text-3xl font-extrabold text-white font-mono mt-0.5">
-                60 FPS
+                {isArabic ? '٦٠ إطار/ث' : '60 FPS'}
               </div>
             </div>
           </div>
@@ -340,7 +468,13 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
           <div className="flex items-center gap-2 mb-2">
             <span className="w-4 h-[1px] bg-white/20" />
             <span className="text-[11px] font-mono text-slate-400 uppercase tracking-widest">
-              SYSTEM PILLARS & ARCHITECTURE
+              {isArabic 
+                ? 'الركائز والمعمارية الهندسية للمنظومة' 
+                : isFrench 
+                  ? 'PILIER DU SYSTÈME & ARCHITECTURE' 
+                  : isGerman 
+                    ? 'SYSTEMPFEILER & ARCHITEKTUR' 
+                    : 'SYSTEM PILLARS & ARCHITECTURE'}
             </span>
           </div>
 
@@ -366,15 +500,33 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
           {/* Interactive Live Banner Box */}
           <div className="relative overflow-hidden rounded-xl border border-white/15 bg-gradient-to-r from-[#070b14] to-[#0d1627] p-4 text-white flex items-center justify-between">
             <div className="space-y-1">
-              <span className="tech-badge tech-badge-emerald text-[9px]">LIVE TELEMETRY ACTIVE</span>
-              <div className="text-xs font-bold font-mono">3D Building Collapse & Wave Physics</div>
-              <p className="text-[10px] text-slate-400">Richter failure thresholds & hydrodynamic tsunami drag</p>
+              <span className="tech-badge tech-badge-emerald text-[9px]">
+                {isArabic ? 'القياسات الفيزيائية اللحظية نشطة' : isFrench ? 'TÉLÉMÉTRIE EN DIRECT' : isGerman ? 'LIVE-TELEMETRIE AKTIV' : 'LIVE TELEMETRY ACTIVE'}
+              </span>
+              <div className="text-xs font-bold font-mono">
+                {isArabic 
+                  ? 'محاكاة انهيار المباني وفيزياء الأمواج' 
+                  : isFrench 
+                    ? 'Effondrement 3D & Physique des Vagues' 
+                    : isGerman 
+                      ? '3D-Gebäudeeinsturz & Wellenphysik' 
+                      : '3D Building Collapse & Wave Physics'}
+              </div>
+              <p className="text-[10px] text-slate-400">
+                {isArabic 
+                  ? 'عتبات الانهيار بمقياس ريختر والسحب الهيدروديناميكي لأمواج التسونامي' 
+                  : isFrench 
+                    ? 'Seuils sismiques de Richter & poussée hydrodynamique de tsunami' 
+                    : isGerman 
+                      ? 'Richter-Einsturzgrenzen & hydrodynamischer Tsunami-Schub' 
+                      : 'Richter failure thresholds & hydrodynamic tsunami drag'}
+              </p>
             </div>
             <button
               onClick={() => onNavigate('geology')}
-              className="px-3 py-1.5 rounded-lg bg-white text-black text-xs font-bold font-mono hover:bg-slate-200"
+              className="px-3 py-1.5 rounded-lg bg-white text-black text-xs font-bold font-mono hover:bg-slate-200 transition-colors"
             >
-              TEST
+              {isArabic ? 'تجربة المحاكاة' : isFrench ? 'TESTER' : isGerman ? 'TESTEN' : 'RUN TEST'}
             </button>
           </div>
         </div>
@@ -387,7 +539,13 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
               <span className="text-[11px] font-mono text-cyan-400 uppercase tracking-wider font-bold">
-                {language === 'ar' ? 'المختبرات العلمية والمعامل التفاعلية' : 'STEM VIRTUAL LABORATORIES'}
+                {isArabic 
+                  ? 'المختبرات العلمية والمعامل التفاعلية' 
+                  : isFrench 
+                    ? 'LABORATOIRES VIRTUELS STEM' 
+                    : isGerman 
+                      ? 'VIRTUELLE STEM-LABORE' 
+                      : 'STEM VIRTUAL LABORATORIES'}
               </span>
             </div>
             <h2 className="text-2xl font-bold text-white tracking-tight mt-1">
@@ -407,7 +565,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
                   onNavigate(detectedAIIntent.tab);
                 }
               }}
-              placeholder={language === 'ar' ? 'ابحث في المعامل (مثل: قلب، أميبا، تسونامي، كواكب، عناصر)...' : 'Search labs (e.g. heart, amoeba, tsunami, moon, atom)...'}
+              placeholder={isArabic ? 'ابحث في المعامل (مثل: قلب، أميبا، تسونامي، كواكب، عناصر)...' : 'Search labs (e.g. heart, amoeba, tsunami, moon, atom)...'}
               className="w-full bg-[#08090c] border border-white/10 rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 font-mono transition-colors"
             />
           </div>
@@ -425,17 +583,17 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
               </div>
               <div>
                 <span className="text-[11px] font-mono text-cyan-400 block font-bold">
-                  {language === 'ar' ? '🔍 اقتراح الانتقال المباشر للمختبر:' : '🔍 Direct Lab Navigation:'}
+                  {isArabic ? '🔍 اقتراح الانتقال المباشر للمختبر:' : '🔍 Direct Lab Navigation:'}
                 </span>
                 <span className="text-xs font-bold text-white">
-                  {language === 'ar' 
+                  {isArabic 
                     ? `الانتقال إلى ${detectedAIIntent.labNameAr} بناءً على "${detectedAIIntent.matchedTerm}"`
                     : `Query "${detectedAIIntent.matchedTerm}" → Navigate to ${detectedAIIntent.labNameEn}`}
                 </span>
               </div>
             </div>
             <div className="flex items-center gap-1 text-xs font-bold font-mono text-cyan-300 bg-cyan-500/10 px-3 py-1.5 rounded-lg border border-cyan-500/30">
-              <span>{language === 'ar' ? 'انتقال فوري' : 'Launch'}</span>
+              <span>{isArabic ? 'انتقال فوري' : 'Launch'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </div>
           </div>
@@ -445,15 +603,15 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
         <div className="flex flex-wrap items-center gap-2 pt-1 text-xs font-mono">
           <span className="text-slate-500 text-[11px] flex items-center gap-1">
             <Sparkles className="w-3 h-3 text-cyan-400" />
-            <span>{language === 'ar' ? 'استكشاف سريع:' : 'Quick Jump:'}</span>
+            <span>{isArabic ? 'استكشاف سريع:' : isFrench ? 'Accès rapide :' : isGerman ? 'Schnellzugriff:' : 'Quick Jump:'}</span>
           </span>
           {[
-            { label: language === 'ar' ? '🫀 تشريح القلب والرئتين' : '🫀 Heart & Lungs', tab: 'anatomy' },
-            { label: language === 'ar' ? '⚡ الدوائر والموجات' : '⚡ Circuits & Waves', tab: 'physics' },
-            { label: language === 'ar' ? '🧪 الذرة والجدول الدوري' : '🧪 3D Atom & Elements', tab: 'chemistry' },
-            { label: language === 'ar' ? '🔬 الأميبا واليوجلينا' : '🔬 Amoeba & Euglena', tab: 'biology' },
-            { label: language === 'ar' ? '🌋 انهيار المباني والتسونامي' : '🌋 Earthquake Collapse', tab: 'geology' },
-            { label: language === 'ar' ? '🪐 النظام الشمسي وأطوار القمر' : '🪐 Solar System & Moon', tab: 'astronomy' },
+            { label: isArabic ? '🫀 تشريح القلب والرئتين' : '🫀 Heart & Lungs', tab: 'anatomy' },
+            { label: isArabic ? '⚡ الدوائر والموجات' : '⚡ Circuits & Waves', tab: 'physics' },
+            { label: isArabic ? '🧪 الذرة والجدول الدوري' : '🧪 Atom & Elements', tab: 'chemistry' },
+            { label: isArabic ? '🔬 الأحياء والكائنات الدقيقة' : '🔬 Cells & Microorganisms', tab: 'biology' },
+            { label: isArabic ? '🌋 انهيار المباني والتسونامي' : '🌋 Earthquake Collapse', tab: 'geology' },
+            { label: isArabic ? '🪐 النظام الشمسي وأطوار القمر' : '🪐 Solar System & Moon', tab: 'astronomy' },
           ].map((chip, idx) => (
             <button
               key={idx}
@@ -497,7 +655,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
                       {item.title}
                     </h3>
                     <div className="text-[10px] font-mono text-slate-500">
-                      VIRTUAL LAB SUITE
+                      {isArabic ? 'مختبر علمي متكامل' : isFrench ? 'SUITE VIRTUELLE' : isGerman ? 'VIRTUELLES LABOR' : 'VIRTUAL LAB SUITE'}
                     </div>
                   </div>
                 </div>

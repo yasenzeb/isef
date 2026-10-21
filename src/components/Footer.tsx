@@ -3,7 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { Atom, Shield, FileText } from 'lucide-react';
 
 export const Footer: React.FC = () => {
-  const { t, isRTL } = useLanguage();
+  const { t, isRTL, language } = useLanguage();
 
   return (
     <footer className="border-t border-white/[0.08] bg-[#000000] text-slate-400 py-10">
@@ -15,8 +15,8 @@ export const Footer: React.FC = () => {
               <Atom className="w-4 h-4 text-white" />
             </div>
             <div className={isRTL ? "mr-3 text-right" : ""}>
-              <span className="text-sm font-mono font-bold text-white block uppercase tracking-wider">{t.appName}</span>
-              <span className="text-xs text-slate-500 font-mono block">{t.appTagline}</span>
+              <span className="text-base font-mono font-black text-white block uppercase tracking-wider">SciNexa</span>
+              <span className="text-xs text-slate-400 font-mono block">{t.appTagline}</span>
             </div>
           </div>
 
@@ -30,7 +30,7 @@ export const Footer: React.FC = () => {
           <div>
             <h4 className="font-mono font-semibold text-slate-300 mb-1 flex items-center space-x-1.5">
               <FileText className="w-3.5 h-3.5 text-white" />
-              <span>Scientific Data & Assets Attribution</span>
+              <span>{language === 'ar' ? 'إسناد البيانات العلمية والأصول' : 'Scientific Data & Assets Attribution'}</span>
             </h4>
             <p className="leading-relaxed text-slate-400">
               {t.footer.credits}
@@ -43,7 +43,7 @@ export const Footer: React.FC = () => {
           <div>
             <h4 className="font-mono font-semibold text-slate-300 mb-1 flex items-center space-x-1.5">
               <Shield className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Licensing & Pedagogical Scope</span>
+              <span>{language === 'ar' ? 'التراخيص ونطاق الاستخدام الأكاديمي' : 'Licensing & Pedagogical Scope'}</span>
             </h4>
             <p className="leading-relaxed text-slate-400">
               {t.footer.license} {t.footer.disclaimer}
@@ -51,8 +51,8 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="text-center font-mono text-[11px] text-slate-600 pt-3 border-t border-white/[0.04]">
-          SciNexa &bull; Interactive Science Learning Platform &amp; Virtual Laboratory Matrix v3.0
+        <div className="text-center font-mono text-[11px] text-slate-500 pt-3 border-t border-white/[0.04]">
+          SciNexa &bull; {language === 'ar' ? 'منصة العلوم التفاعلية والمختبرات الافتراضية الذكية' : 'Interactive Science Learning Platform & Virtual Laboratory Matrix'}
         </div>
 
       </div>
