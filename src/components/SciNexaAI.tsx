@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
+import { EGYPT_GOVERNORATES } from '../data/egyptLocationData';
 import {
   Sparkles,
   Volume2,
@@ -266,6 +268,7 @@ function renderInlineFormatting(str: string): string {
 
 export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
   const { language, isRTL } = useLanguage();
+  const { user } = useAuth();
   const ar = language === 'ar';
 
   const [isOpen, setIsOpen] = useState(false);
@@ -664,6 +667,25 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
 
     // 1. Vercel Serverless Function /api/chat (Reads GEMINI_API_KEY from Vercel)
     try {
+      const savedGovId = localStorage.getItem('scinexa_gov_id') || '';
+      const savedAdminId = localStorage.getItem('scinexa_admin_id') || '';
+      const activeGov = EGYPT_GOVERNORATES.find(g => g.id === savedGovId);
+      const activeAdmin = activeGov?.administrations.find(a => a.id === savedAdminId);
+
+      const govName = activeGov?.nameAr || user?.governorateAr || '';
+      const adminName = activeAdmin?.nameAr || user?.administrationAr || '';
+
+      const userProfile = user ? {
+        name: user.displayName,
+        role: user.role,
+        governorate: govName,
+        administration: adminName,
+        grade: user.grade,
+        stage: user.stage,
+        code: user.studentCode,
+        isGuest: user.isGuest,
+      } : null;
+
       const serverRes = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -671,7 +693,8 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
           messages: messages.concat([{ id: 'temp', sender: 'user', text: userPrompt, timestamp: Date.now() }]),
           currentLab: currentTab,
           labName: labContext.ar,
-          language: language
+          language: language,
+          userProfile
         }),
         signal: AbortSignal.timeout(15000)
       });

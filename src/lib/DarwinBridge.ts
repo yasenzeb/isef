@@ -33,6 +33,8 @@ export interface DarwinBridgeOptions {
   onTranscript?: (msg: TranscriptMessage) => void;
   /** Current lab tab — sent as context on connect & on change */
   currentTab?: string;
+  /** Student profile telemetry */
+  userProfile?: any;
 }
 
 export interface DarwinCommand {
@@ -71,12 +73,18 @@ interface PlatformStatePayload {
   timestamp: number;
 }
 
-type OutboundPayload = LabContextPayload | PlatformStatePayload;
+interface StudentProfilePayload {
+  type: 'student_profile';
+  profile: any;
+  timestamp: number;
+}
+
+type OutboundPayload = LabContextPayload | PlatformStatePayload | StudentProfilePayload;
 
 // ─── DarwinBridge Hook ────────────────────────────────────────────
 
 export function useDarwinBridge(options: DarwinBridgeOptions = {}) {
-  const { onNavigate, onCommand, onTranscript, currentTab } = options;
+  const { onNavigate, onCommand, onTranscript, currentTab, userProfile } = options;
 
   const roomRef = useRef<Room | null>(null);
   const audioTrackRef = useRef<LocalAudioTrack | null>(null);
@@ -280,6 +288,18 @@ export function useDarwinBridge(options: DarwinBridgeOptions = {}) {
       });
     }
   }, [currentTab, publishContext]);
+
+  // ── Send student profile to Darwin when connected or profile updates ─
+  useEffect(() => {
+    if (!userProfile) return;
+    if (roomRef.current?.state === ConnectionState.Connected) {
+      publishContext({
+        type: 'student_profile',
+        profile: userProfile,
+        timestamp: Date.now(),
+      });
+    }
+  }, [userProfile, publishContext, status]);
 
   // ── Cleanup on unmount ────────────────────────────────────────────
   useEffect(() => {

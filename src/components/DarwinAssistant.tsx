@@ -9,8 +9,10 @@
  *   ✓ الرد الصوتي الفوري بصوت داروين
  * ─────────────────────────────────────────────────────────────────
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
+import { EGYPT_GOVERNORATES } from '../data/egyptLocationData';
 import {
   Sparkles, Send, X, Minimize2, Maximize2, BrainCircuit,
   Phone, Mic, MicOff, Bot, Zap, Dna, FlaskConical,
@@ -64,6 +66,29 @@ export const DarwinAssistant: React.FC<DarwinAssistantProps> = ({
   const [inputText, setInputText]   = useState('');
   const [activeMode, setActiveMode] = useState<'call' | 'chat'>('call');
 
+  const { user } = useAuth();
+
+  const userProfile = useMemo(() => {
+    const savedGovId = localStorage.getItem('scinexa_gov_id') || '';
+    const savedAdminId = localStorage.getItem('scinexa_admin_id') || '';
+    const activeGov = EGYPT_GOVERNORATES.find(g => g.id === savedGovId);
+    const activeAdmin = activeGov?.administrations.find(a => a.id === savedAdminId);
+
+    const govName = activeGov?.nameAr || user?.governorateAr || '';
+    const adminName = activeAdmin?.nameAr || user?.administrationAr || '';
+
+    return user ? {
+      name: user.displayName,
+      role: user.role,
+      governorate: govName,
+      administration: adminName,
+      grade: user.grade,
+      stage: user.stage,
+      code: user.studentCode,
+      isGuest: user.isGuest,
+    } : null;
+  }, [user]);
+
   // ── Darwin Bridge (LiveKit) ───────────────────────────────────────
   const {
     status,
@@ -75,6 +100,7 @@ export const DarwinAssistant: React.FC<DarwinAssistantProps> = ({
     sendTextMessage,
   } = useDarwinBridge({
     currentTab,
+    userProfile,
     onNavigate: (tab) => {
       setCurrentTab(tab);
     },

@@ -133,13 +133,36 @@ export default async function handler(req: any, res?: any) {
       body = await req.json();
     }
 
-    const { messages, currentLab, labName } = body || {};
+    const { messages, currentLab, labName, userProfile } = body || {};
     const lastUserQuery = messages && messages.length > 0 ? messages[messages.length - 1].text : '';
 
     const geminiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
     const openAIKey = process.env.OPENAI_API_KEY || process.env.VITE_OPENAI_API_KEY;
 
-    const dynamicLabContext = `المعمل النشط الآن أمام المستخدم: "${labName || currentLab}".`;
+    let dynamicStudentPrompt = '';
+    if (userProfile && (userProfile.name || userProfile.displayName)) {
+      const name = (userProfile.name || userProfile.displayName || '').trim();
+      const firstName = name.split(' ')[0];
+      const gov = userProfile.governorate || userProfile.governorateAr || '';
+      const admin = userProfile.administration || userProfile.administrationAr || '';
+      const grade = userProfile.grade || '';
+      const stage = userProfile.stage || '';
+      const role = userProfile.role || 'طالب';
+      const isGuest = Boolean(userProfile.isGuest);
+
+      dynamicStudentPrompt = `\n\n=== بيانات وهوية المتعلم الحالية: ===
+- الاسم: ${name}
+- الصفة: ${isGuest ? 'زائر للمنصة' : `${role} رسمي موثق`}
+- المحافظة والمديرية التعليمية: ${gov || 'مصر'}${admin ? ` — ${admin}` : ''}
+- المرحلة والصف الدراسي: ${stage ? `${stage} — ` : ''}${grade || 'مستوى عام'}
+
+تعليمات شخصية لمرشد SciNexa:
+1. خاطب الطالب باسمه الأول ("${firstName}") بود وحماس علمي.
+2. اذكر محافظته باعتزاز عند الترحيب أو التشجيع (مثلاً: "يا بطل ${gov}").
+3. خصص شروحاتك لتناسب تماماً مقررات ${grade || 'عمره ومرحلته الدراسية'}.`;
+    }
+
+    const dynamicLabContext = `المعمل النشط الآن أمام المستخدم: "${labName || currentLab}".${dynamicStudentPrompt}`;
 
     // 1. Google Gemini Live API with Multi-Model Fallback
     if (geminiKey && geminiKey.trim()) {

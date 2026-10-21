@@ -1,5 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { saveState } from '../utils/persistence';
+import { useAuth } from '../context/AuthContext';
+import { EGYPT_GOVERNORATES } from '../data/egyptLocationData';
 
 interface FishAgentControllerProps {
   currentTab: string;
@@ -144,6 +146,34 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
   setCurrentTab,
   language,
 }) => {
+  const { user } = useAuth();
+  const userRef = useRef(user);
+  userRef.current = user;
+
+  const [locationTick, setLocationTick] = useState(0);
+
+  // Re-sync on manual location changes
+  useEffect(() => {
+    const handleLocChanged = () => setLocationTick(t => t + 1);
+    window.addEventListener('scinexa_location_changed', handleLocChanged);
+    window.addEventListener('storage', handleLocChanged);
+    return () => {
+      window.removeEventListener('scinexa_location_changed', handleLocChanged);
+      window.removeEventListener('storage', handleLocChanged);
+    };
+  }, []);
+
+  const activeGovInfo = useMemo(() => {
+    const savedGovId = localStorage.getItem('scinexa_gov_id') || '';
+    const savedAdminId = localStorage.getItem('scinexa_admin_id') || '';
+    const activeGov = EGYPT_GOVERNORATES.find(g => g.id === savedGovId);
+    const activeAdmin = activeGov?.administrations.find(a => a.id === savedAdminId);
+
+    const govName = activeGov?.nameAr || user?.governorateAr || 'جمهورية مصر العربية';
+    const adminName = activeAdmin?.nameAr || user?.administrationAr || '';
+    return { govName, adminName };
+  }, [user, locationTick]);
+
   const currentTabRef = useRef(currentTab);
   currentTabRef.current = currentTab;
 
@@ -224,22 +254,47 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
     };
   }, [setCurrentTab]);
 
-  // 2. Synchronize Platform State & Language with <fish-agent> & /api/fish-tool
-  const syncPlatformState = (extraContext?: any) => {
+  // 2. Synchronize Platform State, Student Persona & Language with <fish-agent> & /api/fish-tool
+  const syncPlatformState = useCallback((extraContext?: any) => {
     const tab = currentTabRef.current;
     const lang = languageRef.current;
     const labMeta = LAB_MAP[tab] || LAB_MAP.home;
     const context = extraContext || latestContextRef.current || {};
+    const u = userRef.current;
+
+    const studentFirstName = u?.displayName ? u.displayName.trim().split(' ')[0] : (lang === 'ar' ? 'طالبنا المتميز' : 'Student');
+    const fullStudentName = u?.displayName || (lang === 'ar' ? 'طالب منصة SciNexa' : 'SciNexa Student');
+    const studentRole = u?.role === 'teacher' ? 'معلم' : u?.role === 'principal' ? 'مدير مدرسة' : 'طالب';
+    const studentGrade = u?.grade || '';
+    const studentStage = u?.stage || '';
+    const studentCode = u?.studentCode || u?.email?.match(/^(\d+)/)?.[1] || '';
+    const isGuest = Boolean(u?.isGuest);
+    const govName = activeGovInfo.govName;
+    const adminName = activeGovInfo.adminName;
 
     const dynamicVars = {
       current_lab: lang === 'ar' ? labMeta.ar : labMeta.en,
       active_tab_id: tab,
       language: lang,
       user_language: lang === 'ar' ? 'العربية' : 'English',
-      language_instruction:
+      // Comprehensive Student & Institutional Telemetry
+      student_name: studentFirstName,
+      full_name: fullStudentName,
+      user_role: studentRole,
+      student_code: studentCode,
+      governorate: govName,
+      administration: adminName,
+      educational_stage: studentStage,
+      school_grade: studentGrade,
+      is_guest: isGuest ? 'نعم (وضع الزائر)' : 'لا (حساب رسمي موثق)',
+      student_gender: u?.gender === 'female' ? 'أنثى' : 'ذكر',
+      student_age: u?.age ? `${u.age} سنة` : '',
+      instruction_persona:
         lang === 'ar'
-          ? 'تحدث مع المستخدم واشرح له باللغة العربية الفصحى بشكل فوري وحصري'
-          : 'Speak with the user and explain strictly in English immediately',
+          ? `أنت داروين، العقل العلمي والمساعد الذكي لمنصة SciNexa. أنت تتحدث الآن مع ${studentRole} "${fullStudentName}" من محافظة ${govName}${adminName ? ` (${adminName})` : ''}${studentGrade ? ` في ${studentGrade}` : ''}${studentStage ? ` (${studentStage})` : ''}.
+خاطب الطالب باسمه الأول "${studentFirstName}" دائماً بود واحترام وحماس علمي.
+اجعل مستوى شروحاتك وتجاربك مناسباً تماماً لمستواه في ${studentGrade || 'المرحلة الحالية'}.`
+          : `You are Darwin, the scientific AI guide on SciNexa. You are speaking with ${studentRole} "${fullStudentName}" from ${govName}, grade "${studentGrade}". Address them by "${studentFirstName}" and adapt your scientific explanations to match their grade level.`,
       selected_item: context.title || (lang === 'ar' ? 'تصفح عام للمختبر' : 'General lab browsing'),
       item_details: context.desc || '',
       timestamp: Date.now(),
@@ -250,12 +305,21 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
       try {
         agentEl.setAttribute('language', lang);
         agentEl.setAttribute('dynamic-variables', JSON.stringify(dynamicVars));
-        agentEl.setAttribute(
-          'greeting',
-          lang === 'ar'
-            ? 'مرحباً بك! أنا داروين مرشدك العلمي لمنصة SciNexa، كيف يمكنني مساعدتك في تجاربك اليوم؟'
-            : 'Welcome! I am Darwin, your scientific guide on SciNexa. How can I assist you with your experiments today?'
-        );
+
+        let greetingText = '';
+        if (lang === 'ar') {
+          if (isGuest) {
+            greetingText = `أهلاً بك يا بطل في منصة SciNexa! أنا داروين مرشدك العلمي، مستعد لاستكشاف معمل ${labMeta.ar} اليوم؟`;
+          } else {
+            const govBadge = govName && govName !== 'جمهورية مصر العربية' ? ` يا بطل ${govName}` : '';
+            const gradeBadge = studentGrade ? ` المقيد في ${studentGrade}` : '';
+            greetingText = `أهلاً بك يا ${studentFirstName}!${govBadge}${gradeBadge}. أنا داروين مرشدك العلمي، مستعد نبدأ تجاربنا في ${labMeta.ar}؟`;
+          }
+        } else {
+          greetingText = `Welcome ${studentFirstName}! I am Darwin, your scientific guide. Ready to experiment in the ${labMeta.en}?`;
+        }
+
+        agentEl.setAttribute('greeting', greetingText);
       } catch (err) {
         console.warn('Could not update fish-agent attributes:', err);
       }
@@ -270,13 +334,22 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
         language: lang,
         selectedItem: context.title,
         details: context.desc,
+        studentName: studentFirstName,
+        fullName: fullStudentName,
+        role: studentRole,
+        governorate: govName,
+        administration: adminName,
+        grade: studentGrade,
+        stage: studentStage,
+        code: studentCode,
+        isGuest,
       }),
     }).catch(() => {});
-  };
+  }, [activeGovInfo]);
 
   useEffect(() => {
     syncPlatformState();
-  }, [currentTab, language]);
+  }, [currentTab, language, user, activeGovInfo, syncPlatformState]);
 
   // 3. Listen to 3D model selection events
   useEffect(() => {

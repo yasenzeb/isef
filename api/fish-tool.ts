@@ -378,6 +378,15 @@ export default async function handler(req: any, res?: any) {
 
   // Tool: get_current_lab_status
   const isArabic = (latestPlatformState.language || 'ar') === 'ar';
+  const studentName = latestPlatformState.studentName || 'الطالب';
+  const fullName = latestPlatformState.fullName || studentName;
+  const gov = latestPlatformState.governorate || '';
+  const admin = latestPlatformState.administration || '';
+  const grade = latestPlatformState.grade || '';
+  const stage = latestPlatformState.stage || '';
+  const role = latestPlatformState.role || 'طالب';
+  const isGuest = Boolean(latestPlatformState.isGuest);
+
   const labSummary = {
     success: true,
     current_tab: latestPlatformState.currentTab,
@@ -387,9 +396,20 @@ export default async function handler(req: any, res?: any) {
     selected_item: latestPlatformState.selectedItem || (isArabic ? 'تصفح عام للمختبر' : 'General lab browsing'),
     item_details: latestPlatformState.details || (isArabic ? 'المحاكاة جاهزة للتجربة والاستكشاف' : 'Simulation ready for experimentation'),
     circuit_status: latestPlatformState.circuit || null,
+    student_profile: {
+      name: studentName,
+      full_name: fullName,
+      role: role,
+      governorate: gov,
+      administration: admin,
+      grade: grade,
+      stage: stage,
+      is_guest: isGuest,
+    },
     instruction_for_darwin: isArabic
-      ? `اشرح للطالب فوراً تكوين ووظيفة الجزء المحدد (${latestPlatformState.selectedItem || 'المختبر الحالي'}) ودوره العلمي بإيجاز مشوق وعلمي دقيق.`
-      : `Immediately explain to the student the structure and scientific/physiological function of (${latestPlatformState.selectedItem || 'the current lab'}) in engaging detail.`,
+      ? `أنت تخاطب ${role} "${fullName}" من ${gov ? `محافظة ${gov}` : 'جمهورية مصر العربية'}${admin ? ` (${admin})` : ''}${grade ? ` في ${grade}` : ''}.
+خاطبه باسمه الأول "${studentName}" مباشرة، واشرح له فوراً تكوين ووظيفة (${latestPlatformState.selectedItem || 'المختبر الحالي'}) بما يلائم منهجه الدراسي في ${grade || 'مرحلته التعليمية'}.`
+      : `You are speaking with ${role} "${fullName}" from ${gov || 'Egypt'}, grade "${grade || 'appropriate level'}". Address them as "${studentName}" and explain (${latestPlatformState.selectedItem || 'the current lab'}) matching their curriculum.`,
   };
 
   if (isNode) return res.status(200).json(labSummary);
