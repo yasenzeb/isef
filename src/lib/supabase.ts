@@ -23,19 +23,62 @@ export const supabase = createClient(SUPABASE_URL || '', SUPABASE_ANON_KEY || ''
 export type UserRole = 'student' | 'teacher' | 'principal' | 'admin';
 
 export interface SciNexaProfile {
-  id:            string;
-  email:         string;
-  displayName:   string;
-  role:          UserRole;
-  schoolCode?:   string;
-  studentCode?:  string;
-  governorate?:  string;
-  age?:          number;
-  birthday?:     string;
-  gender?:       'male' | 'female';
-  avatarUrl?:    string;
-  createdAt?:    string;
+  id:             string;
+  email:          string;
+  displayName:    string;
+  role:           UserRole;
+  schoolCode?:    string;
+  studentCode?:   string;
+  governorate?:   string;
+  governorateAr?: string;
+  administrationAr?: string;
+  age?:           number;
+  birthday?:      string;
+  gender?:        'male' | 'female';
+  avatarUrl?:     string;
+  createdAt?:     string;
 }
+
+// ── Egyptian Governorates Keyword Map ───────────────────────────────────────
+export const GOVERNORATE_KEYWORD_MAP: Record<string, string> = {
+  dakahliya: 'الدقهلية',
+  dakahlia:  'الدقهلية',
+  cairo:     'القاهرة',
+  giza:      'الجيزة',
+  alex:      'الإسكندرية',
+  alexandria:'الإسكندرية',
+  qalyubia:  'القليوبية',
+  kalyoubia: 'القليوبية',
+  sharqia:   'الشرقية',
+  sharkia:   'الشرقية',
+  gharbia:   'الغربية',
+  monufia:   'المنوفية',
+  menofia:   'المنوفية',
+  beheira:   'البحيرة',
+  behera:    'البحيرة',
+  kafr:      'كفر الشيخ',
+  kafrelsheikh:'كفر الشيخ',
+  damietta:  'دمياط',
+  port:      'بورسعيد',
+  portsaid:  'بورسعيد',
+  ismailia:  'الإسماعيلية',
+  suez:      'السويس',
+  fayoum:    'الفيوم',
+  fayum:     'الفيوم',
+  beni:      'بني سويف',
+  benisuef:  'بني سويف',
+  minya:     'المنيا',
+  asyut:     'أسيوط',
+  assiut:    'أسيوط',
+  sohag:     'سوهاج',
+  qena:      'قنا',
+  luxor:     'الأقصر',
+  aswan:     'أسوان',
+  redsea:    'البحر الأحمر',
+  wadi:      'الوادي الجديد',
+  matrouh:   'مطروح',
+  sinai:     'سيناء',
+};
 
 // ── Allowed email domains (Ministry of Education Egypt & Institutional) ──────
 export const ALLOWED_PATTERNS = [
@@ -61,22 +104,40 @@ export function detectRoleFromEmail(email: string): {
   schoolCode?: string;
   studentCode?: string;
   governorate?: string;
+  governorateAr?: string;
 } {
   const e = email.toLowerCase().trim();
 
-  // Pattern 1: Egyptian Unified Student Email: e.g. 12345678@cairo1.moe.edu.eg or 12345678@qalyubia.moe.edu.eg
-  const moeMatch = e.match(/^([0-9a-zA-Z_.-]+)@([a-zA-Z0-9]+)(\d*)\.moe\.edu\.eg$/);
+  // Always extract numeric code if email starts with digits (e.g. 479670721@...)
+  const numCodeMatch = e.match(/^(\d+)/);
+  const detectedStudentCode = numCodeMatch ? numCodeMatch[1] : undefined;
+
+  // Extract governorate keyword from domain
+  let detectedGovEn = '';
+  let detectedGovAr = '';
+  for (const [key, arName] of Object.entries(GOVERNORATE_KEYWORD_MAP)) {
+    if (e.includes(key)) {
+      detectedGovEn = key.toUpperCase();
+      detectedGovAr = arName;
+      break;
+    }
+  }
+
+  // Pattern 1: Egyptian Unified Student/Teacher Email: e.g. 479670721@dakahliya3.moe.edu.eg
+  const moeMatch = e.match(/^([0-9a-zA-Z_.-]+)@([a-zA-Z0-9_-]+)\.moe\.edu\.eg$/);
   if (moeMatch) {
-    const rawCode = moeMatch[1];
-    const gov = moeMatch[2].toUpperCase();
-    const isNumericCode = /^\d+$/.test(rawCode);
+    const rawUserPart = moeMatch[1];
+    const rawDomainPart = moeMatch[2].toUpperCase();
+    const isStudent = !!detectedStudentCode;
+
     return {
-      role: isNumericCode ? 'student' : 'teacher',
-      roleLabelAr: isNumericCode ? 'طالب (الحساب الموحد)' : 'معلم (الحساب الموحد)',
-      roleLabelEn: isNumericCode ? 'Student (Unified)' : 'Teacher (Unified)',
-      studentCode: isNumericCode ? rawCode : undefined,
-      governorate: gov,
-      schoolCode: `${gov}_DIR`,
+      role: isStudent ? 'student' : 'teacher',
+      roleLabelAr: isStudent ? 'طالب (الحساب الموحد)' : 'معلم (الحساب الموحد)',
+      roleLabelEn: isStudent ? 'Student (Unified)' : 'Teacher (Unified)',
+      studentCode: detectedStudentCode || rawUserPart,
+      governorate: detectedGovEn || rawDomainPart,
+      governorateAr: detectedGovAr || 'وزارة التربية والتعليم',
+      schoolCode: `${rawDomainPart}_DIR`,
     };
   }
 
@@ -87,7 +148,9 @@ export function detectRoleFromEmail(email: string): {
       role: 'student',
       roleLabelAr: 'طالب (مدرسي)',
       roleLabelEn: 'Student',
-      studentCode: studentSubMatch[1].toUpperCase(),
+      studentCode: detectedStudentCode || studentSubMatch[1].toUpperCase(),
+      governorate: detectedGovEn || 'EG',
+      governorateAr: detectedGovAr || 'وزارة التربية والتعليم',
       schoolCode: studentSubMatch[2].toUpperCase().replace(/\./g, '_'),
     };
   }
@@ -99,6 +162,8 @@ export function detectRoleFromEmail(email: string): {
       role: 'teacher',
       roleLabelAr: 'معلم / كادر تعليمي',
       roleLabelEn: 'Teacher',
+      governorate: detectedGovEn || 'EG',
+      governorateAr: detectedGovAr || 'وزارة التربية والتعليم',
       schoolCode: teacherSubMatch[1].toUpperCase().replace(/\./g, '_'),
     };
   }
@@ -110,6 +175,8 @@ export function detectRoleFromEmail(email: string): {
       role: 'principal',
       roleLabelAr: 'مدير مدرسة / قيادة',
       roleLabelEn: 'Principal',
+      governorate: detectedGovEn || 'EG',
+      governorateAr: detectedGovAr || 'وزارة التربية والتعليم',
       schoolCode: principalMatch[1].toUpperCase().replace(/\./g, '_'),
     };
   }
@@ -120,6 +187,8 @@ export function detectRoleFromEmail(email: string): {
       role: 'admin',
       roleLabelAr: 'إدارة وزارة التربية والتعليم',
       roleLabelEn: 'Ministry Admin',
+      governorate: 'MOE_CENTRAL',
+      governorateAr: 'ديوان وزارة التربية والتعليم',
       schoolCode: 'MOE_CENTRAL',
     };
   }
@@ -129,9 +198,12 @@ export function detectRoleFromEmail(email: string): {
     const domain = e.split('@')[1];
     const schoolCode = domain.replace('.edu.eg', '').toUpperCase().replace(/\./g, '_');
     return {
-      role: 'student',
-      roleLabelAr: 'طالب / عضو مؤسسي',
+      role: detectedStudentCode ? 'student' : 'student',
+      roleLabelAr: detectedStudentCode ? 'طالب رسمي' : 'عضو مؤسسي',
       roleLabelEn: 'Institutional User',
+      studentCode: detectedStudentCode,
+      governorate: detectedGovEn || 'EG',
+      governorateAr: detectedGovAr || 'وزارة التربية والتعليم',
       schoolCode,
     };
   }
@@ -140,5 +212,7 @@ export function detectRoleFromEmail(email: string): {
     role: 'student',
     roleLabelAr: 'طالب',
     roleLabelEn: 'Student',
+    studentCode: detectedStudentCode,
+    governorateAr: detectedGovAr,
   };
 }

@@ -35,6 +35,7 @@ export const EgyptLocationModal: React.FC<EgyptLocationModalProps> = ({ isOpen, 
   const handleSave = () => {
     localStorage.setItem('scinexa_gov_id', selectedGovId);
     localStorage.setItem('scinexa_admin_id', selectedAdminId);
+    window.dispatchEvent(new Event('scinexa_location_changed'));
     setSavedSuccess(true);
     setTimeout(() => {
       setSavedSuccess(false);

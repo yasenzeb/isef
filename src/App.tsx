@@ -81,7 +81,13 @@ const AppContent: React.FC = () => {
 
         <main className="pt-6 pb-20 md:pb-6">
           <Suspense fallback={<ModuleFallback />}>
-            {currentTab === 'home' && <Home onNavigate={setCurrentTab} onOpenOfflineModal={() => setIsOfflineModalOpen(true)} />}
+            {currentTab === 'home' && (
+              <Home
+                onNavigate={setCurrentTab}
+                onOpenOfflineModal={() => setIsOfflineModalOpen(true)}
+                onOpenLocationModal={() => setIsLocationModalOpen(true)}
+              />
+            )}
             {currentTab === 'anatomy' && <AnatomyViewer />}
             {currentTab === 'physics' && <PhysicsLab />}
             {currentTab === 'chemistry' && <ChemistryLab />}

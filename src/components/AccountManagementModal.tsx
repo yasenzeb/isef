@@ -4,9 +4,10 @@
  * reviewing learning telemetry, and managing session security.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
+import { EGYPT_GOVERNORATES } from '../data/egyptLocationData';
 import {
   X,
   User,
@@ -41,6 +42,21 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
   const [gender, setGender] = useState<'male' | 'female'>(user?.gender || 'male');
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  const studentCodeDisplay = useMemo(() => {
+    return user?.studentCode || user?.email.match(/^(\d+)/)?.[1] || '—';
+  }, [user]);
+
+  const activeGovDisplay = useMemo(() => {
+    const savedGovId = localStorage.getItem('scinexa_gov_id') || '';
+    const savedAdminId = localStorage.getItem('scinexa_admin_id') || '';
+    const activeGov = EGYPT_GOVERNORATES.find(g => g.id === savedGovId);
+    const activeAdmin = activeGov?.administrations.find(a => a.id === savedAdminId);
+
+    if (activeAdmin) return activeAdmin.nameAr;
+    if (activeGov) return activeGov.nameAr;
+    return user?.governorateAr || 'الدقهلية';
+  }, [user]);
 
   if (!isOpen || !user) return null;
 
@@ -139,14 +155,14 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
             <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5 space-y-1">
               <span className="text-[10px] text-slate-400 block">{isAr ? 'كود الطالب' : 'Student Code'}</span>
               <span className="text-xs font-mono font-bold text-blue-400 truncate block">
-                {user.studentCode || '—'}
+                {studentCodeDisplay}
               </span>
             </div>
 
             <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5 space-y-1">
               <span className="text-[10px] text-slate-400 block">{isAr ? 'المحافظة / المديرية' : 'Directorate'}</span>
               <span className="text-xs font-bold text-amber-400 truncate block">
-                {user.governorate || 'وزارة التعليم'}
+                {activeGovDisplay}
               </span>
             </div>
 

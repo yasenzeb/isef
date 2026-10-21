@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
+import { EGYPT_GOVERNORATES } from '../data/egyptLocationData';
 import {
   Activity,
   Atom,
@@ -18,12 +19,14 @@ import {
   Zap,
   PlayCircle,
   Download,
-  Sparkles
+  Sparkles,
+  MapPin
 } from 'lucide-react';
 
 interface HomeProps {
   onNavigate: (tab: string) => void;
   onOpenOfflineModal?: () => void;
+  onOpenLocationModal?: () => void;
 }
 
 interface AIIntent {
@@ -101,10 +104,42 @@ const AI_SEARCH_RULES: { keywords: string[]; tab: string; labNameEn: string; lab
   }
 ];
 
-export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) => {
+export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal, onOpenLocationModal }) => {
   const { t, isRTL, language } = useLanguage();
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Reactive Egypt Location Tracking (Syncs directly with EgyptLocationModal)
+  const [savedGovId, setSavedGovId] = useState<string>(() => localStorage.getItem('scinexa_gov_id') || '');
+  const [savedAdminId, setSavedAdminId] = useState<string>(() => localStorage.getItem('scinexa_admin_id') || '');
+
+  useEffect(() => {
+    const handleLocationUpdate = () => {
+      setSavedGovId(localStorage.getItem('scinexa_gov_id') || '');
+      setSavedAdminId(localStorage.getItem('scinexa_admin_id') || '');
+    };
+    window.addEventListener('scinexa_location_changed', handleLocationUpdate);
+    return () => window.removeEventListener('scinexa_location_changed', handleLocationUpdate);
+  }, []);
+
+  const displayedDirectorate = useMemo(() => {
+    const activeGov = EGYPT_GOVERNORATES.find(g => g.id === savedGovId);
+    const activeAdmin = activeGov?.administrations.find(a => a.id === savedAdminId);
+
+    if (activeAdmin) return activeAdmin.nameAr;
+    if (activeGov) return `مديرية التربية والتعليم بمحافظة ${activeGov.nameAr}`;
+    if (user?.governorateAr) return `مديرية التربية والتعليم بمحافظة ${user.governorateAr}`;
+    return language === 'ar' ? 'مديرية التربية والتعليم' : 'Directorate of Education';
+  }, [savedGovId, savedAdminId, user, language]);
+
+  const studentCodeDisplay = useMemo(() => {
+    if (user?.studentCode) return user.studentCode;
+    if (user?.email) {
+      const m = user.email.match(/^(\d+)/);
+      if (m) return m[1];
+    }
+    return '—';
+  }, [user]);
 
   // AI Intent Classifier: Analyzes natural query to detect student destination
   const detectedAIIntent: AIIntent | null = useMemo(() => {
@@ -337,12 +372,21 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
               </div>
               <p className="text-xs text-slate-300 mt-1 flex items-center gap-2 flex-wrap">
                 <span>
-                  {isArabic ? 'كود الطالب الموحد:' : 'Code:'} <strong className="text-blue-400 font-mono">{user.studentCode || '—'}</strong>
+                  {isArabic ? 'كود الطالب الموحد:' : 'Code:'} <strong className="text-blue-400 font-mono text-sm">{studentCodeDisplay}</strong>
                 </span>
                 <span className="text-slate-600">•</span>
-                <span>
-                  {isArabic ? 'المديرية التعليمية:' : 'Directorate:'} <strong className="text-amber-400">{user.governorate || (isArabic ? 'وزارة التربية والتعليم' : 'Ministry of Education')}</strong>
-                </span>
+                <button
+                  type="button"
+                  onClick={() => onOpenLocationModal && onOpenLocationModal()}
+                  title={isArabic ? 'اضغط لتعديل المديرية والمحافظة' : 'Click to change location'}
+                  className="flex items-center gap-1 text-slate-300 hover:text-white transition-colors cursor-pointer group"
+                >
+                  <MapPin className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
+                  <span>{isArabic ? 'المديرية التعليمية:' : 'Directorate:'}</span>
+                  <strong className="text-amber-300 underline underline-offset-4 decoration-amber-500/50 group-hover:decoration-amber-300">
+                    {displayedDirectorate}
+                  </strong>
+                </button>
                 <span className="text-slate-600">•</span>
                 <span className="text-emerald-400 font-semibold">
                   {isArabic ? 'جميع المعامل العلمية الستة مفتوحة ومجهزة' : 'All 6 Virtual Labs Active'}

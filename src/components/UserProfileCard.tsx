@@ -4,10 +4,11 @@
  * and opens the Account Management Dashboard modal.
  */
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
 import type { SciNexaProfile, UserRole } from '../context/AuthContext';
 import { AccountManagementModal } from './AccountManagementModal';
+import { EGYPT_GOVERNORATES } from '../data/egyptLocationData';
 import {
   LogOut,
   ChevronDown,
@@ -104,12 +105,21 @@ export const UserProfileCard: React.FC<{ language?: string }> = ({ language = 'a
             {/* Info rows */}
             <div className="space-y-2 text-xs mb-3.5">
               <Row label={isAr ? 'الدور' : 'Role'} value={isAr ? cfg.labelAr : cfg.labelEn} color={cfg.color} />
-              {user.studentCode && (
-                <Row label={isAr ? 'كود الطالب' : 'Student Code'} value={user.studentCode} mono />
-              )}
-              {user.governorate && (
-                <Row label={isAr ? 'المحافظة / المديرية' : 'Governorate'} value={user.governorate} />
-              )}
+              <Row
+                label={isAr ? 'كود الطالب' : 'Student Code'}
+                value={user.studentCode || user.email.match(/^(\d+)/)?.[1] || '—'}
+                mono
+              />
+              <Row
+                label={isAr ? 'المحافظة / المديرية' : 'Governorate'}
+                value={(() => {
+                  const savedGovId = localStorage.getItem('scinexa_gov_id') || '';
+                  const savedAdminId = localStorage.getItem('scinexa_admin_id') || '';
+                  const activeGov = EGYPT_GOVERNORATES.find(g => g.id === savedGovId);
+                  const activeAdmin = activeGov?.administrations.find(a => a.id === savedAdminId);
+                  return activeAdmin ? activeAdmin.nameAr : (activeGov ? activeGov.nameAr : (user.governorateAr || 'الدقهلية'));
+                })()}
+              />
               {user.age && (
                 <Row label={isAr ? 'العمر' : 'Age'} value={`${user.age} ${isAr ? 'سنة' : 'yrs'}`} />
               )}
