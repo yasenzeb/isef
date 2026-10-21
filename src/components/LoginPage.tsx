@@ -1,302 +1,467 @@
 /**
- * LoginPage.tsx — SciNexa Secure Login
- * Two methods:
- *  1. 🔵 Microsoft OAuth (one-click, requires Supabase Azure config)
- *  2. 📧 Magic Link (works immediately with any ministry email)
+ * LoginPage.tsx — Unified Institutional Authentication for SciNexa
+ * Integrates direct Email & Password sign-in/up with automatic Ministry metadata extraction,
+ * zero-friction instant access, and optional Microsoft SSO.
  */
 
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { isMinistryEmail } from '../lib/supabase';
-import { Mail, Send, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
-
-type Stage = 'idle' | 'loading_ms' | 'loading_magic' | 'sent' | 'error';
-
-const ROLE_EXAMPLES = [
-  { icon: '🎓', ar: 'طالب',       hint: 'ahmed@students.cairo1.edu.eg' },
-  { icon: '👨‍🏫', ar: 'معلم',        hint: 'mona@teachers.cairo1.edu.eg'  },
-  { icon: '🏫', ar: 'مدير مدرسة', hint: 'admin@principal.cairo1.edu.eg' },
-  { icon: '🏛️', ar: 'وزارة',      hint: 'staff@moe.gov.eg'             },
-];
+import React, { useState, useMemo } from 'react';
+import { useAuth, type SignUpParams } from '../context/AuthContext';
+import { detectRoleFromEmail, isMinistryEmail } from '../lib/supabase';
+import {
+  Lock,
+  Mail,
+  User,
+  Calendar,
+  Sparkles,
+  AlertCircle,
+  Loader2,
+  Eye,
+  EyeOff,
+  Building2,
+  GraduationCap,
+  ShieldCheck,
+  School,
+  ArrowRight
+} from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
-  const { sendMagicLink, loginWithMicrosoft } = useAuth();
+  const { loginWithPassword, signUpWithPassword, loginWithMicrosoft } = useAuth();
 
-  const [email,  setEmail]  = useState('');
-  const [stage,  setStage]  = useState<Stage>('idle');
-  const [errMsg, setErrMsg] = useState('');
+  const [mode, setMode] = useState<'login' | 'signup'>('login');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Read ?error= param from URL (OAuth redirect errors)
-  useEffect(() => {
-    const p = new URLSearchParams(window.location.search);
-    const e = p.get('error_description') || p.get('error');
-    if (e) { setErrMsg(decodeURIComponent(e)); setStage('error'); }
-  }, []);
+  // Form State
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [age, setAge] = useState<number | ''>('');
+  const [birthday, setBirthday] = useState('');
+  const [gender, setGender] = useState<'male' | 'female'>('male');
 
-  // ── Microsoft login ──────────────────────────────────────────────────────
-  const handleMicrosoft = async () => {
-    setStage('loading_ms');
-    setErrMsg('');
-    const { error } = await loginWithMicrosoft();
-    if (error) { setErrMsg(error); setStage('error'); }
-    // On success the page redirects — no further action needed
-  };
+  // Real-time email metadata detection
+  const detected = useMemo(() => {
+    if (!email || !email.includes('@')) return null;
+    return detectRoleFromEmail(email);
+  }, [email]);
 
-  // ── Magic link ───────────────────────────────────────────────────────────
-  const handleMagicLink = async (e: React.FormEvent) => {
+  const isEduEmail = useMemo(() => {
+    return isMinistryEmail(email);
+  }, [email]);
+
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrMsg('');
+    setErrorMessage(null);
 
-    if (!email.trim()) {
-      setErrMsg('يرجى إدخال بريدك الإلكتروني الوزاري.');
-      setStage('error');
+    if (!email.trim() || !password) {
+      setErrorMessage('يرجى إدخال البريد الإلكتروني وكلمة المرور.');
       return;
     }
 
-    if (!isMinistryEmail(email)) {
-      setErrMsg('هذا الإيميل غير مقبول — يجب أن يكون إيميلاً وزارياً (.edu.eg أو moe.gov.eg).');
-      setStage('error');
-      return;
-    }
+    setIsLoading(true);
+    const res = await loginWithPassword(email, password);
+    setIsLoading(false);
 
-    setStage('loading_magic');
-    const { error } = await sendMagicLink(email);
-
-    if (error) {
-      setErrMsg(error);
-      setStage('error');
-    } else {
-      setStage('sent');
+    if (res.error) {
+      setErrorMessage(res.error);
     }
   };
 
-  // ── Render ────────────────────────────────────────────────────────────────
-  return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '24px',
-      background: `
-        radial-gradient(circle at 20% 10%, rgba(79,140,255,.18), transparent 40%),
-        radial-gradient(circle at 80% 90%, rgba(124,92,255,.18), transparent 40%),
-        #090a0d`,
-      fontFamily: '"Segoe UI", system-ui, -apple-system, Arial, sans-serif',
-      direction: 'rtl',
-    }}>
-      <div style={{
-        width: '100%',
-        maxWidth: 440,
-        background: '#12141a',
-        border: '1px solid #262a35',
-        borderRadius: 20,
-        padding: '36px 32px',
-        boxShadow: '0 24px 60px rgba(0,0,0,.6)',
-        color: '#e8eaf0',
-      }}>
+  const handleSignUpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage(null);
 
-        {/* ── Logo ── */}
-        <div style={{ textAlign: 'center', marginBottom: 24 }}>
-          <div style={{ fontSize: 44, lineHeight: 1, marginBottom: 8 }}>🔬</div>
-          <h1 style={{ margin: '0 0 4px', fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.5px' }}>
+    if (!name.trim()) {
+      setErrorMessage('يرجى إدخال اسمك بالكامل.');
+      return;
+    }
+
+    if (!email.trim() || !password) {
+      setErrorMessage('يرجى ملء البريد الإلكتروني وكلمة المرور.');
+      return;
+    }
+
+    if (password.length < 6) {
+      setErrorMessage('كلمة المرور يجب أن لا تقل عن 6 أحرف أو أرقام.');
+      return;
+    }
+
+    setIsLoading(true);
+    const params: SignUpParams = {
+      name: name.trim(),
+      email: email.trim(),
+      password,
+      age: age ? Number(age) : undefined,
+      birthday: birthday || undefined,
+      gender,
+    };
+
+    const res = await signUpWithPassword(params);
+    setIsLoading(false);
+
+    if (res.error) {
+      setErrorMessage(res.error);
+    }
+  };
+
+  const handleMicrosoftOAuth = async () => {
+    setIsLoading(true);
+    setErrorMessage(null);
+    const res = await loginWithMicrosoft();
+    setIsLoading(false);
+    if (res.error) {
+      setErrorMessage(res.error);
+    }
+  };
+
+  return (
+    <div
+      dir="rtl"
+      className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 select-none"
+      style={{
+        background: `
+          radial-gradient(circle at 15% 15%, rgba(79, 140, 255, 0.12), transparent 45%),
+          radial-gradient(circle at 85% 85%, rgba(124, 92, 255, 0.12), transparent 45%),
+          #090a0d
+        `,
+        fontFamily: '"Segoe UI", system-ui, -apple-system, Arial, sans-serif',
+      }}
+    >
+      <div
+        className="w-full max-w-[460px] rounded-2xl p-6 sm:p-8 backdrop-blur-xl border border-white/10 shadow-2xl"
+        style={{
+          background: 'rgba(18, 20, 26, 0.88)',
+          boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.7)',
+        }}
+      >
+        {/* Brand Header */}
+        <div className="text-center mb-6">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-tr from-indigo-500/20 to-blue-500/20 border border-indigo-400/30 mb-3 shadow-inner">
+            <span className="text-2xl">🔬</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black tracking-wide text-white font-mono uppercase">
             SciNexa
           </h1>
-          <p style={{ margin: 0, color: '#8b90a0', fontSize: '0.9rem' }}>
-            المنصة التعليمية العلمية التفاعلية
+          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+            {mode === 'login'
+              ? 'مرحباً بعودتك! سجل دخولك للمتابعة في معاملك'
+              : 'أنشئ حسابك التعليمي الموحد وانضم لمنظومة المحاكاة'}
           </p>
         </div>
 
-        {/* ── Sent state ── */}
-        {stage === 'sent' ? (
-          <SentState email={email} onBack={() => { setStage('idle'); setEmail(''); }} />
-        ) : (
-          <>
-            {/* ── Error banner ── */}
-            {stage === 'error' && errMsg && (
-              <div style={{
-                display: 'flex', alignItems: 'flex-start', gap: 10,
-                background: 'rgba(248,113,113,.1)',
-                border: '1px solid rgba(248,113,113,.3)',
-                borderRadius: 12, padding: '12px 14px', marginBottom: 20,
-                color: '#fca5a5', fontSize: '0.86rem', lineHeight: 1.5,
-              }}>
-                <AlertCircle size={16} style={{ flexShrink: 0, marginTop: 2 }} />
-                <span>{errMsg}</span>
-              </div>
-            )}
+        {/* Tab Switcher Pills */}
+        <div className="grid grid-cols-2 p-1 bg-black/40 border border-white/10 rounded-xl mb-6">
+          <button
+            type="button"
+            onClick={() => { setMode('login'); setErrorMessage(null); }}
+            className={`py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all ${
+              mode === 'login'
+                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            تسجيل الدخول
+          </button>
+          <button
+            type="button"
+            onClick={() => { setMode('signup'); setErrorMessage(null); }}
+            className={`py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all ${
+              mode === 'signup'
+                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            إنشاء حساب جديد
+          </button>
+        </div>
 
-            {/* ── Microsoft button ── */}
-            <button
-              onClick={handleMicrosoft}
-              disabled={stage === 'loading_ms' || stage === 'loading_magic'}
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                gap: 12, width: '100%', padding: '14px 20px',
-                background: stage === 'loading_ms' ? '#1a6fd8' : '#2f7fe8',
-                border: 'none', borderRadius: 12,
-                color: '#fff', fontSize: '1rem', fontWeight: 700,
-                cursor: 'pointer', transition: 'background .2s',
-                marginBottom: 8,
-                opacity: (stage === 'loading_magic') ? 0.5 : 1,
-              }}
-            >
-              {stage === 'loading_ms' ? (
-                <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} />
-              ) : (
-                <MicrosoftLogo />
-              )}
-              {stage === 'loading_ms' ? 'جاري الاتصال بمايكروسوفت...' : 'تسجيل الدخول بحساب المدرسة Microsoft'}
-            </button>
+        {/* Error Alert Box */}
+        {errorMessage && (
+          <div className="flex items-start gap-2.5 p-3.5 mb-5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs sm:text-sm leading-relaxed animate-shake">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-400" />
+            <span>{errorMessage}</span>
+          </div>
+        )}
 
-            {/* MS note */}
-            <p style={{ textAlign: 'center', color: '#565b6b', fontSize: '0.76rem', margin: '6px 0 16px' }}>
-              يتطلب إعداد Azure من مدير المنصة — سيُفعَّل قريباً
-            </p>
-
-            {/* ── Divider ── */}
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: 12,
-              color: '#8b90a0', fontSize: '0.82rem', margin: '0 0 16px',
-            }}>
-              <div style={{ flex: 1, height: 1, background: '#262a35' }} />
-              <span>أو سجّل بإيميلك الوزاري</span>
-              <div style={{ flex: 1, height: 1, background: '#262a35' }} />
-            </div>
-
-            {/* ── Magic link form ── */}
-            <form onSubmit={handleMagicLink} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <div style={{ position: 'relative' }}>
-                <Mail
-                  size={17}
-                  style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', color: '#8b90a0' }}
-                />
+        {/* Forms */}
+        {mode === 'login' ? (
+          <form onSubmit={handleLoginSubmit} className="space-y-4">
+            {/* Email Field */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-slate-300">
+                البريد الإلكتروني الموحد / المدرسي
+              </label>
+              <div className="relative">
                 <input
                   type="email"
-                  value={email}
-                  onChange={e => { setEmail(e.target.value); if (stage === 'error') setStage('idle'); }}
-                  placeholder="ahmed@students.cairo1.edu.eg"
-                  dir="ltr"
-                  style={{
-                    width: '100%', padding: '13px 44px 13px 14px',
-                    background: '#0d0f14',
-                    border: `1px solid ${stage === 'error' ? 'rgba(248,113,113,.5)' : '#262a35'}`,
-                    borderRadius: 12, color: '#e8eaf0', fontSize: '0.95rem',
-                    outline: 'none', boxSizing: 'border-box',
-                    transition: 'border-color .2s',
-                  }}
-                  onFocus={e => (e.currentTarget.style.borderColor = '#4f8cff')}
-                  onBlur={e  => (e.currentTarget.style.borderColor = stage === 'error' ? 'rgba(248,113,113,.5)' : '#262a35')}
                   required
+                  dir="ltr"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="3561234@cairo1.moe.edu.eg"
+                  className="w-full px-3.5 py-2.5 pl-10 rounded-xl bg-[#0d0f14] border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-mono"
                 />
+                <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
 
-              <button
-                type="submit"
-                disabled={stage === 'loading_ms' || stage === 'loading_magic'}
-                style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  gap: 8, width: '100%', padding: '13px',
-                  background: 'linear-gradient(135deg, #4f8cff, #7c5cff)',
-                  border: 'none', borderRadius: 12,
-                  color: '#fff', fontSize: '1rem', fontWeight: 700,
-                  cursor: 'pointer',
-                  opacity: stage === 'loading_magic' ? 0.8 : 1,
-                  transition: 'opacity .2s',
-                }}
-              >
-                {stage === 'loading_magic' ? (
-                  <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
-                ) : (
-                  <Send size={17} />
-                )}
-                {stage === 'loading_magic' ? 'جاري الإرسال...' : 'إرسال رابط الدخول على إيميلك'}
-              </button>
-            </form>
+              {/* Live Detected Role Badge */}
+              {detected && (
+                <div className="flex items-center gap-1.5 mt-1 text-[11px] text-emerald-400 font-medium">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>تم التعرّف: {detected.roleLabelAr}</span>
+                  {detected.governorate && (
+                    <span className="text-slate-400 font-mono">({detected.governorate})</span>
+                  )}
+                </div>
+              )}
+            </div>
 
-            {/* ── Roles info ── */}
-            <div style={{
-              marginTop: 20, padding: '14px',
-              background: 'rgba(79,140,255,.07)',
-              border: '1px solid rgba(79,140,255,.18)',
-              borderRadius: 12,
-            }}>
-              <p style={{ margin: '0 0 10px', color: '#93c5fd', fontSize: '0.82rem', fontWeight: 600 }}>
-                🔒 الأدوار تُكتشف تلقائياً من الإيميل:
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {ROLE_EXAMPLES.map(r => (
-                  <div key={r.ar} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ width: 20, textAlign: 'center' }}>{r.icon}</span>
-                    <span style={{ color: '#8b90a0', fontSize: '0.78rem', minWidth: 70 }}>{r.ar}</span>
-                    <span style={{ color: '#4b5563', fontSize: '0.72rem', direction: 'ltr', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {r.hint}
-                    </span>
-                  </div>
-                ))}
+            {/* Password Field */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-slate-300">
+                كلمة المرور
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  dir="ltr"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full px-3.5 py-2.5 pl-10 pr-10 rounded-xl bg-[#0d0f14] border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-mono"
+                />
+                <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
             </div>
 
-          </>
-        )}
-      </div>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3 px-4 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:opacity-95 shadow-lg shadow-indigo-600/25 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>جاري تسجيل الدخول...</span>
+                </>
+              ) : (
+                <>
+                  <span>تسجيل الدخول للمنصة</span>
+                  <ArrowRight className="w-4 h-4 rotate-180" />
+                </>
+              )}
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleSignUpSubmit} className="space-y-3.5">
+            {/* Full Name */}
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-300">
+                الاسم بالكامل
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="محمد أحمد علي"
+                  className="w-full px-3.5 py-2 rounded-xl bg-[#0d0f14] border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 transition-all"
+                />
+                <User className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              </div>
+            </div>
 
-      {/* Spin animation */}
-      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+            {/* Email */}
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-300">
+                البريد الإلكتروني الموحد / المدرسي
+              </label>
+              <div className="relative">
+                <input
+                  type="email"
+                  required
+                  dir="ltr"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="3561234@cairo1.moe.edu.eg"
+                  className="w-full px-3.5 py-2 pl-10 rounded-xl bg-[#0d0f14] border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 transition-all font-mono"
+                />
+                <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              </div>
+
+              {/* Smart Live Role & School Recognition */}
+              {detected ? (
+                <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-[11px] flex items-center justify-between">
+                  <span className="flex items-center gap-1.5 font-semibold">
+                    <GraduationCap className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>الصفة: {detected.roleLabelAr}</span>
+                  </span>
+                  {detected.studentCode && (
+                    <span className="font-mono text-[10px] bg-emerald-950/60 px-1.5 py-0.5 rounded text-emerald-200">
+                      كود: {detected.studentCode}
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <span className="text-[10px] text-slate-500 block">
+                  يقبل إيميلات الوزارة الموحدة (.moe.edu.eg) وإيميلات المدارس (.edu.eg)
+                </span>
+              )}
+            </div>
+
+            {/* Password */}
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-300">
+                كلمة المرور (6 أحرف أو أكثر)
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  dir="ltr"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full px-3.5 py-2 pl-10 pr-10 rounded-xl bg-[#0d0f14] border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 transition-all font-mono"
+                />
+                <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            {/* Age & Birthday Grid */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-300">
+                  العمر (سنوات)
+                </label>
+                <input
+                  type="number"
+                  min="5"
+                  max="120"
+                  value={age}
+                  onChange={(e) => setAge(e.target.value ? Number(e.target.value) : '')}
+                  placeholder="مثال: 16"
+                  className="w-full px-3 py-2 rounded-xl bg-[#0d0f14] border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-all"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-300">
+                  تاريخ الميلاد
+                </label>
+                <input
+                  type="date"
+                  value={birthday}
+                  onChange={(e) => setBirthday(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl bg-[#0d0f14] border border-white/10 text-white text-xs sm:text-sm focus:outline-none focus:border-blue-500 transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Gender Select Radio Pills */}
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-300">
+                النوع
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setGender('male')}
+                  className={`py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                    gender === 'male'
+                      ? 'bg-blue-600/20 border-blue-500 text-blue-300 ring-1 ring-blue-500'
+                      : 'bg-[#0d0f14] border-white/10 text-slate-400 hover:border-white/20'
+                  }`}
+                >
+                  <span>👦</span>
+                  <span>ذكر</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setGender('female')}
+                  className={`py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                    gender === 'female'
+                      ? 'bg-pink-600/20 border-pink-500 text-pink-300 ring-1 ring-pink-500'
+                      : 'bg-[#0d0f14] border-white/10 text-slate-400 hover:border-white/20'
+                  }`}
+                >
+                  <span>👧</span>
+                  <span>أنثى</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3 px-4 mt-2 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:opacity-95 shadow-lg shadow-indigo-600/25 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>جاري تسجيل الحساب...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4" />
+                  <span>إنشاء الحساب وبدء التعلم فوراً</span>
+                </>
+              )}
+            </button>
+          </form>
+        )}
+
+        {/* Divider */}
+        <div className="relative my-5">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-white/10" />
+          </div>
+          <div className="relative flex justify-center text-xs">
+            <span className="bg-[#12141a] px-3 text-slate-500">أو من خلال</span>
+          </div>
+        </div>
+
+        {/* Microsoft SSO Alternative */}
+        <button
+          type="button"
+          onClick={handleMicrosoftOAuth}
+          disabled={isLoading}
+          className="w-full py-2.5 px-4 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.07] text-slate-200 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2.5 transition-all cursor-pointer active:scale-[0.99]"
+        >
+          <svg width="18" height="18" viewBox="0 0 21 21" aria-hidden="true" className="shrink-0">
+            <rect x="1" y="1" width="9" height="9" fill="#f25022" />
+            <rect x="11" y="1" width="9" height="9" fill="#7fba00" />
+            <rect x="1" y="11" width="9" height="9" fill="#00a4ef" />
+            <rect x="11" y="11" width="9" height="9" fill="#ffb900" />
+          </svg>
+          <span>تسجيل مباشر بـ Microsoft Office 365</span>
+        </button>
+
+        {/* Footer Guarantee */}
+        <div className="mt-5 pt-4 border-t border-white/5 flex items-center justify-center gap-2 text-[11px] text-slate-500">
+          <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
+          <span>تشفير عالي الأمان (bcrypt + SSL 256-bit) لحماية بيانات الطلاب</span>
+        </div>
+      </div>
     </div>
   );
 };
-
-// ── Sub-components ────────────────────────────────────────────────────────────
-
-const MicrosoftLogo: React.FC = () => (
-  <svg width="20" height="20" viewBox="0 0 21 21" aria-hidden="true" style={{ flexShrink: 0 }}>
-    <rect x="1"  y="1"  width="9" height="9" fill="#f25022"/>
-    <rect x="11" y="1"  width="9" height="9" fill="#7fba00"/>
-    <rect x="1"  y="11" width="9" height="9" fill="#00a4ef"/>
-    <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
-  </svg>
-);
-
-const SentState: React.FC<{ email: string; onBack: () => void }> = ({ email, onBack }) => (
-  <div style={{ textAlign: 'center' }}>
-    <CheckCircle2 size={52} style={{ color: '#4ade80', margin: '0 auto 16px' }} />
-    <h2 style={{ margin: '0 0 8px', fontSize: '1.3rem', fontWeight: 700, color: '#4ade80' }}>
-      تم إرسال الرابط! ✅
-    </h2>
-    <p style={{ color: '#8b90a0', fontSize: '0.9rem', lineHeight: 1.7, margin: '0 0 6px' }}>
-      تم إرسال رابط الدخول إلى:
-    </p>
-    <p style={{ color: '#93c5fd', fontWeight: 600, direction: 'ltr', fontSize: '0.95rem', margin: '0 0 20px' }}>
-      {email}
-    </p>
-
-    <div style={{
-      background: 'rgba(74,222,128,.08)',
-      border: '1px solid rgba(74,222,128,.2)',
-      borderRadius: 12, padding: '14px',
-      color: '#86efac', fontSize: '0.85rem', lineHeight: 1.7,
-      textAlign: 'right', marginBottom: 20,
-    }}>
-      📧 <strong>افتح بريدك الإلكتروني الآن</strong><br/>
-      ستجد رسالة من SciNexa — اضغط على الرابط بداخلها<br/>
-      الرابط صالح لمدة <strong>ساعة واحدة</strong> فقط
-    </div>
-
-    <button
-      onClick={onBack}
-      style={{
-        background: 'transparent',
-        border: '1px solid #262a35',
-        borderRadius: 10,
-        color: '#8b90a0',
-        padding: '10px 24px',
-        cursor: 'pointer',
-        fontSize: '0.88rem',
-        width: '100%',
-      }}
-    >
-      ← العودة وتغيير الإيميل
-    </button>
-  </div>
-);
