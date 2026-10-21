@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { Language } from '../i18n/translations';
+import { UserProfileCard } from './UserProfileCard';
 import {
   Atom,
   Languages,
@@ -160,6 +161,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <option value="de" className="bg-[#090a0d] text-white">DE</option>
               </select>
             </div>
+
+            {/* User Profile Card (shown when authenticated) */}
+            <UserProfileCard language={language} />
           </div>
 
           {/* Mobile Menu Toggle */}

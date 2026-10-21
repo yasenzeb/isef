@@ -1,5 +1,7 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
+import { AuthProvider } from './context/AuthContext';
+import { AuthGuard } from './components/AuthGuard';
 import { Navbar } from './components/Navbar';
 import { Home } from './components/Home';
 import { EgyptLocationModal } from './components/EgyptLocationModal';
@@ -117,9 +119,13 @@ const AppContent: React.FC = () => {
 
 export const App: React.FC = () => {
   return (
-    <LanguageProvider>
-      <AppContent />
-    </LanguageProvider>
+    <AuthProvider>
+      <LanguageProvider>
+        <AuthGuard>
+          <AppContent />
+        </AuthGuard>
+      </LanguageProvider>
+    </AuthProvider>
   );
 };
 
