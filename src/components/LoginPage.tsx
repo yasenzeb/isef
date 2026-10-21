@@ -9,7 +9,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { useAuth, type SignUpParams } from '../context/AuthContext';
-import { detectRoleFromEmail, isMinistryEmail, GOVERNORATE_KEYWORD_MAP } from '../lib/supabase';
+import { detectRoleFromEmail, isMinistryEmail, GOVERNORATE_KEYWORD_MAP, EGYPT_EDUCATION_STAGES } from '../lib/supabase';
 import { EGYPT_GOVERNORATES } from '../data/egyptLocationData';
 import {
   Lock,
@@ -51,6 +51,7 @@ export const LoginPage: React.FC = () => {
   const [age, setAge] = useState<number | ''>('');
   const [birthday, setBirthday] = useState('');
   const [gender, setGender] = useState<'male' | 'female'>('male');
+  const [stage, setStage] = useState('');
   const [grade, setGrade] = useState('');
 
   // Forgot Password Verification Fields
@@ -127,6 +128,7 @@ export const LoginPage: React.FC = () => {
       age: age ? Number(age) : undefined,
       birthday: birthday || undefined,
       gender,
+      stage: stage || undefined,
       grade: grade || undefined,
     };
 
@@ -346,38 +348,6 @@ export const LoginPage: React.FC = () => {
               </div>
             </div>
 
-            {/* School Grade */}
-            <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-300">
-                الصف الدراسي
-              </label>
-              <select
-                value={grade}
-                onChange={(e) => setGrade(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl bg-[#0d0f14] border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer"
-              >
-                <option value="">— اختر الصف الدراسي —</option>
-                <optgroup label="المرحلة الابتدائية">
-                  <option>الصف الأول الابتدائي</option>
-                  <option>الصف الثاني الابتدائي</option>
-                  <option>الصف الثالث الابتدائي</option>
-                  <option>الصف الرابع الابتدائي</option>
-                  <option>الصف الخامس الابتدائي</option>
-                  <option>الصف السادس الابتدائي</option>
-                </optgroup>
-                <optgroup label="المرحلة الإعدادية">
-                  <option>الصف الأول الإعدادي</option>
-                  <option>الصف الثاني الإعدادي</option>
-                  <option>الصف الثالث الإعدادي</option>
-                </optgroup>
-                <optgroup label="المرحلة الثانوية">
-                  <option>الصف الأول الثانوي</option>
-                  <option>الصف الثاني الثانوي</option>
-                  <option>الصف الثالث الثانوي</option>
-                </optgroup>
-              </select>
-            </div>
-
             {/* Submit Button */}
             <button
               type="submit"
@@ -563,36 +533,54 @@ export const LoginPage: React.FC = () => {
               </div>
             </div>
 
-            {/* School Grade */}
-            <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-300">
-                الصف الدراسي
-              </label>
-              <select
-                value={grade}
-                onChange={(e) => setGrade(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl bg-[#0d0f14] border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer"
-              >
-                <option value="">— اختر الصف الدراسي —</option>
-                <optgroup label="المرحلة الابتدائية">
-                  <option>الصف الأول الابتدائي</option>
-                  <option>الصف الثاني الابتدائي</option>
-                  <option>الصف الثالث الابتدائي</option>
-                  <option>الصف الرابع الابتدائي</option>
-                  <option>الصف الخامس الابتدائي</option>
-                  <option>الصف السادس الابتدائي</option>
-                </optgroup>
-                <optgroup label="المرحلة الإعدادية">
-                  <option>الصف الأول الإعدادي</option>
-                  <option>الصف الثاني الإعدادي</option>
-                  <option>الصف الثالث الإعدادي</option>
-                </optgroup>
-                <optgroup label="المرحلة الثانوية">
-                  <option>الصف الأول الثانوي</option>
-                  <option>الصف الثاني الثانوي</option>
-                  <option>الصف الثالث الثانوي</option>
-                </optgroup>
-              </select>
+            {/* Education Stage & School Grade (Two-Step Cascading Selection) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Stage Select */}
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-300">
+                  المرحلة التعليمية
+                </label>
+                <select
+                  value={stage}
+                  onChange={(e) => {
+                    setStage(e.target.value);
+                    setGrade('');
+                  }}
+                  className="w-full px-3 py-2 rounded-xl bg-[#0d0f14] border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer"
+                >
+                  <option value="">— اختر المرحلة أولاً —</option>
+                  {EGYPT_EDUCATION_STAGES.map((st) => (
+                    <option key={st.id} value={st.nameAr}>
+                      {st.nameAr}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Grade Select (Dependent on Stage) */}
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-300">
+                  الصف الدراسي
+                </label>
+                <select
+                  value={grade}
+                  disabled={!stage}
+                  onChange={(e) => setGrade(e.target.value)}
+                  className={`w-full px-3 py-2 rounded-xl bg-[#0d0f14] border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer ${
+                    !stage ? 'opacity-40 cursor-not-allowed bg-[#08090d]' : ''
+                  }`}
+                >
+                  <option value="">
+                    {stage ? '— اختر الصف الدراسي —' : '— اختر المرحلة أولاً —'}
+                  </option>
+                  {stage &&
+                    EGYPT_EDUCATION_STAGES.find((st) => st.nameAr === stage)?.grades.map((gr) => (
+                      <option key={gr} value={gr}>
+                        {gr}
+                      </option>
+                    ))}
+                </select>
+              </div>
             </div>
 
             {/* Submit Button */}

@@ -28,6 +28,7 @@ export interface SignUpParams {
   age?: number;
   birthday?: string;
   gender?: 'male' | 'female';
+  stage?: string;
   grade?: string;
 }
 
@@ -86,6 +87,7 @@ function buildProfile(user: User): SciNexaProfile {
     age: meta.age ? Number(meta.age) : undefined,
     birthday: meta.birthday || undefined,
     gender: meta.gender || undefined,
+    stage: meta.stage || undefined,
     grade: meta.grade || undefined,
     avatarUrl: meta.avatar_url || meta.picture || undefined,
     createdAt: user.created_at,
@@ -263,6 +265,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         age: params.age,
         birthday: params.birthday,
         gender: params.gender,
+        stage: params.stage,
         grade: params.grade,
       };
 
@@ -313,6 +316,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               age: params.age,
               birthday: params.birthday,
               gender: params.gender,
+              stage: params.stage,
               grade: params.grade,
             });
           } catch {}

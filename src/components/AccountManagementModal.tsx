@@ -6,7 +6,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { supabase } from '../lib/supabase';
+import { supabase, EGYPT_EDUCATION_STAGES } from '../lib/supabase';
 import { EGYPT_GOVERNORATES } from '../data/egyptLocationData';
 import {
   X,
@@ -39,7 +39,17 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
   const [name, setName] = useState(user?.displayName || '');
   const [age, setAge] = useState<number | ''>(user?.age || '');
   const [birthday, setBirthday] = useState(user?.birthday || '');
+  const initialStage = useMemo(() => {
+    if (user?.stage) return user.stage;
+    if (!user?.grade) return '';
+    for (const st of EGYPT_EDUCATION_STAGES) {
+      if (st.grades.includes(user.grade)) return st.nameAr;
+    }
+    return '';
+  }, [user]);
+
   const [gender, setGender] = useState<'male' | 'female'>(user?.gender || 'male');
+  const [stage, setStage] = useState(initialStage);
   const [grade, setGrade] = useState(user?.grade || '');
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -74,6 +84,7 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
           age: age ? Number(age) : undefined,
           birthday: birthday || undefined,
           gender,
+          stage: stage || undefined,
           grade: grade || undefined,
         },
       });
@@ -84,6 +95,7 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
         age: age ? Number(age) : null,
         birthday: birthday || null,
         gender,
+        stage: stage || null,
         grade: grade || null,
       }).eq('id', user.id);
 
@@ -94,6 +106,7 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
         age: age ? Number(age) : undefined,
         birthday: birthday || undefined,
         gender,
+        stage: stage || undefined,
         grade: grade || undefined,
       };
       localStorage.setItem('scinexa_cached_profile', JSON.stringify(updated));
@@ -304,36 +317,60 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
               </div>
             </div>
 
-            {/* School Grade */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-slate-300">
-                {isAr ? 'الصف الدراسي' : 'School Grade'}
-              </label>
-              <select
-                value={grade}
-                onChange={(e) => setGrade(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-[#08090d] border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer"
-              >
-                <option value="">— اختر الصف الدراسي —</option>
-                <optgroup label="المرحلة الابتدائية">
-                  <option>الصف الأول الابتدائي</option>
-                  <option>الصف الثاني الابتدائي</option>
-                  <option>الصف الثالث الابتدائي</option>
-                  <option>الصف الرابع الابتدائي</option>
-                  <option>الصف الخامس الابتدائي</option>
-                  <option>الصف السادس الابتدائي</option>
-                </optgroup>
-                <optgroup label="المرحلة الإعدادية">
-                  <option>الصف الأول الإعدادي</option>
-                  <option>الصف الثاني الإعدادي</option>
-                  <option>الصف الثالث الإعدادي</option>
-                </optgroup>
-                <optgroup label="المرحلة الثانوية">
-                  <option>الصف الأول الثانوي</option>
-                  <option>الصف الثاني الثانوي</option>
-                  <option>الصف الثالث الثانوي</option>
-                </optgroup>
-              </select>
+            {/* Education Stage & School Grade (Two-Step Cascading Selection) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Stage Select */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-slate-300">
+                  {isAr ? 'المرحلة التعليمية' : 'Education Stage'}
+                </label>
+                <select
+                  value={stage}
+                  onChange={(e) => {
+                    setStage(e.target.value);
+                    setGrade('');
+                  }}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#08090d] border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer"
+                >
+                  <option value="">{isAr ? '— اختر المرحلة التعليمية أولاً —' : '— Select Stage First —'}</option>
+                  {EGYPT_EDUCATION_STAGES.map((st) => (
+                    <option key={st.id} value={st.nameAr}>
+                      {st.nameAr}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Grade Select */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-slate-300">
+                  {isAr ? 'الصف الدراسي' : 'School Grade'}
+                </label>
+                <select
+                  value={grade}
+                  disabled={!stage}
+                  onChange={(e) => setGrade(e.target.value)}
+                  className={`w-full px-3.5 py-2.5 rounded-xl bg-[#08090d] border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer ${
+                    !stage ? 'opacity-40 cursor-not-allowed' : ''
+                  }`}
+                >
+                  <option value="">
+                    {stage
+                      ? isAr
+                        ? '— اختر الصف الدراسي —'
+                        : '— Select Grade —'
+                      : isAr
+                      ? '— اختر المرحلة أولاً —'
+                      : '— Select Stage First —'}
+                  </option>
+                  {stage &&
+                    EGYPT_EDUCATION_STAGES.find((st) => st.nameAr === stage)?.grades.map((gr) => (
+                      <option key={gr} value={gr}>
+                        {gr}
+                      </option>
+                    ))}
+                </select>
+              </div>
             </div>
 
             {/* Save Button */}

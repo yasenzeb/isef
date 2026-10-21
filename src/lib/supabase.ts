@@ -36,10 +36,47 @@ export interface SciNexaProfile {
   age?:           number;
   birthday?:      string;
   gender?:        'male' | 'female';
+  stage?:         string;
   grade?:         string;
   avatarUrl?:     string;
   createdAt?:     string;
 }
+
+// ── Egyptian Education Stages & Grades (From 4th Primary to 2nd Secondary) ───
+export interface EducationStage {
+  id: string;
+  nameAr: string;
+  grades: string[];
+}
+
+export const EGYPT_EDUCATION_STAGES: EducationStage[] = [
+  {
+    id: 'primary',
+    nameAr: 'المرحلة الابتدائية',
+    grades: [
+      'الصف الرابع الابتدائي',
+      'الصف الخامس الابتدائي',
+      'الصف السادس الابتدائي',
+    ],
+  },
+  {
+    id: 'prep',
+    nameAr: 'المرحلة الإعدادية',
+    grades: [
+      'الصف الأول الإعدادي',
+      'الصف الثاني الإعدادي',
+      'الصف الثالث الإعدادي',
+    ],
+  },
+  {
+    id: 'secondary',
+    nameAr: 'المرحلة الثانوية',
+    grades: [
+      'الصف الأول الثانوي',
+      'الصف الثاني الثانوي',
+    ],
+  },
+];
 
 // ── Egyptian Governorates Keyword Map ───────────────────────────────────────
 export const GOVERNORATE_KEYWORD_MAP: Record<string, string> = {
