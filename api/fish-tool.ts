@@ -145,26 +145,30 @@ let pendingActions: Array<{
   timestamp: number;
 }> = [];
 
-const KV_RELAY_URL = 'https://kvdb.io/KxP3rS2y8K8V3W/scinexa_action';
+const RELAY_ENDPOINT = 'https://api.restful-api.dev/objects/ff808181a09d98f701a15d4988ed38d4';
 
 async function relayAction(actionItem: any) {
   try {
-    await fetch(KV_RELAY_URL, {
-      method: 'POST',
+    await fetch(RELAY_ENDPOINT, {
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(actionItem),
-      signal: AbortSignal.timeout(1500)
+      body: JSON.stringify({
+        name: 'scinexa_action',
+        data: actionItem
+      }),
+      signal: AbortSignal.timeout(2000)
     });
   } catch {}
 }
 
 async function fetchRelayedAction(): Promise<any | null> {
   try {
-    const res = await fetch(KV_RELAY_URL, { signal: AbortSignal.timeout(1200) });
+    const res = await fetch(RELAY_ENDPOINT, { signal: AbortSignal.timeout(1500) });
     if (res.ok) {
-      const data = await res.json();
-      if (data && Date.now() - (data.timestamp || 0) < 25000) {
-        return data;
+      const json = await res.json();
+      const action = json?.data;
+      if (action && Date.now() - (action.timestamp || 0) < 30000) {
+        return action;
       }
     }
   } catch {}

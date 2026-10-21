@@ -34,7 +34,9 @@ function resolveNavigation(rawInput: string): { mainTab: string; subModule?: str
   const c = cleanText(rawInput);
   if (!c || c.length < 2) return null;
 
+  // ========================================================
   // PRIORITY 1: CHEMISTRY (الكيمياء والتفاعلات والجدول الدوري)
+  // ========================================================
   if (c.includes('كيميا') || c.includes('chem')) {
     if (c.includes('تفاعل') || c.includes('معادل') || c.includes('احماض') || c.includes('قلوي') || c.includes('احلال') || c.includes('اتحاد') || c.includes('انحلال')) {
       return { mainTab: 'chemistry', subModule: 'reactions', labelAr: 'مختبر الكيمياء — محاكي التفاعلات', labelEn: 'Chemistry — Reactions' };
@@ -48,12 +50,16 @@ function resolveNavigation(rawInput: string): { mainTab: string; subModule?: str
     return { mainTab: 'chemistry', labelAr: 'مختبر الكيمياء والجدول الدوري والتفاعلات', labelEn: 'Chemistry Laboratory' };
   }
 
+  // ========================================================
   // PRIORITY 2: BIOLOGY (الأحياء والخلية والوراثة)
+  // ========================================================
   if (c.includes('احيا') || c.includes('حيا') || c.includes('بيولوج') || c.includes('bio') || c.includes('خليه') || c.includes('خلايا') || c.includes('dna') || c.includes('وراث') || c.includes('ميتوكوندريا') || c.includes('اميبا') || c.includes('يوجلينا') || c.includes('براميسيوم')) {
     return { mainTab: 'biology', labelAr: 'مختبر الأحياء والخلية والكائنات الدقيقة', labelEn: 'Biology Laboratory' };
   }
 
+  // ========================================================
   // PRIORITY 3: ANATOMY (التشريح الطبي وأجهزة الجسم)
+  // ========================================================
   if (c.includes('تشريح') || c.includes('anatom') || c.includes('جسم الانسان') || c.includes('هيكل عظم') || c.includes('عضلات') || c.includes('جهاز دوري') || c.includes('جهاز عصب')) {
     if (c.includes('عضل') || c.includes('muscl')) {
       return { mainTab: 'anatomy', subModule: 'muscular', labelAr: 'أطلس التشريح — الجهاز العضلي', labelEn: 'Anatomy — Muscular' };
@@ -76,22 +82,30 @@ function resolveNavigation(rawInput: string): { mainTab: string; subModule?: str
     return { mainTab: 'anatomy', labelAr: 'أطلس تشريح جسم الإنسان', labelEn: 'Human Anatomy 3D Atlas' };
   }
 
+  // ========================================================
   // PRIORITY 4: GEOLOGY (الجيولوجيا والزلازل وعلوم الأرض)
+  // ========================================================
   if (c.includes('جيولوج') || c.includes('زلزال') || c.includes('زلازل') || c.includes('تسونامي') || c.includes('علوم الارض') || c.includes('طبقات الارض') || c.includes('انهيار') || c.includes('ريختر') || c.includes('صخور') || c.includes('صفائح') || c.includes('geol') || c.includes('earthquake')) {
     return { mainTab: 'geology', labelAr: 'علوم الأرض والزلازل ومحاكي انهيار المباني', labelEn: 'Geology & Earth Sciences' };
   }
 
+  // ========================================================
   // PRIORITY 5: ASTRONOMY (الفلك والنظام الشمسي والفضاء)
+  // ========================================================
   if (c.includes('فلك') || c.includes('كوكب') || c.includes('كواكب') || c.includes('كبلر') || c.includes('نظام شمس') || c.includes('مجموعه شمس') || c.includes('اطوار القمر') || c.includes('فضاء') || c.includes('مدارات') || c.includes('astro') || c.includes('solar')) {
     return { mainTab: 'astronomy', labelAr: 'علم الفلك ومدارات كبلر والنظام الشمسي', labelEn: 'Astronomy & Solar System' };
   }
 
+  // ========================================================
   // PRIORITY 6: CLASSROOM (الفصل والسبورة والشاشات الذكية)
+  // ========================================================
   if (c.includes('فصل') || c.includes('سبور') || c.includes('شاشه ذكي') || c.includes('بروجكتور') || c.includes('عرض تقديم') || c.includes('class') || c.includes('board') || c.includes('smartboard')) {
     return { mainTab: 'classroom', labelAr: 'وضع الفصل والشاشات الذكية التفاعلية', labelEn: 'Classroom Smartboard Mode' };
   }
 
+  // ========================================================
   // PRIORITY 7: PHYSICS (الفيزياء والموجات والدوائر)
+  // ========================================================
   if (c.includes('فيزيا') || c.includes('مقذوف') || c.includes('بصريات') || c.includes('انكسار') || c.includes('عدسات') || c.includes('موجات') || c.includes('دوائر') || c.includes('كهربا') || c.includes('نيوتن') || c.includes('physic')) {
     if (c.includes('مقذوف') || c.includes('مدفع') || c.includes('رمي') || c.includes('projectil')) {
       return { mainTab: 'physics', subModule: 'projectiles', labelAr: 'مختبر الفيزياء — حركة المقذوفات', labelEn: 'Physics — Projectiles' };
@@ -111,7 +125,9 @@ function resolveNavigation(rawInput: string): { mainTab: string; subModule?: str
     return { mainTab: 'physics', labelAr: 'مختبر الفيزياء والدوائر والموجات', labelEn: 'Physics Laboratory' };
   }
 
+  // ========================================================
   // PRIORITY 8: HOME (الرئيسية)
+  // ========================================================
   if (c.includes('رئيس') || c.includes('بداي') || c.includes('خروج') || c.includes('home')) {
     return { mainTab: 'home', labelAr: 'الصفحة الرئيسية', labelEn: 'Home Screen' };
   }
@@ -119,7 +135,9 @@ function resolveNavigation(rawInput: string): { mainTab: string; subModule?: str
   return null;
 }
 
-const KV_RELAY_URL = 'https://kvdb.io/KxP3rS2y8K8V3W/scinexa_action';
+// Global persistent shared object ID on restful-api.dev
+const SHARED_OBJECT_ID = 'ff808181a09d98f701a15d4988ed38d4';
+const RELAY_ENDPOINT = `https://api.restful-api.dev/objects/${SHARED_OBJECT_ID}`;
 
 export const FishAgentController: React.FC<FishAgentControllerProps> = ({
   currentTab,
@@ -133,11 +151,9 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
   languageRef.current = language;
 
   const latestContextRef = useRef<{ title?: string; desc?: string; type?: string }>({});
-  const processedActionIdsRef = useRef<Set<string>>(new Set());
-  const processedTextSnippetsRef = useRef<Set<string>>(new Set());
-
-  // Navigation Cooldown Guard: Prevents flipping back and forth between labs
+  const lastProcessedRelayTimeRef = useRef<number>(Date.now() - 5000);
   const lastNavigatedRef = useRef<{ tab: string; subModule?: string; time: number }>({ tab: '', time: 0 });
+  const processedSnippetsRef = useRef<Set<string>>(new Set());
 
   // Transient Toast Notification
   const [navToast, setNavToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
@@ -152,17 +168,17 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
     if (!targetMainTab) return;
 
     const now = Date.now();
-    // If same tab and submodule requested within 4 seconds, ignore duplicate
+    // Prevent duplicate triggers if already at target within 3.5s
     if (
       lastNavigatedRef.current.tab === targetMainTab &&
       lastNavigatedRef.current.subModule === subModule &&
-      now - lastNavigatedRef.current.time < 4000
+      now - lastNavigatedRef.current.time < 3500
     ) {
       return;
     }
 
-    // Cooldown guard: no rapid switching within 1.8 seconds to stop flickering
-    if (now - lastNavigatedRef.current.time < 1800) {
+    // Cooldown guard: no rapid switching within 1.2s to stop flickering
+    if (now - lastNavigatedRef.current.time < 1200) {
       return;
     }
 
@@ -275,48 +291,57 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
     return () => window.removeEventListener('scinexa:context', handleLabContext);
   }, []);
 
-  // 4. REAL-TIME SHADOW DOM OBSERVER: Listens ONLY to the latest message in chat
+  // 4. REAL-TIME SHADOW DOM OBSERVER: Listens to the latest message in chat
   useEffect(() => {
     let observer: MutationObserver | null = null;
     let pollAttempts = 0;
 
-    const checkAndProcessNewText = (rawText: string) => {
-      if (!rawText || rawText.length < 3) return;
+    const checkLatestTranscriptMessage = () => {
+      const agentEl = document.querySelector('fish-agent') as any;
+      if (!agentEl?.shadowRoot) return;
 
-      const trimmed = rawText.trim();
-      if (processedTextSnippetsRef.current.has(trimmed)) return;
-      processedTextSnippetsRef.current.add(trimmed);
+      const elements = agentEl.shadowRoot.querySelectorAll('p, span, div');
+      if (!elements || elements.length === 0) return;
 
-      // Check if text is related to navigation intent
-      const isNavIntent = 
-        trimmed.includes('انقل') || 
-        trimmed.includes('انتقال') || 
-        trimmed.includes('انفل') || // Handles user typo "انفلني"
-        trimmed.includes('افتح') || 
-        trimmed.includes('وديني') || 
-        trimmed.includes('روح') || 
-        trimmed.includes('شغل') || 
-        trimmed.includes('مختبر') || 
-        trimmed.includes('معمل') || 
-        trimmed.includes('قسم') ||
-        trimmed.includes('سأنقلك') || 
-        trimmed.includes('تم نقلك') || 
-        trimmed.includes('تم انتقالك') || 
-        trimmed.includes('لننتقل') ||
-        trimmed.includes('نحن الان في') ||
-        trimmed.includes('navigate') || 
-        trimmed.includes('switch') || 
-        trimmed.includes('open') || 
-        trimmed.includes('take me');
+      // Scan from bottom upwards (latest message first)
+      for (let i = elements.length - 1; i >= Math.max(0, elements.length - 20); i--) {
+        const text = (elements[i].innerText || elements[i].textContent || '').trim();
+        if (text.length >= 4 && !processedSnippetsRef.current.has(text)) {
+          processedSnippetsRef.current.add(text);
 
-      if (isNavIntent) {
-        const resolved = resolveNavigation(trimmed);
-        if (resolved && resolved.mainTab) {
-          triggerNavigation(
-            resolved.mainTab, 
-            resolved.subModule, 
-            languageRef.current === 'ar' ? resolved.labelAr : resolved.labelEn
-          );
+          const isNavIntent =
+            text.includes('انقل') ||
+            text.includes('انتقال') ||
+            text.includes('انتقلت') ||
+            text.includes('انفل') ||
+            text.includes('افتح') ||
+            text.includes('وديني') ||
+            text.includes('روح') ||
+            text.includes('شغل') ||
+            text.includes('مختبر') ||
+            text.includes('معمل') ||
+            text.includes('قسم') ||
+            text.includes('سأنقلك') ||
+            text.includes('تم نقلك') ||
+            text.includes('تم انتقالك') ||
+            text.includes('لننتقل') ||
+            text.includes('نحن الان في') ||
+            text.includes('navigate') ||
+            text.includes('switch') ||
+            text.includes('open') ||
+            text.includes('take me');
+
+          if (isNavIntent) {
+            const resolved = resolveNavigation(text);
+            if (resolved && resolved.mainTab) {
+              triggerNavigation(
+                resolved.mainTab,
+                resolved.subModule,
+                languageRef.current === 'ar' ? resolved.labelAr : resolved.labelEn
+              );
+              break;
+            }
+          }
         }
       }
     };
@@ -341,21 +366,14 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
       }
 
       try {
-        // ONLY triggers on newly appended nodes, not historical sweeps
-        observer = new MutationObserver((mutations) => {
-          for (const m of mutations) {
-            if (m.type === 'childList') {
-              m.addedNodes.forEach(node => {
-                const text = node.textContent;
-                if (text) checkAndProcessNewText(text);
-              });
-            }
-          }
+        observer = new MutationObserver(() => {
+          checkLatestTranscriptMessage();
         });
 
         observer.observe(shadow, {
           childList: true,
           subtree: true,
+          characterData: true,
         });
       } catch (err) {
         console.warn('Could not attach Shadow DOM observer on fish-agent:', err);
@@ -364,46 +382,52 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
 
     setupObserver();
 
+    // Pulse sweep every 500ms to catch any stream updates
+    const sweepInterval = setInterval(checkLatestTranscriptMessage, 500);
+
     return () => {
       if (observer) observer.disconnect();
+      clearInterval(sweepInterval);
     };
   }, []);
 
-  // 5. Poll for remote webhook actions from /api/fish-tool & KV relay (with deduplication)
+  // 5. POLL RELAY & VERCEL ENDPOINTS (Guaranteed delivery from switch_lab webhook)
   useEffect(() => {
     const pollInterval = setInterval(async () => {
+      // 1. Direct check on Global Shared Persistent Relay
+      try {
+        const relayRes = await fetch(RELAY_ENDPOINT, { signal: AbortSignal.timeout(1200) });
+        if (relayRes.ok) {
+          const json = await relayRes.json();
+          const act = json?.data;
+          if (act && act.action === 'switch_lab' && act.timestamp > lastProcessedRelayTimeRef.current) {
+            // Must be within last 30 seconds
+            if (Date.now() - act.timestamp < 30000) {
+              lastProcessedRelayTimeRef.current = act.timestamp;
+              triggerNavigation(act.main_tab, act.sub_module, act.message);
+            }
+          }
+        }
+      } catch {}
+
+      // 2. Fallback check on Vercel endpoint
       try {
         const res = await fetch('/api/fish-tool?action=poll_actions');
         if (res.ok) {
           const data = await res.json();
           if (data.actions && data.actions.length > 0) {
             for (const act of data.actions) {
-              if (processedActionIdsRef.current.has(act.id)) continue;
-              processedActionIdsRef.current.add(act.id);
-
-              if (act.action === 'switch_lab') {
-                triggerNavigation(act.main_tab, act.sub_module, act.message);
+              if (act.timestamp > lastProcessedRelayTimeRef.current) {
+                lastProcessedRelayTimeRef.current = act.timestamp;
+                if (act.action === 'switch_lab') {
+                  triggerNavigation(act.main_tab, act.sub_module, act.message);
+                }
               }
             }
           }
         }
       } catch {}
-
-      try {
-        const kvRes = await fetch(KV_RELAY_URL, { signal: AbortSignal.timeout(1000) });
-        if (kvRes.ok) {
-          const act = await kvRes.json();
-          if (act && act.id && !processedActionIdsRef.current.has(act.id)) {
-            if (Date.now() - (act.timestamp || 0) < 25000) {
-              processedActionIdsRef.current.add(act.id);
-              if (act.action === 'switch_lab') {
-                triggerNavigation(act.main_tab, act.sub_module, act.message);
-              }
-            }
-          }
-        }
-      } catch {}
-    }, 900);
+    }, 600);
 
     return () => clearInterval(pollInterval);
   }, []);
