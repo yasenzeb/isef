@@ -36,6 +36,7 @@ export const LoginPage: React.FC = () => {
     loginWithGoogle,
     loginWithMicrosoft,
     resetPasswordWithInstitutionalVerification,
+    continueAsGuest,
   } = useAuth();
 
   const [mode, setMode] = useState<'login' | 'signup' | 'forgot_password'>('login');
@@ -63,6 +64,21 @@ export const LoginPage: React.FC = () => {
     if (!email || !email.includes('@')) return null;
     return detectRoleFromEmail(email);
   }, [email]);
+
+  // Capture OAuth error query/hash params if Google or Microsoft fails
+  React.useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    const err = searchParams.get('error_description') || searchParams.get('error') || hashParams.get('error_description') || hashParams.get('error');
+    if (err) {
+      const clean = decodeURIComponent(err.replace(/\+/g, ' '));
+      if (clean.includes('access_denied') || clean.includes('restricted') || clean.includes('testing')) {
+        setErrorMessage('جوجل: الحساب غير مسجل في مستخدمي الاختبار (Test Users) أو التطبيق في وضع Testing. يرجى الضغط على PUBLISH APP في Google Cloud، أو استخدام الدخول بالإيميل الموحد أو كزائر.');
+      } else {
+        setErrorMessage(clean);
+      }
+    }
+  }, []);
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -729,6 +745,18 @@ export const LoginPage: React.FC = () => {
                 </svg>
                 <span>تسجيل مباشر بـ Microsoft Office 365</span>
               </button>
+
+              {/* Guest Quick Access Button */}
+              <div className="pt-1.5">
+                <button
+                  type="button"
+                  onClick={continueAsGuest}
+                  className="w-full py-2.5 px-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-[0.99]"
+                >
+                  <Sparkles className="w-4 h-4 text-emerald-400" />
+                  <span>الدخول السريع كزائر (تصفح جميع المعامل فوراً)</span>
+                </button>
+              </div>
             </div>
           </>
         )}

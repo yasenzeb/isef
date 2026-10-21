@@ -27,6 +27,7 @@ export interface SciNexaProfile {
   email:          string;
   displayName:    string;
   role:           UserRole;
+  isGuest?:       boolean;
   schoolCode?:    string;
   studentCode?:   string;
   governorate?:   string;

@@ -47,6 +47,7 @@ interface AuthContextValue {
   loginWithMicrosoft: () => Promise<{ error: string | null }>;
   loginWithGoogle: () => Promise<{ error: string | null }>;
   resetPasswordWithInstitutionalVerification: (params: ResetPasswordParams) => Promise<{ error: string | null; message?: string }>;
+  continueAsGuest: () => void;
   logout: () => Promise<void>;
 }
 
@@ -143,6 +144,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setSession(data.session);
           syncProfile(buildProfile(data.session.user));
         } else {
+          // Preserve guest mode if active
+          const cached = localStorage.getItem('scinexa_cached_profile');
+          if (cached) {
+            try {
+              const parsed = JSON.parse(cached);
+              if (parsed?.isGuest) {
+                setUser(parsed);
+                setIsLoading(false);
+                return;
+              }
+            } catch {}
+          }
           setSession(null);
           syncProfile(null);
         }
@@ -389,6 +402,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [syncProfile]);
 
+  // ── Continue as Guest (One-Click Instant Access) ──────────────────────────
+  const continueAsGuest = useCallback(() => {
+    const guestProfile: SciNexaProfile = {
+      id: 'guest_' + Math.random().toString(36).substring(2, 9),
+      email: 'guest@scinexa.edu',
+      displayName: 'زائر المنظومة',
+      role: 'student',
+      isGuest: true,
+      governorateAr: 'جمهورية مصر العربية',
+      gender: 'male',
+    };
+    syncProfile(guestProfile);
+    setIsLoading(false);
+  }, [syncProfile]);
+
   // ── Logout ────────────────────────────────────────────────────────────────
   const logout = useCallback(async () => {
     try {
@@ -396,6 +424,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch {}
     setSession(null);
     syncProfile(null);
+    try {
+      localStorage.removeItem('scinexa_cached_profile');
+    } catch {}
   }, [syncProfile]);
 
   return (
@@ -409,6 +440,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       loginWithMicrosoft,
       loginWithGoogle,
       resetPasswordWithInstitutionalVerification,
+      continueAsGuest,
       logout,
     }}>
       {children}

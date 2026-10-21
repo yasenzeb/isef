@@ -359,22 +359,30 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal, onOp
         <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-950/40 via-indigo-950/30 to-purple-950/30 border border-indigo-500/25 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl backdrop-blur-md">
           <div className="flex items-center gap-3.5">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-2xl shadow-lg shrink-0 border border-white/10">
-              {user.gender === 'female' ? '👧' : (user.role === 'teacher' ? '👨‍🏫' : '👦')}
+              {user.isGuest ? '🧭' : (user.gender === 'female' ? '👧' : (user.role === 'teacher' ? '👨‍🏫' : '👦'))}
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="text-base sm:text-lg font-black text-white">
-                  {isArabic ? `أهلاً بك يا ${user.displayName.split(' ')[0]} 👋` : `Welcome, ${user.displayName.split(' ')[0]} 👋`}
+                  {user.isGuest
+                    ? (isArabic ? 'أهلاً بك كزائر في SciNexa 👋' : 'Welcome to SciNexa (Guest Mode) 👋')
+                    : (isArabic ? `أهلاً بك يا ${user.displayName.split(' ')[0]} 👋` : `Welcome, ${user.displayName.split(' ')[0]} 👋`)}
                 </h2>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-mono">
-                  {isArabic ? 'وضع الطالب الموحد نشط' : 'Unified Student Workspace'}
+                  {user.isGuest
+                    ? (isArabic ? 'وضع الزائر الاستكشافي نشط' : 'Guest Mode Active')
+                    : (isArabic ? 'وضع الطالب الموحد نشط' : 'Unified Student Workspace')}
                 </span>
               </div>
               <p className="text-xs text-slate-300 mt-1 flex items-center gap-2 flex-wrap">
-                <span>
-                  {isArabic ? 'كود الطالب الموحد:' : 'Code:'} <strong className="text-blue-400 font-mono text-sm">{studentCodeDisplay}</strong>
-                </span>
-                <span className="text-slate-600">•</span>
+                {!user.isGuest && (
+                  <>
+                    <span>
+                      {isArabic ? 'كود الطالب الموحد:' : 'Code:'} <strong className="text-blue-400 font-mono text-sm">{studentCodeDisplay}</strong>
+                    </span>
+                    <span className="text-slate-600">•</span>
+                  </>
+                )}
                 <button
                   type="button"
                   onClick={() => onOpenLocationModal && onOpenLocationModal()}

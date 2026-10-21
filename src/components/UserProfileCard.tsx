@@ -48,7 +48,7 @@ export const UserProfileCard: React.FC<{ language?: string }> = ({ language = 'a
   const firstName = user.displayName ? user.displayName.trim().split(' ')[0] : (isAr ? 'الطالب' : 'Student');
 
   // Friendly student avatar icon based on gender
-  const avatarIcon = user.gender === 'female' ? '👧' : (user.role === 'teacher' ? '👨‍🏫' : '👦');
+  const avatarIcon = user.isGuest ? '🧭' : (user.gender === 'female' ? '👧' : (user.role === 'teacher' ? '👨‍🏫' : '👦'));
 
   return (
     <>
@@ -70,7 +70,7 @@ export const UserProfileCard: React.FC<{ language?: string }> = ({ language = 'a
               <span className="text-amber-400">👋</span>
             </span>
             <span className="text-[10px] text-emerald-400 font-mono -mt-0.5 font-semibold">
-              {isAr ? 'وضع الطالب' : 'Student Mode'}
+              {user.isGuest ? (isAr ? 'وضع الزائر' : 'Guest Mode') : (isAr ? 'وضع الطالب' : 'Student Mode')}
             </span>
           </div>
 
