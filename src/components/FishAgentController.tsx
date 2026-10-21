@@ -272,6 +272,9 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
     const govName = activeGovInfo.govName;
     const adminName = activeGovInfo.adminName;
 
+    const gradeTitle = studentGrade ? ` يا بطل ${studentGrade}` : ' يا بطل العلوم والمعامل';
+    const govBadge = govName && govName !== 'جمهورية مصر العربية' ? ` بمحافظة ${govName}` : '';
+
     const dynamicVars = {
       current_lab: lang === 'ar' ? labMeta.ar : labMeta.en,
       active_tab_id: tab,
@@ -279,22 +282,26 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
       user_language: lang === 'ar' ? 'العربية' : 'English',
       // Comprehensive Student & Institutional Telemetry
       student_name: studentFirstName,
+      friend_name: studentFirstName,
       full_name: fullStudentName,
       user_role: studentRole,
       student_code: studentCode,
       governorate: govName,
       administration: adminName,
       educational_stage: studentStage,
-      school_grade: studentGrade,
+      school_grade: studentGrade || 'المرحلة الإعدادية',
       is_guest: isGuest ? 'نعم (وضع الزائر)' : 'لا (حساب رسمي موثق)',
       student_gender: u?.gender === 'female' ? 'أنثى' : 'ذكر',
       student_age: u?.age ? `${u.age} سنة` : '',
       instruction_persona:
         lang === 'ar'
-          ? `أنت داروين، العقل العلمي والمساعد الذكي لمنصة SciNexa. أنت تتحدث الآن مع ${studentRole} "${fullStudentName}" من محافظة ${govName}${adminName ? ` (${adminName})` : ''}${studentGrade ? ` في ${studentGrade}` : ''}${studentStage ? ` (${studentStage})` : ''}.
-خاطب الطالب باسمه الأول "${studentFirstName}" دائماً بود واحترام وحماس علمي.
-اجعل مستوى شروحاتك وتجاربك مناسباً تماماً لمستواه في ${studentGrade || 'المرحلة الحالية'}.`
-          : `You are Darwin, the scientific AI guide on SciNexa. You are speaking with ${studentRole} "${fullStudentName}" from ${govName}, grade "${studentGrade}". Address them by "${studentFirstName}" and adapt your scientific explanations to match their grade level.`,
+          ? `أنت "داروين"، الصديق المقرب والمرشد العلمي الذكي والملهم للطالب "${studentFirstName}" في منصة SciNexa.
+قواعد حاسمة في الحديث:
+1. نادِ الطالب دائماً باسمه الأول "${studentFirstName}" في كل رد وتحدث معه كصديقك المقرب والمفضل بود ومرح وتشجيع ("يا صديقي ${studentFirstName}" / "يا بطل ${studentGrade || 'العلوم'}").
+2. اذكر صفه الدراسي دائماً (${studentGrade || 'منهجه التعليمي'}) وخصص شروحاتك لتناسبه تماماً.
+3. تفاعل معه بحيوية وأجب عن أسئلته العلمية واقترح عليه تجارب ممتعة في معمل ${labMeta.ar}.`
+          : `You are Darwin, the close friend and scientific AI mentor for student "${studentFirstName}" on SciNexa.
+Always address them warmly by their first name "${studentFirstName}" as their best friend ("my friend ${studentFirstName}"), mention their grade "${studentGrade || 'Science'}", and guide them in ${labMeta.en}.`,
       selected_item: context.title || (lang === 'ar' ? 'تصفح عام للمختبر' : 'General lab browsing'),
       item_details: context.desc || '',
       timestamp: Date.now(),
@@ -309,14 +316,12 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
         let greetingText = '';
         if (lang === 'ar') {
           if (isGuest) {
-            greetingText = `أهلاً بك يا بطل في منصة SciNexa! أنا داروين مرشدك العلمي، مستعد لاستكشاف معمل ${labMeta.ar} اليوم؟`;
+            greetingText = `أهلاً يا صديقي! يا بطل منصة SciNexa. أنا داروين مرشدك العلمي، مستعد لاستكشاف معمل ${labMeta.ar} اليوم؟`;
           } else {
-            const govBadge = govName && govName !== 'جمهورية مصر العربية' ? ` يا بطل ${govName}` : '';
-            const gradeBadge = studentGrade ? ` المقيد في ${studentGrade}` : '';
-            greetingText = `أهلاً بك يا ${studentFirstName}!${govBadge}${gradeBadge}. أنا داروين مرشدك العلمي، مستعد نبدأ تجاربنا في ${labMeta.ar}؟`;
+            greetingText = `أهلاً يا صديقي ${studentFirstName}!${gradeTitle}${govBadge}. أنا داروين مرشدك العلمي، مستعد نبدأ تجاربنا في ${labMeta.ar}؟`;
           }
         } else {
-          greetingText = `Welcome ${studentFirstName}! I am Darwin, your scientific guide. Ready to experiment in the ${labMeta.en}?`;
+          greetingText = `Hello my friend ${studentFirstName}! Welcome to SciNexa. Ready to experiment in the ${labMeta.en}?`;
         }
 
         agentEl.setAttribute('greeting', greetingText);

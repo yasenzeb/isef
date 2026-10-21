@@ -326,9 +326,36 @@ export default async function handler(req: any, res?: any) {
       message: actionItem.message,
       current_lab: resolved.mainTab,
       sub_module: resolved.subModule || 'main',
+      student_name: latestPlatformState.studentName || 'صديقي البطل',
+      school_grade: latestPlatformState.grade || '',
+      system_instruction: `خاطب الطالب باسمه الأول "${latestPlatformState.studentName || 'صديقي'}" كصديقه المقرب، وأخبره بحماس أنه تم نقله إلى ${resolved.label}.`,
     };
     if (isNode) return res.status(200).json(reply);
     return new Response(JSON.stringify(reply), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+
+  // Tool: get_student_identity
+  if (toolName === 'get_student_identity' || toolName === 'who_am_i' || body?.tool === 'get_student_identity') {
+    const stName = latestPlatformState.studentName || 'صديقي البطل';
+    const stGrade = latestPlatformState.grade || 'العلوم والمعامل';
+    const stGov = latestPlatformState.governorate || 'مصر';
+    const studentReply = {
+      success: true,
+      student_first_name: stName,
+      student_full_name: latestPlatformState.fullName || stName,
+      school_grade: stGrade,
+      educational_stage: latestPlatformState.stage || '',
+      governorate: stGov,
+      administration: latestPlatformState.administration || '',
+      role: latestPlatformState.role || 'طالب',
+      honorific: `يا صديقي ${stName} يا بطل ${stGrade}`,
+      instruction_for_speaking: `أنت تتحدث مع صديقك المقرب "${stName}" في ${stGrade} بمحافظة ${stGov}. ناده باسمه "${stName}" دائماً بحماس ومودة كأعز أصدقائه.`,
+    };
+    if (isNode) return res.status(200).json(studentReply);
+    return new Response(JSON.stringify(studentReply), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
