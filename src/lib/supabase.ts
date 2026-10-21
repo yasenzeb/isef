@@ -15,7 +15,7 @@ export const supabase = createClient(SUPABASE_URL || '', SUPABASE_ANON_KEY || ''
   auth: {
     autoRefreshToken:    true,
     persistSession:      true,
-    detectSessionInUrl:  true,
+    detectSessionInUrl:  false,  // We handle OAuth code exchange manually in AuthContext
   },
 });
 

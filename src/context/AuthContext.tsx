@@ -118,26 +118,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     mounted.current = true;
 
-    // Handle OAuth callback code explicitly (e.g. Google & Microsoft redirect)
-    const urlParams = new URLSearchParams(window.location.search);
-    const oauthCode = urlParams.get('code');
+    // Handle OAuth callbacks — Supabase can return:
+    //   PKCE flow: ?code=xxx  (Google, Microsoft via redirectTo)
+    //   Implicit flow: #access_token=xxx (legacy hash fragment)
+    const urlParams  = new URLSearchParams(window.location.search);
+    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    const oauthCode  = urlParams.get('code');
+    const hashToken  = hashParams.get('access_token');
+
+    if (hashToken) {
+      // Implicit flow — Supabase SDK reads hash automatically; just clean URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+      // Session will be picked up by getSession() below
+    }
 
     if (oauthCode) {
+      // PKCE flow — manually exchange code for session
       setIsLoading(true);
-      supabase.auth.exchangeCodeForSession(oauthCode).then(({ data, error }) => {
-        if (!mounted.current) return;
-        if (data?.session?.user) {
-          setSession(data.session);
-          syncProfile(buildProfile(data.session.user));
-          // Clean the code param from address bar cleanly
-          window.history.replaceState({}, document.title, window.location.pathname);
-        }
-        setIsLoading(false);
-      }).catch(() => {
-        if (mounted.current) setIsLoading(false);
-      });
+      supabase.auth.exchangeCodeForSession(oauthCode)
+        .then(({ data, error: exchErr }) => {
+          if (!mounted.current) return;
+          if (!exchErr && data?.session?.user) {
+            setSession(data.session);
+            syncProfile(buildProfile(data.session.user));
+            window.history.replaceState({}, document.title, window.location.pathname);
+            setIsLoading(false);
+            return;
+          }
+          // Exchange failed — fall through to getSession (might already be set)
+          supabase.auth.getSession().then(({ data: sd }) => {
+            if (!mounted.current) return;
+            if (sd.session?.user) {
+              setSession(sd.session);
+              syncProfile(buildProfile(sd.session.user));
+            } else {
+              setSession(null);
+              syncProfile(null);
+            }
+            setIsLoading(false);
+          });
+        })
+        .catch(() => {
+          if (mounted.current) setIsLoading(false);
+        });
     } else {
-      // 1. Initial session check
+      // Normal load — check existing session
       supabase.auth.getSession().then(({ data }) => {
         if (!mounted.current) return;
         if (data.session?.user) {
@@ -163,13 +188,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
     }
 
-    // 2. Real-time auth changes listener
+    // Real-time auth state listener (fires on sign-in / sign-out / token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, newSession) => {
+      (event, newSession) => {
         if (!mounted.current) return;
         if (newSession?.user) {
           setSession(newSession);
           syncProfile(buildProfile(newSession.user));
+          setIsLoading(false);
+        } else if (event === 'SIGNED_OUT') {
+          setSession(null);
           setIsLoading(false);
         }
       }
@@ -292,8 +320,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin,
-          queryParams: { prompt: 'select_account' },
+          redirectTo: `${window.location.origin}/`,
+          queryParams: { prompt: 'select_account', access_type: 'offline' },
         },
       });
       if (error) return { error: error.message };
