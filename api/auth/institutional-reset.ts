@@ -26,7 +26,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const cleanCode = String(studentCode).trim();
 
   // 1. Institutional Validation Rule:
-  // If email contains a numeric code prefix (e.g. 479670721@...), studentCode MUST match it
+  // If email contains a numeric code prefix (e.g. 12345678@...), studentCode MUST match it
   const numPrefixMatch = cleanEmail.match(/^(\d+)/);
   if (numPrefixMatch && numPrefixMatch[1] !== cleanCode) {
     return res.status(400).json({

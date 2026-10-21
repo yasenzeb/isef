@@ -307,7 +307,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { error: 'كلمة المرور الجديدة يجب أن لا تقل عن 6 أحرف أو أرقام.' };
       }
 
-      // Call serverless institutional reset endpoint
+      // 1. Try direct Supabase RPC function (works without any secret key if SQL function is created)
+      try {
+        const { data: rpcData, error: rpcError } = await supabase.rpc('reset_student_password', {
+          target_email: cleanEmail,
+          target_code: cleanCode,
+          new_password: params.newPassword,
+        });
+
+        if (!rpcError && rpcData?.success) {
+          // Password updated in database! Sign in immediately
+          const loginRes = await supabase.auth.signInWithPassword({
+            email: cleanEmail,
+            password: params.newPassword,
+          });
+
+          if (loginRes.data.user) {
+            setSession(loginRes.data.session);
+            syncProfile(buildProfile(loginRes.data.user));
+          }
+
+          return { error: null, message: rpcData.message || 'تم تحديث كلمة المرور وتأكيد هويتك بنجاح!' };
+        } else if (rpcData?.error) {
+          return { error: rpcData.error };
+        }
+      } catch {}
+
+      // 2. Fallback: Call serverless institutional reset endpoint
       const res = await fetch('/api/auth/institutional-reset', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

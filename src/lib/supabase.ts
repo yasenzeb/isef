@@ -108,7 +108,7 @@ export function detectRoleFromEmail(email: string): {
 } {
   const e = email.toLowerCase().trim();
 
-  // Always extract numeric code if email starts with digits (e.g. 479670721@...)
+  // Always extract numeric code if email starts with digits (e.g. 12345678@...)
   const numCodeMatch = e.match(/^(\d+)/);
   const detectedStudentCode = numCodeMatch ? numCodeMatch[1] : undefined;
 
@@ -123,7 +123,7 @@ export function detectRoleFromEmail(email: string): {
     }
   }
 
-  // Pattern 1: Egyptian Unified Student/Teacher Email: e.g. 479670721@dakahliya3.moe.edu.eg
+  // Pattern 1: Egyptian Unified Student/Teacher Email: e.g. code@governorate.moe.edu.eg
   const moeMatch = e.match(/^([0-9a-zA-Z_.-]+)@([a-zA-Z0-9_-]+)\.moe\.edu\.eg$/);
   if (moeMatch) {
     const rawUserPart = moeMatch[1];

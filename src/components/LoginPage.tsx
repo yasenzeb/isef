@@ -54,7 +54,7 @@ export const LoginPage: React.FC = () => {
 
   // Forgot Password Verification Fields
   const [resetCode, setResetCode] = useState('');
-  const [resetGov, setResetGov] = useState('الدقهلية');
+  const [resetGov, setResetGov] = useState('القاهرة');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -277,7 +277,7 @@ export const LoginPage: React.FC = () => {
                   dir="ltr"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="479670721@dakahliya3.moe.edu.eg"
+                  placeholder="code@governorate.moe.edu.eg"
                   className="w-full px-3.5 py-2.5 pl-10 rounded-xl bg-[#0d0f14] border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-mono"
                 />
                 <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -374,7 +374,7 @@ export const LoginPage: React.FC = () => {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="ياسين السباعي"
+                  placeholder="الاسم ثلاثي أو رباعي"
                   className="w-full px-3.5 py-2 rounded-xl bg-[#0d0f14] border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 transition-all"
                 />
                 <User className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -393,7 +393,7 @@ export const LoginPage: React.FC = () => {
                   dir="ltr"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="479670721@dakahliya3.moe.edu.eg"
+                  placeholder="code@governorate.moe.edu.eg"
                   className="w-full px-3.5 py-2 pl-10 rounded-xl bg-[#0d0f14] border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 transition-all font-mono"
                 />
                 <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -556,7 +556,7 @@ export const LoginPage: React.FC = () => {
                     const numMatch = e.target.value.match(/^(\d+)/);
                     if (numMatch && !resetCode) setResetCode(numMatch[1]);
                   }}
-                  placeholder="479670721@dakahliya3.moe.edu.eg"
+                  placeholder="code@governorate.moe.edu.eg"
                   className="w-full px-3.5 py-2 pl-10 rounded-xl bg-[#0d0f14] border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 transition-all font-mono"
                 />
                 <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -576,7 +576,7 @@ export const LoginPage: React.FC = () => {
                   dir="ltr"
                   value={resetCode}
                   onChange={(e) => setResetCode(e.target.value)}
-                  placeholder="479670721"
+                  placeholder="12345678"
                   className="w-full px-3.5 py-2 pl-10 rounded-xl bg-[#0d0f14] border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 transition-all font-mono"
                 />
                 <GraduationCap className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
