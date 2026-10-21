@@ -1,104 +1,148 @@
 /**
- * AuthContext.tsx
- * Microsoft Entra ID (Azure AD) Authentication Context for SciNexa
- * Uses secure OAuth 2.0 + PKCE flow — no passwords stored anywhere.
+ * AuthContext.tsx — Supabase-powered Authentication Context
+ * Supports:
+ *   1. Magic Link (OTP email) — works immediately with ministry emails
+ *   2. Microsoft OAuth (Azure AD) — enabled after Supabase Azure config
  */
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, {
+  createContext, useContext, useEffect, useState, useCallback, useRef,
+} from 'react';
+import type { Session, User } from '@supabase/supabase-js';
+import {
+  supabase,
+  detectRoleFromEmail,
+  type SciNexaProfile,
+  type UserRole,
+} from '../lib/supabase';
 
-// ─── User Profile (populated from Microsoft Graph + email domain) ───────────
-export interface SciNexaUser {
-  /** Microsoft Object ID (permanent, unique) */
-  id: string;
-  /** Full display name from Microsoft */
-  displayName: string;
-  /** Institutional email */
-  email: string;
-  /** Role derived from email subdomain */
-  role: 'student' | 'teacher' | 'principal' | 'admin';
-  /** School / Ministry metadata (from email domain) */
-  schoolCode?: string;
-  schoolName?: string;
-  /** Student-specific */
-  studentCode?: string;
-  gradeLevel?: string;
-  /** Teacher-specific */
-  subject?: string;
-  /** Microsoft Graph extended fields */
-  department?: string;
-  jobTitle?: string;
-  officeLocation?: string;
-  /** Profile photo URL (from Microsoft Graph) */
-  photoUrl?: string;
-  /** Raw Microsoft Graph profile */
-  graphProfile?: Record<string, unknown>;
-}
+// Re-export for consumers
+export type { SciNexaProfile, UserRole };
 
-interface AuthState {
-  user: SciNexaUser | null;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-}
-
-interface AuthContextValue extends AuthState {
-  login: () => void;
-  logout: () => Promise<void>;
-  refreshUser: () => Promise<void>;
+// ─── Context shape ───────────────────────────────────────────────────────────
+interface AuthContextValue {
+  user:              SciNexaProfile | null;
+  session:           Session | null;
+  isLoading:         boolean;
+  isAuthenticated:   boolean;
+  /** Send magic-link to ministry email */
+  sendMagicLink:     (email: string) => Promise<{ error: string | null }>;
+  /** OAuth login via Microsoft (requires Supabase Azure provider config) */
+  loginWithMicrosoft: () => Promise<{ error: string | null }>;
+  logout:            () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-// ─── Hook ────────────────────────────────────────────────────────────────────
 export function useAuth(): AuthContextValue {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('useAuth must be used inside <AuthProvider>');
   return ctx;
 }
 
+// ─── Build SciNexaProfile from Supabase User ─────────────────────────────────
+function buildProfile(user: User): SciNexaProfile {
+  const email      = user.email ?? '';
+  const meta       = user.user_metadata ?? {};
+  const roleMeta   = detectRoleFromEmail(email);
+
+  // Microsoft OAuth fills user_metadata with name, full_name, etc.
+  const displayName =
+    meta.full_name    ||
+    meta.name         ||
+    meta.display_name ||
+    email.split('@')[0];
+
+  return {
+    id:          user.id,
+    email,
+    displayName,
+    avatarUrl:   meta.avatar_url || meta.picture || undefined,
+    createdAt:   user.created_at,
+    ...roleMeta,
+  };
+}
+
 // ─── Provider ────────────────────────────────────────────────────────────────
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [state, setState] = useState<AuthState>({
-    user: null,
-    isLoading: true,
-    isAuthenticated: false,
-  });
-
-  /** Fetch the current session from the secure server-side endpoint */
-  const refreshUser = useCallback(async () => {
-    try {
-      const res = await fetch('/api/auth/me', { credentials: 'include' });
-      if (res.ok) {
-        const data = await res.json();
-        setState({ user: data.user, isLoading: false, isAuthenticated: true });
-      } else {
-        setState({ user: null, isLoading: false, isAuthenticated: false });
-      }
-    } catch {
-      setState({ user: null, isLoading: false, isAuthenticated: false });
-    }
-  }, []);
+  const [session,   setSession]   = useState<Session | null>(null);
+  const [user,      setUser]      = useState<SciNexaProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const mounted = useRef(true);
 
   useEffect(() => {
-    refreshUser();
-  }, [refreshUser]);
+    mounted.current = true;
 
-  /** Redirect to Microsoft login (server generates PKCE + CSRF state) */
-  const login = useCallback(() => {
-    window.location.href = '/api/auth/login';
+    // 1. Get initial session (handles magic-link hash automatically)
+    supabase.auth.getSession().then(({ data }) => {
+      if (!mounted.current) return;
+      if (data.session?.user) {
+        setSession(data.session);
+        setUser(buildProfile(data.session.user));
+      }
+      setIsLoading(false);
+    });
+
+    // 2. Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, newSession) => {
+        if (!mounted.current) return;
+        setSession(newSession);
+        setUser(newSession?.user ? buildProfile(newSession.user) : null);
+        setIsLoading(false);
+      }
+    );
+
+    return () => {
+      mounted.current = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
-  /** Call server logout (clears HTTPOnly cookie) then redirect */
+  // ── Send Magic Link ─────────────────────────────────────────────────────
+  const sendMagicLink = useCallback(async (email: string): Promise<{ error: string | null }> => {
+    const { error } = await supabase.auth.signInWithOtp({
+      email: email.trim().toLowerCase(),
+      options: {
+        emailRedirectTo: window.location.origin,
+        shouldCreateUser: true,
+      },
+    });
+    if (error) return { error: error.message };
+    return { error: null };
+  }, []);
+
+  // ── Microsoft OAuth ─────────────────────────────────────────────────────
+  const loginWithMicrosoft = useCallback(async (): Promise<{ error: string | null }> => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'azure',
+      options: {
+        scopes:      'email profile openid User.Read',
+        redirectTo:  window.location.origin,
+        queryParams: { prompt: 'select_account' },
+      },
+    });
+    if (error) return { error: error.message };
+    return { error: null };
+  }, []);
+
+  // ── Logout ──────────────────────────────────────────────────────────────
   const logout = useCallback(async () => {
-    try {
-      await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-    } finally {
-      setState({ user: null, isLoading: false, isAuthenticated: false });
-      window.location.href = '/login';
-    }
+    await supabase.auth.signOut();
+    setSession(null);
+    setUser(null);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ ...state, login, logout, refreshUser }}>
+    <AuthContext.Provider value={{
+      user,
+      session,
+      isLoading,
+      isAuthenticated: !!session,
+      sendMagicLink,
+      loginWithMicrosoft,
+      logout,
+    }}>
       {children}
     </AuthContext.Provider>
   );
