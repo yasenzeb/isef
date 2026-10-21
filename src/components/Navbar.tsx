@@ -166,8 +166,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <UserProfileCard language={language} />
           </div>
 
-          {/* Mobile Menu Toggle */}
+          {/* Mobile: Profile Card + Menu Toggle */}
           <div className="flex lg:hidden items-center gap-2">
+            {/* User Profile Card visible on mobile too */}
+            <UserProfileCard language={language} />
             <button
               onClick={onOpenOfflineModal}
               className="p-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400"

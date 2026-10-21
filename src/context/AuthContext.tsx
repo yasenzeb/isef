@@ -138,6 +138,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       supabase.auth.exchangeCodeForSession(oauthCode)
         .then(({ data, error: exchErr }) => {
           if (!mounted.current) return;
+          if (exchErr) {
+            console.warn('[SciNexa OAuth] exchangeCodeForSession failed:', exchErr.message);
+          }
           if (!exchErr && data?.session?.user) {
             setSession(data.session);
             syncProfile(buildProfile(data.session.user));
@@ -145,7 +148,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setIsLoading(false);
             return;
           }
-          // Exchange failed — fall through to getSession (might already be set)
+          // Exchange failed — check if session already exists (supabase may have handled it)
           supabase.auth.getSession().then(({ data: sd }) => {
             if (!mounted.current) return;
             if (sd.session?.user) {
@@ -155,11 +158,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               setSession(null);
               syncProfile(null);
             }
+            window.history.replaceState({}, document.title, window.location.pathname);
             setIsLoading(false);
           });
         })
         .catch(() => {
-          if (mounted.current) setIsLoading(false);
+          if (mounted.current) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+            setIsLoading(false);
+          }
         });
     } else {
       // Normal load — check existing session

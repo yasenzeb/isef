@@ -69,10 +69,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
 
-  // Fallback: If service role key is not yet set in Vercel, return prompt
-  return res.status(200).json({
-    success: true,
-    fallback: true,
-    message: 'تم التحقق من هويتك التعليمية بنجاح. يرجى تفعيل مفتاح الخدمة في Vercel لإتمام الحفظ السحابي.'
+  // Fallback: Service role key not configured — cannot update password
+  return res.status(503).json({
+    success: false,
+    error: 'خدمة إعادة التعيين غير مفعّلة بالكامل حالياً. يرجى التواصل مع مدير المنصة أو استخدام البريد الموحد لتسجيل حساب جديد.',
   });
 }
