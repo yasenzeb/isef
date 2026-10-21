@@ -1,89 +1,156 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import {
-  REACTIVE_ELEMENTS,
-  CHEMICAL_REACTIONS_DB,
+  WORKBENCH_REAGENTS,
+  WorkbenchReagent,
   ChemicalReaction,
-  WorkbenchElement,
-  findReaction
+  CHEMICAL_REACTIONS_DB,
+  findMatchingReaction,
+  ReactionCategory
 } from '../data/chemicalReactionsData';
 import {
   Flame,
-  Sparkles,
   RotateCcw,
-  Play,
   Thermometer,
   ShieldAlert,
   Info,
-  CheckCircle,
   FlaskConical,
   Zap,
-  Layers,
-  ArrowRight
+  Sparkles,
+  ArrowRight,
+  Plus,
+  Trash2,
+  CheckCircle,
+  Eye,
+  Sliders,
+  HelpCircle
 } from 'lucide-react';
 
 export const PraxiReactionSimulator: React.FC = () => {
   const { language, isRTL } = useLanguage();
   const ar = language === 'ar';
 
-  const [selectedElementA, setSelectedElementA] = useState<WorkbenchElement>(REACTIVE_ELEMENTS.find(e => e.symbol === 'Na') || REACTIVE_ELEMENTS[6]);
-  const [selectedElementB, setSelectedElementB] = useState<WorkbenchElement>(REACTIVE_ELEMENTS.find(e => e.symbol === 'Cl') || REACTIVE_ELEMENTS[11]);
-  
-  const [reaction, setReaction] = useState<ChemicalReaction | null>(() => findReaction('Na', 'Cl'));
+  // Active Reactants in Beaker (up to 2)
+  const [selectedReagentIds, setSelectedReagentIds] = useState<string[]>(['Zn', 'HCl']);
+  const [bunsenBurnerActive, setBunsenBurnerActive] = useState<boolean>(false);
+  const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('all');
+  const [reagentCategoryFilter, setReagentCategoryFilter] = useState<string>('all');
+
+  // Simulation State
+  const [reaction, setReaction] = useState<ChemicalReaction | null>(null);
   const [isReacting, setIsReacting] = useState<boolean>(false);
   const [reactionProgress, setReactionProgress] = useState<number>(0);
-  const [temperature, setTemperature] = useState<number>(25); // Celsius
+  const [temperature, setTemperature] = useState<number>(25);
   const [reactionCompleted, setReactionCompleted] = useState<boolean>(false);
+  const [activeTabPrompt, setActiveTabPrompt] = useState<string | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animFrameRef = useRef<number | null>(null);
 
-  // Update reaction when elements change
+  // Sync reaction whenever selected reagents or Bunsen heat changes
   useEffect(() => {
-    const rx = findReaction(selectedElementA.symbol, selectedElementB.symbol);
-    setReaction(rx);
+    const matched = findMatchingReaction(selectedReagentIds, bunsenBurnerActive);
+    setReaction(matched);
     setIsReacting(false);
     setReactionProgress(0);
-    setTemperature(25);
     setReactionCompleted(false);
-  }, [selectedElementA, selectedElementB]);
+    setTemperature(bunsenBurnerActive ? 120 : 25);
+  }, [selectedReagentIds, bunsenBurnerActive]);
 
-  // Handle mixing / reaction ignition
-  const handleIgnite = () => {
+  // Handle mixing / ignition
+  const handleStartReaction = () => {
     if (!reaction || isReacting) return;
     setIsReacting(true);
     setReactionProgress(0);
     setReactionCompleted(false);
   };
 
-  const handleReset = () => {
+  const handleResetVessel = () => {
     setIsReacting(false);
     setReactionProgress(0);
-    setTemperature(25);
     setReactionCompleted(false);
+    setTemperature(bunsenBurnerActive ? 120 : 25);
   };
 
-  // Quick preset selector
-  const loadPreset = (symA: string, symB: string) => {
-    const elA = REACTIVE_ELEMENTS.find(e => e.symbol === symA);
-    const elB = REACTIVE_ELEMENTS.find(e => e.symbol === symB);
-    if (elA && elB) {
-      setSelectedElementA(elA);
-      setSelectedElementB(elB);
+  const handleClearAll = () => {
+    setSelectedReagentIds([]);
+    setIsReacting(false);
+    setReactionProgress(0);
+    setReactionCompleted(false);
+    setTemperature(bunsenBurnerActive ? 120 : 25);
+  };
+
+  // Add reagent to vessel (max 2)
+  const handleAddReagent = (reagentId: string) => {
+    if (selectedReagentIds.includes(reagentId)) return;
+    if (selectedReagentIds.length >= 2) {
+      // Replace the second one
+      setSelectedReagentIds([selectedReagentIds[0], reagentId]);
+    } else {
+      setSelectedReagentIds([...selectedReagentIds, reagentId]);
     }
   };
 
-  // Reaction Animation & Canvas Particle Simulation
+  const handleRemoveReagent = (reagentId: string) => {
+    setSelectedReagentIds(selectedReagentIds.filter(id => id !== reagentId));
+  };
+
+  // Fast preset loader
+  const loadPreset = (reagentIds: string[], heat: boolean = false) => {
+    setSelectedReagentIds(reagentIds);
+    setBunsenBurnerActive(heat);
+  };
+
+  // Reagents list based on filter
+  const filteredReagents = WORKBENCH_REAGENTS.filter(r => {
+    if (reagentCategoryFilter === 'all') return true;
+    if (reagentCategoryFilter === 'metals') return r.category === 'metal' || r.category === 'nonmetal';
+    if (reagentCategoryFilter === 'acids_bases') return r.category === 'acid' || r.category === 'base' || r.category === 'water';
+    if (reagentCategoryFilter === 'salts') return r.category === 'salt';
+    if (reagentCategoryFilter === 'thermal') return r.category === 'compound';
+    return true;
+  });
+
+  // Reaction progress ticker
+  useEffect(() => {
+    if (!isReacting || !reaction) return;
+
+    const interval = setInterval(() => {
+      setReactionProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setIsReacting(false);
+          setReactionCompleted(true);
+          return 100;
+        }
+        const next = prev + 2;
+        const targetTemp = 25 + reaction.temperatureChange + (bunsenBurnerActive ? 95 : 0);
+        setTemperature(Math.round(25 + (targetTemp - 25) * (next / 100)));
+        return next;
+      });
+    }, 40);
+
+    return () => clearInterval(interval);
+  }, [isReacting, reaction, bunsenBurnerActive]);
+
+  // -------------------------------------------------------------
+  // HTML5 High-Fidelity Physics & Particle Canvas Renderer
+  // -------------------------------------------------------------
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let width = (canvas.width = canvas.parentElement?.clientWidth || 600);
-    let height = (canvas.height = 360);
+    const dpr = window.devicePixelRatio || 1;
+    const width = (canvas.width = (canvas.parentElement?.clientWidth || 700) * dpr);
+    const height = (canvas.height = 380 * dpr);
+    ctx.scale(dpr, dpr);
 
-    interface Particle {
+    const logicalW = width / dpr;
+    const logicalH = height / dpr;
+
+    interface LabParticle {
       x: number;
       y: number;
       vx: number;
@@ -93,31 +160,31 @@ export const PraxiReactionSimulator: React.FC = () => {
       alpha: number;
       life: number;
       maxLife: number;
-      type: 'smoke' | 'spark' | 'bubble' | 'glow' | 'reactantA' | 'reactantB';
+      type: 'spark' | 'smoke' | 'bubble' | 'precipitate' | 'flame_tongue';
     }
 
-    const particles: Particle[] = [];
+    const particles: LabParticle[] = [];
 
-    // Pre-populate reactant particles inside beaker
-    const beakerLeft = width * 0.3;
-    const beakerRight = width * 0.7;
-    const beakerBottom = height - 50;
-    const liquidTop = height - 160;
+    const beakerLeft = logicalW * 0.32;
+    const beakerRight = logicalW * 0.68;
+    const beakerBottom = logicalH - 65;
+    const liquidTop = logicalH - 180;
+    const bWidth = beakerRight - beakerLeft;
 
     const spawnSparks = (count: number, color: string) => {
       for (let i = 0; i < count; i++) {
         const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 4 + 1.5;
+        const speed = Math.random() * 4.5 + 1.5;
         particles.push({
-          x: width / 2 + (Math.random() - 0.5) * 60,
-          y: liquidTop + (Math.random() - 0.5) * 40,
+          x: logicalW / 2 + (Math.random() - 0.5) * 50,
+          y: liquidTop + 10 + (Math.random() - 0.5) * 20,
           vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed - 2.5,
-          radius: Math.random() * 3 + 1.5,
+          vy: Math.sin(angle) * speed - 2.8,
+          radius: Math.random() * 2.5 + 1.5,
           color,
           alpha: 1,
           life: 0,
-          maxLife: 40 + Math.random() * 40,
+          maxLife: 35 + Math.random() * 35,
           type: 'spark'
         });
       }
@@ -126,15 +193,15 @@ export const PraxiReactionSimulator: React.FC = () => {
     const spawnSmoke = (count: number, color: string) => {
       for (let i = 0; i < count; i++) {
         particles.push({
-          x: width / 2 + (Math.random() - 0.5) * 80,
-          y: liquidTop - 10,
-          vx: (Math.random() - 0.5) * 1.5,
-          vy: -Math.random() * 2.5 - 1.2,
-          radius: Math.random() * 12 + 6,
+          x: logicalW / 2 + (Math.random() - 0.5) * 60,
+          y: liquidTop - 15,
+          vx: (Math.random() - 0.5) * 1.8,
+          vy: -Math.random() * 2.2 - 1.2,
+          radius: Math.random() * 10 + 6,
           color,
-          alpha: 0.7,
+          alpha: 0.65,
           life: 0,
-          maxLife: 70 + Math.random() * 50,
+          maxLife: 60 + Math.random() * 40,
           type: 'smoke'
         });
       }
@@ -143,223 +210,272 @@ export const PraxiReactionSimulator: React.FC = () => {
     const spawnBubbles = (count: number) => {
       for (let i = 0; i < count; i++) {
         particles.push({
-          x: beakerLeft + 20 + Math.random() * (beakerRight - beakerLeft - 40),
+          x: beakerLeft + 15 + Math.random() * (bWidth - 30),
           y: beakerBottom - 10,
-          vx: (Math.random() - 0.5) * 0.6,
-          vy: -Math.random() * 2 - 1,
-          radius: Math.random() * 4 + 2,
-          color: 'rgba(255,255,255,0.7)',
-          alpha: 0.8,
+          vx: (Math.random() - 0.5) * 0.8,
+          vy: -Math.random() * 3.0 - 1.5,
+          radius: Math.random() * 3.5 + 1.8,
+          color: 'rgba(255,255,255,0.85)',
+          alpha: 0.9,
           life: 0,
-          maxLife: 80,
+          maxLife: 55,
           type: 'bubble'
         });
       }
     };
 
-    let animationTime = 0;
+    let animTime = 0;
 
     const render = () => {
-      animationTime++;
-      ctx.clearRect(0, 0, width, height);
+      animTime++;
+      ctx.clearRect(0, 0, logicalW, logicalH);
 
-      // 1. Draw Lab Background Bench & Grid
-      const benchY = beakerBottom + 5;
-      ctx.fillStyle = '#0a0d16';
-      ctx.fillRect(0, 0, width, height);
+      // --- 1. Laboratory Bench Surface ---
+      const benchY = beakerBottom + 12;
+      ctx.fillStyle = '#06080e';
+      ctx.fillRect(0, 0, logicalW, logicalH);
 
-      // Perspective table top
-      const benchGrad = ctx.createLinearGradient(0, benchY, 0, height);
-      benchGrad.addColorStop(0, '#131b2e');
-      benchGrad.addColorStop(1, '#05070d');
+      // Gradient perspective tabletop
+      const benchGrad = ctx.createLinearGradient(0, benchY, 0, logicalH);
+      benchGrad.addColorStop(0, '#0f172a');
+      benchGrad.addColorStop(1, '#020408');
       ctx.fillStyle = benchGrad;
-      ctx.fillRect(0, benchY, width, height - benchY);
+      ctx.fillRect(0, benchY, logicalW, logicalH - benchY);
 
-      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-      ctx.lineWidth = 1;
+      // Metallic edge line
+      ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+      ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.moveTo(0, benchY);
-      ctx.lineTo(width, benchY);
+      ctx.lineTo(logicalW, benchY);
       ctx.stroke();
 
-      // Lab stand & clamp on the right
-      const standX = beakerRight + 35;
+      // Lab Retort Stand & Clamp
+      const standX = beakerRight + 45;
       ctx.fillStyle = '#334155';
-      ctx.fillRect(standX - 3, 40, 6, benchY - 40);
-      ctx.fillRect(standX - 25, benchY - 6, 50, 6);
-      // Clamp arm
-      ctx.fillRect(beakerRight - 15, 120, standX - beakerRight + 15, 6);
+      ctx.fillRect(standX - 3, 30, 6, benchY - 30);
+      ctx.fillRect(standX - 30, benchY - 6, 60, 6);
+      // Horizontal arm & clamp holding beaker neck
+      ctx.fillRect(beakerRight - 10, 105, standX - beakerRight + 10, 5);
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(beakerRight - 12, 100, 6, 15);
 
-      // 2. Beaker Body (Glassware)
-      const bWidth = beakerRight - beakerLeft;
-      const cornerR = 12;
+      // --- 2. Bunsen Burner Under Beaker ---
+      const burnerX = logicalW / 2;
+      const burnerY = benchY;
+      const burnerTop = beakerBottom + 8;
 
-      // Current liquid appearance based on progress
-      let currentLiquidColor = 'rgba(30, 41, 59, 0.4)';
-      if (reaction && isReacting) {
-        if (reactionProgress > 70) {
-          currentLiquidColor = reaction.liquidColor + '99'; // with opacity
-        } else if (reactionProgress > 20) {
-          currentLiquidColor = 'rgba(234, 88, 12, 0.5)';
-        }
-      } else if (reactionCompleted && reaction) {
-        currentLiquidColor = reaction.liquidColor + 'bb';
+      // Burner metal base & pipe
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(burnerX - 22, burnerY - 5, 44, 5);
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(burnerX - 5, burnerTop + 8, 10, burnerY - burnerTop - 13);
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(burnerX - 8, burnerTop + 4, 16, 5);
+
+      // Animated Bunsen Flame if active
+      if (bunsenBurnerActive) {
+        const flameHeight = 24 + Math.sin(animTime * 0.3) * 3;
+        // Inner hot blue cone
+        const blueFlameGrad = ctx.createRadialGradient(burnerX, burnerTop + 4, 2, burnerX, burnerTop - flameHeight, 18);
+        blueFlameGrad.addColorStop(0, '#38bdf8');
+        blueFlameGrad.addColorStop(0.5, '#6366f1');
+        blueFlameGrad.addColorStop(1, 'transparent');
+
+        ctx.fillStyle = blueFlameGrad;
+        ctx.beginPath();
+        ctx.moveTo(burnerX - 6, burnerTop + 4);
+        ctx.quadraticCurveTo(burnerX, burnerTop - flameHeight, burnerX + 6, burnerTop + 4);
+        ctx.closePath();
+        ctx.fill();
+
+        // Outer heat glow
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.15)';
+        ctx.beginPath();
+        ctx.arc(burnerX, burnerTop - 10, 28, 0, Math.PI * 2);
+        ctx.fill();
       }
 
-      // Draw Beaker Liquid
+      // --- 3. Beaker Liquid & Dynamic Color Blending ---
+      const cornerR = 14;
+      let targetLiquidColor = 'rgba(30, 41, 59, 0.45)';
+
+      if (selectedReagentIds.length > 0) {
+        const r1 = WORKBENCH_REAGENTS.find(r => r.id === selectedReagentIds[0]);
+        targetLiquidColor = (r1?.colorHex || '#38bdf8') + '55';
+      }
+
+      if (reaction) {
+        if (isReacting) {
+          if (reactionProgress > 60) {
+            targetLiquidColor = reaction.liquidColor + 'dd';
+          } else if (reactionProgress > 20) {
+            targetLiquidColor = reaction.liquidColor + '88';
+          }
+        } else if (reactionCompleted) {
+          targetLiquidColor = reaction.liquidColor + 'ee';
+        }
+      }
+
+      // Draw Beaker Liquid Fill
       ctx.save();
       ctx.beginPath();
       ctx.moveTo(beakerLeft + 8, liquidTop);
-      // Liquid wavy surface
+      // Fluid wave simulation
+      const waveAmp = isReacting ? 4.5 : bunsenBurnerActive ? 2.5 : 1.2;
       for (let x = beakerLeft + 8; x <= beakerRight - 8; x += 10) {
-        const wave = Math.sin((x / 20) + (animationTime * 0.08)) * (isReacting ? 4 : 1.5);
-        ctx.lineTo(x, liquidTop + wave);
+        const w = Math.sin((x / 18) + (animTime * 0.09)) * waveAmp;
+        ctx.lineTo(x, liquidTop + w);
       }
       ctx.lineTo(beakerRight - 8, beakerBottom - cornerR);
       ctx.quadraticCurveTo(beakerRight - 8, beakerBottom - 4, beakerRight - cornerR - 8, beakerBottom - 4);
       ctx.lineTo(beakerLeft + cornerR + 8, beakerBottom - 4);
       ctx.quadraticCurveTo(beakerLeft + 8, beakerBottom - 4, beakerLeft + 8, beakerBottom - cornerR);
       ctx.closePath();
-      ctx.fillStyle = currentLiquidColor;
+
+      ctx.fillStyle = targetLiquidColor;
       ctx.fill();
 
-      // Liquid shine gradient
-      const liquidShine = ctx.createLinearGradient(beakerLeft, 0, beakerRight, 0);
-      liquidShine.addColorStop(0, 'rgba(255,255,255,0.15)');
-      liquidShine.addColorStop(0.2, 'transparent');
-      liquidShine.addColorStop(0.8, 'transparent');
-      liquidShine.addColorStop(1, 'rgba(255,255,255,0.08)');
-      ctx.fillStyle = liquidShine;
+      // Liquid gloss shine reflection
+      const liquidGloss = ctx.createLinearGradient(beakerLeft, 0, beakerRight, 0);
+      liquidGloss.addColorStop(0, 'rgba(255,255,255,0.25)');
+      liquidGloss.addColorStop(0.15, 'transparent');
+      liquidGloss.addColorStop(0.85, 'transparent');
+      liquidGloss.addColorStop(1, 'rgba(255,255,255,0.12)');
+      ctx.fillStyle = liquidGloss;
       ctx.fill();
       ctx.restore();
 
-      // Draw Solid Product if formed
-      if ((isReacting || reactionCompleted) && reaction?.solidProduct) {
-        const solidHeight = Math.min(28, (reactionProgress / 100) * 28);
-        ctx.fillStyle = reaction.visualEffect === 'precipitate_yellow' ? '#fde047' : '#e2e8f0';
-        ctx.beginPath();
-        ctx.ellipse(width / 2, beakerBottom - 12, bWidth * 0.35, solidHeight * 0.4 + 4, 0, 0, Math.PI * 2);
-        ctx.fill();
+      // --- 4. Precipitate / Solid Formation at Bottom ---
+      if ((isReacting && reactionProgress > 30) || reactionCompleted) {
+        if (reaction?.solidProduct) {
+          const precipHeight = Math.min(22, (reactionProgress / 100) * 22);
+          ctx.save();
+          let pColor = '#f8fafc';
+          if (reaction.visualEffect === 'precipitate_yellow') pColor = '#facc15';
+          if (reaction.visualEffect === 'precipitate_blue') pColor = '#0284c7';
+          if (reaction.visualEffect === 'precipitate_brown') pColor = '#b45309';
+
+          ctx.fillStyle = pColor;
+          ctx.beginPath();
+          ctx.ellipse(logicalW / 2, beakerBottom - 10, bWidth * 0.38, precipHeight * 0.45 + 3, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Granular texture on precipitate
+          ctx.fillStyle = 'rgba(0,0,0,0.15)';
+          for (let g = 0; g < 12; g++) {
+            const gx = logicalW / 2 + (Math.random() - 0.5) * (bWidth * 0.6);
+            const gy = beakerBottom - 10 + (Math.random() - 0.5) * 6;
+            ctx.beginPath();
+            ctx.arc(gx, gy, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+        }
       }
 
-      // 3. Beaker Glass Outline & Measurement Ticks
+      // --- 5. Beaker Glassware Outline & Ticks ---
       ctx.save();
-      ctx.strokeStyle = 'rgba(203, 213, 225, 0.7)';
+      ctx.strokeStyle = 'rgba(226, 232, 240, 0.85)';
       ctx.lineWidth = 3;
       ctx.beginPath();
-      // Lip spout
-      ctx.moveTo(beakerLeft - 8, 85);
-      ctx.lineTo(beakerLeft, 95);
+      // Lip spout left
+      ctx.moveTo(beakerLeft - 9, 82);
+      ctx.lineTo(beakerLeft, 92);
       ctx.lineTo(beakerLeft, beakerBottom - cornerR);
       ctx.quadraticCurveTo(beakerLeft, beakerBottom, beakerLeft + cornerR, beakerBottom);
       ctx.lineTo(beakerRight - cornerR, beakerBottom);
       ctx.quadraticCurveTo(beakerRight, beakerBottom, beakerRight, beakerBottom - cornerR);
-      ctx.lineTo(beakerRight, 95);
-      ctx.lineTo(beakerRight + 5, 88);
+      ctx.lineTo(beakerRight, 92);
+      ctx.lineTo(beakerRight + 6, 85);
       ctx.stroke();
 
       // Glass highlights
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.moveTo(beakerLeft + 6, 110);
-      ctx.lineTo(beakerLeft + 6, beakerBottom - 20);
+      ctx.moveTo(beakerLeft + 6, 105);
+      ctx.lineTo(beakerLeft + 6, beakerBottom - 18);
       ctx.stroke();
 
-      // Graduated Measurement Lines (e.g., 100ml, 200ml, 300ml)
-      ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-      ctx.fillStyle = 'rgba(255,255,255,0.4)';
-      ctx.font = '9px monospace';
-      const tickStep = (beakerBottom - 110) / 4;
+      // Measurement Graduations
+      ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
+      ctx.font = '10px monospace';
+      const tickSpacing = (beakerBottom - 105) / 4;
       for (let t = 1; t <= 4; t++) {
-        const tickY = beakerBottom - t * tickStep;
+        const y = beakerBottom - t * tickSpacing;
         ctx.beginPath();
-        ctx.moveTo(beakerLeft + 4, tickY);
-        ctx.lineTo(beakerLeft + 16, tickY);
+        ctx.moveTo(beakerLeft + 4, y);
+        ctx.lineTo(beakerLeft + 16, y);
         ctx.stroke();
-        ctx.fillText(`${t * 100}ml`, beakerLeft + 20, tickY + 3);
+        ctx.fillText(`${t * 100}ml`, beakerLeft + 20, y + 3);
       }
       ctx.restore();
 
-      // 4. In-flight drops / Reactants pouring if reacting
-      if (isReacting && reactionProgress < 40) {
-        // Element A dropping from left
-        ctx.fillStyle = selectedElementA.colorHex;
-        ctx.beginPath();
-        ctx.arc(beakerLeft + 40, 95 + ((animationTime * 4) % 80), 5, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Element B dropping from right
-        ctx.fillStyle = selectedElementB.colorHex;
-        ctx.beginPath();
-        ctx.arc(beakerRight - 40, 95 + (((animationTime + 10) * 4) % 80), 5, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // 5. Spawn Effects during reaction
+      // --- 6. Active Reaction Special Effects (Flames, Sparks, Gas Clouds) ---
       if (isReacting && reaction) {
         if (reaction.visualEffect === 'bright_flash') {
-          // Flash flare in center
-          const flareGrad = ctx.createRadialGradient(width / 2, liquidTop + 20, 5, width / 2, liquidTop + 20, 120);
-          flareGrad.addColorStop(0, 'rgba(255, 255, 200, 0.9)');
-          flareGrad.addColorStop(0.3, 'rgba(253, 224, 71, 0.5)');
-          flareGrad.addColorStop(1, 'transparent');
-          ctx.fillStyle = flareGrad;
+          // Blinding incandescent flare
+          const flare = ctx.createRadialGradient(logicalW / 2, liquidTop + 15, 5, logicalW / 2, liquidTop + 15, 140);
+          flare.addColorStop(0, 'rgba(255, 255, 240, 0.95)');
+          flare.addColorStop(0.35, 'rgba(250, 204, 21, 0.7)');
+          flare.addColorStop(1, 'transparent');
+          ctx.fillStyle = flare;
           ctx.beginPath();
-          ctx.arc(width / 2, liquidTop + 20, 120, 0, Math.PI * 2);
+          ctx.arc(logicalW / 2, liquidTop + 15, 140, 0, Math.PI * 2);
           ctx.fill();
 
-          if (Math.random() < 0.6) spawnSparks(3, '#fef08a');
-          if (Math.random() < 0.3) spawnSmoke(1, '#e2e8f0');
+          if (Math.random() < 0.7) spawnSparks(3, '#fef08a');
+          if (Math.random() < 0.3) spawnSmoke(1, '#ffffff');
         } else if (reaction.visualEffect === 'orange_fire') {
-          // Fire flare
-          const fireGrad = ctx.createRadialGradient(width / 2, liquidTop + 10, 5, width / 2, liquidTop + 10, 90);
-          fireGrad.addColorStop(0, 'rgba(249, 115, 22, 0.85)');
-          fireGrad.addColorStop(0.5, 'rgba(239, 68, 68, 0.4)');
-          fireGrad.addColorStop(1, 'transparent');
-          ctx.fillStyle = fireGrad;
+          const fireG = ctx.createRadialGradient(logicalW / 2, liquidTop + 10, 5, logicalW / 2, liquidTop + 10, 95);
+          fireG.addColorStop(0, 'rgba(249, 115, 22, 0.9)');
+          fireG.addColorStop(0.45, 'rgba(239, 68, 68, 0.5)');
+          fireG.addColorStop(1, 'transparent');
+          ctx.fillStyle = fireG;
           ctx.beginPath();
-          ctx.arc(width / 2, liquidTop + 10, 90, 0, Math.PI * 2);
+          ctx.arc(logicalW / 2, liquidTop + 10, 95, 0, Math.PI * 2);
           ctx.fill();
 
           if (Math.random() < 0.7) spawnSparks(3, '#fb923c');
           if (Math.random() < 0.4) spawnSmoke(1, '#64748b');
         } else if (reaction.visualEffect === 'blue_flame') {
-          const blueGrad = ctx.createRadialGradient(width / 2, liquidTop + 10, 5, width / 2, liquidTop + 10, 80);
-          blueGrad.addColorStop(0, 'rgba(56, 189, 248, 0.9)');
-          blueGrad.addColorStop(0.5, 'rgba(99, 102, 241, 0.4)');
-          blueGrad.addColorStop(1, 'transparent');
-          ctx.fillStyle = blueGrad;
+          const blueG = ctx.createRadialGradient(logicalW / 2, liquidTop + 10, 5, logicalW / 2, liquidTop + 10, 85);
+          blueG.addColorStop(0, 'rgba(56, 189, 248, 0.95)');
+          blueG.addColorStop(0.5, 'rgba(99, 102, 241, 0.5)');
+          blueG.addColorStop(1, 'transparent');
+          ctx.fillStyle = blueG;
           ctx.beginPath();
-          ctx.arc(width / 2, liquidTop + 10, 80, 0, Math.PI * 2);
+          ctx.arc(logicalW / 2, liquidTop + 10, 85, 0, Math.PI * 2);
           ctx.fill();
 
           if (Math.random() < 0.5) spawnSparks(2, '#38bdf8');
-          if (Math.random() < 0.5) spawnBubbles(2);
-        } else if (reaction.visualEffect === 'purple_vapor') {
-          if (Math.random() < 0.8) spawnSmoke(2, '#c084fc');
-          if (Math.random() < 0.4) spawnSparks(2, '#e879f9');
-        } else if (reaction.visualEffect === 'smoke_effervescence') {
-          if (Math.random() < 0.9) spawnSmoke(3, '#f1f5f9');
-          spawnBubbles(1);
-        } else if (reaction.visualEffect === 'glow_green') {
-          const greenGrad = ctx.createRadialGradient(width / 2, liquidTop + 15, 5, width / 2, liquidTop + 15, 80);
-          greenGrad.addColorStop(0, 'rgba(74, 222, 128, 0.85)');
-          greenGrad.addColorStop(0.6, 'rgba(16, 185, 129, 0.3)');
-          greenGrad.addColorStop(1, 'transparent');
-          ctx.fillStyle = greenGrad;
+          if (Math.random() < 0.6) spawnBubbles(2);
+        } else if (reaction.visualEffect === 'purple_flame') {
+          const pG = ctx.createRadialGradient(logicalW / 2, liquidTop + 10, 5, logicalW / 2, liquidTop + 10, 90);
+          pG.addColorStop(0, 'rgba(192, 132, 252, 0.95)');
+          pG.addColorStop(0.5, 'rgba(168, 85, 247, 0.5)');
+          pG.addColorStop(1, 'transparent');
+          ctx.fillStyle = pG;
           ctx.beginPath();
-          ctx.arc(width / 2, liquidTop + 15, 80, 0, Math.PI * 2);
+          ctx.arc(logicalW / 2, liquidTop + 10, 90, 0, Math.PI * 2);
           ctx.fill();
 
-          if (Math.random() < 0.5) spawnSparks(2, '#86efac');
-          if (Math.random() < 0.4) spawnSmoke(1, '#ecfdf5');
-        } else {
-          spawnBubbles(1);
+          if (Math.random() < 0.8) spawnSparks(3, '#e879f9');
+          if (Math.random() < 0.4) spawnSmoke(2, '#c084fc');
+        } else if (reaction.visualEffect === 'effervescence_bubbles') {
+          spawnBubbles(3);
+          if (Math.random() < 0.4) spawnSmoke(1, '#f8fafc');
+        } else if (reaction.visualEffect === 'smoke_effervescence') {
+          spawnBubbles(2);
+          spawnSmoke(2, '#f1f5f9');
+        } else if (reaction.visualEffect === 'precipitate_yellow') {
+          if (Math.random() < 0.4) spawnSmoke(1, '#facc15');
         }
       }
 
-      // 6. Update and Draw Particles
+      // --- 7. Particle Physics & Drawing ---
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.x += p.vx;
@@ -368,9 +484,9 @@ export const PraxiReactionSimulator: React.FC = () => {
         p.alpha = Math.max(0, 1 - (p.life / p.maxLife));
 
         if (p.type === 'smoke') {
-          p.radius += 0.2;
+          p.radius += 0.22;
           ctx.fillStyle = p.color;
-          ctx.globalAlpha = p.alpha * 0.4;
+          ctx.globalAlpha = p.alpha * 0.45;
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
           ctx.fill();
@@ -382,15 +498,14 @@ export const PraxiReactionSimulator: React.FC = () => {
           ctx.fill();
         } else if (p.type === 'bubble') {
           ctx.strokeStyle = p.color;
-          ctx.globalAlpha = p.alpha * 0.6;
-          ctx.lineWidth = 1;
+          ctx.globalAlpha = p.alpha * 0.75;
+          ctx.lineWidth = 1.2;
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
           ctx.stroke();
         }
 
         ctx.globalAlpha = 1.0;
-
         if (p.life >= p.maxLife) {
           particles.splice(i, 1);
         }
@@ -404,261 +519,293 @@ export const PraxiReactionSimulator: React.FC = () => {
     return () => {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     };
-  }, [isReacting, reaction, reactionProgress, reactionCompleted, selectedElementA, selectedElementB]);
-
-  // Handle reaction progress interval
-  useEffect(() => {
-    if (!isReacting || !reaction) return;
-
-    const interval = setInterval(() => {
-      setReactionProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsReacting(false);
-          setReactionCompleted(true);
-          return 100;
-        }
-        const next = prev + 2.5;
-        // Increase temperature according to progress
-        const targetTemp = 25 + reaction.temperatureChange;
-        setTemperature(Math.round(25 + (targetTemp - 25) * (next / 100)));
-        return next;
-      });
-    }, 50);
-
-    return () => clearInterval(interval);
-  }, [isReacting, reaction]);
+  }, [selectedReagentIds, reaction, isReacting, reactionProgress, reactionCompleted, bunsenBurnerActive]);
 
   return (
     <div className="space-y-6">
-      {/* Top Banner: PraxiLabs-style Workbench Description */}
+      
+      {/* 1. TOP HEADER & CURRICULUM PRESET BAR */}
       <div className="sci-card p-5 relative overflow-hidden bg-gradient-to-r from-indigo-950/40 via-purple-950/20 to-cyan-950/30 border border-indigo-500/20">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
+              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-cyan-300">
-                {ar ? 'مختبر الكيمياء التفاعلي المتقدم (نظام PraxiLabs)' : 'PraxiLabs-Style Chemistry Simulation Workbench'}
+                {ar ? 'المختبر الافتراضي التفاعلي للتفاعلات الكيميائية' : 'Interactive Chemical Reactions & Workbench Studio'}
               </span>
             </div>
             <h2 className="text-xl sm:text-2xl font-black text-white" style={{ fontFamily: 'var(--font-display)' }}>
-              {ar ? 'معمل خلط العناصر ومحاكاة التفاعلات الكيميائية اللحظية' : 'Interactive Element Mixer & Real-time Reaction Engine'}
+              {ar ? 'معمل التفاعلات والاستقصاء المخبري الشامل' : 'Full Virtual Chemical Reactions Workbench'}
             </h2>
             <p className="text-xs text-slate-300 max-w-3xl leading-relaxed">
               {ar
-                ? 'اختر أي عنصرين من الرف المخبري وادمجهم داخل كأس التفاعل لمشاهدة المعادلة الموزونة، وتغير درجات الحرارة، ونوع الطاقة المنبعثة (طارد/ماص)، واللون، ونوع الرابطة وفق معايير IUPAC العالمية.'
-                : 'Select any two reactive elements from the chemical shelf, drop them into the reaction vessel, and observe the real-time balanced equation, thermodynamic state, color change, and precipitate/gas formation.'}
+                ? 'اسحب أو انقر لإضافة المواد الكيميائية إلى كأس التفاعل، وتحكم في موقد بنزن للتسخين المباشر، وشاهد التغير اللوني اللحظي، الفوران الغازي، الرواسب، والمعادلة الكيميائية الموزونة.'
+                : 'Drag or click chemical reagents into the reaction beaker, toggle the Bunsen burner for thermal reactions, and observe real-time bubbling, precipitates, and balanced stoichiometry.'}
             </p>
           </div>
 
-          {/* Quick Preset Buttons */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[11px] text-slate-400 block w-full md:w-auto font-mono">
-              {ar ? 'تجارب شهيرة سريعة:' : 'Quick Presets:'}
+          {/* Quick Curriculum Jump Pills */}
+          <div className="flex flex-wrap items-center gap-1.5 pt-1">
+            <span className="text-[11px] font-mono text-slate-400 block w-full lg:w-auto">
+              {ar ? 'تجارب المنهج الجاهزة:' : 'Curriculum Presets:'}
             </span>
             <button
-              onClick={() => loadPreset('Na', 'Cl')}
-              className="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 transition-all"
-            >
-              Na + Cl (ملح الطعام)
-            </button>
-            <button
-              onClick={() => loadPreset('H', 'O')}
+              onClick={() => loadPreset(['Zn', 'HCl'])}
               className="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/30 transition-all"
             >
-              H + O (الماء)
+              Zn + HCl (إحلال بسيط)
             </button>
             <button
-              onClick={() => loadPreset('Mg', 'O')}
+              onClick={() => loadPreset(['Fe', 'CuSO4'])}
               className="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30 transition-all"
             >
-              Mg + O (الوميض)
+              Fe + CuSO₄ (ترسيب النحاس)
             </button>
             <button
-              onClick={() => loadPreset('Fe', 'S')}
-              className="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-orange-500/20 text-orange-300 border border-orange-500/40 hover:bg-orange-500/30 transition-all"
+              onClick={() => loadPreset(['Pb_NO3_2', 'KI'])}
+              className="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 transition-all"
             >
-              Fe + S (كبريتيد الحديد)
+              Pb(NO₃)₂ + KI (المطر الذهبي)
+            </button>
+            <button
+              onClick={() => loadPreset(['HgO'], true)}
+              className="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500/30 transition-all"
+            >
+              HgO + تسخين (انحلال حراري)
             </button>
           </div>
         </div>
       </div>
 
-      {/* Main Interactive Grid: Shelf + Simulation Vessel + Reaction Data */}
+      {/* 2. MAIN WORKBENCH GRID: REAGENT RACK (LEFT) + EXPERIMENT BENCH (RIGHT) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        {/* Left Column (5 Cols): Element Selectors & Shelf */}
+        {/* LEFT COLUMN: Categorized Reagent Rack (5 Cols) */}
         <div className="lg:col-span-5 space-y-4">
-          
-          {/* Active Reactants Selection Card */}
-          <div className="sci-card p-4 space-y-3">
+
+          {/* Active Vessels & Bunsen Controls Card */}
+          <div className="sci-card p-4 space-y-3 bg-[#0a0e1c] border-indigo-500/30">
             <div className="flex items-center justify-between pb-2 border-b border-white/10">
               <span className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
                 <FlaskConical className="w-4 h-4 text-cyan-400" />
-                {ar ? 'العناصر المختارة للتفاعل' : 'Selected Reactants'}
+                {ar ? 'محتويات كأس التفاعل النشطة' : 'Active Reagents in Vessel'}
               </span>
-              <span className="text-[10px] font-mono text-slate-400">
-                {ar ? '2 متفاعلات نشطة' : '2 Active Slots'}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              {/* Element A Slot */}
-              <div className="p-3 rounded-xl bg-slate-950/80 border border-cyan-500/40 flex flex-col justify-between">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-cyan-400">{ar ? 'المتفاعل الأول (A)' : 'Reactant A'}</span>
-                  <span className="text-[10px] font-mono text-slate-400">#{selectedElementA.number}</span>
-                </div>
-                <div className="flex items-center gap-3 my-2">
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center font-mono font-black text-lg text-white shadow-lg"
-                    style={{ backgroundColor: selectedElementA.colorHex + '40', border: `1.5px solid ${selectedElementA.colorHex}` }}
-                  >
-                    {selectedElementA.symbol}
-                  </div>
-                  <div>
-                    <span className="text-sm font-bold text-white block">
-                      {ar ? selectedElementA.nameAr : selectedElementA.nameEn}
-                    </span>
-                    <span className="text-[10px] text-slate-400 font-mono">
-                      {ar ? `تكافؤ: ${selectedElementA.valence}` : `Valence: ${selectedElementA.valence}`}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Element B Slot */}
-              <div className="p-3 rounded-xl bg-slate-950/80 border border-indigo-500/40 flex flex-col justify-between">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-indigo-400">{ar ? 'المتفاعل الثاني (B)' : 'Reactant B'}</span>
-                  <span className="text-[10px] font-mono text-slate-400">#{selectedElementB.number}</span>
-                </div>
-                <div className="flex items-center gap-3 my-2">
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center font-mono font-black text-lg text-white shadow-lg"
-                    style={{ backgroundColor: selectedElementB.colorHex + '40', border: `1.5px solid ${selectedElementB.colorHex}` }}
-                  >
-                    {selectedElementB.symbol}
-                  </div>
-                  <div>
-                    <span className="text-sm font-bold text-white block">
-                      {ar ? selectedElementB.nameAr : selectedElementB.nameEn}
-                    </span>
-                    <span className="text-[10px] text-slate-400 font-mono">
-                      {ar ? `تكافؤ: ${selectedElementB.valence}` : `Valence: ${selectedElementB.valence}`}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Ignite / Reset Controls */}
-            <div className="flex items-center gap-2 pt-2">
               <button
-                onClick={handleIgnite}
+                onClick={handleClearAll}
+                className="text-[11px] font-mono text-rose-400 hover:text-rose-300 flex items-center gap-1 transition-colors"
+                title={ar ? 'تفريغ الكأس بالكامل' : 'Empty Vessel'}
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>{ar ? 'تفريغ الكأس' : 'Clear Vessel'}</span>
+              </button>
+            </div>
+
+            {/* Active Reagent Slots (1 & 2) */}
+            <div className="grid grid-cols-2 gap-3">
+              {[0, 1].map(slotIdx => {
+                const rId = selectedReagentIds[slotIdx];
+                const reagent = WORKBENCH_REAGENTS.find(r => r.id === rId);
+
+                return (
+                  <div
+                    key={slotIdx}
+                    className={`p-3 rounded-xl border flex flex-col justify-between min-h-[90px] transition-all relative ${
+                      reagent
+                        ? 'bg-slate-950/90 border-cyan-400/50 shadow-md shadow-cyan-500/10'
+                        : 'bg-slate-950/40 border-dashed border-white/15'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-mono font-bold text-slate-400">
+                        {ar ? `المتفاعل (${slotIdx + 1})` : `Slot ${slotIdx + 1}`}
+                      </span>
+                      {reagent && (
+                        <button
+                          onClick={() => handleRemoveReagent(reagent.id)}
+                          className="text-slate-500 hover:text-rose-400 transition-colors"
+                          title={ar ? 'إزالة هذا المتفاعل' : 'Remove'}
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      )}
+                    </div>
+
+                    {reagent ? (
+                      <div className="flex items-center gap-2.5 my-1">
+                        <div
+                          className="w-9 h-9 rounded-lg flex items-center justify-center font-mono font-black text-sm text-white shadow"
+                          style={{ backgroundColor: reagent.colorHex + '40', border: `1.5px solid ${reagent.colorHex}` }}
+                        >
+                          {reagent.symbol}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <span className="text-xs font-bold text-white block truncate">
+                            {ar ? reagent.nameAr : reagent.nameEn}
+                          </span>
+                          <span className="text-[10px] text-cyan-300 font-mono block">
+                            {reagent.formula}
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-2">
+                        <span className="text-[11px] text-slate-500 font-mono block">
+                          {ar ? '+ انقر على مادة لإضافتها' : '+ Click reagent to add'}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Bunsen Burner & Reaction Trigger Controls */}
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              {/* Bunsen Burner Flame Switch */}
+              <button
+                onClick={() => setBunsenBurnerActive(!bunsenBurnerActive)}
+                className={`flex-1 py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 border transition-all ${
+                  bunsenBurnerActive
+                    ? 'bg-gradient-to-r from-amber-500 to-rose-600 border-amber-400 text-white shadow-lg shadow-orange-500/30'
+                    : 'bg-slate-900 border-white/10 text-slate-300 hover:border-amber-400/50'
+                }`}
+              >
+                <Flame className={`w-4 h-4 ${bunsenBurnerActive ? 'text-amber-200 animate-bounce' : 'text-slate-400'}`} />
+                <span>{bunsenBurnerActive ? (ar ? 'موقد بنزن: مشتعل (حرارة)' : 'Bunsen: ON') : (ar ? 'إشعال موقد بنزن' : 'Ignite Bunsen')}</span>
+              </button>
+
+              {/* Start Mixing / Reaction Button */}
+              <button
+                onClick={handleStartReaction}
                 disabled={!reaction || isReacting}
-                className={`flex-1 py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all ${
+                className={`flex-1 py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all ${
                   !reaction
                     ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-white/5'
                     : isReacting
-                    ? 'bg-amber-600 text-white animate-pulse'
-                    : 'bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white shadow-lg shadow-indigo-500/20'
+                    ? 'bg-cyan-600 text-white animate-pulse'
+                    : 'bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white shadow-lg shadow-indigo-500/25'
                 }`}
               >
-                <Flame className="w-4 h-4" />
+                <Zap className="w-4 h-4" />
                 <span>
                   {isReacting
                     ? (ar ? 'جاري التفاعل...' : 'Reacting...')
                     : !reaction
-                    ? (ar ? 'لا يحدث تفاعل مباشر' : 'No Direct Reaction')
-                    : (ar ? 'بدء التفاعل الكيميائي' : 'Ignite / Mix Reaction')}
+                    ? (ar ? 'لا يوجد تفاعل مباشر' : 'No Direct Reaction')
+                    : (ar ? 'بدء التفاعل الكيميائي' : 'Trigger Reaction')}
                 </span>
               </button>
 
+              {/* Reset Vessel Button */}
               <button
-                onClick={handleReset}
-                className="py-2.5 px-3 rounded-xl bg-slate-950/70 border border-white/10 text-slate-400 hover:text-white hover:bg-slate-800 transition-all"
-                title={ar ? 'إعادة ضبط الكأس' : 'Reset Vessel'}
+                onClick={handleResetVessel}
+                className="p-2 rounded-xl bg-slate-900 border border-white/10 text-slate-400 hover:text-white transition-all"
+                title={ar ? 'إعادة ضبط التجربة' : 'Reset Experiment'}
               >
                 <RotateCcw className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* Reagent Shelf: Click to choose Element A or B */}
+          {/* Reagent Rack Shelf */}
           <div className="sci-card p-4 space-y-3">
             <div className="flex items-center justify-between pb-2 border-b border-white/10">
               <span className="text-xs font-bold text-white uppercase tracking-wider">
-                {ar ? 'رف المواد الكيميائية (20 عنصراً نشطاً)' : 'Reagent Shelf (20 Active Elements)'}
+                {ar ? 'رف المواد الكيميائية والأملاح' : 'Reagent Chemical Shelf'}
               </span>
-              <span className="text-[10px] text-slate-400">
-                {ar ? 'انقر لتعيين العنصر' : 'Click to assign'}
+              <span className="text-[10px] font-mono text-slate-400">
+                {filteredReagents.length} {ar ? 'مادة متوفرة' : 'Reagents'}
               </span>
             </div>
 
-            <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 max-h-[340px] overflow-y-auto pr-1">
-              {REACTIVE_ELEMENTS.map(el => {
-                const isSelectedA = selectedElementA.symbol === el.symbol;
-                const isSelectedB = selectedElementB.symbol === el.symbol;
+            {/* Category Filter Chips */}
+            <div className="flex flex-wrap gap-1 text-[11px] font-mono">
+              {[
+                { id: 'all', labelAr: 'الكل', labelEn: 'All' },
+                { id: 'metals', labelAr: 'فلزات ولا فلزات', labelEn: 'Metals & Gases' },
+                { id: 'acids_bases', labelAr: 'أحماض وقواعد', labelEn: 'Acids & Bases' },
+                { id: 'salts', labelAr: 'أملاح ومحاليل', labelEn: 'Salts' },
+                { id: 'thermal', labelAr: 'مركبات الانحلال', labelEn: 'Thermal' }
+              ].map(cat => (
+                <button
+                  key={cat.id}
+                  onClick={() => setReagentCategoryFilter(cat.id)}
+                  className={`px-2 py-1 rounded-lg transition-all ${
+                    reagentCategoryFilter === cat.id
+                      ? 'bg-cyan-500 text-black font-bold'
+                      : 'bg-white/5 text-slate-300 hover:bg-white/10'
+                  }`}
+                >
+                  {ar ? cat.labelAr : cat.labelEn}
+                </button>
+              ))}
+            </div>
+
+            {/* Reagents Grid (Click to Add / Drag) */}
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-[380px] overflow-y-auto pr-1">
+              {filteredReagents.map(reagent => {
+                const isSelected = selectedReagentIds.includes(reagent.id);
                 return (
                   <div
-                    key={el.symbol}
-                    className={`p-2 rounded-xl border flex flex-col items-center justify-center transition-all cursor-pointer relative ${
-                      isSelectedA
-                        ? 'border-cyan-400 bg-cyan-950/30 ring-1 ring-cyan-400/60'
-                        : isSelectedB
-                        ? 'border-indigo-400 bg-indigo-950/30 ring-1 ring-indigo-400/60'
-                        : 'border-white/10 bg-slate-950/70 hover:border-white/30 hover:bg-slate-900'
-                    }`}
+                    key={reagent.id}
                     onClick={() => {
-                      // Alternate between setting A and B
-                      if (isSelectedA) {
-                        setSelectedElementB(el);
+                      if (isSelected) {
+                        handleRemoveReagent(reagent.id);
                       } else {
-                        setSelectedElementA(el);
+                        handleAddReagent(reagent.id);
                       }
                     }}
+                    className={`p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all cursor-pointer relative group ${
+                      isSelected
+                        ? 'border-cyan-400 bg-cyan-950/40 ring-1 ring-cyan-400/80 shadow-md shadow-cyan-500/20'
+                        : 'border-white/10 bg-slate-950/70 hover:border-white/30 hover:bg-slate-900'
+                    }`}
                   >
-                    <span className="text-[8px] font-mono text-slate-500 absolute top-1 left-1.5">{el.number}</span>
-                    {isSelectedA && (
-                      <span className="text-[8px] font-mono font-bold text-cyan-300 absolute top-1 right-1.5 bg-cyan-950 px-1 rounded">A</span>
+                    {isSelected && (
+                      <span className="w-2 h-2 rounded-full bg-cyan-400 absolute top-1.5 right-1.5 shadow-[0_0_8px_#22d3ee]" />
                     )}
-                    {isSelectedB && (
-                      <span className="text-[8px] font-mono font-bold text-indigo-300 absolute top-1 right-1.5 bg-indigo-950 px-1 rounded">B</span>
-                    )}
-                    <span className="text-base font-black font-mono text-white mt-2 leading-none">{el.symbol}</span>
-                    <span className="text-[9px] text-slate-300 truncate max-w-full font-medium mt-1">
-                      {ar ? el.nameAr : el.nameEn}
+                    <span
+                      className="text-base font-black font-mono mt-1 text-white group-hover:scale-105 transition-transform"
+                      style={{ color: reagent.colorHex }}
+                    >
+                      {reagent.symbol}
+                    </span>
+                    <span className="text-[10px] text-slate-200 font-bold truncate max-w-full text-center mt-1">
+                      {ar ? reagent.nameAr : reagent.nameEn}
+                    </span>
+                    <span className="text-[9px] text-slate-400 font-mono mt-0.5">
+                      {reagent.categoryAr}
                     </span>
                   </div>
                 );
               })}
             </div>
-            <p className="text-[10px] text-slate-400 leading-normal">
+
+            <p className="text-[10px] text-slate-400 leading-relaxed font-mono">
               {ar
-                ? '💡 تلميح: انقر على أي عنصر لتعيينه كمتفاعل أول (A) أو متفاعل ثانٍ (B).'
-                : '💡 Tip: Click any element to swap it into Slot A or Slot B.'}
+                ? '💡 انقر على أي مادة لإضافتها إلى كأس التفاعل أو إزالتها مباشرة.'
+                : '💡 Click any reagent to drop it into or remove it from the reaction vessel.'}
             </p>
           </div>
 
         </div>
 
-        {/* Right Column (7 Cols): Canvas Beaker Visualizer + Reaction Output */}
+        {/* RIGHT COLUMN: Realistic Canvas Visualizer + Scientific Data (7 Cols) */}
         <div className="lg:col-span-7 space-y-4">
-          
-          {/* Reaction Vessel Canvas (PraxiLabs Bench) */}
-          <div className="sci-card p-4 space-y-3 relative overflow-hidden bg-[#030611]">
+
+          {/* Live Vessel Canvas */}
+          <div className="sci-card p-4 space-y-3 relative overflow-hidden bg-[#040714] border-cyan-500/20">
             <div className="flex items-center justify-between pb-2 border-b border-white/10">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="text-xs font-bold text-white font-mono uppercase tracking-wider">
-                  {ar ? 'كأس التفاعل والمراقبة البصرية اللحظية' : 'Reaction Vessel & Real-time Visual Monitor'}
+                  {ar ? 'المراقبة البصرية اللحظية لكأس التفاعل' : 'Real-time Reaction Vessel Telemetry'}
                 </span>
               </div>
 
-              {/* Live Temperature & Thermometer HUD */}
-              <div className="flex items-center gap-2 bg-slate-950/80 border border-white/10 px-3 py-1 rounded-xl">
-                <Thermometer className={`w-3.5 h-3.5 ${temperature > 80 ? 'text-red-400 animate-pulse' : 'text-cyan-400'}`} />
+              {/* Dynamic Thermometer HUD */}
+              <div className="flex items-center gap-2 bg-slate-950/90 border border-white/10 px-3 py-1 rounded-xl">
+                <Thermometer className={`w-4 h-4 ${temperature > 85 ? 'text-rose-400 animate-pulse' : 'text-cyan-400'}`} />
                 <span className="text-xs font-mono font-black text-white">
                   {temperature} °C
                 </span>
@@ -668,20 +815,23 @@ export const PraxiReactionSimulator: React.FC = () => {
               </div>
             </div>
 
-            {/* Canvas */}
-            <div className="w-full relative rounded-xl overflow-hidden border border-white/10 bg-[#070b16]">
+            {/* Canvas Box */}
+            <div className="w-full relative rounded-xl overflow-hidden border border-white/10 bg-[#060a18]">
               <canvas ref={canvasRef} className="w-full block" />
 
-              {/* Progress Overlay bar */}
+              {/* Reaction Progress Overlay Bar */}
               {isReacting && (
-                <div className="absolute top-3 left-4 right-4 bg-slate-950/90 border border-white/10 p-2 rounded-xl backdrop-blur-md">
-                  <div className="flex items-center justify-between text-[11px] mb-1">
-                    <span className="text-white font-mono">{ar ? 'تقدم التفاعل المخبري:' : 'Reaction Progress:'}</span>
+                <div className="absolute top-3 left-4 right-4 bg-slate-950/90 border border-cyan-400/40 p-2.5 rounded-xl backdrop-blur-md shadow-lg shadow-cyan-500/10">
+                  <div className="flex items-center justify-between text-xs mb-1.5">
+                    <span className="text-white font-mono font-bold flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-spin" />
+                      <span>{ar ? 'تقدم التفاعل المخبري:' : 'Reaction Progress:'}</span>
+                    </span>
                     <span className="text-cyan-300 font-mono font-bold">{Math.round(reactionProgress)}%</span>
                   </div>
-                  <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
                     <div
-                      className="bg-gradient-to-r from-cyan-400 to-indigo-500 h-full rounded-full transition-all duration-75"
+                      className="bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-500 h-full rounded-full transition-all duration-75"
                       style={{ width: `${reactionProgress}%` }}
                     />
                   </div>
@@ -690,69 +840,85 @@ export const PraxiReactionSimulator: React.FC = () => {
             </div>
           </div>
 
-          {/* Reaction Scientific Output Card */}
+          {/* Scientific Output / Chemical Equation Card */}
           {reaction ? (
-            <div className="sci-card p-5 space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3 border-b border-white/10">
+            <div className="sci-card p-5 space-y-4 bg-[#0a0f20]">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-white/10">
                 <div>
-                  <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-wider block">
-                    {ar ? 'معادلة التفاعل الكيميائي الموزونة (IUPAC Standard)' : 'Balanced Chemical Equation'}
+                  <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-wider block font-bold">
+                    {ar ? 'معادلة التفاعل الكيميائي الموزونة' : 'Balanced Chemical Equation'}
                   </span>
-                  <span className="text-lg font-black font-mono text-white mt-0.5 block tracking-wide">
+                  <span className="text-lg sm:text-xl font-black font-mono text-white mt-1 block tracking-wide">
                     {ar ? reaction.equationAr : reaction.equation}
                   </span>
                 </div>
                 <div className="text-right">
-                  <span className="text-[10px] font-mono text-slate-400 block">{ar ? 'نوع التفاعل' : 'Reaction Type'}</span>
-                  <span className="text-xs font-bold text-amber-300">{ar ? reaction.typeAr : reaction.typeEn}</span>
+                  <span className="text-[10px] font-mono text-slate-400 block">{ar ? 'تصنيف التفاعل العلمي:' : 'Category:'}</span>
+                  <span className="text-xs font-bold font-mono px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                    {ar ? reaction.categoryAr : reaction.categoryEn}
+                  </span>
                 </div>
               </div>
 
-              {/* Detailed Metrics */}
+              {/* Reaction Metrics Matrix */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="p-3 rounded-xl bg-slate-950/70 border border-white/10 space-y-1">
+                <div className="p-3 rounded-xl bg-slate-950/80 border border-white/10 space-y-1">
                   <span className="text-[10px] text-slate-400 block font-bold">{ar ? 'الديناميكا الحرارية:' : 'Thermodynamics:'}</span>
-                  <span className="text-xs font-mono font-bold text-red-300 block">{ar ? reaction.energyAr : reaction.energyEn}</span>
+                  <span className="text-xs font-mono font-bold text-rose-300 block">{ar ? reaction.energyAr : reaction.energyEn}</span>
                 </div>
 
-                <div className="p-3 rounded-xl bg-slate-950/70 border border-white/10 space-y-1">
+                <div className="p-3 rounded-xl bg-slate-950/80 border border-white/10 space-y-1">
                   <span className="text-[10px] text-slate-400 block font-bold">{ar ? 'النواتج المتكونة:' : 'Formed Products:'}</span>
                   <span className="text-xs font-mono font-bold text-cyan-300 block">{ar ? reaction.productsAr : reaction.productsEn}</span>
                 </div>
 
-                <div className="p-3 rounded-xl bg-slate-950/70 border border-white/10 space-y-1">
-                  <span className="text-[10px] text-slate-400 block font-bold">{ar ? 'المظهر وتغير اللون:' : 'Visual & Color:'}</span>
+                <div className="p-3 rounded-xl bg-slate-950/80 border border-white/10 space-y-1">
+                  <span className="text-[10px] text-slate-400 block font-bold">{ar ? 'المظهر وتغير اللون والراسب:' : 'Visual & Precipitate:'}</span>
                   <span className="text-xs font-mono font-bold text-emerald-300 block">{ar ? reaction.colorChangeAr : reaction.colorChangeEn}</span>
                 </div>
               </div>
 
-              {/* Scientific Explanation */}
-              <div className="p-3.5 rounded-xl bg-indigo-950/20 border border-indigo-500/20 space-y-1.5">
-                <div className="flex items-center gap-1.5 text-indigo-400">
-                  <Info className="w-4 h-4" />
-                  <span className="text-xs font-bold uppercase tracking-wider">{ar ? 'التفسير العلمي المجهري للتفاعل' : 'Microscopic Scientific Mechanism'}</span>
+              {/* Gas Released Banner if any */}
+              {reaction.gasReleased && (
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-cyan-950/40 border border-cyan-400/30 text-cyan-200 text-xs">
+                  <Zap className="w-4 h-4 text-cyan-400 shrink-0" />
+                  <span>
+                    <strong className="text-white font-mono">{ar ? 'الغاز المتصاعد:' : 'Gas Released:'}</strong> {reaction.gasReleased}
+                  </span>
                 </div>
-                <p className="text-xs text-slate-300 leading-relaxed">
+              )}
+
+              {/* Scientific Mechanism */}
+              <div className="p-3.5 rounded-xl bg-indigo-950/30 border border-indigo-500/30 space-y-1.5">
+                <div className="flex items-center gap-1.5 text-indigo-300">
+                  <Info className="w-4 h-4" />
+                  <span className="text-xs font-bold uppercase tracking-wider">{ar ? 'التفسير العلمي المجهري للتفاعل' : 'Scientific Mechanism'}</span>
+                </div>
+                <p className="text-xs text-slate-200 leading-relaxed font-sans">
                   {ar ? reaction.scientificExplanationAr : reaction.scientificExplanationEn}
                 </p>
               </div>
 
-              {/* Safety Hazard Warning */}
-              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-red-950/20 border border-red-500/30 text-red-300 text-xs">
+              {/* Safety Precautions */}
+              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-red-950/30 border border-red-500/40 text-red-200 text-xs">
                 <ShieldAlert className="w-4 h-4 shrink-0 text-red-400" />
                 <span>{ar ? reaction.safetyHazardAr : reaction.safetyHazardEn}</span>
               </div>
             </div>
           ) : (
-            <div className="sci-card p-8 text-center space-y-2 border-dashed border-white/20">
-              <FlaskConical className="w-10 h-10 text-slate-600 mx-auto" />
-              <h4 className="text-sm font-bold text-slate-300">
-                {ar ? 'لا يوجد تفاعل كيميائي مباشر معروف بين هذين العنصرين في الظروف العادية' : 'No Spontaneous Reaction Under Standard Conditions'}
+            <div className="sci-card p-8 text-center space-y-3 border-dashed border-white/20 bg-[#070b16]">
+              <FlaskConical className="w-12 h-12 text-slate-600 mx-auto" />
+              <h4 className="text-base font-bold text-slate-200">
+                {selectedReagentIds.length === 0
+                  ? (ar ? 'الكأس فارغ — اختر المواد من الرف على اليسار لبدء التجربة' : 'Empty Vessel — Select reagents from the shelf on the left')
+                  : selectedReagentIds.length === 1 && !bunsenBurnerActive
+                  ? (ar ? 'أضف متفاعلاً ثانياً أو أشعل موقد بنزن لتجارب الانحلال الحراري' : 'Add a second reagent or turn on the Bunsen burner for thermal decomposition')
+                  : (ar ? 'لا يوجد تفاعل كيميائي مباشر معروف بين هذه المواد في هذه الظروف' : 'No Spontaneous Reaction Under Current Conditions')}
               </h4>
-              <p className="text-xs text-slate-500 max-w-md mx-auto">
+              <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
                 {ar
-                  ? `العنصران (${selectedElementA.symbol}) و (${selectedElementB.symbol}) لا يتفاعلان مباشرة بدون عوامل حفازة أو درجات حرارة وضغوط غير قياسية. جرب اختيار الصوديوم مع الكلور، أو الهيدروجين مع الأكسجين.`
-                  : `Elements (${selectedElementA.symbol}) and (${selectedElementB.symbol}) do not react spontaneously without catalysts or extreme conditions. Try mixing Sodium + Chlorine or Hydrogen + Oxygen.`}
+                  ? 'جرب اختيار تجربة من الأزرار الجاهزة بالأعلى (مثل: Zn + HCl للإحلال البسيط، أو Pb(NO₃)₂ + KI لترسيب المطر الذهبي، أو HgO مع إشعال موقد بنزن للانحلال الحراري).'
+                  : 'Try one of the quick curriculum presets above (e.g. Zn + HCl for single displacement, Pb(NO₃)₂ + KI for golden rain, or HgO with Bunsen heat for thermal decomposition).'}
               </p>
             </div>
           )}
@@ -760,6 +926,8 @@ export const PraxiReactionSimulator: React.FC = () => {
         </div>
 
       </div>
+
     </div>
   );
 };
+export default PraxiReactionSimulator;
