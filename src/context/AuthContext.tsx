@@ -117,26 +117,48 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     mounted.current = true;
 
-    // 1. Initial session check
-    supabase.auth.getSession().then(({ data }) => {
-      if (!mounted.current) return;
-      if (data.session?.user) {
-        setSession(data.session);
-        syncProfile(buildProfile(data.session.user));
-      } else {
-        setSession(null);
-        syncProfile(null);
-      }
-      setIsLoading(false);
-    });
+    // Handle OAuth callback code explicitly (e.g. Google & Microsoft redirect)
+    const urlParams = new URLSearchParams(window.location.search);
+    const oauthCode = urlParams.get('code');
+
+    if (oauthCode) {
+      setIsLoading(true);
+      supabase.auth.exchangeCodeForSession(oauthCode).then(({ data, error }) => {
+        if (!mounted.current) return;
+        if (data?.session?.user) {
+          setSession(data.session);
+          syncProfile(buildProfile(data.session.user));
+          // Clean the code param from address bar cleanly
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+        setIsLoading(false);
+      }).catch(() => {
+        if (mounted.current) setIsLoading(false);
+      });
+    } else {
+      // 1. Initial session check
+      supabase.auth.getSession().then(({ data }) => {
+        if (!mounted.current) return;
+        if (data.session?.user) {
+          setSession(data.session);
+          syncProfile(buildProfile(data.session.user));
+        } else {
+          setSession(null);
+          syncProfile(null);
+        }
+        setIsLoading(false);
+      });
+    }
 
     // 2. Real-time auth changes listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, newSession) => {
         if (!mounted.current) return;
-        setSession(newSession);
-        syncProfile(newSession?.user ? buildProfile(newSession.user) : null);
-        setIsLoading(false);
+        if (newSession?.user) {
+          setSession(newSession);
+          syncProfile(buildProfile(newSession.user));
+          setIsLoading(false);
+        }
       }
     );
 
