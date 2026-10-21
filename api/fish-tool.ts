@@ -15,82 +15,108 @@ function cleanText(t: string): string {
 
 export function resolveTarget(rawInput: string): { mainTab: string; subModule?: string; label: string } {
   const c = cleanText(rawInput);
-
-  // 1. Specific Physics Sub-Modules
-  if (c.includes('مقذوف') || c.includes('رمي') || c.includes('مدفع') || c.includes('projectil')) {
-    return { mainTab: 'physics', subModule: 'projectiles', label: 'مختبر الفيزياء — حركة المقذوفات وزوايا الإطلاق' };
-  }
-  if (c.includes('بصر') || c.includes('انكسار') || c.includes('عدس') || c.includes('ضوء') || c.includes('optic')) {
-    return { mainTab: 'physics', subModule: 'optics', label: 'مختبر الفيزياء — قسم البصريات وانكسار الضوء وقانون سنيل' };
-  }
-  if (c.includes('موج') || c.includes('رنين') || c.includes('تردد') || c.includes('وتر') || c.includes('wave')) {
-    return { mainTab: 'physics', subModule: 'waves', label: 'مختبر الفيزياء — محاكاة الموجات والتردد' };
-  }
-  if (c.includes('دواير') || c.includes('دائر') || c.includes('اوم') || c.includes('كيرشوف') || c.includes('مقاوم') || c.includes('تيار') || c.includes('جهد') || c.includes('circuit')) {
-    return { mainTab: 'physics', subModule: 'circuits', label: 'مختبر الفيزياء — الدوائر الكهربائية وقانون أوم' };
-  }
-  if (c.includes('قو') || c.includes('نيوتن') || c.includes('حرك') || c.includes('تسارع') || c.includes('force')) {
-    return { mainTab: 'physics', subModule: 'forces', label: 'مختبر الفيزياء — القوى والحركة وقوانين نيوتن' };
+  if (!c || c.length < 2) {
+    return { mainTab: 'home', label: 'الصفحة الرئيسية' };
   }
 
-  // 2. Chemistry Sub-Modules
-  if (c.includes('تفاعل') || c.includes('معادل') || c.includes('وزن') || c.includes('موازن') || c.includes('احلال') || c.includes('اتحاد') || c.includes('انحلال') || c.includes('react')) {
-    return { mainTab: 'chemistry', subModule: 'reactions', label: 'مختبر الكيمياء — محاكي التفاعلات وموازنة المعادلات' };
-  }
-  if (c.includes('ذري') || c.includes('ايون') || c.includes('مجموع') || c.includes('atomic') || c.includes('radical')) {
-    return { mainTab: 'chemistry', subModule: 'atomic-groups', label: 'مختبر الكيمياء — المجموعات الذرية ثلاثية الأبعاد' };
-  }
-  if (c.includes('جدول') || c.includes('عناصر') || (c.includes('دوري') && c.includes('كيمي')) || c.includes('period') || c.includes('بوهر')) {
-    return { mainTab: 'chemistry', subModule: 'periodic', label: 'مختبر الكيمياء — الجدول الدوري للعناصر 3D' };
-  }
-
-  // 3. Anatomy Sub-Layers
-  if (c.includes('عضل') || c.includes('muscl')) {
-    return { mainTab: 'anatomy', subModule: 'muscular', label: 'أطلس التشريح — الجهاز العضلي ثلاثي الأبعاد' };
-  }
-  if (c.includes('قلب') || c.includes('دوري') || c.includes('شرايين') || c.includes('اورده') || c.includes('دم') || c.includes('cardio') || c.includes('heart')) {
-    return { mainTab: 'anatomy', subModule: 'cardiovascular', label: 'أطلس التشريح — الجهاز الدوري والقلب والأوعية' };
-  }
-  if (c.includes('عصب') || c.includes('دماغ') || /\bالمخ\b|\bمخ\b/.test(c) || c.includes('نخاع') || c.includes('nerv') || c.includes('brain')) {
-    return { mainTab: 'anatomy', subModule: 'nervous', label: 'أطلس التشريح — الجهاز العصبي والدماغ' };
-  }
-  if (c.includes('مفصل') || c.includes('مفاصل') || c.includes('رباط') || c.includes('اربطه') || c.includes('غضروف') || c.includes('joint')) {
-    return { mainTab: 'anatomy', subModule: 'joints', label: 'أطلس التشريح — المفاصل والأربطة الهيكلية' };
-  }
-  if (c.includes('احشاء') || c.includes('هضم') || c.includes('كبد') || c.includes('معده') || c.includes('رئه') || c.includes('رئتين') || c.includes('تنفس') || c.includes('viscer')) {
-    return { mainTab: 'anatomy', subModule: 'visceral', label: 'أطلس التشريح — الأعضاء الحشوية والتنفسية' };
-  }
-  if (c.includes('عظام') || c.includes('هيكل') || c.includes('عظم') || c.includes('جمجمه') || c.includes('قفص صدري') || c.includes('عمود فقري') || c.includes('فخذ') || c.includes('skelet') || c.includes('bone')) {
-    return { mainTab: 'anatomy', subModule: 'skeletal', label: 'أطلس التشريح — الهيكل العظمي 3D' };
+  // ========================================================
+  // PRIORITY 1: CHEMISTRY (الكيمياء والتفاعلات والجدول الدوري)
+  // ========================================================
+  if (c.includes('كيميا') || c.includes('chem')) {
+    if (c.includes('تفاعل') || c.includes('معادل') || c.includes('احماض') || c.includes('قلوي') || c.includes('احلال') || c.includes('اتحاد') || c.includes('انحلال')) {
+      return { mainTab: 'chemistry', subModule: 'reactions', label: 'مختبر الكيمياء — محاكي التفاعلات الكيميائية' };
+    }
+    if (c.includes('ذري') || c.includes('مجموع') || c.includes('ايون')) {
+      return { mainTab: 'chemistry', subModule: 'atomic-groups', label: 'مختبر الكيمياء — المجموعات الذرية' };
+    }
+    if (c.includes('دوري') || c.includes('جدول') || c.includes('عناصر')) {
+      return { mainTab: 'chemistry', subModule: 'periodic', label: 'مختبر الكيمياء — الجدول الدوري للعناصر' };
+    }
+    return { mainTab: 'chemistry', label: 'مختبر الكيمياء والجدول الدوري والتفاعلات' };
   }
 
-  // 4. Main Labs Matching
-  if (c.includes('حيا') || c.includes('احيا') || c.includes('خل') || c.includes('dna') || c.includes('وراث') || c.includes('ميتوكوندريا') || c.includes('اميبا') || c.includes('يوجلينا') || c.includes('bio') || c.includes('cell')) {
+  // ========================================================
+  // PRIORITY 2: BIOLOGY (الأحياء والخلية والوراثة)
+  // ========================================================
+  if (c.includes('احيا') || c.includes('حيا') || c.includes('بيولوج') || c.includes('bio') || c.includes('خليه') || c.includes('خلايا') || c.includes('dna') || c.includes('وراث') || c.includes('ميتوكوندريا') || c.includes('اميبا') || c.includes('يوجلينا') || c.includes('براميسيوم')) {
     return { mainTab: 'biology', label: 'مختبر الأحياء والخلية والكائنات الدقيقة' };
   }
-  if (c.includes('تشريح') || c.includes('جسم') || c.includes('اعضاء') || c.includes('anatom')) {
+
+  // ========================================================
+  // PRIORITY 3: ANATOMY (التشريح الطبي وأجهزة الجسم)
+  // ========================================================
+  if (c.includes('تشريح') || c.includes('anatom') || c.includes('جسم الانسان') || c.includes('هيكل عظم') || c.includes('عضلات') || c.includes('جهاز دوري') || c.includes('جهاز عصب')) {
+    if (c.includes('عضل') || c.includes('muscl')) {
+      return { mainTab: 'anatomy', subModule: 'muscular', label: 'أطلس التشريح — الجهاز العضلي ثلاثي الأبعاد' };
+    }
+    if (c.includes('قلب') || c.includes('دوري') || c.includes('شرايين') || c.includes('اورده') || c.includes('cardio') || c.includes('heart')) {
+      return { mainTab: 'anatomy', subModule: 'cardiovascular', label: 'أطلس التشريح — الجهاز الدوري والقلب والأوعية' };
+    }
+    if (c.includes('عصب') || c.includes('دماغ') || /\bالمخ\b|\bمخ\b/.test(c) || c.includes('نخاع') || c.includes('brain')) {
+      return { mainTab: 'anatomy', subModule: 'nervous', label: 'أطلس التشريح — الجهاز العصبي والدماغ' };
+    }
+    if (c.includes('مفصل') || c.includes('مفاصل') || c.includes('رباط') || c.includes('غضروف') || c.includes('joint')) {
+      return { mainTab: 'anatomy', subModule: 'joints', label: 'أطلس التشريح — المفاصل والأربطة الهيكلية' };
+    }
+    if (c.includes('احشاء') || c.includes('هضم') || c.includes('كبد') || c.includes('معده') || c.includes('رئه') || c.includes('تنفس') || c.includes('viscer')) {
+      return { mainTab: 'anatomy', subModule: 'visceral', label: 'أطلس التشريح — الأعضاء الحشوية والتنفسية' };
+    }
+    if (c.includes('عظام') || c.includes('هيكل') || c.includes('عظم') || c.includes('جمجمه') || c.includes('skelet') || c.includes('bone')) {
+      return { mainTab: 'anatomy', subModule: 'skeletal', label: 'أطلس التشريح — الهيكل العظمي ثلاثي الأبعاد' };
+    }
     return { mainTab: 'anatomy', label: 'أطلس تشريح جسم الإنسان ثلاثي الأبعاد' };
   }
-  if (c.includes('كيمي') || c.includes('chem')) {
-    return { mainTab: 'chemistry', label: 'مختبر الكيمياء والتفاعلات والجدول الدوري' };
-  }
-  if (c.includes('زلزال') || c.includes('زلازل') || c.includes('تسونامي') || c.includes('جيولوج') || c.includes('ارض') || c.includes('صفائح') || c.includes('ريختر') || c.includes('صخور') || c.includes('geol') || c.includes('earthquake')) {
+
+  // ========================================================
+  // PRIORITY 4: GEOLOGY (الجيولوجيا والزلازل وعلوم الأرض)
+  // ========================================================
+  if (c.includes('جيولوج') || c.includes('زلزال') || c.includes('زلازل') || c.includes('تسونامي') || c.includes('علوم الارض') || c.includes('طبقات الارض') || c.includes('انهيار') || c.includes('ريختر') || c.includes('صخور') || c.includes('صفائح') || c.includes('geol') || c.includes('earthquake')) {
     return { mainTab: 'geology', label: 'علوم الأرض والزلازل ومحاكي انهيار المباني' };
   }
-  if (c.includes('فلك') || c.includes('كوكب') || c.includes('كواكب') || c.includes('كبلر') || c.includes('شمس') || c.includes('قمر') || c.includes('مدار') || c.includes('فضاء') || c.includes('astro') || c.includes('solar')) {
+
+  // ========================================================
+  // PRIORITY 5: ASTRONOMY (الفلك والنظام الشمسي والفضاء)
+  // ========================================================
+  if (c.includes('فلك') || c.includes('كوكب') || c.includes('كواكب') || c.includes('كبلر') || c.includes('نظام شمس') || c.includes('مجموعه شمس') || c.includes('اطوار القمر') || c.includes('فضاء') || c.includes('مدارات') || c.includes('astro') || c.includes('solar')) {
     return { mainTab: 'astronomy', label: 'علم الفلك ومدارات كبلر والنظام الشمسي' };
   }
-  if (c.includes('فيزيا') || c.includes('كهرب') || c.includes('physic')) {
-    return { mainTab: 'physics', label: 'مختبر الفيزياء والدوائر والموجات' };
-  }
-  if (c.includes('فصل') || c.includes('سبور') || c.includes('شاشه') || c.includes('بروجكتور') || c.includes('class') || c.includes('board')) {
+
+  // ========================================================
+  // PRIORITY 6: CLASSROOM (الفصل والسبورة والشاشات الذكية)
+  // ========================================================
+  if (c.includes('فصل') || c.includes('سبور') || c.includes('شاشه ذكي') || c.includes('بروجكتور') || c.includes('عرض تقديم') || c.includes('class') || c.includes('board') || c.includes('smartboard')) {
     return { mainTab: 'classroom', label: 'وضع الفصل والشاشات الذكية التفاعلية' };
   }
+
+  // ========================================================
+  // PRIORITY 7: PHYSICS (الفيزياء والموجات والدوائر)
+  // ========================================================
+  if (c.includes('فيزيا') || c.includes('مقذوف') || c.includes('بصريات') || c.includes('انكسار') || c.includes('عدسات') || c.includes('موجات') || c.includes('دوائر') || c.includes('كهربا') || c.includes('نيوتن') || c.includes('physic')) {
+    if (c.includes('مقذوف') || c.includes('مدفع') || c.includes('رمي') || c.includes('projectil')) {
+      return { mainTab: 'physics', subModule: 'projectiles', label: 'مختبر الفيزياء — حركة المقذوفات وزوايا الإطلاق' };
+    }
+    if (c.includes('بصر') || c.includes('انكسار') || c.includes('عدس') || c.includes('سنيل') || c.includes('optic')) {
+      return { mainTab: 'physics', subModule: 'optics', label: 'مختبر الفيزياء — البصريات وانكسار الضوء' };
+    }
+    if (c.includes('موج') || c.includes('رنين') || c.includes('تردد') || c.includes('وتر') || c.includes('wave')) {
+      return { mainTab: 'physics', subModule: 'waves', label: 'مختبر الفيزياء — محاكاة الموجات والتردد' };
+    }
+    if (c.includes('دواير') || c.includes('دائر') || c.includes('اوم') || c.includes('كيرشوف') || c.includes('مقاوم') || c.includes('circuit')) {
+      return { mainTab: 'physics', subModule: 'circuits', label: 'مختبر الفيزياء — الدوائر الكهربائية وقانون أوم' };
+    }
+    if (c.includes('قوانين نيوتن') || c.includes('قوى وحركه') || c.includes('قوه وحركه') || c.includes('محصله القوى') || c.includes('force')) {
+      return { mainTab: 'physics', subModule: 'forces', label: 'مختبر الفيزياء — القوى والحركة وقوانين نيوتن' };
+    }
+    return { mainTab: 'physics', label: 'مختبر الفيزياء والدوائر والموجات' };
+  }
+
+  // ========================================================
+  // PRIORITY 8: HOME (الرئيسية)
+  // ========================================================
   if (c.includes('رئيس') || c.includes('بداي') || c.includes('خروج') || c.includes('home')) {
     return { mainTab: 'home', label: 'الصفحة الرئيسية' };
   }
 
-  // Fallback defaults to Home
   return { mainTab: 'home', label: 'الصفحة الرئيسية' };
 }
 
@@ -119,7 +145,6 @@ let pendingActions: Array<{
   timestamp: number;
 }> = [];
 
-// KV Relay endpoint to bridge across stateless serverless instances
 const KV_RELAY_URL = 'https://kvdb.io/KxP3rS2y8K8V3W/scinexa_action';
 
 async function relayAction(actionItem: any) {
@@ -199,7 +224,6 @@ export default async function handler(req: any, res?: any) {
     let actions = [...pendingActions];
     pendingActions = []; // Flush in-memory
 
-    // Also check fast external relay in case of cross-instance serverless routing
     if (actions.length === 0) {
       const relayed = await fetchRelayedAction();
       if (relayed) {
@@ -224,12 +248,10 @@ export default async function handler(req: any, res?: any) {
   let toolName = body?.name || body?.tool_name || body?.tool || body?.action || url.searchParams.get('tool');
   let args = body?.arguments || body?.parameters || body?.args || body?.params || {};
 
-  // Unpack stringified args (OpenAI function calling standard)
   if (typeof args === 'string') {
     try { args = JSON.parse(args); } catch {}
   }
 
-  // Check function sub-object
   if (body?.function) {
     toolName = toolName || body.function.name;
     if (typeof body.function.arguments === 'string') {
@@ -239,7 +261,6 @@ export default async function handler(req: any, res?: any) {
     }
   }
 
-  // Check tool_calls array
   if (Array.isArray(body?.tool_calls) && body.tool_calls.length > 0) {
     const tc = body.tool_calls[0];
     toolName = toolName || tc?.function?.name || tc?.name;
@@ -251,20 +272,23 @@ export default async function handler(req: any, res?: any) {
     }
   }
 
-  // Tool: switch_lab (Handles all main labs and deep sub-modules)
+  // Tool: switch_lab
   const isSwitchLab = 
     toolName === 'switch_lab' || 
     Boolean(args.target_lab || args.lab || args.target || args.destination || args.module || args.section);
 
   if (isSwitchLab) {
-    // Collect all possible hints from all fields
-    const rawInput = [
+    // Check direct target_lab argument first before falling back to whole body
+    const primaryInput = [
       args.target_lab,
       args.lab,
       args.target,
       args.destination,
       args.module,
       args.section,
+    ].filter(Boolean).join(' ');
+
+    const rawInput = primaryInput || [
       args.name,
       args.query,
       args.input,
@@ -272,8 +296,7 @@ export default async function handler(req: any, res?: any) {
       body?.text,
       body?.input,
       typeof args === 'string' ? args : '',
-      JSON.stringify(args),
-      JSON.stringify(body)
+      JSON.stringify(args)
     ].filter(Boolean).join(' ');
 
     const resolved = resolveTarget(rawInput);
@@ -292,7 +315,6 @@ export default async function handler(req: any, res?: any) {
     latestPlatformState.labNameAr = resolved.label;
     latestPlatformState.subModule = resolved.subModule;
 
-    // Async relay to cross-instance KV
     relayAction(actionItem).catch(() => {});
 
     const reply = {

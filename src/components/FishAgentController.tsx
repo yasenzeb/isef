@@ -34,76 +34,84 @@ function resolveNavigation(rawInput: string): { mainTab: string; subModule?: str
   const c = cleanText(rawInput);
   if (!c || c.length < 2) return null;
 
-  // 1. Specific Physics Sub-Modules
-  if (c.includes('مقذوف') || c.includes('رمي') || c.includes('مدفع') || c.includes('projectil')) {
-    return { mainTab: 'physics', subModule: 'projectiles', labelAr: 'مختبر الفيزياء — حركة المقذوفات', labelEn: 'Physics — Projectiles' };
-  }
-  if (c.includes('بصر') || c.includes('انكسار') || c.includes('عدس') || c.includes('ضوء') || c.includes('optic')) {
-    return { mainTab: 'physics', subModule: 'optics', labelAr: 'مختبر الفيزياء — البصريات وانكسار الضوء', labelEn: 'Physics — Optics' };
-  }
-  if (c.includes('موج') || c.includes('رنين') || c.includes('تردد') || c.includes('وتر') || c.includes('wave')) {
-    return { mainTab: 'physics', subModule: 'waves', labelAr: 'مختبر الفيزياء — محاكاة الموجات', labelEn: 'Physics — Waves' };
-  }
-  if (c.includes('دواير') || c.includes('دائر') || c.includes('اوم') || c.includes('كيرشوف') || c.includes('مقاوم') || c.includes('تيار') || c.includes('جهد') || c.includes('circuit')) {
-    return { mainTab: 'physics', subModule: 'circuits', labelAr: 'مختبر الفيزياء — الدوائر الكهربائية', labelEn: 'Physics — Circuits' };
-  }
-  if (c.includes('قو') || c.includes('نيوتن') || c.includes('حرك') || c.includes('force')) {
-    return { mainTab: 'physics', subModule: 'forces', labelAr: 'مختبر الفيزياء — القوى والحركة', labelEn: 'Physics — Forces' };
+  // PRIORITY 1: CHEMISTRY (الكيمياء والتفاعلات والجدول الدوري)
+  if (c.includes('كيميا') || c.includes('chem')) {
+    if (c.includes('تفاعل') || c.includes('معادل') || c.includes('احماض') || c.includes('قلوي') || c.includes('احلال') || c.includes('اتحاد') || c.includes('انحلال')) {
+      return { mainTab: 'chemistry', subModule: 'reactions', labelAr: 'مختبر الكيمياء — محاكي التفاعلات', labelEn: 'Chemistry — Reactions' };
+    }
+    if (c.includes('ذري') || c.includes('مجموع') || c.includes('ايون')) {
+      return { mainTab: 'chemistry', subModule: 'atomic-groups', labelAr: 'مختبر الكيمياء — المجموعات الذرية', labelEn: 'Chemistry — Radicals' };
+    }
+    if (c.includes('دوري') || c.includes('جدول') || c.includes('عناصر')) {
+      return { mainTab: 'chemistry', subModule: 'periodic', labelAr: 'مختبر الكيمياء — الجدول الدوري', labelEn: 'Chemistry — Periodic Table' };
+    }
+    return { mainTab: 'chemistry', labelAr: 'مختبر الكيمياء والجدول الدوري والتفاعلات', labelEn: 'Chemistry Laboratory' };
   }
 
-  // 2. Chemistry Sub-Modules
-  if (c.includes('تفاعل') || c.includes('معادل') || c.includes('وزن') || c.includes('موازن') || c.includes('احلال') || c.includes('اتحاد') || c.includes('انحلال') || c.includes('react')) {
-    return { mainTab: 'chemistry', subModule: 'reactions', labelAr: 'مختبر الكيمياء — محاكي التفاعلات', labelEn: 'Chemistry — Reactions' };
-  }
-  if (c.includes('ذري') || c.includes('ايون') || c.includes('مجموع') || c.includes('radical') || c.includes('atomic')) {
-    return { mainTab: 'chemistry', subModule: 'atomic-groups', labelAr: 'مختبر الكيمياء — المجموعات الذرية', labelEn: 'Chemistry — Radicals' };
-  }
-  if (c.includes('جدول') || c.includes('عناصر') || (c.includes('دوري') && c.includes('كيمي')) || c.includes('period') || c.includes('بوهر')) {
-    return { mainTab: 'chemistry', subModule: 'periodic', labelAr: 'مختبر الكيمياء — الجدول الدوري', labelEn: 'Chemistry — Periodic Table' };
-  }
-
-  // 3. Anatomy Sub-Layers
-  if (c.includes('عضل') || c.includes('muscl')) {
-    return { mainTab: 'anatomy', subModule: 'muscular', labelAr: 'أطلس التشريح — الجهاز العضلي', labelEn: 'Anatomy — Muscular' };
-  }
-  if (c.includes('قلب') || c.includes('دوري') || c.includes('شرايين') || c.includes('اورده') || c.includes('دم') || c.includes('cardio') || c.includes('heart')) {
-    return { mainTab: 'anatomy', subModule: 'cardiovascular', labelAr: 'أطلس التشريح — الجهاز الدوري والقلب', labelEn: 'Anatomy — Cardiovascular' };
-  }
-  if (c.includes('عصب') || c.includes('دماغ') || /\bالمخ\b|\bمخ\b/.test(c) || c.includes('نخاع') || c.includes('nerv') || c.includes('brain')) {
-    return { mainTab: 'anatomy', subModule: 'nervous', labelAr: 'أطلس التشريح — الجهاز العصبي والدماغ', labelEn: 'Anatomy — Nervous' };
-  }
-  if (c.includes('مفصل') || c.includes('مفاصل') || c.includes('رباط') || c.includes('اربطه') || c.includes('غضروف') || c.includes('joint')) {
-    return { mainTab: 'anatomy', subModule: 'joints', labelAr: 'أطلس التشريح — المفاصل والأربطة', labelEn: 'Anatomy — Joints' };
-  }
-  if (c.includes('احشاء') || c.includes('هضم') || c.includes('كبد') || c.includes('معده') || c.includes('رئه') || c.includes('رئتين') || c.includes('تنفس') || c.includes('viscer')) {
-    return { mainTab: 'anatomy', subModule: 'visceral', labelAr: 'أطلس التشريح — الأعضاء الداخلية', labelEn: 'Anatomy — Visceral' };
-  }
-  if (c.includes('عظام') || c.includes('هيكل') || c.includes('عظم') || c.includes('جمجمه') || c.includes('قفص صدري') || c.includes('عمود فقري') || c.includes('فخذ') || c.includes('skelet') || c.includes('bone')) {
-    return { mainTab: 'anatomy', subModule: 'skeletal', labelAr: 'أطلس التشريح — الهيكل العظمي', labelEn: 'Anatomy — Skeletal' };
-  }
-
-  // 4. Main Labs Matching
-  if (c.includes('حيا') || c.includes('احيا') || c.includes('خل') || c.includes('dna') || c.includes('وراث') || c.includes('ميتوكوندريا') || c.includes('اميبا') || c.includes('يوجلينا') || c.includes('براميسيوم') || c.includes('bio') || c.includes('cell')) {
+  // PRIORITY 2: BIOLOGY (الأحياء والخلية والوراثة)
+  if (c.includes('احيا') || c.includes('حيا') || c.includes('بيولوج') || c.includes('bio') || c.includes('خليه') || c.includes('خلايا') || c.includes('dna') || c.includes('وراث') || c.includes('ميتوكوندريا') || c.includes('اميبا') || c.includes('يوجلينا') || c.includes('براميسيوم')) {
     return { mainTab: 'biology', labelAr: 'مختبر الأحياء والخلية والكائنات الدقيقة', labelEn: 'Biology Laboratory' };
   }
-  if (c.includes('تشريح') || c.includes('جسم') || c.includes('اعضاء') || c.includes('anatom')) {
+
+  // PRIORITY 3: ANATOMY (التشريح الطبي وأجهزة الجسم)
+  if (c.includes('تشريح') || c.includes('anatom') || c.includes('جسم الانسان') || c.includes('هيكل عظم') || c.includes('عضلات') || c.includes('جهاز دوري') || c.includes('جهاز عصب')) {
+    if (c.includes('عضل') || c.includes('muscl')) {
+      return { mainTab: 'anatomy', subModule: 'muscular', labelAr: 'أطلس التشريح — الجهاز العضلي', labelEn: 'Anatomy — Muscular' };
+    }
+    if (c.includes('قلب') || c.includes('دوري') || c.includes('شرايين') || c.includes('اورده') || c.includes('cardio') || c.includes('heart')) {
+      return { mainTab: 'anatomy', subModule: 'cardiovascular', labelAr: 'أطلس التشريح — الجهاز الدوري والقلب', labelEn: 'Anatomy — Cardiovascular' };
+    }
+    if (c.includes('عصب') || c.includes('دماغ') || /\bالمخ\b|\bمخ\b/.test(c) || c.includes('نخاع') || c.includes('brain')) {
+      return { mainTab: 'anatomy', subModule: 'nervous', labelAr: 'أطلس التشريح — الجهاز العصبي والدماغ', labelEn: 'Anatomy — Nervous' };
+    }
+    if (c.includes('مفصل') || c.includes('مفاصل') || c.includes('رباط') || c.includes('غضروف') || c.includes('joint')) {
+      return { mainTab: 'anatomy', subModule: 'joints', labelAr: 'أطلس التشريح — المفاصل والأربطة', labelEn: 'Anatomy — Joints' };
+    }
+    if (c.includes('احشاء') || c.includes('هضم') || c.includes('كبد') || c.includes('معده') || c.includes('رئه') || c.includes('تنفس') || c.includes('viscer')) {
+      return { mainTab: 'anatomy', subModule: 'visceral', labelAr: 'أطلس التشريح — الأعضاء الداخلية', labelEn: 'Anatomy — Visceral' };
+    }
+    if (c.includes('عظام') || c.includes('هيكل') || c.includes('عظم') || c.includes('جمجمه') || c.includes('skelet') || c.includes('bone')) {
+      return { mainTab: 'anatomy', subModule: 'skeletal', labelAr: 'أطلس التشريح — الهيكل العظمي', labelEn: 'Anatomy — Skeletal' };
+    }
     return { mainTab: 'anatomy', labelAr: 'أطلس تشريح جسم الإنسان', labelEn: 'Human Anatomy 3D Atlas' };
   }
-  if (c.includes('كيمي') || c.includes('chem')) {
-    return { mainTab: 'chemistry', labelAr: 'مختبر الكيمياء والجدول الدوري', labelEn: 'Chemistry Laboratory' };
+
+  // PRIORITY 4: GEOLOGY (الجيولوجيا والزلازل وعلوم الأرض)
+  if (c.includes('جيولوج') || c.includes('زلزال') || c.includes('زلازل') || c.includes('تسونامي') || c.includes('علوم الارض') || c.includes('طبقات الارض') || c.includes('انهيار') || c.includes('ريختر') || c.includes('صخور') || c.includes('صفائح') || c.includes('geol') || c.includes('earthquake')) {
+    return { mainTab: 'geology', labelAr: 'علوم الأرض والزلازل ومحاكي انهيار المباني', labelEn: 'Geology & Earth Sciences' };
   }
-  if (c.includes('زلزال') || c.includes('زلازل') || c.includes('تسونامي') || c.includes('جيولوج') || c.includes('ارض') || c.includes('صفائح') || c.includes('ريختر') || c.includes('صخور') || c.includes('geol') || c.includes('earthquake')) {
-    return { mainTab: 'geology', labelAr: 'علوم الأرض والزلازل ومحاكي ريختر', labelEn: 'Geology & Earth Sciences' };
-  }
-  if (c.includes('فلك') || c.includes('كوكب') || c.includes('كواكب') || c.includes('كبلر') || c.includes('شمس') || c.includes('قمر') || c.includes('مدار') || c.includes('فضاء') || c.includes('astro') || c.includes('solar')) {
+
+  // PRIORITY 5: ASTRONOMY (الفلك والنظام الشمسي والفضاء)
+  if (c.includes('فلك') || c.includes('كوكب') || c.includes('كواكب') || c.includes('كبلر') || c.includes('نظام شمس') || c.includes('مجموعه شمس') || c.includes('اطوار القمر') || c.includes('فضاء') || c.includes('مدارات') || c.includes('astro') || c.includes('solar')) {
     return { mainTab: 'astronomy', labelAr: 'علم الفلك ومدارات كبلر والنظام الشمسي', labelEn: 'Astronomy & Solar System' };
   }
-  if (c.includes('فيزيا') || c.includes('كهرب') || c.includes('physic')) {
-    return { mainTab: 'physics', labelAr: 'مختبر الفيزياء والدوائر والموجات', labelEn: 'Physics Laboratory' };
-  }
-  if (c.includes('فصل') || c.includes('سبور') || c.includes('شاشه') || c.includes('بروجكتور') || c.includes('class') || c.includes('board')) {
+
+  // PRIORITY 6: CLASSROOM (الفصل والسبورة والشاشات الذكية)
+  if (c.includes('فصل') || c.includes('سبور') || c.includes('شاشه ذكي') || c.includes('بروجكتور') || c.includes('عرض تقديم') || c.includes('class') || c.includes('board') || c.includes('smartboard')) {
     return { mainTab: 'classroom', labelAr: 'وضع الفصل والشاشات الذكية التفاعلية', labelEn: 'Classroom Smartboard Mode' };
   }
+
+  // PRIORITY 7: PHYSICS (الفيزياء والموجات والدوائر)
+  if (c.includes('فيزيا') || c.includes('مقذوف') || c.includes('بصريات') || c.includes('انكسار') || c.includes('عدسات') || c.includes('موجات') || c.includes('دوائر') || c.includes('كهربا') || c.includes('نيوتن') || c.includes('physic')) {
+    if (c.includes('مقذوف') || c.includes('مدفع') || c.includes('رمي') || c.includes('projectil')) {
+      return { mainTab: 'physics', subModule: 'projectiles', labelAr: 'مختبر الفيزياء — حركة المقذوفات', labelEn: 'Physics — Projectiles' };
+    }
+    if (c.includes('بصر') || c.includes('انكسار') || c.includes('عدس') || c.includes('سنيل') || c.includes('optic')) {
+      return { mainTab: 'physics', subModule: 'optics', labelAr: 'مختبر الفيزياء — البصريات وانكسار الضوء', labelEn: 'Physics — Optics' };
+    }
+    if (c.includes('موج') || c.includes('رنين') || c.includes('تردد') || c.includes('وتر') || c.includes('wave')) {
+      return { mainTab: 'physics', subModule: 'waves', labelAr: 'مختبر الفيزياء — محاكاة الموجات', labelEn: 'Physics — Waves' };
+    }
+    if (c.includes('دواير') || c.includes('دائر') || c.includes('اوم') || c.includes('كيرشوف') || c.includes('مقاوم') || c.includes('circuit')) {
+      return { mainTab: 'physics', subModule: 'circuits', labelAr: 'مختبر الفيزياء — الدوائر الكهربائية', labelEn: 'Physics — Circuits' };
+    }
+    if (c.includes('قوانين نيوتن') || c.includes('قوى وحركه') || c.includes('قوه وحركه') || c.includes('محصله القوى') || c.includes('force')) {
+      return { mainTab: 'physics', subModule: 'forces', labelAr: 'مختبر الفيزياء — القوى والحركة', labelEn: 'Physics — Forces' };
+    }
+    return { mainTab: 'physics', labelAr: 'مختبر الفيزياء والدوائر والموجات', labelEn: 'Physics Laboratory' };
+  }
+
+  // PRIORITY 8: HOME (الرئيسية)
   if (c.includes('رئيس') || c.includes('بداي') || c.includes('خروج') || c.includes('home')) {
     return { mainTab: 'home', labelAr: 'الصفحة الرئيسية', labelEn: 'Home Screen' };
   }
@@ -128,6 +136,9 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
   const processedActionIdsRef = useRef<Set<string>>(new Set());
   const processedTextSnippetsRef = useRef<Set<string>>(new Set());
 
+  // Navigation Cooldown Guard: Prevents flipping back and forth between labs
+  const lastNavigatedRef = useRef<{ tab: string; subModule?: string; time: number }>({ tab: '', time: 0 });
+
   // Transient Toast Notification
   const [navToast, setNavToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
 
@@ -136,9 +147,26 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
     setTimeout(() => setNavToast({ message: '', visible: false }), 4500);
   };
 
-  // Perform safe lab navigation
+  // Perform safe lab navigation with cooldown protection
   const triggerNavigation = (targetMainTab: string, subModule?: string, label?: string) => {
     if (!targetMainTab) return;
+
+    const now = Date.now();
+    // If same tab and submodule requested within 4 seconds, ignore duplicate
+    if (
+      lastNavigatedRef.current.tab === targetMainTab &&
+      lastNavigatedRef.current.subModule === subModule &&
+      now - lastNavigatedRef.current.time < 4000
+    ) {
+      return;
+    }
+
+    // Cooldown guard: no rapid switching within 1.8 seconds to stop flickering
+    if (now - lastNavigatedRef.current.time < 1800) {
+      return;
+    }
+
+    lastNavigatedRef.current = { tab: targetMainTab, subModule, time: now };
 
     if (subModule && targetMainTab === 'physics') {
       saveState('physics_module', subModule);
@@ -201,7 +229,6 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
       timestamp: Date.now(),
     };
 
-    // Update <fish-agent> DOM element
     const agentEl = document.querySelector('fish-agent');
     if (agentEl) {
       try {
@@ -218,7 +245,6 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
       }
     }
 
-    // Report state to backend API
     fetch('/api/fish-tool?action=report_state', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -249,28 +275,30 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
     return () => window.removeEventListener('scinexa:context', handleLabContext);
   }, []);
 
-  // 4. REAL-TIME SHADOW DOM OBSERVER: Listens directly to Fish Audio transcript in browser
+  // 4. REAL-TIME SHADOW DOM OBSERVER: Listens ONLY to the latest message in chat
   useEffect(() => {
     let observer: MutationObserver | null = null;
     let pollAttempts = 0;
 
-    const checkAndProcessText = (rawText: string) => {
+    const checkAndProcessNewText = (rawText: string) => {
       if (!rawText || rawText.length < 3) return;
 
       const trimmed = rawText.trim();
       if (processedTextSnippetsRef.current.has(trimmed)) return;
       processedTextSnippetsRef.current.add(trimmed);
 
-      // Check if text indicates navigation request or confirmation
+      // Check if text is related to navigation intent
       const isNavIntent = 
         trimmed.includes('انقل') || 
         trimmed.includes('انتقال') || 
+        trimmed.includes('انفل') || // Handles user typo "انفلني"
         trimmed.includes('افتح') || 
         trimmed.includes('وديني') || 
         trimmed.includes('روح') || 
         trimmed.includes('شغل') || 
         trimmed.includes('مختبر') || 
         trimmed.includes('معمل') || 
+        trimmed.includes('قسم') ||
         trimmed.includes('سأنقلك') || 
         trimmed.includes('تم نقلك') || 
         trimmed.includes('تم انتقالك') || 
@@ -312,18 +340,14 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
         return;
       }
 
-      // Attach MutationObserver to Shadow DOM
       try {
+        // ONLY triggers on newly appended nodes, not historical sweeps
         observer = new MutationObserver((mutations) => {
           for (const m of mutations) {
-            // Check character data or added text nodes
-            if (m.type === 'characterData' && m.target?.textContent) {
-              checkAndProcessText(m.target.textContent);
-            }
             if (m.type === 'childList') {
               m.addedNodes.forEach(node => {
                 const text = node.textContent;
-                if (text) checkAndProcessText(text);
+                if (text) checkAndProcessNewText(text);
               });
             }
           }
@@ -332,7 +356,6 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
         observer.observe(shadow, {
           childList: true,
           subtree: true,
-          characterData: true,
         });
       } catch (err) {
         console.warn('Could not attach Shadow DOM observer on fish-agent:', err);
@@ -341,30 +364,14 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
 
     setupObserver();
 
-    // Secondary periodic sweep of shadowRoot content
-    const interval = setInterval(() => {
-      const agentEl = document.querySelector('fish-agent') as any;
-      if (agentEl?.shadowRoot) {
-        const textBlocks = agentEl.shadowRoot.querySelectorAll('p, span, div');
-        textBlocks.forEach((el: any) => {
-          const txt = el.innerText || el.textContent;
-          if (txt && txt.length > 3) {
-            checkAndProcessText(txt);
-          }
-        });
-      }
-    }, 600);
-
     return () => {
       if (observer) observer.disconnect();
-      clearInterval(interval);
     };
   }, []);
 
-  // 5. Fast Poll for remote webhook actions from /api/fish-tool & KV relay
+  // 5. Poll for remote webhook actions from /api/fish-tool & KV relay (with deduplication)
   useEffect(() => {
     const pollInterval = setInterval(async () => {
-      // 1. Check local serverless route
       try {
         const res = await fetch('/api/fish-tool?action=poll_actions');
         if (res.ok) {
@@ -382,7 +389,6 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
         }
       } catch {}
 
-      // 2. Direct check on KV relay endpoint
       try {
         const kvRes = await fetch(KV_RELAY_URL, { signal: AbortSignal.timeout(1000) });
         if (kvRes.ok) {
@@ -397,14 +403,13 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
           }
         }
       } catch {}
-    }, 700);
+    }, 900);
 
     return () => clearInterval(pollInterval);
   }, []);
 
   return (
     <>
-      {/* Toast Notification when agent switches labs */}
       {navToast.visible && (
         <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-950 via-slate-900 to-indigo-950 border border-cyan-400/60 shadow-2xl shadow-cyan-500/20 text-white flex items-center gap-2.5 animate-bounce">
           <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
@@ -414,3 +419,4 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
     </>
   );
 };
+export default FishAgentController;
