@@ -33,7 +33,6 @@ export const LoginPage: React.FC = () => {
   const {
     loginWithPassword,
     signUpWithPassword,
-    loginWithGoogle,
     loginWithMicrosoft,
     resetPasswordWithInstitutionalVerification,
     continueAsGuest,
@@ -52,6 +51,7 @@ export const LoginPage: React.FC = () => {
   const [age, setAge] = useState<number | ''>('');
   const [birthday, setBirthday] = useState('');
   const [gender, setGender] = useState<'male' | 'female'>('male');
+  const [grade, setGrade] = useState('');
 
   // Forgot Password Verification Fields
   const [resetCode, setResetCode] = useState('');
@@ -72,8 +72,8 @@ export const LoginPage: React.FC = () => {
     const err = searchParams.get('error_description') || searchParams.get('error') || hashParams.get('error_description') || hashParams.get('error');
     if (err) {
       const clean = decodeURIComponent(err.replace(/\+/g, ' '));
-      if (clean.includes('access_denied') || clean.includes('restricted') || clean.includes('testing')) {
-        setErrorMessage('جوجل: الحساب غير مسجل في مستخدمي الاختبار (Test Users) أو التطبيق في وضع Testing. يرجى الضغط على PUBLISH APP في Google Cloud، أو استخدام الدخول بالإيميل الموحد أو كزائر.');
+      if (clean.includes('access_denied') || clean.includes('restricted')) {
+        setErrorMessage('تعذر إكمال تسجيل الدخول الخارجي. يرجى استخدام البريد الموحد أو المتابعة كزائر.');
       } else {
         setErrorMessage(clean);
       }
@@ -127,6 +127,7 @@ export const LoginPage: React.FC = () => {
       age: age ? Number(age) : undefined,
       birthday: birthday || undefined,
       gender,
+      grade: grade || undefined,
     };
 
     const res = await signUpWithPassword(params);
@@ -174,16 +175,6 @@ export const LoginPage: React.FC = () => {
         setMode('login');
         setPassword(newPassword);
       }, 2000);
-    }
-  };
-
-  const handleGoogleOAuth = async () => {
-    setIsLoading(true);
-    setErrorMessage(null);
-    const res = await loginWithGoogle();
-    setIsLoading(false);
-    if (res.error) {
-      setErrorMessage(res.error);
     }
   };
 
@@ -355,6 +346,38 @@ export const LoginPage: React.FC = () => {
               </div>
             </div>
 
+            {/* School Grade */}
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-300">
+                الصف الدراسي
+              </label>
+              <select
+                value={grade}
+                onChange={(e) => setGrade(e.target.value)}
+                className="w-full px-3.5 py-2 rounded-xl bg-[#0d0f14] border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer"
+              >
+                <option value="">— اختر الصف الدراسي —</option>
+                <optgroup label="المرحلة الابتدائية">
+                  <option>الصف الأول الابتدائي</option>
+                  <option>الصف الثاني الابتدائي</option>
+                  <option>الصف الثالث الابتدائي</option>
+                  <option>الصف الرابع الابتدائي</option>
+                  <option>الصف الخامس الابتدائي</option>
+                  <option>الصف السادس الابتدائي</option>
+                </optgroup>
+                <optgroup label="المرحلة الإعدادية">
+                  <option>الصف الأول الإعدادي</option>
+                  <option>الصف الثاني الإعدادي</option>
+                  <option>الصف الثالث الإعدادي</option>
+                </optgroup>
+                <optgroup label="المرحلة الثانوية">
+                  <option>الصف الأول الثانوي</option>
+                  <option>الصف الثاني الثانوي</option>
+                  <option>الصف الثالث الثانوي</option>
+                </optgroup>
+              </select>
+            </div>
+
             {/* Submit Button */}
             <button
               type="submit"
@@ -472,7 +495,14 @@ export const LoginPage: React.FC = () => {
                   min="5"
                   max="120"
                   value={age}
-                  onChange={(e) => setAge(e.target.value ? Number(e.target.value) : '')}
+                  onChange={(e) => {
+                    const val = e.target.value ? Number(e.target.value) : '';
+                    setAge(val);
+                    if (val && Number(val) > 0) {
+                      const year = new Date().getFullYear() - Number(val);
+                      setBirthday(`${year}-01-01`);
+                    }
+                  }}
                   placeholder="مثال: 14"
                   className="w-full px-3 py-2 rounded-xl bg-[#0d0f14] border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-all"
                 />
@@ -485,7 +515,16 @@ export const LoginPage: React.FC = () => {
                 <input
                   type="date"
                   value={birthday}
-                  onChange={(e) => setBirthday(e.target.value)}
+                  onChange={(e) => {
+                    setBirthday(e.target.value);
+                    if (e.target.value) {
+                      const birthDate = new Date(e.target.value);
+                      const today = new Date();
+                      const calcAge = today.getFullYear() - birthDate.getFullYear() -
+                        (today < new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate()) ? 1 : 0);
+                      setAge(calcAge);
+                    }
+                  }}
                   className="w-full px-3 py-2 rounded-xl bg-[#0d0f14] border border-white/10 text-white text-xs sm:text-sm focus:outline-none focus:border-blue-500 transition-all"
                 />
               </div>
@@ -522,6 +561,38 @@ export const LoginPage: React.FC = () => {
                   <span>أنثى</span>
                 </button>
               </div>
+            </div>
+
+            {/* School Grade */}
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-300">
+                الصف الدراسي
+              </label>
+              <select
+                value={grade}
+                onChange={(e) => setGrade(e.target.value)}
+                className="w-full px-3.5 py-2 rounded-xl bg-[#0d0f14] border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer"
+              >
+                <option value="">— اختر الصف الدراسي —</option>
+                <optgroup label="المرحلة الابتدائية">
+                  <option>الصف الأول الابتدائي</option>
+                  <option>الصف الثاني الابتدائي</option>
+                  <option>الصف الثالث الابتدائي</option>
+                  <option>الصف الرابع الابتدائي</option>
+                  <option>الصف الخامس الابتدائي</option>
+                  <option>الصف السادس الابتدائي</option>
+                </optgroup>
+                <optgroup label="المرحلة الإعدادية">
+                  <option>الصف الأول الإعدادي</option>
+                  <option>الصف الثاني الإعدادي</option>
+                  <option>الصف الثالث الإعدادي</option>
+                </optgroup>
+                <optgroup label="المرحلة الثانوية">
+                  <option>الصف الأول الثانوي</option>
+                  <option>الصف الثاني الثانوي</option>
+                  <option>الصف الثالث الثانوي</option>
+                </optgroup>
+              </select>
             </div>
 
             {/* Submit Button */}
@@ -712,24 +783,8 @@ export const LoginPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Social Logins Grid: Google + Microsoft */}
+            {/* Social Logins Grid: Microsoft only */}
             <div className="space-y-2.5">
-              {/* Google SSO */}
-              <button
-                type="button"
-                onClick={handleGoogleOAuth}
-                disabled={isLoading}
-                className="w-full py-2.5 px-4 rounded-xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 text-xs sm:text-sm font-semibold flex items-center justify-center gap-3 transition-all cursor-pointer active:scale-[0.99]"
-              >
-                <svg width="18" height="18" viewBox="0 0 48 48" className="shrink-0">
-                  <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
-                  <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
-                  <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
-                  <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
-                </svg>
-                <span>تسجيل الدخول بواسطة Google</span>
-              </button>
-
               {/* Microsoft Office 365 SSO */}
               <button
                 type="button"

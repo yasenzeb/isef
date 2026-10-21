@@ -28,6 +28,7 @@ export interface SignUpParams {
   age?: number;
   birthday?: string;
   gender?: 'male' | 'female';
+  grade?: string;
 }
 
 export interface ResetPasswordParams {
@@ -85,6 +86,7 @@ function buildProfile(user: User): SciNexaProfile {
     age: meta.age ? Number(meta.age) : undefined,
     birthday: meta.birthday || undefined,
     gender: meta.gender || undefined,
+    grade: meta.grade || undefined,
     avatarUrl: meta.avatar_url || meta.picture || undefined,
     createdAt: user.created_at,
   };
@@ -261,6 +263,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         age: params.age,
         birthday: params.birthday,
         gender: params.gender,
+        grade: params.grade,
       };
 
       const { data, error } = await supabase.auth.signUp({
@@ -310,6 +313,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               age: params.age,
               birthday: params.birthday,
               gender: params.gender,
+              grade: params.grade,
             });
           } catch {}
         })();

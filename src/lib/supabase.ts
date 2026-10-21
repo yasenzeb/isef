@@ -36,6 +36,7 @@ export interface SciNexaProfile {
   age?:           number;
   birthday?:      string;
   gender?:        'male' | 'female';
+  grade?:         string;
   avatarUrl?:     string;
   createdAt?:     string;
 }

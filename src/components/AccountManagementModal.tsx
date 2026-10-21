@@ -40,6 +40,7 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
   const [age, setAge] = useState<number | ''>(user?.age || '');
   const [birthday, setBirthday] = useState(user?.birthday || '');
   const [gender, setGender] = useState<'male' | 'female'>(user?.gender || 'male');
+  const [grade, setGrade] = useState(user?.grade || '');
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -73,6 +74,7 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
           age: age ? Number(age) : undefined,
           birthday: birthday || undefined,
           gender,
+          grade: grade || undefined,
         },
       });
 
@@ -82,6 +84,7 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
         age: age ? Number(age) : null,
         birthday: birthday || null,
         gender,
+        grade: grade || null,
       }).eq('id', user.id);
 
       // 3. Update localStorage cache
@@ -91,6 +94,7 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
         age: age ? Number(age) : undefined,
         birthday: birthday || undefined,
         gender,
+        grade: grade || undefined,
       };
       localStorage.setItem('scinexa_cached_profile', JSON.stringify(updated));
 
@@ -143,7 +147,7 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6">
           {/* Institutional Badges Ribbon */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5 space-y-1">
               <span className="text-[10px] text-slate-400 block">{isAr ? 'الصفة التعليمية' : 'Role'}</span>
               <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
@@ -171,6 +175,13 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
               <span className="text-xs font-bold text-purple-400 flex items-center gap-1">
                 <Atom size={13} />
                 <span>{isAr ? 'مفتوح بالكامل' : 'All 6 Labs'}</span>
+              </span>
+            </div>
+
+            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5 space-y-1 col-span-2 sm:col-span-2">
+              <span className="text-[10px] text-slate-400 block">{isAr ? 'الصف الدراسي' : 'Grade'}</span>
+              <span className="text-xs font-bold text-cyan-400 truncate block">
+                {grade || user.grade || (isAr ? 'غير محدد' : 'Not set')}
               </span>
             </div>
           </div>
@@ -225,7 +236,14 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
                   min="5"
                   max="120"
                   value={age}
-                  onChange={(e) => setAge(e.target.value ? Number(e.target.value) : '')}
+                  onChange={(e) => {
+                    const val = e.target.value ? Number(e.target.value) : '';
+                    setAge(val);
+                    if (val && Number(val) > 0) {
+                      const year = new Date().getFullYear() - Number(val);
+                      setBirthday(`${year}-01-01`);
+                    }
+                  }}
                   className="w-full px-3.5 py-2.5 rounded-xl bg-[#08090d] border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-all"
                 />
               </div>
@@ -238,7 +256,16 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
                 <input
                   type="date"
                   value={birthday}
-                  onChange={(e) => setBirthday(e.target.value)}
+                  onChange={(e) => {
+                    setBirthday(e.target.value);
+                    if (e.target.value) {
+                      const birthDate = new Date(e.target.value);
+                      const today = new Date();
+                      const calcAge = today.getFullYear() - birthDate.getFullYear() -
+                        (today < new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate()) ? 1 : 0);
+                      setAge(calcAge);
+                    }
+                  }}
                   className="w-full px-3.5 py-2.5 rounded-xl bg-[#08090d] border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-all"
                 />
               </div>
@@ -275,6 +302,38 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
                   <span>{isAr ? 'طالبة (أنثى)' : 'Female'}</span>
                 </button>
               </div>
+            </div>
+
+            {/* School Grade */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-slate-300">
+                {isAr ? 'الصف الدراسي' : 'School Grade'}
+              </label>
+              <select
+                value={grade}
+                onChange={(e) => setGrade(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#08090d] border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer"
+              >
+                <option value="">— اختر الصف الدراسي —</option>
+                <optgroup label="المرحلة الابتدائية">
+                  <option>الصف الأول الابتدائي</option>
+                  <option>الصف الثاني الابتدائي</option>
+                  <option>الصف الثالث الابتدائي</option>
+                  <option>الصف الرابع الابتدائي</option>
+                  <option>الصف الخامس الابتدائي</option>
+                  <option>الصف السادس الابتدائي</option>
+                </optgroup>
+                <optgroup label="المرحلة الإعدادية">
+                  <option>الصف الأول الإعدادي</option>
+                  <option>الصف الثاني الإعدادي</option>
+                  <option>الصف الثالث الإعدادي</option>
+                </optgroup>
+                <optgroup label="المرحلة الثانوية">
+                  <option>الصف الأول الثانوي</option>
+                  <option>الصف الثاني الثانوي</option>
+                  <option>الصف الثالث الثانوي</option>
+                </optgroup>
+              </select>
             </div>
 
             {/* Save Button */}

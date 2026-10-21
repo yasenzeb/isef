@@ -120,6 +120,9 @@ export const UserProfileCard: React.FC<{ language?: string }> = ({ language = 'a
                   return activeAdmin ? activeAdmin.nameAr : (activeGov ? activeGov.nameAr : (user.governorateAr || 'الدقهلية'));
                 })()}
               />
+              {user.grade && (
+                <Row label={isAr ? 'الصف الدراسي' : 'Grade'} value={user.grade} />
+              )}
               {user.age && (
                 <Row label={isAr ? 'العمر' : 'Age'} value={`${user.age} ${isAr ? 'سنة' : 'yrs'}`} />
               )}
