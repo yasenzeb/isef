@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
 import {
   Activity,
   Atom,
@@ -102,6 +103,7 @@ const AI_SEARCH_RULES: { keywords: string[]; tab: string; labNameEn: string; lab
 
 export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) => {
   const { t, isRTL, language } = useLanguage();
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
 
   // AI Intent Classifier: Analyzes natural query to detect student destination
@@ -315,8 +317,52 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) =>
   );
 
   return (
-    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 space-y-12 pb-24">
+    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8 pb-24">
       
+      {/* 0. STUDENT WELCOME & IDENTITY HUB */}
+      {user && (
+        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-950/40 via-indigo-950/30 to-purple-950/30 border border-indigo-500/25 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl backdrop-blur-md">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-2xl shadow-lg shrink-0 border border-white/10">
+              {user.gender === 'female' ? '👧' : (user.role === 'teacher' ? '👨‍🏫' : '👦')}
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-base sm:text-lg font-black text-white">
+                  {isArabic ? `أهلاً بك يا ${user.displayName.split(' ')[0]} 👋` : `Welcome, ${user.displayName.split(' ')[0]} 👋`}
+                </h2>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-mono">
+                  {isArabic ? 'وضع الطالب الموحد نشط' : 'Unified Student Workspace'}
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 mt-1 flex items-center gap-2 flex-wrap">
+                <span>
+                  {isArabic ? 'كود الطالب الموحد:' : 'Code:'} <strong className="text-blue-400 font-mono">{user.studentCode || '—'}</strong>
+                </span>
+                <span className="text-slate-600">•</span>
+                <span>
+                  {isArabic ? 'المديرية التعليمية:' : 'Directorate:'} <strong className="text-amber-400">{user.governorate || (isArabic ? 'وزارة التربية والتعليم' : 'Ministry of Education')}</strong>
+                </span>
+                <span className="text-slate-600">•</span>
+                <span className="text-emerald-400 font-semibold">
+                  {isArabic ? 'جميع المعامل العلمية الستة مفتوحة ومجهزة' : 'All 6 Virtual Labs Active'}
+                </span>
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 self-stretch sm:self-auto justify-end">
+            <button
+              onClick={() => onNavigate('chemistry')}
+              className="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all shadow-md shadow-indigo-600/25 flex items-center gap-1.5 cursor-pointer"
+            >
+              <Atom className="w-3.5 h-3.5" />
+              <span>{isArabic ? 'ابدأ التجارب التفاعلية' : 'Launch Virtual Labs'}</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* 1. TOP STATUS BANNER */}
       <div className="tech-status-banner">
         <div className="flex items-center gap-3">
