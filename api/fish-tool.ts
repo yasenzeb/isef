@@ -13,106 +13,125 @@ function cleanText(t: string): string {
     .trim();
 }
 
-export function resolveTarget(rawInput: string): { mainTab: string; subModule?: string; label: string } {
+export function resolveTarget(rawInput: string): { mainTab: string; subModule?: string; label: string; focusPart?: string } {
   const c = cleanText(rawInput);
   if (!c || c.length < 2) {
     return { mainTab: 'home', label: 'الصفحة الرئيسية' };
   }
 
-  // ========================================================
-  // PRIORITY 1: CHEMISTRY (الكيمياء والتفاعلات والجدول الدوري)
-  // ========================================================
+  // 1. SPECIFIC SPECIMENS & ORGANS
+  if (c.includes('قلب') || c.includes('heart') || c.includes('شريان') || c.includes('اورده')) {
+    return { mainTab: 'anatomy', subModule: 'cardiovascular', label: 'أطلس التشريح — القلب والجهاز الدوري', focusPart: 'Heart' };
+  }
+  if (c.includes('مخ') || c.includes('دماغ') || c.includes('brain')) {
+    return { mainTab: 'anatomy', subModule: 'nervous', label: 'أطلس التشريح — الدماغ والجهاز العصبي', focusPart: 'Brain' };
+  }
+  if (c.includes('فخذ') || c.includes('femur')) {
+    return { mainTab: 'anatomy', subModule: 'skeletal', label: 'أطلس التشريح — عظم الفخذ', focusPart: 'Femur' };
+  }
+  if (c.includes('جمجمه') || c.includes('skull') || c.includes('cranium')) {
+    return { mainTab: 'anatomy', subModule: 'skeletal', label: 'أطلس التشريح — الجمجمة', focusPart: 'Cranium' };
+  }
+  if (c.includes('عمود فقر') || c.includes('فقرات') || c.includes('spine')) {
+    return { mainTab: 'anatomy', subModule: 'skeletal', label: 'أطلس التشريح — العمود الفقري', focusPart: 'Vertebral column' };
+  }
+  if (c.includes('قفص صدر') || c.includes('اضلاع') || c.includes('rib')) {
+    return { mainTab: 'anatomy', subModule: 'skeletal', label: 'أطلس التشريح — القفص الصدري', focusPart: 'Ribs' };
+  }
+  if (c.includes('معده') || c.includes('stomach')) {
+    return { mainTab: 'anatomy', subModule: 'visceral', label: 'أطلس التشريح — المعدة', focusPart: 'Stomach' };
+  }
+  if (c.includes('كبد') || c.includes('liver')) {
+    return { mainTab: 'anatomy', subModule: 'visceral', label: 'أطلس التشريح — الكبد', focusPart: 'Liver' };
+  }
+  if (c.includes('رئه') || c.includes('رئتين') || c.includes('lung')) {
+    return { mainTab: 'anatomy', subModule: 'visceral', label: 'أطلس التشريح — الرئتان', focusPart: 'Lungs' };
+  }
+
+  // 2. ANATOMY SYSTEMS
+  if (c.includes('عضل') || c.includes('muscl')) {
+    return { mainTab: 'anatomy', subModule: 'muscular', label: 'أطلس التشريح — الجهاز العضلي' };
+  }
+  if (c.includes('دوري') || c.includes('cardio') || c.includes('قلب')) {
+    return { mainTab: 'anatomy', subModule: 'cardiovascular', label: 'أطلس التشريح — الجهاز الدوري والقلب' };
+  }
+  if (c.includes('عصب') || c.includes('nervous')) {
+    return { mainTab: 'anatomy', subModule: 'nervous', label: 'أطلس التشريح — الجهاز العصبي والدماغ' };
+  }
+  if (c.includes('مفصل') || c.includes('مفاصل') || c.includes('رباط') || c.includes('غضروف') || c.includes('joint')) {
+    return { mainTab: 'anatomy', subModule: 'joints', label: 'أطلس التشريح — المفاصل والأربطة' };
+  }
+  if (c.includes('احشاء') || c.includes('هضم') || c.includes('باطن') || c.includes('viscer')) {
+    return { mainTab: 'anatomy', subModule: 'visceral', label: 'أطلس التشريح — الأعضاء الحشوية' };
+  }
+  if (c.includes('عظام') || c.includes('عظم') || c.includes('هيكل') || c.includes('skelet') || c.includes('bone')) {
+    return { mainTab: 'anatomy', subModule: 'skeletal', label: 'أطلس التشريح — الهيكل العظمي' };
+  }
+  if (c.includes('تشريح') || c.includes('anatom') || c.includes('جسم الانسان')) {
+    return { mainTab: 'anatomy', subModule: 'skeletal', label: 'أطلس تشريح جسم الإنسان' };
+  }
+
+  // 3. CHEMISTRY
+  if (c.includes('تفاعل') || c.includes('معادل') || c.includes('احماض') || c.includes('قلوي') || c.includes('reaction')) {
+    return { mainTab: 'chemistry', subModule: 'reactions', label: 'مختبر الكيمياء — محاكي التفاعلات' };
+  }
+  if (c.includes('ذري') || c.includes('مجموعات') || c.includes('ايون') || c.includes('radical')) {
+    return { mainTab: 'chemistry', subModule: 'atomic-groups', label: 'مختبر الكيمياء — المجموعات الذرية' };
+  }
+  if (c.includes('دوري') || c.includes('جدول') || c.includes('عناصر') || c.includes('periodic')) {
+    return { mainTab: 'chemistry', subModule: 'periodic', label: 'مختبر الكيمياء — الجدول الدوري للعناصر' };
+  }
   if (c.includes('كيميا') || c.includes('chem')) {
-    if (c.includes('تفاعل') || c.includes('معادل') || c.includes('احماض') || c.includes('قلوي') || c.includes('احلال') || c.includes('اتحاد') || c.includes('انحلال')) {
-      return { mainTab: 'chemistry', subModule: 'reactions', label: 'مختبر الكيمياء — محاكي التفاعلات الكيميائية' };
-    }
-    if (c.includes('ذري') || c.includes('مجموع') || c.includes('ايون')) {
-      return { mainTab: 'chemistry', subModule: 'atomic-groups', label: 'مختبر الكيمياء — المجموعات الذرية' };
-    }
-    if (c.includes('دوري') || c.includes('جدول') || c.includes('عناصر')) {
-      return { mainTab: 'chemistry', subModule: 'periodic', label: 'مختبر الكيمياء — الجدول الدوري للعناصر' };
-    }
-    return { mainTab: 'chemistry', label: 'مختبر الكيمياء والجدول الدوري والتفاعلات' };
+    return { mainTab: 'chemistry', subModule: 'periodic', label: 'مختبر الكيمياء' };
   }
 
-  // ========================================================
-  // PRIORITY 2: BIOLOGY (الأحياء والخلية والوراثة)
-  // ========================================================
-  if (c.includes('احيا') || c.includes('حيا') || c.includes('بيولوج') || c.includes('bio') || c.includes('خليه') || c.includes('خلايا') || c.includes('dna') || c.includes('وراث') || c.includes('ميتوكوندريا') || c.includes('اميبا') || c.includes('يوجلينا') || c.includes('براميسيوم')) {
-    return { mainTab: 'biology', label: 'مختبر الأحياء والخلية والكائنات الدقيقة' };
+  // 4. PHYSICS
+  if (c.includes('دواير') || c.includes('دوائر') || c.includes('دائر') || c.includes('كهربا') || c.includes('اوم') || c.includes('مقاوم') || c.includes('circuit')) {
+    return { mainTab: 'physics', subModule: 'circuits', label: 'مختبر الفيزياء — الدوائر الكهربائية' };
+  }
+  if (c.includes('مقذوف') || c.includes('مدفع') || c.includes('رمي') || c.includes('projectil')) {
+    return { mainTab: 'physics', subModule: 'projectiles', label: 'مختبر الفيزياء — حركة المقذوفات' };
+  }
+  if (c.includes('بصر') || c.includes('انكسار') || c.includes('عدس') || c.includes('سنيل') || c.includes('optic')) {
+    return { mainTab: 'physics', subModule: 'optics', label: 'مختبر الفيزياء — البصريات وانكسار الضوء' };
+  }
+  if (c.includes('موج') || c.includes('رنين') || c.includes('تردد') || c.includes('wave')) {
+    return { mainTab: 'physics', subModule: 'waves', label: 'مختبر الفيزياء — محاكاة الموجات' };
+  }
+  if (c.includes('نيوتن') || c.includes('قوى') || c.includes('قوه') || c.includes('حرك') || c.includes('force')) {
+    return { mainTab: 'physics', subModule: 'forces', label: 'مختبر الفيزياء — القوى والحركة وقوانين نيوتن' };
+  }
+  if (c.includes('فيزيا') || c.includes('physic')) {
+    return { mainTab: 'physics', subModule: 'circuits', label: 'مختبر الفيزياء' };
   }
 
-  // ========================================================
-  // PRIORITY 3: ANATOMY (التشريح الطبي وأجهزة الجسم)
-  // ========================================================
-  if (c.includes('تشريح') || c.includes('anatom') || c.includes('جسم الانسان') || c.includes('هيكل عظم') || c.includes('عضلات') || c.includes('جهاز دوري') || c.includes('جهاز عصب')) {
-    if (c.includes('عضل') || c.includes('muscl')) {
-      return { mainTab: 'anatomy', subModule: 'muscular', label: 'أطلس التشريح — الجهاز العضلي ثلاثي الأبعاد' };
-    }
-    if (c.includes('قلب') || c.includes('دوري') || c.includes('شرايين') || c.includes('اورده') || c.includes('cardio') || c.includes('heart')) {
-      return { mainTab: 'anatomy', subModule: 'cardiovascular', label: 'أطلس التشريح — الجهاز الدوري والقلب والأوعية' };
-    }
-    if (c.includes('عصب') || c.includes('دماغ') || /\bالمخ\b|\bمخ\b/.test(c) || c.includes('نخاع') || c.includes('brain')) {
-      return { mainTab: 'anatomy', subModule: 'nervous', label: 'أطلس التشريح — الجهاز العصبي والدماغ' };
-    }
-    if (c.includes('مفصل') || c.includes('مفاصل') || c.includes('رباط') || c.includes('غضروف') || c.includes('joint')) {
-      return { mainTab: 'anatomy', subModule: 'joints', label: 'أطلس التشريح — المفاصل والأربطة الهيكلية' };
-    }
-    if (c.includes('احشاء') || c.includes('هضم') || c.includes('كبد') || c.includes('معده') || c.includes('رئه') || c.includes('تنفس') || c.includes('viscer')) {
-      return { mainTab: 'anatomy', subModule: 'visceral', label: 'أطلس التشريح — الأعضاء الحشوية والتنفسية' };
-    }
-    if (c.includes('عظام') || c.includes('هيكل') || c.includes('عظم') || c.includes('جمجمه') || c.includes('skelet') || c.includes('bone')) {
-      return { mainTab: 'anatomy', subModule: 'skeletal', label: 'أطلس التشريح — الهيكل العظمي ثلاثي الأبعاد' };
-    }
-    return { mainTab: 'anatomy', label: 'أطلس تشريح جسم الإنسان ثلاثي الأبعاد' };
+  // 5. BIOLOGY
+  if (c.includes('dna') || c.includes('وراث')) {
+    return { mainTab: 'biology', subModule: 'dna', label: 'مختبر الأحياء — الحمض النووي (DNA)' };
+  }
+  if (c.includes('ميكروب') || c.includes('اميبا') || c.includes('يوجلينا') || c.includes('براميسيوم')) {
+    return { mainTab: 'biology', subModule: 'microorganisms', label: 'مختبر الأحياء — الكائنات الدقيقة' };
+  }
+  if (c.includes('خليه') || c.includes('خلايا') || c.includes('احيا') || c.includes('بيولوج') || c.includes('bio')) {
+    return { mainTab: 'biology', subModule: 'sketchfab_cell', label: 'مختبر الأحياء والخلية' };
   }
 
-  // ========================================================
-  // PRIORITY 4: GEOLOGY (الجيولوجيا والزلازل وعلوم الأرض)
-  // ========================================================
-  if (c.includes('جيولوج') || c.includes('زلزال') || c.includes('زلازل') || c.includes('تسونامي') || c.includes('علوم الارض') || c.includes('طبقات الارض') || c.includes('انهيار') || c.includes('ريختر') || c.includes('صخور') || c.includes('صفائح') || c.includes('geol') || c.includes('earthquake')) {
+  // 6. GEOLOGY
+  if (c.includes('جيولوج') || c.includes('زلزال') || c.includes('زلازل') || c.includes('تسونامي') || c.includes('ريختر') || c.includes('geol')) {
     return { mainTab: 'geology', label: 'علوم الأرض والزلازل ومحاكي انهيار المباني' };
   }
 
-  // ========================================================
-  // PRIORITY 5: ASTRONOMY (الفلك والنظام الشمسي والفضاء)
-  // ========================================================
-  if (c.includes('فلك') || c.includes('كوكب') || c.includes('كواكب') || c.includes('كبلر') || c.includes('نظام شمس') || c.includes('مجموعه شمس') || c.includes('اطوار القمر') || c.includes('فضاء') || c.includes('مدارات') || c.includes('astro') || c.includes('solar')) {
+  // 7. ASTRONOMY
+  if (c.includes('فلك') || c.includes('كوكب') || c.includes('كواكب') || c.includes('شمس') || c.includes('مدار') || c.includes('كبلر') || c.includes('astro')) {
     return { mainTab: 'astronomy', label: 'علم الفلك ومدارات كبلر والنظام الشمسي' };
   }
 
-  // ========================================================
-  // PRIORITY 6: CLASSROOM (الفصل والسبورة والشاشات الذكية)
-  // ========================================================
-  if (c.includes('فصل') || c.includes('سبور') || c.includes('شاشه ذكي') || c.includes('بروجكتور') || c.includes('عرض تقديم') || c.includes('class') || c.includes('board') || c.includes('smartboard')) {
-    return { mainTab: 'classroom', label: 'وضع الفصل والشاشات الذكية التفاعلية' };
+  // 8. CLASSROOM
+  if (c.includes('فصل') || c.includes('سبور') || c.includes('class') || c.includes('board')) {
+    return { mainTab: 'classroom', label: 'وضع الفصل والشاشات الذكية' };
   }
 
-  // ========================================================
-  // PRIORITY 7: PHYSICS (الفيزياء والموجات والدوائر)
-  // ========================================================
-  if (c.includes('فيزيا') || c.includes('مقذوف') || c.includes('بصريات') || c.includes('انكسار') || c.includes('عدسات') || c.includes('موجات') || c.includes('دوائر') || c.includes('كهربا') || c.includes('نيوتن') || c.includes('physic')) {
-    if (c.includes('مقذوف') || c.includes('مدفع') || c.includes('رمي') || c.includes('projectil')) {
-      return { mainTab: 'physics', subModule: 'projectiles', label: 'مختبر الفيزياء — حركة المقذوفات وزوايا الإطلاق' };
-    }
-    if (c.includes('بصر') || c.includes('انكسار') || c.includes('عدس') || c.includes('سنيل') || c.includes('optic')) {
-      return { mainTab: 'physics', subModule: 'optics', label: 'مختبر الفيزياء — البصريات وانكسار الضوء' };
-    }
-    if (c.includes('موج') || c.includes('رنين') || c.includes('تردد') || c.includes('وتر') || c.includes('wave')) {
-      return { mainTab: 'physics', subModule: 'waves', label: 'مختبر الفيزياء — محاكاة الموجات والتردد' };
-    }
-    if (c.includes('دواير') || c.includes('دائر') || c.includes('اوم') || c.includes('كيرشوف') || c.includes('مقاوم') || c.includes('circuit')) {
-      return { mainTab: 'physics', subModule: 'circuits', label: 'مختبر الفيزياء — الدوائر الكهربائية وقانون أوم' };
-    }
-    if (c.includes('قوانين نيوتن') || c.includes('قوى وحركه') || c.includes('قوه وحركه') || c.includes('محصله القوى') || c.includes('force')) {
-      return { mainTab: 'physics', subModule: 'forces', label: 'مختبر الفيزياء — القوى والحركة وقوانين نيوتن' };
-    }
-    return { mainTab: 'physics', label: 'مختبر الفيزياء والدوائر والموجات' };
-  }
-
-  // ========================================================
-  // PRIORITY 8: HOME (الرئيسية)
-  // ========================================================
+  // 9. HOME
   if (c.includes('رئيس') || c.includes('بداي') || c.includes('خروج') || c.includes('home')) {
     return { mainTab: 'home', label: 'الصفحة الرئيسية' };
   }

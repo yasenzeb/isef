@@ -32,103 +32,160 @@ function cleanText(t: string): string {
     .trim();
 }
 
-function resolveNavigation(rawInput: string): { mainTab: string; subModule?: string; labelAr: string; labelEn: string } | null {
+export interface ResolvedNav {
+  mainTab: string;
+  subModule?: string;
+  labelAr: string;
+  labelEn: string;
+  focusPart?: string;
+}
+
+export function resolveNavigation(rawInput: string): ResolvedNav | null {
   const c = cleanText(rawInput);
   if (!c || c.length < 2) return null;
 
   // ========================================================
-  // PRIORITY 1: CHEMISTRY (الكيمياء والتفاعلات والجدول الدوري)
+  // 1. SPECIFIC ANATOMICAL SPECIMENS & ORGANS (أجزاء وأعضاء محددة)
   // ========================================================
+  if (c.includes('قلب') || c.includes('heart') || c.includes('شريان') || c.includes('اورده') || c.includes('اوعيه دمويه')) {
+    return { mainTab: 'anatomy', subModule: 'cardiovascular', labelAr: 'أطلس التشريح — القلب والجهاز الدوري', labelEn: 'Anatomy — Cardiovascular & Heart', focusPart: 'Heart' };
+  }
+  if (c.includes('مخ') || c.includes('دماغ') || c.includes('brain') || /\bالمخ\b|\bمخ\b/.test(c)) {
+    return { mainTab: 'anatomy', subModule: 'nervous', labelAr: 'أطلس التشريح — الدماغ والجهاز العصبي', labelEn: 'Anatomy — Brain & Nervous', focusPart: 'Brain' };
+  }
+  if (c.includes('فخذ') || c.includes('عظم الفخذ') || c.includes('femur')) {
+    return { mainTab: 'anatomy', subModule: 'skeletal', labelAr: 'أطلس التشريح — عظم الفخذ (Femur)', labelEn: 'Anatomy — Femur Bone', focusPart: 'Femur' };
+  }
+  if (c.includes('جمجمه') || c.includes('راس') || c.includes('skull') || c.includes('cranium')) {
+    return { mainTab: 'anatomy', subModule: 'skeletal', labelAr: 'أطلس التشريح — الجمجمة (Skull)', labelEn: 'Anatomy — Cranium & Skull', focusPart: 'Cranium' };
+  }
+  if (c.includes('عمود فقر') || c.includes('فقرات') || c.includes('spine') || c.includes('vertebra')) {
+    return { mainTab: 'anatomy', subModule: 'skeletal', labelAr: 'أطلس التشريح — العمود الفقري', labelEn: 'Anatomy — Vertebral Column', focusPart: 'Vertebral column' };
+  }
+  if (c.includes('قفص صدر') || c.includes('اضلاع') || c.includes('ضلوع') || c.includes('rib')) {
+    return { mainTab: 'anatomy', subModule: 'skeletal', labelAr: 'أطلس التشريح — القفص الصدري والأضلاع', labelEn: 'Anatomy — Rib Cage', focusPart: 'Ribs' };
+  }
+  if (c.includes('ترقوه') || c.includes('clavicle')) {
+    return { mainTab: 'anatomy', subModule: 'skeletal', labelAr: 'أطلس التشريح — عظم الترقوة', labelEn: 'Anatomy — Clavicle', focusPart: 'Clavicle' };
+  }
+  if (c.includes('لوح الكتف') || c.includes('scapula')) {
+    return { mainTab: 'anatomy', subModule: 'skeletal', labelAr: 'أطلس التشريح — لوح الكتف', labelEn: 'Anatomy — Scapula', focusPart: 'Scapula' };
+  }
+  if (c.includes('معده') || c.includes('stomach')) {
+    return { mainTab: 'anatomy', subModule: 'visceral', labelAr: 'أطلس التشريح — المعدة والجهاز الهضمي', labelEn: 'Anatomy — Stomach', focusPart: 'Stomach' };
+  }
+  if (c.includes('كبد') || c.includes('liver')) {
+    return { mainTab: 'anatomy', subModule: 'visceral', labelAr: 'أطلس التشريح — الكبد', labelEn: 'Anatomy — Liver', focusPart: 'Liver' };
+  }
+  if (c.includes('رئه') || c.includes('رئتين') || c.includes('lung')) {
+    return { mainTab: 'anatomy', subModule: 'visceral', labelAr: 'أطلس التشريح — الرئتان والجهاز التنفسي', labelEn: 'Anatomy — Lungs', focusPart: 'Lungs' };
+  }
+  if (c.includes('بايسبس') || c.includes('عضله الذراع') || c.includes('biceps')) {
+    return { mainTab: 'anatomy', subModule: 'muscular', labelAr: 'أطلس التشريح — العضلة ذات الرأسين (Biceps)', labelEn: 'Anatomy — Biceps', focusPart: 'Biceps' };
+  }
+  if (c.includes('ركبه') || c.includes('صابونه') || c.includes('knee') || c.includes('patella')) {
+    return { mainTab: 'anatomy', subModule: 'joints', labelAr: 'أطلس التشريح — مفصل الركبة والرضفة', labelEn: 'Anatomy — Knee Joint', focusPart: 'Knee joint' };
+  }
+
+  // ========================================================
+  // 2. ANATOMY SYSTEMS & LAYERS (أجهزة التشريح)
+  // ========================================================
+  if (c.includes('عضل') || c.includes('muscl')) {
+    return { mainTab: 'anatomy', subModule: 'muscular', labelAr: 'أطلس التشريح — الجهاز العضلي الكامل', labelEn: 'Anatomy — Muscular System' };
+  }
+  if (c.includes('دوري') || c.includes('cardio') || c.includes('قلب')) {
+    return { mainTab: 'anatomy', subModule: 'cardiovascular', labelAr: 'أطلس التشريح — الجهاز الدوري والقلب', labelEn: 'Anatomy — Cardiovascular' };
+  }
+  if (c.includes('عصب') || c.includes('nervous') || c.includes('نخاع') || c.includes('حبل شوك')) {
+    return { mainTab: 'anatomy', subModule: 'nervous', labelAr: 'أطلس التشريح — الجهاز العصبي والدماغ', labelEn: 'Anatomy — Nervous System' };
+  }
+  if (c.includes('مفصل') || c.includes('مفاصل') || c.includes('رباط') || c.includes('اربط') || c.includes('غضروف') || c.includes('غضاريف') || c.includes('joint')) {
+    return { mainTab: 'anatomy', subModule: 'joints', labelAr: 'أطلس التشريح — المفاصل والأربطة', labelEn: 'Anatomy — Joints & Ligaments' };
+  }
+  if (c.includes('احشاء') || c.includes('هضم') || c.includes('باطن') || c.includes('viscer')) {
+    return { mainTab: 'anatomy', subModule: 'visceral', labelAr: 'أطلس التشريح — الأعضاء الحشوية والداخلية', labelEn: 'Anatomy — Visceral Organs' };
+  }
+  if (c.includes('عظام') || c.includes('عظم') || c.includes('هيكل') || c.includes('skelet') || c.includes('bone')) {
+    return { mainTab: 'anatomy', subModule: 'skeletal', labelAr: 'أطلس التشريح — الهيكل العظمي 3D', labelEn: 'Anatomy — Skeletal System' };
+  }
+  if (c.includes('تشريح') || c.includes('اناتومي') || c.includes('جسم الانسان') || c.includes('anatomy')) {
+    return { mainTab: 'anatomy', subModule: 'skeletal', labelAr: 'أطلس تشريح جسم الإنسان ثلاثي الأبعاد', labelEn: 'Human Anatomy 3D Atlas' };
+  }
+
+  // ========================================================
+  // 3. CHEMISTRY (الكيمياء، الجدول الدوري، التفاعلات)
+  // ========================================================
+  if (c.includes('تفاعل') || c.includes('معادل') || c.includes('احماض') || c.includes('قلوي') || c.includes('احلال') || c.includes('اتحاد') || c.includes('انحلال') || c.includes('reaction')) {
+    return { mainTab: 'chemistry', subModule: 'reactions', labelAr: 'مختبر الكيمياء — محاكي التفاعلات الكيميائية', labelEn: 'Chemistry — Chemical Reactions' };
+  }
+  if (c.includes('ذري') || c.includes('مجموعات') || c.includes('ايون') || c.includes('هيدروكسيد') || c.includes('radical')) {
+    return { mainTab: 'chemistry', subModule: 'atomic-groups', labelAr: 'مختبر الكيمياء — المجموعات والأيونات الذرية', labelEn: 'Chemistry — Polyatomic Groups' };
+  }
+  if (c.includes('دوري') || c.includes('جدول') || c.includes('عناصر') || c.includes('عنصر') || c.includes('periodic')) {
+    return { mainTab: 'chemistry', subModule: 'periodic', labelAr: 'مختبر الكيمياء — الجدول الدوري للعناصر', labelEn: 'Chemistry — Periodic Table' };
+  }
   if (c.includes('كيميا') || c.includes('chem')) {
-    if (c.includes('تفاعل') || c.includes('معادل') || c.includes('احماض') || c.includes('قلوي') || c.includes('احلال') || c.includes('اتحاد') || c.includes('انحلال')) {
-      return { mainTab: 'chemistry', subModule: 'reactions', labelAr: 'مختبر الكيمياء — محاكي التفاعلات', labelEn: 'Chemistry — Reactions' };
-    }
-    if (c.includes('ذري') || c.includes('مجموع') || c.includes('ايون')) {
-      return { mainTab: 'chemistry', subModule: 'atomic-groups', labelAr: 'مختبر الكيمياء — المجموعات الذرية', labelEn: 'Chemistry — Radicals' };
-    }
-    if (c.includes('دوري') || c.includes('جدول') || c.includes('عناصر')) {
-      return { mainTab: 'chemistry', subModule: 'periodic', labelAr: 'مختبر الكيمياء — الجدول الدوري', labelEn: 'Chemistry — Periodic Table' };
-    }
-    return { mainTab: 'chemistry', labelAr: 'مختبر الكيمياء والجدول الدوري والتفاعلات', labelEn: 'Chemistry Laboratory' };
+    return { mainTab: 'chemistry', subModule: 'periodic', labelAr: 'مختبر الكيمياء ثلاثي الأبعاد', labelEn: 'Chemistry Laboratory' };
   }
 
   // ========================================================
-  // PRIORITY 2: BIOLOGY (الأحياء والخلية والوراثة)
+  // 4. PHYSICS (الفيزياء، الدوائر، المقذوفات، البصريات، الموجات)
   // ========================================================
-  if (c.includes('احيا') || c.includes('حيا') || c.includes('بيولوج') || c.includes('bio') || c.includes('خليه') || c.includes('خلايا') || c.includes('dna') || c.includes('وراث') || c.includes('ميتوكوندريا') || c.includes('اميبا') || c.includes('يوجلينا') || c.includes('براميسيوم')) {
-    return { mainTab: 'biology', labelAr: 'مختبر الأحياء والخلية والكائنات الدقيقة', labelEn: 'Biology Laboratory' };
+  if (c.includes('دواير') || c.includes('دوائر') || c.includes('دائر') || c.includes('كهربا') || c.includes('اوم') || c.includes('كيرشوف') || c.includes('مقاوم') || c.includes('فولت') || c.includes('امبير') || c.includes('circuit')) {
+    return { mainTab: 'physics', subModule: 'circuits', labelAr: 'مختبر الفيزياء — الدوائر الكهربائية وقانون أوم', labelEn: 'Physics — Electric Circuits' };
+  }
+  if (c.includes('مقذوف') || c.includes('مدفع') || c.includes('رمي') || c.includes('اطلاق') || c.includes('projectil')) {
+    return { mainTab: 'physics', subModule: 'projectiles', labelAr: 'مختبر الفيزياء — حركة المقذوفات وزوايا الإطلاق', labelEn: 'Physics — Projectile Motion' };
+  }
+  if (c.includes('بصر') || c.includes('انكسار') || c.includes('عدس') || c.includes('منشور') || c.includes('سنيل') || c.includes('انعكاس') || c.includes('optic')) {
+    return { mainTab: 'physics', subModule: 'optics', labelAr: 'مختبر الفيزياء — البصريات وانكسار الضوء', labelEn: 'Physics — Optics & Refraction' };
+  }
+  if (c.includes('موج') || c.includes('رنين') || c.includes('تردد') || c.includes('طول موج') || c.includes('اهتزاز') || c.includes('وتر') || c.includes('wave')) {
+    return { mainTab: 'physics', subModule: 'waves', labelAr: 'مختبر الفيزياء — محاكاة الموجات والرنين', labelEn: 'Physics — Waves & Resonance' };
+  }
+  if (c.includes('نيوتن') || c.includes('قوى') || c.includes('قوه') || c.includes('حرك') || c.includes('force')) {
+    return { mainTab: 'physics', subModule: 'forces', labelAr: 'مختبر الفيزياء — القوى وقوانين نيوتن للحركة', labelEn: 'Physics — Forces & Newton Laws' };
+  }
+  if (c.includes('فيزيا') || c.includes('physic')) {
+    return { mainTab: 'physics', subModule: 'circuits', labelAr: 'مختبر الفيزياء والدوائر والموجات', labelEn: 'Physics Laboratory' };
   }
 
   // ========================================================
-  // PRIORITY 3: ANATOMY (التشريح الطبي وأجهزة الجسم)
+  // 5. BIOLOGY (الأحياء، الخلية، DNA، الكائنات الدقيقة)
   // ========================================================
-  if (c.includes('تشريح') || c.includes('anatom') || c.includes('جسم الانسان') || c.includes('هيكل عظم') || c.includes('عضلات') || c.includes('جهاز دوري') || c.includes('جهاز عصب')) {
-    if (c.includes('عضل') || c.includes('muscl')) {
-      return { mainTab: 'anatomy', subModule: 'muscular', labelAr: 'أطلس التشريح — الجهاز العضلي', labelEn: 'Anatomy — Muscular' };
-    }
-    if (c.includes('قلب') || c.includes('دوري') || c.includes('شرايين') || c.includes('اورده') || c.includes('cardio') || c.includes('heart')) {
-      return { mainTab: 'anatomy', subModule: 'cardiovascular', labelAr: 'أطلس التشريح — الجهاز الدوري والقلب', labelEn: 'Anatomy — Cardiovascular' };
-    }
-    if (c.includes('عصب') || c.includes('دماغ') || /\bالمخ\b|\bمخ\b/.test(c) || c.includes('نخاع') || c.includes('brain')) {
-      return { mainTab: 'anatomy', subModule: 'nervous', labelAr: 'أطلس التشريح — الجهاز العصبي والدماغ', labelEn: 'Anatomy — Nervous' };
-    }
-    if (c.includes('مفصل') || c.includes('مفاصل') || c.includes('رباط') || c.includes('غضروف') || c.includes('joint')) {
-      return { mainTab: 'anatomy', subModule: 'joints', labelAr: 'أطلس التشريح — المفاصل والأربطة', labelEn: 'Anatomy — Joints' };
-    }
-    if (c.includes('احشاء') || c.includes('هضم') || c.includes('كبد') || c.includes('معده') || c.includes('رئه') || c.includes('تنفس') || c.includes('viscer')) {
-      return { mainTab: 'anatomy', subModule: 'visceral', labelAr: 'أطلس التشريح — الأعضاء الداخلية', labelEn: 'Anatomy — Visceral' };
-    }
-    if (c.includes('عظام') || c.includes('هيكل') || c.includes('عظم') || c.includes('جمجمه') || c.includes('skelet') || c.includes('bone')) {
-      return { mainTab: 'anatomy', subModule: 'skeletal', labelAr: 'أطلس التشريح — الهيكل العظمي', labelEn: 'Anatomy — Skeletal' };
-    }
-    return { mainTab: 'anatomy', labelAr: 'أطلس تشريح جسم الإنسان', labelEn: 'Human Anatomy 3D Atlas' };
+  if (c.includes('dna') || c.includes('وراث') || c.includes('جين')) {
+    return { mainTab: 'biology', subModule: 'dna', labelAr: 'مختبر الأحياء — الحمض النووي (DNA)', labelEn: 'Biology — DNA Helix' };
+  }
+  if (c.includes('ميكروب') || c.includes('اميبا') || c.includes('يوجلينا') || c.includes('براميسيوم') || c.includes('بكتيري') || c.includes('كائنات دقيق')) {
+    return { mainTab: 'biology', subModule: 'microorganisms', labelAr: 'مختبر الأحياء — الكائنات الدقيقة والمجهرية', labelEn: 'Biology — Microorganisms' };
+  }
+  if (c.includes('خليه') || c.includes('خلايا') || c.includes('احيا') || c.includes('بيولوج') || c.includes('ميتوكوندريا') || c.includes('bio')) {
+    return { mainTab: 'biology', subModule: 'sketchfab_cell', labelAr: 'مختبر الأحياء والخلية ثلاثية الأبعاد', labelEn: 'Biology & Cell Laboratory' };
   }
 
   // ========================================================
-  // PRIORITY 4: GEOLOGY (الجيولوجيا والزلازل وعلوم الأرض)
+  // 6. GEOLOGY (علوم الأرض، الزلازل، ريختر، تسونامي)
   // ========================================================
-  if (c.includes('جيولوج') || c.includes('زلزال') || c.includes('زلازل') || c.includes('تسونامي') || c.includes('علوم الارض') || c.includes('طبقات الارض') || c.includes('انهيار') || c.includes('ريختر') || c.includes('صخور') || c.includes('صفائح') || c.includes('geol') || c.includes('earthquake')) {
-    return { mainTab: 'geology', labelAr: 'علوم الأرض والزلازل ومحاكي انهيار المباني', labelEn: 'Geology & Earth Sciences' };
+  if (c.includes('جيولوج') || c.includes('زلزال') || c.includes('زلازل') || c.includes('تسونامي') || c.includes('علوم الارض') || c.includes('طبقات الارض') || c.includes('انهيار') || c.includes('ريختر') || c.includes('صفائح') || c.includes('صخور') || c.includes('geol') || c.includes('earthquake')) {
+    return { mainTab: 'geology', labelAr: 'علوم الأرض والزلازل ومحاكي انهيار المباني', labelEn: 'Geology & Seismic Simulation' };
   }
 
   // ========================================================
-  // PRIORITY 5: ASTRONOMY (الفلك والنظام الشمسي والفضاء)
+  // 7. ASTRONOMY (الفلك، المجموعة الشمسية، كبلر، الكواكب)
   // ========================================================
-  if (c.includes('فلك') || c.includes('كوكب') || c.includes('كواكب') || c.includes('كبلر') || c.includes('نظام شمس') || c.includes('مجموعه شمس') || c.includes('اطوار القمر') || c.includes('فضاء') || c.includes('مدارات') || c.includes('astro') || c.includes('solar')) {
-    return { mainTab: 'astronomy', labelAr: 'علم الفلك ومدارات كبلر والنظام الشمسي', labelEn: 'Astronomy & Solar System' };
+  if (c.includes('فلك') || c.includes('كوكب') || c.includes('كواكب') || c.includes('كبلر') || c.includes('شمس') || c.includes('مجموعه شمس') || c.includes('نظام شمس') || c.includes('فضاء') || c.includes('مدار') || c.includes('اطوار القمر') || c.includes('خسوف') || c.includes('كسوف') || c.includes('astro') || c.includes('solar')) {
+    return { mainTab: 'astronomy', labelAr: 'علم الفلك ومدارات كبلر والنظام الشمسي', labelEn: 'Astronomy & Kepler Orbits' };
   }
 
   // ========================================================
-  // PRIORITY 6: CLASSROOM (الفصل والسبورة والشاشات الذكية)
+  // 8. CLASSROOM (وضع الفصل والسبورة الذكية)
   // ========================================================
-  if (c.includes('فصل') || c.includes('سبور') || c.includes('شاشه ذكي') || c.includes('بروجكتور') || c.includes('عرض تقديم') || c.includes('class') || c.includes('board') || c.includes('smartboard')) {
+  if (c.includes('فصل') || c.includes('سبور') || c.includes('شاشه ذكي') || c.includes('بروجكتور') || c.includes('class') || c.includes('board')) {
     return { mainTab: 'classroom', labelAr: 'وضع الفصل والشاشات الذكية التفاعلية', labelEn: 'Classroom Smartboard Mode' };
   }
 
   // ========================================================
-  // PRIORITY 7: PHYSICS (الفيزياء والموجات والدوائر)
-  // ========================================================
-  if (c.includes('فيزيا') || c.includes('مقذوف') || c.includes('بصريات') || c.includes('انكسار') || c.includes('عدسات') || c.includes('موجات') || c.includes('دوائر') || c.includes('كهربا') || c.includes('نيوتن') || c.includes('physic')) {
-    if (c.includes('مقذوف') || c.includes('مدفع') || c.includes('رمي') || c.includes('projectil')) {
-      return { mainTab: 'physics', subModule: 'projectiles', labelAr: 'مختبر الفيزياء — حركة المقذوفات', labelEn: 'Physics — Projectiles' };
-    }
-    if (c.includes('بصر') || c.includes('انكسار') || c.includes('عدس') || c.includes('سنيل') || c.includes('optic')) {
-      return { mainTab: 'physics', subModule: 'optics', labelAr: 'مختبر الفيزياء — البصريات وانكسار الضوء', labelEn: 'Physics — Optics' };
-    }
-    if (c.includes('موج') || c.includes('رنين') || c.includes('تردد') || c.includes('وتر') || c.includes('wave')) {
-      return { mainTab: 'physics', subModule: 'waves', labelAr: 'مختبر الفيزياء — محاكاة الموجات', labelEn: 'Physics — Waves' };
-    }
-    if (c.includes('دواير') || c.includes('دائر') || c.includes('اوم') || c.includes('كيرشوف') || c.includes('مقاوم') || c.includes('circuit')) {
-      return { mainTab: 'physics', subModule: 'circuits', labelAr: 'مختبر الفيزياء — الدوائر الكهربائية', labelEn: 'Physics — Circuits' };
-    }
-    if (c.includes('قوانين نيوتن') || c.includes('قوى وحركه') || c.includes('قوه وحركه') || c.includes('محصله القوى') || c.includes('force')) {
-      return { mainTab: 'physics', subModule: 'forces', labelAr: 'مختبر الفيزياء — القوى والحركة', labelEn: 'Physics — Forces' };
-    }
-    return { mainTab: 'physics', labelAr: 'مختبر الفيزياء والدوائر والموجات', labelEn: 'Physics Laboratory' };
-  }
-
-  // ========================================================
-  // PRIORITY 8: HOME (الرئيسية)
+  // 9. HOME (الصفحة الرئيسية)
   // ========================================================
   if (c.includes('رئيس') || c.includes('بداي') || c.includes('خروج') || c.includes('home')) {
     return { mainTab: 'home', labelAr: 'الصفحة الرئيسية', labelEn: 'Home Screen' };
@@ -182,7 +239,7 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
 
   const latestContextRef = useRef<{ title?: string; desc?: string; type?: string }>({});
   const lastProcessedRelayTimeRef = useRef<number>(Date.now() - 5000);
-  const lastNavigatedRef = useRef<{ tab: string; subModule?: string; time: number }>({ tab: '', time: 0 });
+  const lastNavigatedRef = useRef<{ tab: string; subModule?: string; focusPart?: string; time: number }>({ tab: '', time: 0 });
   const processedSnippetsRef = useRef<Set<string>>(new Set());
 
   // Transient Toast Notification
@@ -193,60 +250,79 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
     setTimeout(() => setNavToast({ message: '', visible: false }), 4500);
   };
 
-  // Perform safe lab navigation with cooldown protection
-  const triggerNavigation = (targetMainTab: string, subModule?: string, label?: string) => {
+  // Perform safe lab & part navigation with cooldown protection and multi-pulse delivery
+  const triggerNavigation = (
+    targetMainTab: string,
+    subModule?: string,
+    label?: string,
+    focusPart?: string
+  ) => {
     if (!targetMainTab) return;
 
     const now = Date.now();
-    // Prevent duplicate triggers if already at target within 3.5s
+    // Prevent duplicate triggers if already at target within 2.5s
     if (
       lastNavigatedRef.current.tab === targetMainTab &&
       lastNavigatedRef.current.subModule === subModule &&
-      now - lastNavigatedRef.current.time < 3500
+      lastNavigatedRef.current.focusPart === focusPart &&
+      now - lastNavigatedRef.current.time < 2500
     ) {
       return;
     }
 
-    // Cooldown guard: no rapid switching within 1.2s to stop flickering
-    if (now - lastNavigatedRef.current.time < 1200) {
-      return;
+    lastNavigatedRef.current = { tab: targetMainTab, subModule, focusPart, time: now };
+
+    // 1. Immediately persist states into localStorage so that target component initializes directly to it on mount!
+    saveState('app_tab', targetMainTab);
+    if (subModule) {
+      if (targetMainTab === 'physics') saveState('physics_module', subModule);
+      if (targetMainTab === 'chemistry') saveState('chemistry_tab', subModule);
+      if (targetMainTab === 'anatomy') saveState('anatomy_layer', subModule);
+      if (targetMainTab === 'biology') saveState('biology_tab', subModule);
+    }
+    if (focusPart) {
+      saveState('anatomy_focus_part', focusPart);
     }
 
-    lastNavigatedRef.current = { tab: targetMainTab, subModule, time: now };
-
-    if (subModule && targetMainTab === 'physics') {
-      saveState('physics_module', subModule);
-    }
-
+    // 2. Switch main tab
     if (currentTabRef.current !== targetMainTab) {
       setCurrentTab(targetMainTab);
-      if (label) {
-        showToast(languageRef.current === 'ar' ? `🚀 تم الانتقال إلى ${label}` : `🚀 Navigated to ${label}`);
-      }
     }
 
-    // Sub-module dispatch
-    if (subModule) {
-      const dispatchEvents = () => {
-        if (targetMainTab === 'physics') {
-          window.dispatchEvent(new CustomEvent('scinexa:switch_physics_module', { detail: { module: subModule } }));
-        } else if (targetMainTab === 'chemistry') {
-          window.dispatchEvent(new CustomEvent('scinexa:switch_chemistry_tab', { detail: { tab: subModule } }));
-        } else if (targetMainTab === 'anatomy') {
+    // 3. Show HUD toast
+    const displayLabel = label || targetMainTab;
+    showToast(languageRef.current === 'ar' ? `🚀 تم الانتقال إلى: ${displayLabel}` : `🚀 Navigating to: ${displayLabel}`);
+
+    // 4. Repeated event dispatch to guarantee delivery to target component
+    const dispatchSubEvents = () => {
+      if (targetMainTab === 'physics' && subModule) {
+        window.dispatchEvent(new CustomEvent('scinexa:switch_physics_module', { detail: { module: subModule } }));
+      } else if (targetMainTab === 'chemistry' && subModule) {
+        window.dispatchEvent(new CustomEvent('scinexa:switch_chemistry_tab', { detail: { tab: subModule } }));
+      } else if (targetMainTab === 'anatomy') {
+        if (subModule) {
           window.dispatchEvent(new CustomEvent('scinexa:switch_anatomy_layer', { detail: { layer: subModule } }));
         }
-      };
-      dispatchEvents();
-      setTimeout(dispatchEvents, 180);
-      setTimeout(dispatchEvents, 450);
-    }
+        if (focusPart) {
+          window.dispatchEvent(new CustomEvent('scinexa:focus_part', { detail: { part: focusPart } }));
+        }
+      } else if (targetMainTab === 'biology' && subModule) {
+        window.dispatchEvent(new CustomEvent('scinexa:switch_biology_tab', { detail: { tab: subModule } }));
+      }
+    };
+
+    dispatchSubEvents();
+    setTimeout(dispatchSubEvents, 120);
+    setTimeout(dispatchSubEvents, 350);
+    setTimeout(dispatchSubEvents, 800);
+    setTimeout(dispatchSubEvents, 1600);
   };
 
   // 1. Expose global window bridge for any direct scripts or window events
   useEffect(() => {
     (window as any).SciNexa = {
-      navigate: (tab: string, subModule?: string) => {
-        triggerNavigation(tab, subModule);
+      navigate: (tab: string, subModule?: string, focusPart?: string) => {
+        triggerNavigation(tab, subModule, undefined, focusPart);
       },
       getLab: () => currentTabRef.current,
       getLanguage: () => languageRef.current,
@@ -279,7 +355,6 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
       active_tab_id: tab,
       language: lang,
       user_language: lang === 'ar' ? 'العربية' : 'English',
-      // Comprehensive Student & Academic Identity (Governorate eliminated for 100% accuracy)
       student_name: studentFirstName,
       friend_name: studentFirstName,
       full_name: fullStudentName,
@@ -293,13 +368,18 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
       student_age: u?.age ? `${u.age} سنة` : '',
       instruction_persona:
         lang === 'ar'
-          ? `أنت "داروين"، الصديق المقرب والمرشد العلمي الذكي والملهم للطالب "${studentFirstName}" في منصة SciNexa.
-قواعد حاسمة في الحديث والتخاطب:
-1. نادِ الطالب دائماً باسمه الأول "${studentFirstName}" في كل رد واجعله صديقك الصدوق ("يا صديقي ${studentFirstName}" / "${gradeTitle.trim()}").
-2. خاطبه دائماً بصفته العلمية ("يا بطل ${studentGrade || 'العلوم والمعامل'}")، ولا تذكر أي محافظة إطلاقاً تحت أي ظرف.
-3. تفاعل معه بحيوية وأجب عن أسئلته العلمية واقترح عليه تجارب ممتعة في معمل ${labMeta.ar}.`
-          : `You are Darwin, the close friend and scientific AI mentor for student "${studentFirstName}" on SciNexa.
-Always address them warmly by their first name "${studentFirstName}" as their best friend ("my friend ${studentFirstName}"), address them as "Champion of ${studentGrade || 'Science'}", never mention any governorate or location, and guide them in ${labMeta.en}.`,
+          ? `أنت "داروين"، الصديق المقرب والمرشد العلمي الذكي في منصة SciNexa.
+قواعد التخاطب الصارمة والمحددة:
+1. أنت صديق لـ "${studentFirstName}"؛ تحدث معه بأسلوب حواري عفوي وطبيعي ودافئ.
+2. لا تكرر إطلاقاً عبارة "يا صديقي" في كل جملة! قلها في التحية الأولى فقط، ثم خاطبه باسمه مباشرة ("يا ${studentFirstName}" أو "${studentFirstName}").
+3. لا تكرر إطلاقاً عبارة "يا بطل الصف كذا" في كل رد! تحدث معه دون تكرار ألقاب.
+4. عندما يطلب منك الانتقال إلى أي مختبر، أو فتح أي قسم، أو فحص أي جزء أو عضو أو عظمة أو عنصر، ابدأ ردك الصوتي فوراً بـ:
+"سأنقلك فوراً إلى [اسم المعمل أو القسم أو الجزء]"
+(مثل: "سأنقلك فوراً إلى الهيكل العظمي"، "سأنقلك فوراً إلى القلب"، "سأنقلك فوراً إلى مختبر الكيمياء"). هذه العبارة توجه المنصة آلياً.`
+          : `You are Darwin, the scientific AI mentor on SciNexa.
+Rules:
+1. Address "${studentFirstName}" naturally by first name without repetitive phrases like "my friend".
+2. When asked to switch labs or view a specific part/organ, start with "Navigating to [destination] right away!" to trigger the platform navigation.`,
       selected_item: context.title || (lang === 'ar' ? 'تصفح عام للمختبر' : 'General lab browsing'),
       item_details: context.desc || '',
       timestamp: Date.now(),
@@ -316,7 +396,7 @@ Always address them warmly by their first name "${studentFirstName}" as their be
           if (isGuest) {
             greetingText = `أهلاً يا صديقي! يا بطل منصة SciNexa. أنا داروين مرشدك العلمي، مستعد لاستكشاف معمل ${labMeta.ar} اليوم؟`;
           } else {
-            greetingText = `أهلاً يا صديقي ${studentFirstName}!${gradeTitle}. أنا داروين مرشدك العلمي، مستعد نبدأ تجاربنا في ${labMeta.ar}؟`;
+            greetingText = `أهلاً يا صديقي ${studentFirstName}! يا بطل ${studentGrade || 'العلوم والمعامل'}. أنا داروين مرشدك العلمي، مستعد نبدأ تجاربنا اليوم؟`;
           }
         } else {
           greetingText = `Hello my friend ${studentFirstName}! Welcome to SciNexa. Ready to experiment in the ${labMeta.en}?`;
@@ -376,47 +456,29 @@ Always address them warmly by their first name "${studentFirstName}" as their be
       const agentEl = document.querySelector('fish-agent') as any;
       if (!agentEl?.shadowRoot) return;
 
-      const elements = agentEl.shadowRoot.querySelectorAll('p, span, div');
+      const elements = agentEl.shadowRoot.querySelectorAll('p, span, div, [class*="message"], [class*="text"]');
       if (!elements || elements.length === 0) return;
 
+      // Keep processedSnippets size reasonable
+      if (processedSnippetsRef.current.size > 250) {
+        processedSnippetsRef.current.clear();
+      }
+
       // Scan from bottom upwards (latest message first)
-      for (let i = elements.length - 1; i >= Math.max(0, elements.length - 20); i--) {
+      for (let i = elements.length - 1; i >= Math.max(0, elements.length - 25); i--) {
         const text = (elements[i].innerText || elements[i].textContent || '').trim();
-        if (text.length >= 4 && !processedSnippetsRef.current.has(text)) {
+        if (text.length >= 2 && !processedSnippetsRef.current.has(text)) {
           processedSnippetsRef.current.add(text);
 
-          const isNavIntent =
-            text.includes('انقل') ||
-            text.includes('انتقال') ||
-            text.includes('انتقلت') ||
-            text.includes('انفل') ||
-            text.includes('افتح') ||
-            text.includes('وديني') ||
-            text.includes('روح') ||
-            text.includes('شغل') ||
-            text.includes('مختبر') ||
-            text.includes('معمل') ||
-            text.includes('قسم') ||
-            text.includes('سأنقلك') ||
-            text.includes('تم نقلك') ||
-            text.includes('تم انتقالك') ||
-            text.includes('لننتقل') ||
-            text.includes('نحن الان في') ||
-            text.includes('navigate') ||
-            text.includes('switch') ||
-            text.includes('open') ||
-            text.includes('take me');
-
-          if (isNavIntent) {
-            const resolved = resolveNavigation(text);
-            if (resolved && resolved.mainTab) {
-              triggerNavigation(
-                resolved.mainTab,
-                resolved.subModule,
-                languageRef.current === 'ar' ? resolved.labelAr : resolved.labelEn
-              );
-              break;
-            }
+          const resolved = resolveNavigation(text);
+          if (resolved && resolved.mainTab) {
+            triggerNavigation(
+              resolved.mainTab,
+              resolved.subModule,
+              languageRef.current === 'ar' ? resolved.labelAr : resolved.labelEn,
+              resolved.focusPart
+            );
+            break;
           }
         }
       }

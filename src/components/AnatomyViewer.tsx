@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
 import { OrbitControls, GLTFLoader, DRACOLoader, FBXLoader } from 'three-stdlib';
 import { useLanguage } from '../context/LanguageContext';
@@ -26,6 +26,7 @@ import {
 import { SKETCHFAB_ANATOMY_COLLECTION, AnatomyAtlasModel } from '../data/sketchfabAnatomyData';
 import { SketchfabViewerModal } from './SketchfabViewerModal';
 import SKELETAL_BONE_DICTIONARY from '../data/skeletalBoneDictionary.json';
+import { loadState, saveState } from '../utils/persistence';
 
 interface AnatomyViewerProps {
   isPresentationMode?: boolean;
@@ -967,8 +968,10 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     scene.add(targetGroup);
     targetPinpointRef.current = targetGroup;
 
-    // Initial load: Skeletal layer (first item in SYSTEM_LAYERS)
-    loadSystemLayer(SYSTEM_LAYERS[0], scene);
+    // Initial load: savedLayer or Skeletal
+    const savedLayerId = (loadState('anatomy_layer', 'skeletal') || 'skeletal');
+    const initSys = SYSTEM_LAYERS.find(s => s.id === savedLayerId) || SYSTEM_LAYERS[0];
+    loadSystemLayer(initSys, scene);
 
     // Click raycaster
     const raycaster = new THREE.Raycaster();
@@ -1392,7 +1395,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     }
   };
 
-  // Listen to remote layer switch orders from Darwin (Fish Audio)
+  // Listen to remote layer switch & part focus orders from Darwin (Fish Audio)
   useEffect(() => {
     const handleSwitchLayer = (e: any) => {
       const targetId = e.detail?.layer;
@@ -1402,10 +1405,96 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         if (!visibleSystemsRef.current[targetSys.id]) {
           toggleSystem(targetSys);
         }
+        if (cameraRef.current && controlsRef.current) {
+          if (targetSys.id === 'nervous') {
+            cameraRef.current.position.set(0, 1.6, 1.2);
+            controlsRef.current.target.set(0, 1.55, 0);
+            controlsRef.current.update();
+          } else if (targetSys.id === 'cardiovascular') {
+            cameraRef.current.position.set(0, 1.25, 1.3);
+            controlsRef.current.target.set(0, 1.2, 0);
+            controlsRef.current.update();
+          } else if (targetSys.id === 'visceral') {
+            cameraRef.current.position.set(0, 1.1, 1.4);
+            controlsRef.current.target.set(0, 1.05, 0);
+            controlsRef.current.update();
+          } else if (targetSys.id === 'joints') {
+            cameraRef.current.position.set(0, 0.5, 1.4);
+            controlsRef.current.target.set(0, 0.45, 0);
+            controlsRef.current.update();
+          }
+        }
       }
     };
+
+    const handleFocusPart = (e: any) => {
+      const partQuery = (e.detail?.part || '').toLowerCase().trim();
+      if (!partQuery || !sceneRef.current) return;
+      const q = partQuery.replace(/[_s-]/g, '').toLowerCase();
+
+      let matchedMesh: THREE.Mesh | null = null;
+      systemGroups.current.forEach((grp) => {
+        if (matchedMesh) return;
+        grp.traverse((child) => {
+          if (matchedMesh) return;
+          if ((child as THREE.Mesh).isMesh) {
+            const mesh = child as THREE.Mesh;
+            const mName = (mesh.name || '').replace(/[_s-]/g, '').toLowerCase();
+            if (mName.includes(q) || q.includes(mName)) {
+              matchedMesh = mesh;
+            }
+          }
+        });
+      });
+
+      if (!matchedMesh) {
+        let candidateSysId: string | undefined;
+        if (q.includes('heart') || q.includes('cardio')) candidateSysId = 'cardiovascular';
+        else if (q.includes('brain') || q.includes('nerve')) candidateSysId = 'nervous';
+        else if (q.includes('liver') || q.includes('stomach') || q.includes('lung')) candidateSysId = 'visceral';
+        else if (q.includes('knee') || q.includes('patella') || q.includes('joint')) candidateSysId = 'joints';
+        else if (q.includes('biceps') || q.includes('muscle')) candidateSysId = 'muscular';
+        else candidateSysId = 'skeletal';
+
+        if (candidateSysId) {
+          const sys = SYSTEM_LAYERS.find(s => s.id === candidateSysId);
+          if (sys && !visibleSystemsRef.current[sys.id]) {
+            toggleSystem(sys);
+          }
+        }
+      }
+
+      if (matchedMesh && cameraRef.current && controlsRef.current) {
+        const hit = matchedMesh as THREE.Mesh;
+        if (selectedMeshRef.current && selectedMeshRef.current !== hit) {
+          const prevMat = originalMaterials.current.get(selectedMeshRef.current);
+          if (prevMat) selectedMeshRef.current.material = prevMat.clone();
+        }
+        selectedMeshRef.current = hit;
+        hit.material = highlightMaterialRef.current;
+
+        const box = new THREE.Box3().setFromObject(hit);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z, 0.08);
+
+        controlsRef.current.target.copy(center);
+        cameraRef.current.position.set(center.x, center.y + maxDim * 0.3, center.z + maxDim * 2.2);
+        controlsRef.current.update();
+
+        if (targetPinpointRef.current) {
+          targetPinpointRef.current.position.copy(center);
+          targetPinpointRef.current.visible = true;
+        }
+      }
+    };
+
     window.addEventListener('scinexa:switch_anatomy_layer', handleSwitchLayer);
-    return () => window.removeEventListener('scinexa:switch_anatomy_layer', handleSwitchLayer);
+    window.addEventListener('scinexa:focus_part', handleFocusPart);
+    return () => {
+      window.removeEventListener('scinexa:switch_anatomy_layer', handleSwitchLayer);
+      window.removeEventListener('scinexa:focus_part', handleFocusPart);
+    };
   }, []);
 
   const resetCamera = () => {

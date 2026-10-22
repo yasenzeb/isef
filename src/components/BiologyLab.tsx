@@ -6,6 +6,7 @@ import { REAL_SCIENTISTS } from '../data/scientistsData';
 import { Dna, Award, Check, Eye, EyeOff, Layers, Scissors, ShieldAlert, Sparkles, Maximize2 } from 'lucide-react';
 import { SKETCHFAB_ANATOMY_COLLECTION, AnatomyAtlasModel } from '../data/sketchfabAnatomyData';
 import { SketchfabViewerModal } from './SketchfabViewerModal';
+import { loadState, saveState } from '../utils/persistence';
 
 interface OrganelleData {
   id: string;
@@ -204,7 +205,22 @@ const MICROORGANISMS_DATA: MicroorganismInfo[] = [
 
 export const BiologyLab: React.FC = () => {
   const { t, language } = useLanguage();
-  const [activeTab, setActiveTab] = useState<'sketchfab_cell' | 'dna' | 'microorganisms'>('sketchfab_cell');
+  const [activeTab, setActiveTab] = useState<'sketchfab_cell' | 'dna' | 'microorganisms'>(() => (loadState('biology_tab', 'sketchfab_cell') as any));
+
+  useEffect(() => {
+    saveState('biology_tab', activeTab);
+  }, [activeTab]);
+
+  useEffect(() => {
+    const handleSwitch = (e: any) => {
+      const tab = e.detail?.tab;
+      if (tab && ['sketchfab_cell', 'dna', 'microorganisms'].includes(tab)) {
+        setActiveTab(tab);
+      }
+    };
+    window.addEventListener('scinexa:switch_biology_tab', handleSwitch);
+    return () => window.removeEventListener('scinexa:switch_biology_tab', handleSwitch);
+  }, []);
   const [selectedMicrobeId, setSelectedMicrobeId] = useState<string>('euglena');
   const [cellType, setCellType] = useState<'plant' | 'animal'>('plant');
   const [selectedOrganelle, setSelectedOrganelle] = useState<OrganelleData>(ORGANELLES_3D[0]);

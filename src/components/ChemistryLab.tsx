@@ -7,6 +7,7 @@ import { POLYATOMIC_GROUPS, PolyatomicGroup } from '../data/polyatomicGroupsData
 import { REAL_SCIENTISTS } from '../data/scientistsData';
 import { Search, Award, Layers, Sparkles, RotateCcw, Play, Pause, Atom, ShieldCheck, ChevronRight, FlaskConical } from 'lucide-react';
 import { PraxiReactionSimulator } from './PraxiReactionSimulator';
+import { loadState, saveState } from '../utils/persistence';
 
 interface Atom3DViewerProps {
   element: ChemicalElement;
@@ -415,7 +416,11 @@ const PolyatomicGroup3DViewer: React.FC<PolyatomicGroup3DViewerProps> = ({ group
 
 export const ChemistryLab: React.FC = () => {
   const { t, language, isRTL } = useLanguage();
-  const [activeTab, setActiveTab] = useState<'periodic' | 'reactions' | 'atomic-groups'>('periodic');
+  const [activeTab, setActiveTab] = useState<'periodic' | 'reactions' | 'atomic-groups'>(() => (loadState('chemistry_tab', 'periodic') as any));
+
+  useEffect(() => {
+    saveState('chemistry_tab', activeTab);
+  }, [activeTab]);
   const [elements] = useState<ChemicalElement[]>(() => getFullPeriodicElements());
   const [selectedElement, setSelectedElement] = useState<ChemicalElement>(elements[0]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
