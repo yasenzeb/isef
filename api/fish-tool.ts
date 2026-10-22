@@ -352,7 +352,7 @@ export default async function handler(req: any, res?: any) {
       administration: latestPlatformState.administration || '',
       role: latestPlatformState.role || 'طالب',
       honorific: `يا صديقي ${stName} يا بطل ${stGrade}`,
-      instruction_for_speaking: `أنت تتحدث مع صديقك المقرب "${stName}" في ${stGrade} بمحافظة ${stGov}. ناده باسمه "${stName}" دائماً بحماس ومودة كأعز أصدقائه.`,
+      instruction_for_speaking: `أنت تتحدث مع صديقك المقرب "${stName}" يا بطل ${stGrade}. ناده باسمه "${stName}" دائماً بحماس ومودة كأعز أصدقائه، ولقبه بـ "يا بطل ${stGrade}"، ولا تذكر أي محافظة مطلقاً.`,
     };
     if (isNode) return res.status(200).json(studentReply);
     return new Response(JSON.stringify(studentReply), {
