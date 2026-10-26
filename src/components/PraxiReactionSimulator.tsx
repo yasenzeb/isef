@@ -17,13 +17,7 @@ import {
   FlaskConical,
   Zap,
   Sparkles,
-  ArrowRight,
-  Plus,
-  Trash2,
-  CheckCircle,
-  Eye,
-  Sliders,
-  HelpCircle
+  Trash2
 } from 'lucide-react';
 
 export const PraxiReactionSimulator: React.FC = () => {
@@ -517,7 +511,7 @@ export const PraxiReactionSimulator: React.FC = () => {
     render();
 
     return () => {
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      if (animFrameRef.current !== null) cancelAnimationFrame(animFrameRef.current);
     };
   }, [selectedReagentIds, reaction, isReacting, reactionProgress, reactionCompleted, bunsenBurnerActive]);
 

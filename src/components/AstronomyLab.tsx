@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { saveState, loadState } from '../utils/persistence';
-import { 
-  Orbit, 
-  Sun, 
-  Sparkles, 
-  Maximize2
-} from 'lucide-react';
+import { Orbit, Sun } from 'lucide-react';
 
 interface PlanetData {
   id: string;

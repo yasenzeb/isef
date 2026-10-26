@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three-stdlib';
 import { useLanguage } from '../context/LanguageContext';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
-import { Dna, Award, Check, Eye, EyeOff, Layers, Scissors, ShieldAlert, Sparkles, Maximize2 } from 'lucide-react';
+import { Dna, Award, Layers, Sparkles, Maximize2 } from 'lucide-react';
 import { SKETCHFAB_ANATOMY_COLLECTION, AnatomyAtlasModel } from '../data/sketchfabAnatomyData';
 import { SketchfabViewerModal } from './SketchfabViewerModal';
 import { loadState, saveState } from '../utils/persistence';

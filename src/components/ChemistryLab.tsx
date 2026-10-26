@@ -5,7 +5,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { getFullPeriodicElements, ChemicalElement } from '../data/periodicTableData';
 import { POLYATOMIC_GROUPS, PolyatomicGroup } from '../data/polyatomicGroupsData';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
-import { Search, Award, Layers, Sparkles, RotateCcw, Play, Pause, Atom, ShieldCheck, ChevronRight, FlaskConical } from 'lucide-react';
+import { Search, Award, Layers, Play, Pause, Atom, ShieldCheck, ChevronRight, FlaskConical } from 'lucide-react';
 import { PraxiReactionSimulator } from './PraxiReactionSimulator';
 import { loadState, saveState } from '../utils/persistence';
 

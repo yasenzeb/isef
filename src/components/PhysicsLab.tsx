@@ -73,47 +73,41 @@ function WaveSimulator({ language }: { language: string }) {
       ctx.beginPath(); ctx.moveTo(0, cx); ctx.lineTo(W, cx); ctx.stroke();
       ctx.setLineDash([]);
 
-      // Wave — draw glowing sinusoid
+      // Wave — draw glowing sinusoid with single stroke pass & analytical crests
       const lambda = waveSpeed / frequency; // wavelength in px
       const k = (2 * Math.PI) / lambda;
       const omega = 2 * Math.PI * frequency;
 
+      // Build path once
+      ctx.beginPath();
+      for (let px = 0; px <= W; px += 2) {
+        const y = cx + amplitude * Math.sin(k * px - omega * t);
+        if (px === 0) ctx.moveTo(px, y);
+        else ctx.lineTo(px, y);
+      }
+
       // Glow pass
       ctx.shadowColor = '#6366f1';
-      ctx.shadowBlur = 16;
+      ctx.shadowBlur = 14;
       ctx.strokeStyle = 'rgba(99,102,241,0.5)';
       ctx.lineWidth = 4;
-      ctx.beginPath();
-      for (let px = 0; px <= W; px += 1) {
-        const y = cx + amplitude * Math.sin(k * px - omega * t);
-        px === 0 ? ctx.moveTo(px, y) : ctx.lineTo(px, y);
-      }
       ctx.stroke();
 
-      // Main wave
+      // Main crisp wave pass
       ctx.shadowBlur = 0;
       ctx.strokeStyle = '#818cf8';
       ctx.lineWidth = 2.5;
-      ctx.beginPath();
-      for (let px = 0; px <= W; px += 1) {
-        const y = cx + amplitude * Math.sin(k * px - omega * t);
-        px === 0 ? ctx.moveTo(px, y) : ctx.lineTo(px, y);
-      }
       ctx.stroke();
 
-      // Wave crest markers
+      // Analytical Wave Crest Markers (direct mathematical solution, zero linear scanning)
       ctx.fillStyle = '#22d3ee';
       ctx.shadowColor = '#22d3ee';
       ctx.shadowBlur = 8;
-      const phaseOffset = (omega * t) % (2 * Math.PI);
-      for (let px = 0; px <= W; px += 2) {
-        const phaseVal = k * px - phaseOffset;
-        if (Math.abs((phaseVal % (2 * Math.PI)) - Math.PI / 2) < 0.05 * k) {
-          const y = cx + amplitude * Math.sin(k * px - omega * t);
-          ctx.beginPath();
-          ctx.arc(px, y, 4, 0, Math.PI * 2);
-          ctx.fill();
-        }
+      const firstPeak = (((Math.PI / 2 + omega * t) / k) % lambda + lambda) % lambda;
+      for (let px = firstPeak; px <= W; px += lambda) {
+        ctx.beginPath();
+        ctx.arc(px, cx - amplitude, 4, 0, Math.PI * 2);
+        ctx.fill();
       }
       ctx.shadowBlur = 0;
 

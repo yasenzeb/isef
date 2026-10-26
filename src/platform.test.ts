@@ -117,6 +117,28 @@ describe('SciNexa Scientific Virtual Laboratory Test Suite', () => {
     const openSol = solveCircuit(openCircuit, 0);
     expect(openSol.branchCurrents['r1'] ?? 0).toBe(0);
   });
+
+  // 10. Chemical Reactions Matching Engine
+  it('should match displacement reaction of Zinc with Hydrochloric acid accurately', async () => {
+    const { findMatchingReaction } = await import('./data/chemicalReactionsData');
+    const rx = findMatchingReaction(['Zn', 'HCl']);
+    expect(rx).toBeDefined();
+    expect(rx?.equation).toContain('Zn');
+    expect(rx?.equation).toContain('HCl');
+  });
+
+  // 11. Astrophysics Keplerian Harmonics Validation
+  it('should verify Kepler third law harmonics (T² ≈ a³) for inner and outer planets', () => {
+    // Earth: a = 1.000 AU, T = 365.25 days (1.000 yr)
+    const earthA = 1.0;
+    const earthT = 365.25 / 365.25;
+    expect(Math.pow(earthA, 3)).toBeCloseTo(Math.pow(earthT, 2), 2);
+
+    // Mars: a = 1.524 AU, T = 687 days (1.88 yr)
+    const marsA = 1.524;
+    const marsT = 687 / 365.25;
+    expect(Math.pow(marsA, 3)).toBeCloseTo(Math.pow(marsT, 2), 1);
+  });
 });
 
 

@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three-stdlib';
 import { useLanguage } from '../context/LanguageContext';
 import { calculateTsunamiSpeed, calculateSeismicTravelTimes, calculateEarthquakeEnergyJoules } from '../simulators/geophysicsSolver';
-import { Globe2, AlertTriangle, Waves, Award, Building2, Box, Play, Pause, Hammer, Compass, Layers, ShieldCheck, ShieldAlert } from 'lucide-react';
+import { Globe2, AlertTriangle, Waves, Award, Building2, Play, Pause, Layers } from 'lucide-react';
 import { GeologyModelViewer, getBuildingThreshold } from './GeologyModelViewer';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
 import { saveState, loadState } from '../utils/persistence';
