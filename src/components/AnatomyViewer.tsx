@@ -648,6 +648,19 @@ function resolveMuscleFromHit(hit: THREE.Mesh, hitPoint: THREE.Vector3): { en: s
   return { en: 'Plantar fascia', ar: 'السفاق الأخمصي (اللفافة الأخمصية)' };
 }
 
+// Pre-computed lowercase lookup cache for O(1) instantaneous anatomical search (eliminates 9,000 array allocations per click)
+let boneDictCache: Map<string, { ar: string; descEn: string; descAr: string }> | null = null;
+function getBoneDictLookup(): Map<string, { ar: string; descEn: string; descAr: string }> {
+  if (!boneDictCache) {
+    boneDictCache = new Map();
+    const raw = SKELETAL_BONE_DICTIONARY as Record<string, { ar: string; descEn: string; descAr: string }>;
+    for (const [key, val] of Object.entries(raw)) {
+      boneDictCache.set(key.toLowerCase(), val);
+    }
+  }
+  return boneDictCache;
+}
+
 export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode = false }) => {
 
   const { t, language } = useLanguage();
@@ -1050,12 +1063,15 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           }
         }
 
-        // Comprehensive anatomical lookup
+        // Comprehensive anatomical lookup using cached O(1) Map
         const baseKey = cleanName.replace(/\s*\((Left|Right)\)/i, '').trim();
         const sideSuffix = cleanName.match(/\((Left|Right)\)/i)?.[1];
+        const baseKeyLower = baseKey.toLowerCase();
+        const cleanNameLower = cleanName.toLowerCase();
+        const hitNameLower = (hit.name || '').toLowerCase();
 
-        const dictRecord = SKELETAL_BONE_DICTIONARY as Record<string, { ar: string; descEn: string; descAr: string }>;
-        const directEntry = dictRecord[hit.name] || dictRecord[cleanName] || dictRecord[baseKey] || dictRecord[baseKey.toLowerCase()];
+        const dictLookup = getBoneDictLookup();
+        const directEntry = dictLookup.get(hitNameLower) || dictLookup.get(cleanNameLower) || dictLookup.get(baseKeyLower);
 
         let resolvedAr = resolvedArabicName;
         if (!resolvedAr && directEntry) {
@@ -1069,11 +1085,28 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           }
         }
 
-        // Match against dictionary or definitions.json
-        const matchedDict = directEntry 
+        // Fast match without allocating 9,000 arrays
+        let matchedDict = directEntry 
           ? { ar: resolvedAr || directEntry.ar, descEn: directEntry.descEn, descAr: directEntry.descAr }
-          : Object.entries(dictRecord).find(([k]) => baseKey.toLowerCase() === k.toLowerCase() || baseKey.toLowerCase().includes(k.toLowerCase()))?.[1]
-          || Object.entries(ANATOMY_DICTIONARY).find(([k]) => cleanName.toLowerCase().includes(k.toLowerCase()))?.[1];
+          : null;
+
+        if (!matchedDict) {
+          for (const [k, v] of dictLookup) {
+            if (baseKeyLower === k || baseKeyLower.includes(k) || k.includes(baseKeyLower)) {
+              matchedDict = v;
+              break;
+            }
+          }
+        }
+
+        if (!matchedDict) {
+          for (const [k, v] of Object.entries(ANATOMY_DICTIONARY)) {
+            if (cleanNameLower.includes(k.toLowerCase())) {
+              matchedDict = v;
+              break;
+            }
+          }
+        }
         
         let descEn = matchedDict ? matchedDict.descEn : '';
         let nameAr = resolvedAr || (matchedDict 

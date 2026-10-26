@@ -194,10 +194,6 @@ export function resolveNavigation(rawInput: string): ResolvedNav | null {
   return null;
 }
 
-// Global persistent shared object ID on restful-api.dev
-const SHARED_OBJECT_ID = 'ff808181a09d98f701a15d4988ed38d4';
-const RELAY_ENDPOINT = `https://api.restful-api.dev/objects/${SHARED_OBJECT_ID}`;
-
 export const FishAgentController: React.FC<FishAgentControllerProps> = ({
   currentTab,
   setCurrentTab,
@@ -515,28 +511,19 @@ Rules:
     };
   }, []);
 
-  // 5. POLL RELAY & VERCEL ENDPOINTS (Guaranteed delivery from switch_lab webhook)
+  // 5. POLL VERCEL ENDPOINT (Graceful fallback from switch_lab webhook with in-flight lock & visibility awareness)
   useEffect(() => {
+    let isPolling = false;
     const pollInterval = setInterval(async () => {
-      // 1. Direct check on Global Shared Persistent Relay
-      try {
-        const relayRes = await fetch(RELAY_ENDPOINT, { signal: AbortSignal.timeout(1200) });
-        if (relayRes.ok) {
-          const json = await relayRes.json();
-          const act = json?.data;
-          if (act && act.action === 'switch_lab' && act.timestamp > lastProcessedRelayTimeRef.current) {
-            // Must be within last 30 seconds
-            if (Date.now() - act.timestamp < 30000) {
-              lastProcessedRelayTimeRef.current = act.timestamp;
-              triggerNavigation(act.main_tab, act.sub_module, act.message);
-            }
-          }
-        }
-      } catch {}
+      // Don't poll if page is hidden in background or previous poll still in flight
+      if (typeof document !== 'undefined' && document.hidden) return;
+      if (isPolling) return;
+      isPolling = true;
 
-      // 2. Fallback check on Vercel endpoint
       try {
-        const res = await fetch('/api/fish-tool?action=poll_actions');
+        const res = await fetch('/api/fish-tool?action=poll_actions', {
+          signal: AbortSignal.timeout(1800),
+        });
         if (res.ok) {
           const data = await res.json();
           if (data.actions && data.actions.length > 0) {
@@ -550,8 +537,10 @@ Rules:
             }
           }
         }
-      } catch {}
-    }, 600);
+      } catch {} finally {
+        isPolling = false;
+      }
+    }, 2000);
 
     return () => clearInterval(pollInterval);
   }, []);

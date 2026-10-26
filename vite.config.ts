@@ -23,6 +23,12 @@ export default defineConfig({
           if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
             return 'vendor-react';
           }
+          if (id.includes('skeletalBoneDictionary.json')) {
+            return 'data-bone-dictionary';
+          }
+          if (id.includes('chemicalReactionsData')) {
+            return 'data-chemical-reactions';
+          }
         },
       },
     },

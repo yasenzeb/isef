@@ -244,15 +244,8 @@ export default async function handler(req: any, res?: any) {
   // 2. Client Browser Polls for Pending Actions
   if (actionParam === 'poll_actions') {
     pruneActions();
-    let actions = [...pendingActions];
+    const actions = [...pendingActions];
     pendingActions = []; // Flush in-memory
-
-    if (actions.length === 0) {
-      const relayed = await fetchRelayedAction();
-      if (relayed) {
-        actions.push(relayed);
-      }
-    }
 
     const resp = { actions, currentState: latestPlatformState };
     if (isNode) return res.status(200).json(resp);

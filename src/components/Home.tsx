@@ -166,7 +166,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal, onOp
   const isFrench = language === 'fr';
   const isGerman = language === 'de';
 
-  const disciplines = [
+  const disciplines = useMemo(() => [
     {
       id: 'anatomy',
       code: isArabic ? 'مختبر-01' : isFrench ? 'LAB-01' : isGerman ? 'LABOR-01' : 'SYS-01',
@@ -272,9 +272,9 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal, onOp
             : 'Teacher Smartboard Projector Mode · High Contrast HUD · Step-by-Step',
       status: isArabic ? 'جاهز للعرض' : isFrench ? 'PRÊT' : isGerman ? 'BEREIT' : 'STANDBY',
     },
-  ];
+  ], [isArabic, isFrench, isGerman, t.features]);
 
-  const systemPillars = [
+  const systemPillars = useMemo(() => [
     {
       icon: Cpu,
       title: isArabic 
@@ -343,13 +343,13 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal, onOp
             ? 'Interaktive Simulationen ersetzen gefährliche Chemikalien und teure Laborgeräte.' 
             : 'Accessible interactive simulations replacing risky or expensive physical equipment.',
     },
-  ];
+  ], [isArabic, isFrench, isGerman]);
 
-  const filteredDisciplines = disciplines.filter(d =>
+  const filteredDisciplines = useMemo(() => disciplines.filter(d =>
     d.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     d.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
     d.spec.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ), [disciplines, searchQuery]);
 
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8 pb-24">
