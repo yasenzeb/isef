@@ -8,6 +8,7 @@ import { REAL_SCIENTISTS } from '../data/scientistsData';
 import { Search, Award, Layers, Play, Pause, Atom, ShieldCheck, ChevronRight, FlaskConical } from 'lucide-react';
 import { PraxiReactionSimulator } from './PraxiReactionSimulator';
 import { loadState, saveState } from '../utils/persistence';
+import { getOptimalPixelRatio, isLowPowerDevice } from '../utils/devicePerf';
 
 interface Atom3DViewerProps {
   element: ChemicalElement;
@@ -39,9 +40,9 @@ const Atom3DViewer: React.FC<Atom3DViewerProps> = ({ element, language }) => {
     const maxRadius = 1.1 + shells.length * 0.65;
     camera.position.set(0, maxRadius * 0.65, maxRadius * 2.1);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: !isLowPowerDevice(), alpha: true });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(getOptimalPixelRatio());
     mount.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -304,9 +305,9 @@ const PolyatomicGroup3DViewer: React.FC<PolyatomicGroup3DViewerProps> = ({ group
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
     camera.position.set(0, 0, 4.8);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: !isLowPowerDevice(), alpha: true });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(getOptimalPixelRatio());
     mount.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);

@@ -7,11 +7,13 @@ import { Globe2, AlertTriangle, Waves, Award, Building2, Play, Pause, Layers } f
 import { GeologyModelViewer, getBuildingThreshold } from './GeologyModelViewer';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
 import { saveState, loadState } from '../utils/persistence';
+import { getOptimalPixelRatio, isLowPowerDevice } from '../utils/devicePerf';
 
 // Procedural Earth surface texture generator with continents, oceans, and polar ice (zero external photo download)
 function generateProceduralEarthCrustTexture(): THREE.CanvasTexture {
-  const width = 1024;
-  const height = 512;
+  const lowPower = isLowPowerDevice();
+  const width = lowPower ? 512 : 1024;
+  const height = lowPower ? 256 : 512;
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
@@ -264,9 +266,9 @@ export const GeologyLab: React.FC = () => {
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
     camera.position.set(4, 2.5, 5.5);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    const renderer = new THREE.WebGLRenderer({ antialias: !isLowPowerDevice(), alpha: false });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(getOptimalPixelRatio());
 
     while (container.firstChild) {
       container.removeChild(container.firstChild);

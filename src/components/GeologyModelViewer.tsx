@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
 import { OrbitControls, GLTFLoader, DRACOLoader } from 'three-stdlib';
 import { RotateCcw, AlertTriangle, Waves, Compass, Eye, ShieldAlert, Hammer, RefreshCw } from 'lucide-react';
+import { getOptimalPixelRatio, isLowPowerDevice } from '../utils/devicePerf';
 
 interface GeologyModelViewerProps {
   modelUrl: string;
@@ -120,11 +121,14 @@ export const GeologyModelViewer: React.FC<GeologyModelViewerProps> = ({
     camera.position.copy(initialCamPosRef.current);
 
     // 3. Renderer with high performance and mobile touch handling
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+    const lowPower = isLowPowerDevice();
+    const renderer = new THREE.WebGLRenderer({ antialias: !lowPower, alpha: false, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.setPixelRatio(getOptimalPixelRatio());
+    renderer.shadowMap.enabled = !lowPower;
+    if (!lowPower) {
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    }
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
 
@@ -236,7 +240,7 @@ export const GeologyModelViewer: React.FC<GeologyModelViewerProps> = ({
     waterBasinRef.current = waterBasin;
 
     // 8. COLLAPSE DUST & DEBRIS PARTICLES
-    const debrisCount = 180;
+    const debrisCount = lowPower ? 50 : 180;
     const debrisGeo = new THREE.BufferGeometry();
     const debrisPositions = new Float32Array(debrisCount * 3);
     const debrisVelocities: { x: number; y: number; z: number }[] = [];
@@ -342,7 +346,11 @@ export const GeologyModelViewer: React.FC<GeologyModelViewerProps> = ({
 
     // 11. Physics Animation Loop with REAL Structural Collapse & Tsunami Waves
     let animId: number;
+    let needsRender = true;
+    const lastCamPos = new THREE.Vector3();
+    const lastTarget = new THREE.Vector3();
     const clock = new THREE.Clock();
+    controls.addEventListener('change', () => { needsRender = true; });
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
@@ -351,10 +359,22 @@ export const GeologyModelViewer: React.FC<GeologyModelViewerProps> = ({
       const elapsed = clock.getElapsedTime();
 
       controls.update();
+      const cameraChanged = !camera.position.equals(lastCamPos) || !controls.target.equals(lastTarget);
+      if (cameraChanged) {
+        lastCamPos.copy(camera.position);
+        lastTarget.copy(controls.target);
+      }
 
       const currentIntensity = intensityRef.current;
       const currentDisaster = disasterTypeRef.current;
       const threshold = structureInfo.threshold;
+      const isSimulating = currentIntensity > 0 || collapseProgressRef.current > 0;
+
+      // Skip render and physics if camera is settled and no disaster is active (saves massive GPU on low-end devices)
+      if (!cameraChanged && !isSimulating && !needsRender) {
+        return;
+      }
+      needsRender = false;
 
       // Check if threshold is breached -> Trigger REAL Structural Failure
       const isExceeded = currentIntensity > threshold;

@@ -139,6 +139,15 @@ describe('SciNexa Scientific Virtual Laboratory Test Suite', () => {
     const marsT = 687 / 365.25;
     expect(Math.pow(marsA, 3)).toBeCloseTo(Math.pow(marsT, 2), 1);
   });
+
+  // 12. Dynamic Hardware Optimization & Low-Power Pixel Ratio Scaler
+  it('should adaptively scale pixel ratio for weak hardware to avoid thermal throttling', async () => {
+    const { getOptimalPixelRatio, isLowPowerDevice } = await import('./utils/devicePerf');
+    expect(typeof isLowPowerDevice()).toBe('boolean');
+    const dpr = getOptimalPixelRatio(1.5);
+    expect(dpr).toBeGreaterThanOrEqual(1.0);
+    expect(dpr).toBeLessThanOrEqual(1.5);
+  });
 });
 
 

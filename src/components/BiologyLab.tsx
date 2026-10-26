@@ -7,6 +7,7 @@ import { Dna, Award, Layers, Sparkles, Maximize2 } from 'lucide-react';
 import { SKETCHFAB_ANATOMY_COLLECTION, AnatomyAtlasModel } from '../data/sketchfabAnatomyData';
 import { SketchfabViewerModal } from './SketchfabViewerModal';
 import { loadState, saveState } from '../utils/persistence';
+import { getOptimalPixelRatio, isLowPowerDevice } from '../utils/devicePerf';
 
 interface OrganelleData {
   id: string;
@@ -273,9 +274,9 @@ export const BiologyLab: React.FC = () => {
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
     camera.position.set(0, 2.5, 6.5);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: !isLowPowerDevice() });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(getOptimalPixelRatio());
     mount.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -574,9 +575,9 @@ export const BiologyLab: React.FC = () => {
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
     camera.position.set(0, 0, 8);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: !isLowPowerDevice() });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(getOptimalPixelRatio());
     mount.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);

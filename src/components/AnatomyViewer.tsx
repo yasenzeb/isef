@@ -27,6 +27,7 @@ import { SKETCHFAB_ANATOMY_COLLECTION, AnatomyAtlasModel } from '../data/sketchf
 import { SketchfabViewerModal } from './SketchfabViewerModal';
 import SKELETAL_BONE_DICTIONARY from '../data/skeletalBoneDictionary.json';
 import { loadState, saveState } from '../utils/persistence';
+import { getOptimalPixelRatio, isLowPowerDevice } from '../utils/devicePerf';
 
 interface AnatomyViewerProps {
   isPresentationMode?: boolean;
@@ -674,23 +675,8 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
   const definitionsRef = useRef<Record<string, string>>({});
   const toolbarScrollRef = useRef<HTMLDivElement | null>(null);
 
-  // Background Model Preloading Strategy: Pre-fetch layers so switching is instantaneous
-  useEffect(() => {
-    // Priority preloading on idle/background
-    const preloadLayers = () => {
-      SYSTEM_LAYERS.forEach((layer) => {
-        if (layer.file) {
-          fetch(`/models/anatomy/${layer.file}`, { cache: 'force-cache' }).catch(() => {});
-        }
-      });
-    };
-
-    if ('requestIdleCallback' in window) {
-      (window as any).requestIdleCallback(preloadLayers);
-    } else {
-      setTimeout(preloadLayers, 1200);
-    }
-  }, []);
+  const needsRenderRef = useRef<boolean>(true);
+  const requestRender = () => { needsRenderRef.current = true; };
 
   // Scene references
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -879,6 +865,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         systemGroups.current.set(sysConfig.id, root);
         setLoadedSystems(prev => ({ ...prev, [sysConfig.id]: true }));
         setLoadingSystems(prev => ({ ...prev, [sysConfig.id]: false }));
+        requestRender();
       },
       undefined,
       (err) => {
@@ -903,9 +890,9 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     camera.position.set(0, 1.2, 2.5);
     cameraRef.current = camera;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    const renderer = new THREE.WebGLRenderer({ antialias: !isLowPowerDevice(), powerPreference: 'high-performance' });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(getOptimalPixelRatio());
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.25;
     mount.appendChild(renderer.domElement);
@@ -1375,15 +1362,32 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     renderer.domElement.addEventListener('click', handleClick);
 
     let animId: number;
+    let isMoving = true;
+    const lastCamPos = new THREE.Vector3();
+    const lastTarget = new THREE.Vector3();
+    controls.addEventListener('change', () => { isMoving = true; });
+
     const animate = () => {
       animId = requestAnimationFrame(animate);
-      if (targetPinpointRef.current && targetPinpointRef.current.visible) {
+      const isPinpointActive = Boolean(targetPinpointRef.current && targetPinpointRef.current.visible);
+      if (isPinpointActive) {
         const t = performance.now() * 0.003;
         const s = 1.0 + Math.sin(t * 3.5) * 0.12;
-        targetPinpointRef.current.scale.set(s, s, s);
+        targetPinpointRef.current!.scale.set(s, s, s);
       }
       controls.update();
-      renderer.render(scene, camera);
+      const cameraChanged = !camera.position.equals(lastCamPos) || !controls.target.equals(lastTarget);
+      if (cameraChanged) {
+        lastCamPos.copy(camera.position);
+        lastTarget.copy(controls.target);
+      }
+      if (cameraChanged || isPinpointActive || isMoving || needsRenderRef.current) {
+        renderer.render(scene, camera);
+        needsRenderRef.current = false;
+        if (!cameraChanged && !isPinpointActive) {
+          isMoving = false;
+        }
+      }
     };
     animate();
 
@@ -1423,6 +1427,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     const grp = systemGroups.current.get(sys.id);
     if (grp) {
       grp.visible = nextVisible;
+      requestRender();
     } else if (nextVisible && sceneRef.current) {
       loadSystemLayer(sys, sceneRef.current);
     }
