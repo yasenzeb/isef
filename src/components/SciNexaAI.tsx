@@ -784,7 +784,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
           }
         }
       } catch (e: any) {
-        console.error('Direct Gemini error:', e?.message);
+        console.warn('[SciNexa AI] Gemini fallback error:', e?.message);
       }
     }
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { saveState } from '../utils/persistence';
 import { useAuth } from '../context/AuthContext';
 import { EGYPT_GOVERNORATES } from '../data/egyptLocationData';
@@ -207,29 +207,16 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
   const userRef = useRef(user);
   userRef.current = user;
 
-  const [locationTick, setLocationTick] = useState(0);
-
-  // Re-sync on manual location changes
-  useEffect(() => {
-    const handleLocChanged = () => setLocationTick(t => t + 1);
-    window.addEventListener('scinexa_location_changed', handleLocChanged);
-    window.addEventListener('storage', handleLocChanged);
-    return () => {
-      window.removeEventListener('scinexa_location_changed', handleLocChanged);
-      window.removeEventListener('storage', handleLocChanged);
-    };
-  }, []);
-
-  const activeGovInfo = useMemo(() => {
+  // Read gov info directly (no re-render state needed)
+  const getGovInfo = () => {
     const savedGovId = localStorage.getItem('scinexa_gov_id') || '';
     const savedAdminId = localStorage.getItem('scinexa_admin_id') || '';
     const activeGov = EGYPT_GOVERNORATES.find(g => g.id === savedGovId);
     const activeAdmin = activeGov?.administrations.find(a => a.id === savedAdminId);
-
-    const govName = activeGov?.nameAr || user?.governorateAr || 'جمهورية مصر العربية';
-    const adminName = activeAdmin?.nameAr || user?.administrationAr || '';
+    const govName = activeGov?.nameAr || userRef.current?.governorateAr || 'جمهورية مصر العربية';
+    const adminName = activeAdmin?.nameAr || userRef.current?.administrationAr || '';
     return { govName, adminName };
-  }, [user, locationTick]);
+  };
 
   const currentTabRef = useRef(currentTab);
   currentTabRef.current = currentTab;
@@ -345,8 +332,7 @@ export const FishAgentController: React.FC<FishAgentControllerProps> = ({
     const studentStage = u?.stage || '';
     const studentCode = u?.studentCode || u?.email?.match(/^(\d+)/)?.[1] || '';
     const isGuest = Boolean(u?.isGuest);
-    const govName = activeGovInfo.govName;
-    const adminName = activeGovInfo.adminName;
+    const { govName, adminName } = getGovInfo();
 
     const gradeTitle = studentGrade ? ` يا بطل ${studentGrade}` : ' يا بطل العلوم والمعامل';
 
@@ -428,11 +414,11 @@ Rules:
         isGuest,
       }),
     }).catch(() => {});
-  }, [activeGovInfo]);
+  }, []);
 
   useEffect(() => {
     syncPlatformState();
-  }, [currentTab, language, user, activeGovInfo, syncPlatformState]);
+  }, [currentTab, language, user, syncPlatformState]);
 
   // 3. Listen to 3D model selection events
   useEffect(() => {

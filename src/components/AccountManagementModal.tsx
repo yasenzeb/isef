@@ -53,6 +53,7 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
   const [grade, setGrade] = useState(user?.grade || '');
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const studentCodeDisplay = useMemo(() => {
     return user?.studentCode || user?.email.match(/^(\d+)/)?.[1] || '—';
@@ -75,6 +76,7 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
     e.preventDefault();
     setIsSaving(true);
     setSaveSuccess(false);
+    setSaveError(null);
 
     try {
       // 1. Update Supabase User Metadata
@@ -113,8 +115,8 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
 
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      setSaveError(err?.message || 'حدث خطأ أثناء الحفظ. حاول مرة أخرى.');
     } finally {
       setIsSaving(false);
     }
@@ -397,6 +399,11 @@ export const AccountManagementModal: React.FC<Props> = ({ isOpen, onClose, langu
                 <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-semibold animate-fadeIn">
                   <CheckCircle2 size={16} />
                   <span>{isAr ? 'تم حفظ بياناتك بنجاح ✓' : 'Updated successfully ✓'}</span>
+                </div>
+              )}
+              {saveError && (
+                <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs">
+                  <span>⚠️ {saveError}</span>
                 </div>
               )}
             </div>

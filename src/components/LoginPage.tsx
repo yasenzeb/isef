@@ -24,7 +24,6 @@ import {
   GraduationCap,
   ShieldCheck,
   ArrowRight,
-  HelpCircle,
   MapPin,
   KeyRound
 } from 'lucide-react';

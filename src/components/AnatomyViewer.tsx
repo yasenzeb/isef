@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
-import { OrbitControls, GLTFLoader, DRACOLoader, FBXLoader } from 'three-stdlib';
+import { OrbitControls, GLTFLoader, DRACOLoader } from 'three-stdlib';
 import { useLanguage } from '../context/LanguageContext';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
 import { 
@@ -869,7 +869,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
       },
       undefined,
       (err) => {
-        console.error(`Failed to load ${sysConfig.file}:`, err);
+        console.warn(`[SciNexa] Could not load model ${sysConfig.file}:`, err);
         setLoadingSystems(prev => ({ ...prev, [sysConfig.id]: false }));
       }
     );
