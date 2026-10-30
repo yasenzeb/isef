@@ -66,9 +66,11 @@ const Atom3DViewer: React.FC<Atom3DViewerProps> = ({ element, language }) => {
     scene.add(pointLight);
 
     // --- 1. Nucleus Cluster (Protons + Neutrons) ---
+    const isLowPower = isLowPowerDevice();
+    const particleSegs = isLowPower ? 8 : 16;
     const nucleusGroup = new THREE.Group();
-    const protonGeo = new THREE.SphereGeometry(0.12, 16, 16);
-    const neutronGeo = new THREE.SphereGeometry(0.12, 16, 16);
+    const protonGeo = new THREE.SphereGeometry(0.12, particleSegs, particleSegs);
+    const neutronGeo = new THREE.SphereGeometry(0.12, particleSegs, particleSegs);
     const protonMat = new THREE.MeshStandardMaterial({
       color: 0xef4444, // Red
       roughness: 0.25,
@@ -117,7 +119,7 @@ const Atom3DViewer: React.FC<Atom3DViewerProps> = ({ element, language }) => {
     scene.add(nucleusGroup);
 
     // --- 2. Concentric Electron Shells & Orbiting Electrons ---
-    const electronGeo = new THREE.SphereGeometry(0.075, 16, 16);
+    const electronGeo = new THREE.SphereGeometry(0.075, particleSegs, particleSegs);
     const electronMat = new THREE.MeshStandardMaterial({
       color: 0x22d3ee, // Bright glowing Cyan
       roughness: 0.15,
@@ -219,6 +221,12 @@ const Atom3DViewer: React.FC<Atom3DViewerProps> = ({ element, language }) => {
     return () => {
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animId);
+      protonGeo.dispose();
+      neutronGeo.dispose();
+      protonMat.dispose();
+      neutronMat.dispose();
+      electronGeo.dispose();
+      electronMat.dispose();
       renderer.dispose();
       if (mount.contains(renderer.domElement)) {
         mount.removeChild(renderer.domElement);
@@ -329,7 +337,7 @@ const PolyatomicGroup3DViewer: React.FC<PolyatomicGroup3DViewerProps> = ({ group
 
     // Atoms (Spheres)
     group.atoms.forEach((atom) => {
-      const geo = new THREE.SphereGeometry(atom.radius, 32, 32);
+      const geo = new THREE.SphereGeometry(atom.radius, isLowPowerDevice() ? 16 : 32, isLowPowerDevice() ? 16 : 32);
       const mat = new THREE.MeshStandardMaterial({
         color: atom.color,
         roughness: 0.3,

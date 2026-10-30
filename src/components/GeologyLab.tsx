@@ -293,8 +293,12 @@ export const GeologyLab: React.FC = () => {
     // Procedural Earth Crust Texture (continents & oceans without external image requests)
     const earthCrustTex = generateProceduralEarthCrustTexture();
 
+    const isLowPower = isLowPowerDevice();
+    const coreSegs = isLowPower ? 24 : 48;
+    const crustSegs = isLowPower ? 32 : 64;
+
     // 1. Inner Core (Solid glowing incandescent sphere of crystalline Fe-Ni)
-    const icGeo = new THREE.SphereGeometry(0.7, 48, 48, 0, Math.PI * 1.5);
+    const icGeo = new THREE.SphereGeometry(0.7, coreSegs, coreSegs, 0, Math.PI * 1.5);
     const icMat = new THREE.MeshStandardMaterial({
       color: 0xfffbeb,
       emissive: 0xfef08a,
@@ -307,7 +311,7 @@ export const GeologyLab: React.FC = () => {
     globeGroup.add(icMesh);
 
     // 2. Outer Core (Turbulent liquid magma dynamo)
-    const ocGeo = new THREE.SphereGeometry(1.25, 48, 48, 0, Math.PI * 1.5);
+    const ocGeo = new THREE.SphereGeometry(1.25, coreSegs, coreSegs, 0, Math.PI * 1.5);
     const ocMat = new THREE.MeshStandardMaterial({
       color: 0xea580c,
       emissive: 0xc2410c,
@@ -320,7 +324,7 @@ export const GeologyLab: React.FC = () => {
     globeGroup.add(ocMesh);
 
     // 3. Mantle (Viscous convective silicates with natural striations)
-    const mGeo = new THREE.SphereGeometry(1.85, 48, 48, 0, Math.PI * 1.5);
+    const mGeo = new THREE.SphereGeometry(1.85, coreSegs, coreSegs, 0, Math.PI * 1.5);
     const mMat = new THREE.MeshStandardMaterial({
       color: 0xd97706,
       emissive: 0x78350f,
@@ -333,7 +337,7 @@ export const GeologyLab: React.FC = () => {
     globeGroup.add(mMesh);
 
     // 4. Crust & Oceanic surface (Procedural continents and oceanic crust)
-    const cGeo = new THREE.SphereGeometry(2.1, 64, 64, 0, Math.PI * 1.5);
+    const cGeo = new THREE.SphereGeometry(2.1, crustSegs, crustSegs, 0, Math.PI * 1.5);
     const cMat = new THREE.MeshStandardMaterial({
       map: earthCrustTex,
       roughness: 0.6,

@@ -117,7 +117,9 @@ function WaveSimulator({ language }: { language: string }) {
       ctx.fillText(`\u03bb = ${lambda.toFixed(0)} px`, 12, 20);
       ctx.fillText(`v = ${waveSpeed.toFixed(0)} px/s`, 12, 36);
 
-      rafRef.current = requestAnimationFrame(render);
+      if (isRunning) {
+        rafRef.current = requestAnimationFrame(render);
+      }
     };
 
     rafRef.current = requestAnimationFrame(render);

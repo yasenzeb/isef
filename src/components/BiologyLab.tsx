@@ -294,7 +294,7 @@ export const BiologyLab: React.FC = () => {
     // Outer Membrane / Wall
     const membraneGeo = cellType === 'plant' 
       ? new THREE.BoxGeometry(4.8, 3.8, 3.8)
-      : new THREE.SphereGeometry(2.4, 32, 32, 0, Math.PI * (isCrossSection ? 1.5 : 2));
+      : new THREE.SphereGeometry(2.4, isLowPowerDevice() ? 16 : 32, isLowPowerDevice() ? 16 : 32, 0, Math.PI * (isCrossSection ? 1.5 : 2));
 
     const membraneMat = new THREE.MeshStandardMaterial({
       color: cellType === 'plant' ? 0x15803d : 0x0284c7,
@@ -315,7 +315,7 @@ export const BiologyLab: React.FC = () => {
 
       if (org.id === 'nucleus') {
         // Double-membrane nuclear envelope with nucleolus inside and chromatin texture
-        const envelopeGeo = new THREE.SphereGeometry(org.radius, 32, 32, 0, Math.PI * 1.6);
+        const envelopeGeo = new THREE.SphereGeometry(org.radius, isLowPowerDevice() ? 16 : 32, isLowPowerDevice() ? 16 : 32, 0, Math.PI * 1.6);
         const envelopeMat = new THREE.MeshStandardMaterial({
           color: 0x7c3aed,
           roughness: 0.35,
@@ -328,7 +328,7 @@ export const BiologyLab: React.FC = () => {
         orgSubgroup.add(envelopeMesh);
 
         // Dense inner Nucleolus
-        const nucleolusGeo = new THREE.SphereGeometry(org.radius * 0.42, 24, 24);
+        const nucleolusGeo = new THREE.SphereGeometry(org.radius * 0.42, isLowPowerDevice() ? 12 : 24, isLowPowerDevice() ? 12 : 24);
         const nucleolusMat = new THREE.MeshStandardMaterial({
           color: 0xa855f7,
           emissive: 0x6b21a8,
@@ -448,7 +448,7 @@ export const BiologyLab: React.FC = () => {
 
       } else if (org.id === 'vacuole') {
         // Turgid liquid reservoir
-        const vacGeo = new THREE.SphereGeometry(org.radius, 28, 28);
+        const vacGeo = new THREE.SphereGeometry(org.radius, isLowPowerDevice() ? 14 : 28, isLowPowerDevice() ? 14 : 28);
         const vacMat = new THREE.MeshStandardMaterial({
           color: 0x06b6d4,
           transparent: true,
@@ -595,6 +595,17 @@ export const BiologyLab: React.FC = () => {
     const radius = 1.25;
     const heightSpan = 5.2;
 
+    const isLowPower = isLowPowerDevice();
+    const sphereSegs = isLowPower ? 8 : 16;
+    const cylSegs = isLowPower ? 8 : 12;
+
+    const bbGeo = new THREE.SphereGeometry(0.12, sphereSegs, sphereSegs);
+    const bbMat1 = new THREE.MeshStandardMaterial({ color: 0x38bdf8 });
+    const bbMat2 = new THREE.MeshStandardMaterial({ color: 0x818cf8 });
+    const rungMatRed = new THREE.MeshStandardMaterial({ color: 0xef4444 });
+    const rungMatGreen = new THREE.MeshStandardMaterial({ color: 0x10b981 });
+    const rungGeos: THREE.CylinderGeometry[] = [];
+
     for (let i = 0; i < pointsCount; i++) {
       const tNorm = i / pointsCount;
       const angle = tNorm * Math.PI * 2 * turns;
@@ -604,10 +615,6 @@ export const BiologyLab: React.FC = () => {
       const z1 = Math.sin(angle) * radius;
       const x2 = Math.cos(angle + Math.PI) * radius;
       const z2 = Math.sin(angle + Math.PI) * radius;
-
-      const bbGeo = new THREE.SphereGeometry(0.12, 16, 16);
-      const bbMat1 = new THREE.MeshStandardMaterial({ color: 0x38bdf8 });
-      const bbMat2 = new THREE.MeshStandardMaterial({ color: 0x818cf8 });
 
       const s1 = new THREE.Mesh(bbGeo, bbMat1);
       s1.position.set(x1, y, z1);
@@ -622,9 +629,9 @@ export const BiologyLab: React.FC = () => {
         const p2 = new THREE.Vector3(x2, y, z2);
         const dist = p1.distanceTo(p2);
 
-        const rungGeo = new THREE.CylinderGeometry(0.04, 0.04, dist, 12);
-        const rungMat = new THREE.MeshStandardMaterial({ color: i % 4 === 0 ? 0xef4444 : 0x10b981 });
-        const rung = new THREE.Mesh(rungGeo, rungMat);
+        const rungGeo = new THREE.CylinderGeometry(0.04, 0.04, dist, cylSegs);
+        rungGeos.push(rungGeo);
+        const rung = new THREE.Mesh(rungGeo, i % 4 === 0 ? rungMatRed : rungMatGreen);
 
         rung.position.copy(new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5));
         rung.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), p2.clone().sub(p1).normalize());
@@ -645,6 +652,12 @@ export const BiologyLab: React.FC = () => {
 
     return () => {
       cancelAnimationFrame(animId);
+      bbGeo.dispose();
+      bbMat1.dispose();
+      bbMat2.dispose();
+      rungMatRed.dispose();
+      rungMatGreen.dispose();
+      rungGeos.forEach(g => g.dispose());
       renderer.dispose();
       if (mount.contains(renderer.domElement)) {
         mount.removeChild(renderer.domElement);
