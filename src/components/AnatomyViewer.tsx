@@ -1613,7 +1613,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
   };
 
   return (
-    <div className={`space-y-6 ${isPresentationMode ? 'p-2' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16'}`}>
+    <div className={`space-y-6 ${isPresentationMode ? 'p-2' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 sm:pb-16'}`}>
       
       {/* Header Bar */}
       {!isPresentationMode && (
@@ -1656,7 +1656,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         
         {/* 3D Canvas Viewport (Takes 3 columns) */}
-        <div className="lg:col-span-3 sci-card overflow-hidden relative flex flex-col h-[700px]">
+        <div className="lg:col-span-3 sci-card overflow-hidden relative flex flex-col h-[520px] sm:h-[620px] lg:h-[700px]">
           
           {/* Top Layer Toggles Toolbar with responsive chevron scroll navigation */}
           <div className="bg-slate-950/85 backdrop-blur-md px-2 sm:px-4 py-2 border-b border-sky-500/15 flex items-center z-10 relative">
@@ -1758,10 +1758,10 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           </div>
 
           {/* Bottom HUD */}
-          <div className="absolute bottom-4 left-4 z-10 bg-slate-950/85 backdrop-blur-md px-4 py-2 rounded-xl border border-sky-500/15 text-xs text-slate-300 flex items-center space-x-3">
-            <span>🖱️ {language === 'ar' ? 'انقر على أي عظم أو عضو للاختيار والفحص' : 'Click any bone/organ to inspect'}</span>
-            <span className="text-slate-600">•</span>
-            <span>{language === 'ar' ? 'اسحب للتدوير 360°' : 'Drag to rotate 360°'}</span>
+          <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-10 bg-slate-950/85 backdrop-blur-md px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-sky-500/15 text-[11px] sm:text-xs text-slate-300 flex items-center gap-2 sm:gap-3 flex-wrap max-w-[90%]">
+            <span>🖱️ {language === 'ar' ? 'انقر على أي عظم أو عضو للاختيار' : 'Click any bone/organ to inspect'}</span>
+            <span className="text-slate-600 hidden sm:inline">•</span>
+            <span className="hidden sm:inline">{language === 'ar' ? 'اسحب للتدوير 360°' : 'Drag to rotate 360°'}</span>
           </div>
         </div>
 

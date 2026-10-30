@@ -161,10 +161,10 @@ export const DarwinAssistant: React.FC<DarwinAssistantProps> = ({
     <>
       {/* ── Floating Launcher ─────────────────────────────────────── */}
       {!isOpen && (
-        <div className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-50`}>
+        <div className={`fixed bottom-20 sm:bottom-6 ${isRTL ? 'left-4 sm:left-6' : 'right-4 sm:right-6'} z-50`}>
           <button
             onClick={() => { setIsOpen(true); setIsMinimized(false); }}
-            className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-gradient-to-r from-teal-500 via-emerald-600 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-black text-sm shadow-2xl shadow-teal-500/30 border-2 border-white/20 transition-all hover:scale-105 cursor-pointer group"
+            className="flex items-center gap-2.5 sm:gap-3 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-2xl bg-gradient-to-r from-teal-500 via-emerald-600 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-black text-xs sm:text-sm shadow-2xl shadow-teal-500/30 border-2 border-white/20 transition-all hover:scale-105 cursor-pointer group"
           >
             <div className="relative">
               <div className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center">
@@ -188,8 +188,8 @@ export const DarwinAssistant: React.FC<DarwinAssistantProps> = ({
       {isOpen && (
         <div
           dir={isRTL ? 'rtl' : 'ltr'}
-          className={`fixed bottom-4 ${isRTL ? 'left-4 sm:left-6' : 'right-4 sm:right-6'} z-50 w-[95vw] sm:w-[500px] rounded-3xl overflow-hidden shadow-2xl border border-teal-500/40 bg-[#070b14]/98 backdrop-blur-2xl transition-all duration-300 flex flex-col ${
-            isMinimized ? 'h-16' : 'h-[680px] max-h-[92vh]'
+          className={`fixed bottom-20 sm:bottom-4 ${isRTL ? 'left-2.5 sm:left-6' : 'right-2.5 sm:right-6'} z-50 w-[95vw] sm:w-[500px] rounded-3xl overflow-hidden shadow-2xl border border-teal-500/40 bg-[#070b14]/98 backdrop-blur-2xl transition-all duration-300 flex flex-col ${
+            isMinimized ? 'h-16' : 'h-[620px] max-h-[82vh] sm:max-h-[92vh]'
           }`}
         >
           {/* ── Header ─────────────────────────────────────────────── */}

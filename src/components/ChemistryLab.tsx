@@ -474,7 +474,7 @@ export const ChemistryLab: React.FC = () => {
   const ar = language === 'ar';
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 sm:pb-16 space-y-6">
       
       {/* Header Bar */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
@@ -629,6 +629,13 @@ export const ChemistryLab: React.FC = () => {
                   <option value="actinide">{t.chemistry.actinide}</option>
                 </select>
               </div>
+            </div>
+
+            {/* Mobile Horizontal Scroll Hint */}
+            <div className="flex sm:hidden items-center justify-center gap-1.5 py-1.5 px-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[11px] font-medium text-center">
+              <span>👉</span>
+              <span>{ar ? 'اسحب الجدول أفقياً لاستعراض كافة العناصر الـ 118' : 'Swipe horizontally to view all 118 elements'}</span>
+              <span>👈</span>
             </div>
 
             {/* Real 18-Column Grid */}
