@@ -677,6 +677,8 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
 
   const needsRenderRef = useRef<boolean>(true);
   const requestRender = () => { needsRenderRef.current = true; };
+  const loadingInProgressRef = useRef<Set<string>>(new Set());
+  const materialCacheRef = useRef<Map<string, THREE.MeshStandardMaterial>>(new Map());
 
   // Scene references
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -720,7 +722,8 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
 
   // Load a specific anatomical system layer
   const loadSystemLayer = (sysConfig: SystemLayerConfig, scene: THREE.Scene) => {
-    if (loadedSystems[sysConfig.id] || systemGroups.current.has(sysConfig.id)) return;
+    if (systemGroups.current.has(sysConfig.id) || loadingInProgressRef.current.has(sysConfig.id)) return;
+    loadingInProgressRef.current.add(sysConfig.id);
 
     setLoadingSystems(prev => ({ ...prev, [sysConfig.id]: true }));
     const loader = new GLTFLoader();
@@ -731,12 +734,13 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
       (gltf) => {
         const root = gltf.scene;
         root.name = sysConfig.id;
+        const isLowPower = isLowPowerDevice();
 
         root.traverse((child) => {
           if ((child as THREE.Mesh).isMesh) {
             const mesh = child as THREE.Mesh;
-            mesh.castShadow = true;
-            mesh.receiveShadow = true;
+            mesh.castShadow = !isLowPower;
+            mesh.receiveShadow = !isLowPower;
 
             const name = (mesh.name || '').toLowerCase();
             let matColor = sysConfig.color;
@@ -828,23 +832,33 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
               }
             }
 
+            // Low-power GPU optimization: flatten roughness/metalness
+            const finalRoughness = isLowPower ? 0.95 : roughness;
+            const finalMetalness = isLowPower ? 0.0 : metalness;
+
             // For models with embedded textures, preserve their original texture map
             const origMat = (Array.isArray(mesh.material) ? mesh.material[0] : mesh.material) as THREE.MeshStandardMaterial;
             if (origMat && origMat.map) {
               const texturedMat = origMat.clone();
-              texturedMat.roughness = roughness;
-              texturedMat.metalness = metalness;
+              texturedMat.roughness = finalRoughness;
+              texturedMat.metalness = finalMetalness;
               mesh.material = texturedMat;
-              originalMaterials.current.set(mesh, texturedMat.clone());
+              originalMaterials.current.set(mesh, texturedMat);
             } else {
-              const realisticMat = new THREE.MeshStandardMaterial({
-                color: matColor,
-                roughness,
-                metalness,
-              });
+              // High-efficiency material sharing: collapses 600+ individual shaders into shared materials
+              const matKey = `${matColor}_${finalRoughness}_${finalMetalness}`;
+              let sharedMat = materialCacheRef.current.get(matKey);
+              if (!sharedMat) {
+                sharedMat = new THREE.MeshStandardMaterial({
+                  color: matColor,
+                  roughness: finalRoughness,
+                  metalness: finalMetalness,
+                });
+                materialCacheRef.current.set(matKey, sharedMat);
+              }
 
-              originalMaterials.current.set(mesh, realisticMat.clone());
-              mesh.material = realisticMat.clone();
+              originalMaterials.current.set(mesh, sharedMat);
+              mesh.material = sharedMat;
             }
 
             mesh.userData = {
@@ -859,10 +873,11 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         root.position.set(0, 0, 0);
         root.scale.set(1, 1, 1);
 
-        root.visible = visibleSystemsRef.current[sysConfig.id] ?? !!sysConfig.defaultVisible;
+        root.visible = sysConfig.id === 'skeletal' ? true : (visibleSystemsRef.current[sysConfig.id] ?? !!sysConfig.defaultVisible);
 
         scene.add(root);
         systemGroups.current.set(sysConfig.id, root);
+        loadingInProgressRef.current.delete(sysConfig.id);
         setLoadedSystems(prev => ({ ...prev, [sysConfig.id]: true }));
         setLoadingSystems(prev => ({ ...prev, [sysConfig.id]: false }));
         requestRender();
@@ -870,6 +885,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
       undefined,
       (err) => {
         console.warn(`[SciNexa] Could not load model ${sysConfig.file}:`, err);
+        loadingInProgressRef.current.delete(sysConfig.id);
         setLoadingSystems(prev => ({ ...prev, [sysConfig.id]: false }));
       }
     );
@@ -916,9 +932,10 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     rimLight.position.set(0, 3, -4);
     scene.add(rimLight);
 
-    // DRACO Loader
+    // DRACO Loader - Preloaded immediately for zero-lag decompression
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath('/draco/');
+    dracoLoader.preload();
     dracoLoaderRef.current = dracoLoader;
 
     // Fetch definitions.json in background for enriched anatomy metadata
@@ -927,13 +944,17 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
       .then(d => { definitionsRef.current = d; })
       .catch(() => {});
 
-    // 3D Pinpoint Holographic Target Reticle
+    // 3D Pinpoint Holographic Target Reticle - Low-poly optimized for weak devices
+    const isLowPower = isLowPowerDevice();
+    const reticleSegs = isLowPower ? 16 : 32;
+    const dotSegs = isLowPower ? 8 : 16;
+
     const targetGroup = new THREE.Group();
     targetGroup.name = 'targetPinpoint';
     targetGroup.visible = false;
 
     // Inner glowing ring
-    const innerRingGeo = new THREE.RingGeometry(0.012, 0.018, 32);
+    const innerRingGeo = new THREE.RingGeometry(0.012, 0.018, reticleSegs);
     const innerRingMat = new THREE.MeshBasicMaterial({
       color: 0x06b6d4,
       side: THREE.DoubleSide,
@@ -945,7 +966,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     targetGroup.add(innerRing);
 
     // Outer reticle ring
-    const outerRingGeo = new THREE.RingGeometry(0.026, 0.029, 32);
+    const outerRingGeo = new THREE.RingGeometry(0.026, 0.029, reticleSegs);
     const outerRingMat = new THREE.MeshBasicMaterial({
       color: 0x38bdf8,
       side: THREE.DoubleSide,
@@ -957,7 +978,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     targetGroup.add(outerRing);
 
     // Center focal dot
-    const dotGeo = new THREE.SphereGeometry(0.004, 16, 16);
+    const dotGeo = new THREE.SphereGeometry(0.004, dotSegs, dotSegs);
     const dotMat = new THREE.MeshBasicMaterial({
       color: 0x22d3ee,
       depthTest: false,
@@ -968,10 +989,9 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     scene.add(targetGroup);
     targetPinpointRef.current = targetGroup;
 
-    // Initial load: savedLayer or Skeletal
-    const savedLayerId = (loadState('anatomy_layer', 'skeletal') || 'skeletal');
-    const initSys = SYSTEM_LAYERS.find(s => s.id === savedLayerId) || SYSTEM_LAYERS[0];
-    loadSystemLayer(initSys, scene);
+    // Guaranteed initial load: Skeletal layer opens immediately on first entry
+    const skeletalSys = SYSTEM_LAYERS.find(s => s.id === 'skeletal') || SYSTEM_LAYERS[0];
+    loadSystemLayer(skeletalSys, scene);
 
     // Click raycaster
     const raycaster = new THREE.Raycaster();
@@ -1362,7 +1382,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     renderer.domElement.addEventListener('click', handleClick);
 
     let animId: number;
-    let isMoving = true;
+    let isMoving = false;
     const lastCamPos = new THREE.Vector3();
     const lastTarget = new THREE.Vector3();
     controls.addEventListener('change', () => { isMoving = true; });
@@ -1703,6 +1723,23 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
 
           {/* Canvas Mount */}
           <div ref={mountRef} className="w-full flex-1 cursor-grab active:cursor-grabbing" style={{ touchAction: 'none' }} />
+
+          {/* Loading HUD overlay for weak devices and slow connections */}
+          {Object.values(loadingSystems).some(Boolean) && (
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-950/70 backdrop-blur-sm pointer-events-none transition-opacity duration-300">
+              <div className="sci-card px-5 py-4 border border-sky-500/30 flex items-center space-x-3 space-x-reverse bg-slate-900/90 shadow-2xl">
+                <RefreshCw className="w-5 h-5 text-sky-400 animate-spin" />
+                <div className="text-right">
+                  <span className="text-xs font-bold text-white block">
+                    {language === 'ar' ? 'جاري تهيئة وتحميل النموذج ثلاثي الأبعاد...' : 'Loading 3D Anatomy Model...'}
+                  </span>
+                  <span className="text-[10px] text-slate-400">
+                    {language === 'ar' ? 'فك الضغط بتقنية DRACO لضمان أعلى أداء' : 'Decompressing via DRACO hardware acceleration'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Callout Indicator HUD */}
           <div className="absolute top-16 right-4 z-10 sci-card p-3 max-w-xs border border-sky-500/30">
