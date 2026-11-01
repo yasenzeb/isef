@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دفتر يوميات المشروع الهندسي والبحث العلمي — نظام Nephro Shield الذكي</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Amiri:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #000000;
+    --dark: #111111;
+    --mid: #333333;
+    --light: #555555;
+    --border: #222222;
+    --border-light: #cccccc;
+    --bg-card: #fafafa;
+    --bg-highlight: #f4f4f4;
+    --white: #ffffff;
+  }
+
+  body {
+    font-family: 'Cairo', 'Amiri', serif;
+    background: #ffffff;
+    color: var(--dark);
+    line-height: 1.8;
+    font-size: 13px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  @page {
+    size: A4;
+    margin: 12mm 10mm 12mm 10mm;
+  }
+
+  @media print {
+    body { font-size: 11.5px; line-height: 1.65; }
+    .no-print { display: none !important; }
+    .page-break { page-break-before: always; }
+    .keep-together { break-inside: avoid; page-break-inside: avoid; }
+    table { break-inside: avoid; page-break-inside: avoid; }
+  }
+
+  /* ================== COVER PAGE (Exact 1 Page) ================== */
+  .cover-container {
+    height: 96vh;
+    max-height: 96vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    border: 3px double var(--black);
+    padding: 24px 20px;
+    position: relative;
+    box-sizing: border-box;
+    page-break-after: always;
+  }
+
+  .cover-frame {
+    position: absolute;
+    top: 5px; left: 5px; right: 5px; bottom: 5px;
+    border: 1px solid var(--border);
+    pointer-events: none;
+  }
+
+  .cover-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--black);
+    padding-bottom: 8px;
+  }
+
+  .cover-header-item {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--mid);
+    line-height: 1.4;
+  }
+
+  .cover-title-area {
+    margin: 10px 0;
+  }
+
+  .cover-logo {
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    border: 3px solid var(--black);
+    padding: 4px 22px;
+    display: inline-block;
+    margin-bottom: 6px;
+    font-family: 'Cairo', sans-serif;
+  }
+
+  .cover-subtitle {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--mid);
+    font-weight: 700;
+  }
+
+  .cover-title {
+    font-size: 23px;
+    font-weight: 900;
+    line-height: 1.35;
+    margin: 10px 0 6px;
+    color: var(--black);
+  }
+
+  .cover-statement {
+    font-size: 12.5px;
+    color: var(--mid);
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .cover-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-width: 580px;
+    margin: 12px 0;
+  }
+
+  .cover-meta-box {
+    border: 1px solid var(--black);
+    padding: 8px 12px;
+    background: var(--bg-card);
+    text-align: right;
+  }
+
+  .cover-meta-box .k {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--light);
+    display: block;
+    margin-bottom: 1px;
+  }
+
+  .cover-meta-box .v {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: var(--black);
+  }
+
+  .cover-footer {
+    width: 100%;
+    border-top: 1.5px solid var(--black);
+    padding-top: 10px;
+    font-size: 10px;
+    color: var(--mid);
+    line-height: 1.6;
+  }
+
+  /* ================== SECTION BANNERS ================== */
+  .section-banner {
+    border: 2px solid var(--black);
+    background: var(--black);
+    color: var(--white);
+    padding: 8px 12px;
+    margin: 12px 0 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    break-inside: avoid;
+  }
+
+  .section-banner h2 {
+    font-size: 15px;
+    font-weight: 900;
+  }
+
+  .section-banner .sec-tag {
+    font-size: 9.5px;
+    letter-spacing: 1px;
+    opacity: 0.85;
+    font-weight: 700;
+  }
+
+  /* ================== ENTRY CARDS ================== */
+  .entry-card {
+    border: 1px solid var(--border);
+    border-right: 4px solid var(--black);
+    background: var(--white);
+    margin-bottom: 10px;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .entry-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .entry-badge-id {
+    font-size: 12px;
+    font-weight: 900;
+    background: var(--black);
+    color: var(--white);
+    padding: 1px 6px;
+    border-radius: 2px;
+  }
+
+  .entry-date-text {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--black);
+  }
+
+  .entry-subject-text {
+    font-size: 10.5px;
+    color: var(--mid);
+    font-weight: 600;
+  }
+
+  .entry-tag {
+    font-size: 8.5px;
+    font-weight: 800;
+    border: 1px solid var(--black);
+    padding: 1px 5px;
+    letter-spacing: 0.5px;
+  }
+
+  .entry-body {
+    padding: 10px 12px;
+    text-align: justify;
+  }
+
+  .entry-body p {
+    margin-bottom: 6px;
+    text-indent: 10px;
+  }
+
+  /* ================== CALLOUT BOXES ================== */
+  .callout-box {
+    border: 1px solid var(--border);
+    border-right: 3px solid var(--black);
+    background: var(--bg-highlight);
+    padding: 7px 10px;
+    margin: 6px 0;
+    font-size: 11.5px;
+    break-inside: avoid;
+  }
+
+  .callout-box .c-title {
+    font-weight: 800;
+    font-size: 11px;
+    margin-bottom: 2px;
+    color: var(--black);
+  }
+
+  .bullet-item {
+    position: relative;
+    padding-right: 14px;
+    margin-bottom: 4px;
+    font-size: 11.5px;
+    line-height: 1.6;
+  }
+
+  .bullet-item::before {
+    content: "■";
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 7px;
+    color: var(--black);
+  }
+
+  /* ================== COMPACT TOC ================== */
+  .toc-compact {
+    border: 1.5px solid var(--black);
+    padding: 10px 14px;
+    margin: 8px 0 12px;
+    background: var(--bg-card);
+    break-inside: avoid;
+  }
+
+  .toc-compact-title {
+    font-size: 13px;
+    font-weight: 900;
+    border-bottom: 1.5px solid var(--black);
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .toc-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    padding: 2.5px 0;
+    border-bottom: 1px dotted var(--border-light);
+  }
+
+  /* ================== SIGNATURE GRID ================== */
+  .sig-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+    break-inside: avoid;
+  }
+
+  .sig-cell {
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    background: var(--bg-card);
+  }
+
+  .sig-role {
+    font-size: 9px;
+    font-weight: 800;
+    color: var(--light);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .sig-name {
+    font-size: 12px;
+    font-weight: 900;
+    margin-bottom: 8px;
+  }
+
+  .sig-line-draw {
+    border-bottom: 1px solid var(--black);
+    height: 22px;
+    margin-bottom: 2px;
+  }
+
+  .sig-caption {
+    font-size: 8.5px;
+    color: var(--mid);
+    text-align: left;
+    direction: ltr;
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1: COVER ============================== -->
+<div class="cover-container">
+  <div class="cover-frame"></div>
+
+  <div class="cover-header">
+    <div class="cover-header-item">
+      جمهورية مصر العربية<br>
+      معرض العلوم والهندسة (ISEF)<br>
+      قطاع الهندسة البيئية (Environmental Engineering)
+    </div>
+    <div class="cover-header-item" style="text-align: left; direction: ltr;">
+      International Science &<br>Engineering Fair (ISEF)<br>Official Engineering Journal
+    </div>
+  </div>
+
+  <div class="cover-title-area">
+    <div class="cover-logo">Nephro Shield</div>
+    <div class="cover-subtitle">Smart Eco-Water Filtration System</div>
+    <h1 class="cover-title">دفتر يوميات المشروع الهندسي والبحث العلمي<br>نظام "Nephro Shield" الذكي لتنقية المياه</h1>
+    <p class="cover-statement">
+      نظام ترشيح مائي ذكي مستند إلى الفحم المنشط لقش الأرز والتحكم الإلكتروني الدقيق مع المراقبة اللحظية للعكارة وتنبيهات التشبع التلقائية لحماية الصحة العامة والبيئة.
+    </p>
+  </div>
+
+  <div class="cover-meta-grid">
+    <div class="cover-meta-box">
+      <span class="k">اسم المشروع الرسمي</span>
+      <span class="v">نظام Nephro Shield الذكي لتنقية المياه</span>
+    </div>
+    <div class="cover-meta-box">
+      <span class="k">إعداد وتطوير فريق العمل</span>
+      <span class="v">الطالبة علا &bull; الطالبة نادين</span>
+    </div>
+    <div class="cover-meta-box">
+      <span class="k">مجال البحث والتخصص</span>
+      <span class="v">الهندسة البيئية (Environmental Engineering)</span>
+    </div>
+    <div class="cover-meta-box">
+      <span class="k">حالة المشروع ونطاق التوثيق</span>
+      <span class="v">مرحلة التصميم الهندسي والتخطيط (جاهز للتنفيذ الميداني)</span>
+    </div>
+  </div>
+
+  <div class="cover-footer">
+    <strong>إقرار الشفافية والنزاهة العلمية:</strong> نلتزم بالقواعد الأكاديمية والضوابط الأخلاقية المعتمدة لمعرض ISEF الدولي للعلوم والهندسة.<br>
+    المشروع مخصص لحل مشكلة السحابة السوداء وإعادة تدوير المخلفات الزراعية وتوفير مياه نقية بتكلفة اقتصادية منخفضة.
+  </div>
+</div>
+
+<!-- ============================== PAGE 2: TOC & SECTION 1 & SECTION 2 ============================== -->
+<div class="toc-compact">
+  <div class="toc-compact-title">
+    <span>فهرس السجل الهندسي المعتمد — نظام Nephro Shield</span>
+    <span style="font-size: 10.5px; font-weight: normal; color: var(--mid);">Table of Contents</span>
+  </div>
+  <div class="toc-row">
+    <span><strong>القسم 1:</strong> صفحة الميثاق والنزاهة العلمية واستخدام الذكاء الاصطناعي (Ethics & AI Disclosure)</span>
+    <span>صفحة 2</span>
+  </div>
+  <div class="toc-row">
+    <span><strong>القسم 2:</strong> مشكلة البحث، الفرضية العلمية، والغرض من التصميم (Problem, Hypothesis & Objectives)</span>
+    <span>صفحة 2</span>
+  </div>
+  <div class="toc-row">
+    <span><strong>القسم 3:</strong> الخلفية العلمية والدراسات السابقة وميكانيكا الامتصاص (Background Research)</span>
+    <span>صفحة 3</span>
+  </div>
+  <div class="toc-row">
+    <span><strong>القسم 4:</strong> التصميم الهندسي، المعمارية ومكونات النظام المتكاملة (System Architecture)</span>
+    <span>صفحة 3</span>
+  </div>
+  <div class="toc-row">
+    <span><strong>القسم 5:</strong> خطة التنفيذ الميداني والمراحل الزمنية القادمة (Implementation Roadmap)</span>
+    <span>صفحة 4</span>
+  </div>
+  <div class="toc-row">
+    <span><strong>القسم 6:</strong> معايير القياس وتقييم الأداء المتوقع (Expected Evaluation Metrics) والتوقيعات والاعتماد</span>
+    <span>صفحة 4</span>
+  </div>
+</div>
+
+<div class="section-banner">
+  <h2>1. الميثاق العلمي والشفافية في استخدام الذكاء الاصطناعي</h2>
+  <span class="sec-tag">ETHICS & AI DISCLOSURE</span>
+</div>
+
+<div class="entry-card">
+  <div class="entry-body">
+    <p>
+      نقر نحن فريق عمل مشروع <strong>نظام Nephro Shield</strong> (الطالبة <strong>علا</strong> والطالبة <strong>نادين</strong>) بالالتزام التام والواعي بكافة قواعد النزاهة العلمية والأخلاقية:
+    </p>
+    <div class="callout-box">
+      <div class="c-title">الابتكار الأصيل (Authentic Innovation)</div>
+      فكرة إعادة تدوير قش الأرز لإنتاج فحم منشط محلي اقتصادي، ودمجه مع نظام استشعار ذكي لتحديد عمر الشمعة ونقاء المياه، هي نتاج تفكيرنا وبحثنا الهندسي المستقل لحل مشكلة بيئية محلية تهدف للحد من تلوث الهواء وتوفير مياه نقية آمنة.
+    </div>
+    <div class="callout-box">
+      <div class="c-title">الشفافية في استخدام أدوات الذكاء الاصطناعي (AI Disclosure)</div>
+      تم الاستعانة بأدوات الذكاء الاصطناعي حصرياً للمراجعة العلمية، وتنظيم صياغة التقرير الهندسي، وتدقيق كود البرمجة الخاص بوحدة المعالجة المركزية (Arduino) وضبط دوال المعايرة لحساس العكارة.
+    </div>
+    <div class="callout-box">
+      <div class="c-title">الأمان البيئي والصحي والمعملي (Environmental Safety)</div>
+      ستتم تجارب الكربنة وتحضير الفحم المنشط وفقاً لأعلى معايير الأمن والسلامة البيئية والمعملية، مع التأكد الصارم من خلو مياه الاختبار من أي مخاطر بيولوجية أثناء جلسات الفحص والتحليل.
+    </div>
+  </div>
+</div>
+
+<div class="section-banner">
+  <h2>2. مشكلة البحث، الفرضية، والغرض من التصميم</h2>
+  <span class="sec-tag">PROBLEM, HYPOTHESIS & OBJECTIVES</span>
+</div>
+
+<div class="entry-card">
+  <div class="entry-body">
+    <div class="bullet-item">
+      <strong>أ. مشكلة البحث (Problem Statement):</strong>
+      <div style="margin-right: 12px; margin-top: 2px;">
+        &bull; <em>الحرق المكشوف لقش الأرز:</em> ينتج عن موسم حصاد الأرز في مصر كميات هائلة من قش الأرز، والتي يلجأ بعض المزارعين لحرقها، مما يتسبب في تلوث حاد للهواء وظهور ما يعرف بـ (السحابة السوداء) وما ينتج عنها من أضرار تنفسية وبيئية واقتصادية بالغة.<br>
+        &bull; <em>قصور الفلاتر المنزلية التقليدية:</em> الفلاتر التجارية تعتمد على تغيير الشمعات بـ "أزمنة تقريبية" أو بعد فوات الأوان، دون وجود مؤشر ذكي حقيقي يقيس كفاءة مادة التنقية الفعالة أو ينبه المستخدم لحظياً بلحظة تشبع الفلتر وبدء تسريب الملوثات إلى مياه الشرب.
+      </div>
+    </div>
+
+    <div class="bullet-item">
+      <strong>ب. الفرضية العلمية (Hypothesis):</strong>
+      نفترض أن دمج الفحم المنشط المستخلص من إعادة تدوير قش الأرز كوسط ترشيح اقتصادي فعال، مع نظام برمجي ذكي يتكون من متحكم دقيق (Arduino) وحساس عكارة (Turbidity Sensor)، سيمكننا من صنع فلتر مياه منخفض التكلفة، قادر على قياس وتحديد مدى نقاء المياه باستمرار، وعرض حالة الفلتر والموعد الدقيق لتغييره للمستخدم بشكل لحظي على شاشة (LCD).
+    </div>
+
+    <div class="bullet-item">
+      <strong>ج. الغرض من التصميم الهندسي (Design Objectives):</strong>
+      <div style="margin-right: 12px; margin-top: 2px;">
+        &bull; <em>حماية البيئة:</em> الاستفادة من مخلفات قش الأرز وتحويلها إلى مادة ذات قيمة اقتصادية عالية بدلاً من حرقها الضار.<br>
+        &bull; <em>خفض التكلفة:</em> إنتاج فحم منشط محلي الصنع بكفاءة امتصاص عالية ينافس الفحم النشط المستورد باهظ الثمن.<br>
+        &bull; <em>المتابعة الذكية اللحظية:</em> تنبيه المستخدم بذكاء عبر رسائل واضحة ومباشرة على الشاشة لمنع استهلاك مياه غير صالحة.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== PAGE 3: SECTIONS 3 & 4 ============================== -->
+<div class="page-break"></div>
+
+<div class="section-banner">
+  <h2>3. الخلفية العلمية والدراسات السابقة</h2>
+  <span class="sec-tag">BACKGROUND RESEARCH & LITERATURE REVIEW</span>
+</div>
+
+<div class="entry-card">
+  <div class="entry-header">
+    <div class="entry-title-wrap">
+      <span class="entry-badge-id">SCI</span>
+      <span class="entry-date-text">الأساس العلمي للامتصاص والاستشعار البصري</span>
+    </div>
+    <span class="entry-tag">PYROLYSIS & NTU SENSING</span>
+  </div>
+  <div class="entry-body">
+    <p>
+      استند تصميم نظام <strong>Nephro Shield</strong> إلى ركيزتين علميتين رئيسيتين موثقتين في الأدبيات البيئية والهندسية:
+    </p>
+    <div class="callout-box">
+      <div class="c-title">1. الكربنة والنشاط السطحي لقش الأرز (Pyrolysis & Surface Adsorption)</div>
+      أثبتت الأبحاث البيئية والكيميائية أن المعالجة الحرارية لمخلفات قش الأرز في ظروف منعدمة أو محدودة الأكسجين (Pyrolysis) عند درجات حرارة محكومة تليها معالجة تنشيط فيزيائية أو كيميائية خفيفة، تؤدي إلى تكوين بنية مسامية دقيقة (Microporous Structure) ذات مساحة سطحية نوعية هائلة لكل جرام. يمنح هذا الهيكل المسامي الفحم قدرة فائقة على احتجاز وامتصاص الجزيئات العضوية، والأصباغ، والمعادن الثقيلة، والمركبات المسببة للرائحة والطعم غير المرغوب عبر قوى فان دير فالس والروابط السطحية النشطة.
+    </div>
+    <div class="callout-box">
+      <div class="c-title">2. مبدأ الاستشعار الإلكتروني لعكارة المياه (Optical Turbidity Measurement)</div>
+      يعتمد حساس العكارة الإلكتروني على قياس التشتت الضوئي للجسيمات العالقة وفق وحدة العكارة النيفيلومترية ($Nephelometric\ Turbidity\ Units - NTU$). يُرسل الحساس حزمة ضوئية تحت حمراء، وتقيس الخلية الكهروضوئية المتعامدة كمية الضوء المشتت بزاوية 90 درجة بواسطة الشوائب؛ فكلما كانت المياه نقية، قل التشتت وارتفع الجهد الكهربائي المقروء، مما يوفر مؤشراً كمياً دقيقاً ومباشراً لحظة بلحظة لكفاءة وسط الترشيح وحالة تشبعه.
+    </div>
+  </div>
+</div>
+
+<div class="section-banner">
+  <h2>4. التصميم الهندسي ومكونات النظام المتكاملة</h2>
+  <span class="sec-tag">ENGINEERING DESIGN & SYSTEM ARCHITECTURE</span>
+</div>
+
+<div class="entry-card">
+  <div class="entry-body">
+    <p>
+      ينقسم نظام <strong>Nephro Shield</strong> معمارياً إلى منظومتين متكاملتين تعملان بتوافق عضوي:
+    </p>
+
+    <div class="callout-box">
+      <div class="c-title">أ. الجانب المادي والبيئي (Filtration Unit Architecture)</div>
+      <div class="bullet-item"><strong>وحدة الترشيح الطبقي:</strong> أسطوانة ترشيح مرتبة هندسياً تضم طبقة رمل كوارتز مغسول لحجز العوالق الكبيرة، تليها طبقة حصى دقيق للتوزيع المتوازن للتدفق، يعلوهما لب الفلتر الرئيسي المكون من فحم قش الأرز المنشط لحجز الشوائب العضوية والأصباغ والجزيئات الدقيقة.</div>
+      <div class="bullet-item"><strong>هيكل الفلتر والحاوية:</strong> تصميم مدمج وخفيف الوزن مصنوع من خامات بلاستيكية آمنة غذائياً ($Food-Grade$) تمنع أي تفاعل كيميائي مع المياه المعالجة، مع سهولة استبدال خرطوشة الفحم عند انتهاء عمرها الافتراضي.</div>
+    </div>
+
+    <div class="callout-box">
+      <div class="c-title">ب. الجانب الإلكتروني والبرمجي الذكي (Smart Monitoring & Alert System)</div>
+      <div class="bullet-item"><strong>وحدة المعالجة المركزية (Arduino Controller):</strong> متحكم دقيق (Arduino Nano/Uno) مسؤول عن إدارة قراءات الحساس التناظرية وتطبيق خوارزميات الترشيح الرقمي والتحويل إلى وحدات NTU.</div>
+      <div class="bullet-item"><strong>حساس العكارة (Turbidity Sensor Probe):</strong> مثبت بصورة محكمة في حجرة مخرج المياه المفلترة لقياس نقاء التدفق الخارج بعد المرور على وسط الفحم المنشط.</div>
+      <div class="bullet-item"><strong>شاشة العرض التفاعلية (LCD 16x2 I2C):</strong> واجهة نصية واضحة ومباشرة تعرض قيمة النقاء وحالة الفلتر والرسائل الإرشادية للمستخدم دون تعقيد.</div>
+      <div class="bullet-item"><strong>منظومة التنبيه المزدوجة (LEDs & Buzzer):</strong> مؤشرات ضوئية ملونة (أخضر للنقاء، أصفر للاقتراب من التشبع، أحمر للتشبع التام) مصحوبة بتنبيه صوتي متقطع لتنبيه المستخدم بسرعة استبدال الشمعة.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== PAGE 4: SECTIONS 5 & 6 & SIGNATURES ============================== -->
+<div class="page-break"></div>
+
+<div class="section-banner">
+  <h2>5. خطة التنفيذ الميداني والمراحل الزمنية القادمة</h2>
+  <span class="sec-tag">UPCOMING IMPLEMENTATION ROADMAP</span>
+</div>
+
+<div class="entry-card">
+  <div class="entry-body">
+    <p>
+      بناءً على خطة عملنا الهندسية المعتمدة للمرحلة القادمة، سيتم تنفيذ المشروع ميدانياً عبر أربع مراحل متتابعة:
+    </p>
+
+    <div class="bullet-item">
+      <strong>المرحلة الأولى: تجهيز وتنشيط فحم قش الأرز (Biomass Carbonization & Activation):</strong>
+      <div style="margin-right: 12px;">
+        1. جمع وتجفيف عينات قش الأرز المحلية والتخلص من الأتربة والشوائب.<br>
+        2. إجراء عملية التحلل الحراري بمعزل عن الهواء (Pyrolysis) لتحويل القش إلى فحم حيوي أولي.<br>
+        3. إجراء التنشيط المسامي لرفع المساحة السطحية النوعية وتعزيز كفاءة الامتصاص السطحي.
+      </div>
+    </div>
+
+    <div class="bullet-item">
+      <strong>المرحلة الثانية: التجميع الميكانيكي لوحدة الترشيح (Mechanical Prototyping):</strong>
+      تصميم وبناء النموذج الأولي (Prototype) لوعاء الترشيح الأسطواني وتعبئته بالترتيب الطبقي الآمن واختبار معدل سريان المياه وضمان عدم حدوث أي تسريب جانبي.
+    </div>
+
+    <div class="bullet-item">
+      <strong>المرحلة الثالثة: البرمجة والتوصيل الإلكتروني الذكي (Electronics & Firmware Calibration):</strong>
+      كتابة الشيفرة البرمجية للمتحكم (Arduino) لمعايرة قراءات حساس العكارة مع معايير جودة مياه الشرب القياسية، وبرمجة الشاشة النصية لعرض الحالات التشغيلية الثلاث: (آمن تماماً &bull; قارب على الامتلاء &bull; تشبع - يلزم التغيير فوراً).
+    </div>
+
+    <div class="bullet-item">
+      <strong>المرحلة الرابعة: التجارب المختبرية والتحليل الكمي (Lab Testing & Performance Analysis):</strong>
+      تمرير عينات مياه ملوثة بأصباغ وعكارة معلومة التركيز مخبرياً، وقياس قدرة الفلتر على إزالتها، ورصد زمن استجابة الحساس ودقة تحذير الشاشة اللحظي.
+    </div>
+  </div>
+</div>
+
+<div class="section-banner">
+  <h2>6. معايير القياس وتقييم الأداء والتوقيعات والاعتماد</h2>
+  <span class="sec-tag">METRICS & OFFICIAL APPROVALS</span>
+</div>
+
+<div class="entry-card">
+  <div class="entry-body">
+    <div class="callout-box">
+      <div class="c-title">معايير القياس وتقييم الأداء المتوقع (Expected Evaluation Metrics)</div>
+      <div class="bullet-item"><strong>كفاءة إزالة التلوث والعكارة ($Removal\ Efficiency$):</strong> تحقيق نسبة انخفاض في العكارة والأصباغ تتجاوز <strong>90%</strong> في المياه الخارجة مقارنة بالعينة الداخلة.</div>
+      <div class="bullet-item"><strong>دقة واستجابة النظام الذكي:</strong> مدى مطابقة تنبيهات شاشة الـ LCD ومؤشرات الـ LEDs لدرجة التشبع الفعلية لكتلة الفحم ومقاومة الخطأ في القراءة.</div>
+      <div class="bullet-item"><strong>الجدوى الاقتصادية:</strong> الحفاظ على تكلفة تصنيع إجمالية منخفضة جداً مقارنة بأنظمة الفلاتر التجارية التقليدية باهظة الصيانة.</div>
+    </div>
+
+    <p style="font-size: 11px; line-height: 1.7; margin: 6px 0;">
+      <strong>إقرار الفريق والنزاهة العلمية:</strong> نقر نحن فريق العمل بأن هذه الوثيقة تمثل الخطة البحثية والهندسية الأصلية لتنفيذ مشروع <strong>Nephro Shield</strong> في مرحلته القادمة وفقاً للأصول العلمية والمنهجية السليمة لمعرض ISEF.
+    </p>
+
+    <div class="sig-grid">
+      <div class="sig-cell">
+        <div class="sig-role">عضو الفريق والباحث الرئيس (Student Researcher)</div>
+        <div class="sig-name">الطالبة: علا</div>
+        <div class="sig-line-draw"></div>
+        <div class="sig-caption">Signature & Date: _____ / _____ / 2026</div>
+      </div>
+
+      <div class="sig-cell">
+        <div class="sig-role">عضو الفريق والباحث الرئيس (Student Researcher)</div>
+        <div class="sig-name">الطالبة: نادين</div>
+        <div class="sig-line-draw"></div>
+        <div class="sig-caption">Signature & Date: _____ / _____ / 2026</div>
+      </div>
+    </div>
+
+    <div class="sig-grid" style="margin-top: 6px;">
+      <div class="sig-cell">
+        <div class="sig-role">المشرف الأكاديمي المعتمد (Adult Sponsor / Mentor)</div>
+        <div class="sig-name">اعتماد المشرف العلمي</div>
+        <div class="sig-line-draw"></div>
+        <div class="sig-caption">Signature & Date: _____ / _____ / 2026</div>
+      </div>
+
+      <div class="sig-cell">
+        <div class="sig-role">لجنة المراجعة والاعتماد (SRC Approval)</div>
+        <div class="sig-name">لجنة المراجعة العلمية (SRC)</div>
+        <div class="sig-line-draw"></div>
+        <div class="sig-caption">Official Seal & Signature</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align: center; font-size: 9.5px; color: var(--light); border-top: 1px solid var(--border); padding-top: 5px; margin-top: 8px;">
+  <strong>Nephro Shield Official Engineering Logbook</strong> &bull; ISEF Environmental Engineering Category &bull; All Rights Reserved 2026
+</div>
+
+</body>
+</html>
