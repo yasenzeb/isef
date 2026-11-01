@@ -12,11 +12,12 @@
   :root {
     --black: #000000;
     --dark: #111111;
-    --mid: #444444;
-    --light: #666666;
+    --mid: #333333;
+    --light: #555555;
     --border: #222222;
+    --border-light: #cccccc;
     --bg-card: #fafafa;
-    --bg-highlight: #f2f2f2;
+    --bg-highlight: #f4f4f4;
     --white: #ffffff;
   }
 
@@ -24,45 +25,44 @@
     font-family: 'Cairo', 'Amiri', serif;
     background: #ffffff;
     color: var(--dark);
-    line-height: 2.1;
-    font-size: 13.5px;
+    line-height: 1.8;
+    font-size: 13px;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
   @page {
     size: A4;
-    margin: 15mm 12mm 15mm 12mm;
+    margin: 12mm 10mm 12mm 10mm;
   }
 
   @media print {
-    body { font-size: 12px; line-height: 1.9; }
+    body { font-size: 11.5px; line-height: 1.65; }
     .no-print { display: none !important; }
     .page-break { page-break-before: always; }
-    .day-card { page-break-inside: avoid; margin-bottom: 18px; }
-    .chapter-header { page-break-inside: avoid; }
-    .signature-page { page-break-inside: avoid; }
-    table { page-break-inside: avoid; }
+    .keep-together { break-inside: avoid; page-break-inside: avoid; }
+    table { break-inside: avoid; page-break-inside: avoid; }
   }
 
-  /* ================== COVER PAGE ================== */
-  .cover {
-    min-height: 94vh;
+  /* ================== COVER PAGE (Exact 1 Page) ================== */
+  .cover-container {
+    height: 96vh;
+    max-height: 96vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
     text-align: center;
     border: 3px double var(--black);
-    padding: 35px 25px;
-    margin: 10px auto;
+    padding: 24px 20px;
     position: relative;
     box-sizing: border-box;
+    page-break-after: always;
   }
 
   .cover-frame {
     position: absolute;
-    top: 6px; left: 6px; right: 6px; bottom: 6px;
+    top: 5px; left: 5px; right: 5px; bottom: 5px;
     border: 1px solid var(--border);
     pointer-events: none;
   }
@@ -73,33 +73,33 @@
     justify-content: space-between;
     align-items: center;
     border-bottom: 2px solid var(--black);
-    padding-bottom: 12px;
+    padding-bottom: 8px;
   }
 
   .cover-header-item {
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 700;
     color: var(--mid);
-    line-height: 1.5;
+    line-height: 1.4;
   }
 
   .cover-title-area {
-    margin: 20px 0;
+    margin: 10px 0;
   }
 
   .cover-logo {
-    font-size: 46px;
+    font-size: 42px;
     font-weight: 900;
     letter-spacing: 2px;
     border: 3px solid var(--black);
-    padding: 6px 26px;
+    padding: 4px 24px;
     display: inline-block;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     font-family: 'Cairo', sans-serif;
   }
 
   .cover-subtitle {
-    font-size: 12px;
+    font-size: 11px;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--mid);
@@ -107,47 +107,47 @@
   }
 
   .cover-title {
-    font-size: 28px;
+    font-size: 25px;
     font-weight: 900;
-    line-height: 1.4;
-    margin: 16px 0 8px;
+    line-height: 1.35;
+    margin: 12px 0 6px;
     color: var(--black);
   }
 
   .cover-statement {
-    font-size: 13.5px;
+    font-size: 12.5px;
     color: var(--mid);
     max-width: 620px;
     margin: 0 auto;
-    line-height: 1.8;
+    line-height: 1.7;
   }
 
   .cover-meta-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 10px;
     width: 100%;
     max-width: 580px;
-    margin: 20px 0;
+    margin: 12px 0;
   }
 
   .cover-meta-box {
     border: 1px solid var(--black);
-    padding: 10px 14px;
+    padding: 8px 12px;
     background: var(--bg-card);
     text-align: right;
   }
 
   .cover-meta-box .k {
-    font-size: 10px;
+    font-size: 9.5px;
     font-weight: 700;
     color: var(--light);
     display: block;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
   }
 
   .cover-meta-box .v {
-    font-size: 13.5px;
+    font-size: 13px;
     font-weight: 800;
     color: var(--black);
   }
@@ -155,201 +155,147 @@
   .cover-footer {
     width: 100%;
     border-top: 1.5px solid var(--black);
-    padding-top: 12px;
-    font-size: 11px;
+    padding-top: 10px;
+    font-size: 10px;
     color: var(--mid);
-    line-height: 1.7;
+    line-height: 1.6;
   }
 
-  /* ================== TABLE OF CONTENTS ================== */
-  .toc-box {
-    border: 2px solid var(--black);
-    padding: 26px;
-    margin: 20px 0;
-    min-height: 85vh;
-  }
-
-  .toc-title {
-    font-size: 20px;
-    font-weight: 900;
-    border-bottom: 2px solid var(--black);
-    padding-bottom: 10px;
-    margin-bottom: 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .toc-item {
-    display: flex;
-    align-items: baseline;
-    padding: 8px 0;
-    border-bottom: 1px dotted var(--border);
-    font-size: 13px;
-  }
-
-  .toc-badge {
-    background: var(--black);
-    color: var(--white);
-    font-size: 9.5px;
-    font-weight: 800;
-    padding: 2px 7px;
-    margin-left: 10px;
-    letter-spacing: 0.5px;
-  }
-
-  .toc-dots {
-    flex: 1;
-    border-bottom: 1px dotted var(--light);
-    margin: 0 10px;
-    height: 1px;
-  }
-
-  .toc-page-num {
-    font-weight: 800;
-    font-size: 12px;
-  }
-
-  /* ================== CHAPTER HEADERS ================== */
-  .chapter-header {
+  /* ================== SECTION / CHAPTER HEADERS ================== */
+  .section-banner {
     border: 2px solid var(--black);
     background: var(--black);
     color: var(--white);
-    padding: 20px;
-    margin: 20px 0 16px;
-    text-align: center;
-  }
-
-  .chapter-num {
-    font-size: 10.5px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    opacity: 0.75;
-    margin-bottom: 4px;
-  }
-
-  .chapter-header h2 {
-    font-size: 22px;
-    font-weight: 900;
-    margin-bottom: 4px;
-  }
-
-  .chapter-header p {
-    font-size: 12px;
-    opacity: 0.85;
-  }
-
-  /* ================== DAY ENTRY CARDS ================== */
-  .day-card {
-    border: 1px solid var(--border);
-    border-right: 5px solid var(--black);
-    background: var(--white);
-    margin-bottom: 20px;
-  }
-
-  .day-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     padding: 10px 14px;
+    margin: 14px 0 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .section-banner h2 {
+    font-size: 16px;
+    font-weight: 900;
+  }
+
+  .section-banner .sec-tag {
+    font-size: 10px;
+    letter-spacing: 1px;
+    opacity: 0.85;
+    font-weight: 700;
+  }
+
+  /* ================== CARDS & CONTENT BLOCKS ================== */
+  .entry-card {
+    border: 1px solid var(--border);
+    border-right: 4px solid var(--black);
+    background: var(--white);
+    margin-bottom: 12px;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 12px;
     background: var(--bg-card);
     border-bottom: 1px solid var(--border);
   }
 
-  .day-title-wrap {
+  .entry-title-wrap {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
   }
 
-  .day-num-box {
-    font-size: 20px;
+  .entry-badge-id {
+    font-size: 13px;
     font-weight: 900;
-    line-height: 1;
-    min-width: 35px;
-    text-align: center;
-    border-left: 1.5px solid var(--border);
-    padding-left: 8px;
+    background: var(--black);
+    color: var(--white);
+    padding: 1px 7px;
+    border-radius: 2px;
   }
 
-  .day-date-text {
-    font-size: 13.5px;
+  .entry-date-text {
+    font-size: 12.5px;
     font-weight: 800;
     color: var(--black);
   }
 
-  .day-subject-text {
-    font-size: 11.5px;
+  .entry-subject-text {
+    font-size: 11px;
     color: var(--mid);
     font-weight: 600;
   }
 
-  .day-badge {
-    background: var(--black);
-    color: var(--white);
-    font-size: 9.5px;
+  .entry-tag {
+    font-size: 9px;
     font-weight: 800;
-    padding: 2px 8px;
+    border: 1px solid var(--black);
+    padding: 1px 6px;
     letter-spacing: 0.5px;
   }
 
-  .day-body {
-    padding: 14px 18px;
+  .entry-body {
+    padding: 10px 14px;
     text-align: justify;
   }
 
-  .day-body p {
-    margin-bottom: 10px;
-    text-indent: 12px;
+  .entry-body p {
+    margin-bottom: 6px;
+    text-indent: 10px;
   }
 
-  /* ================== BOXES & ELEMENTS ================== */
-  .quote-box {
+  /* ================== BOXES & CALLOUTS ================== */
+  .callout-box {
     border: 1px solid var(--border);
-    border-right: 4px solid var(--black);
+    border-right: 3px solid var(--black);
     background: var(--bg-highlight);
-    padding: 12px 14px;
-    margin: 12px 0;
-    font-size: 12.5px;
+    padding: 8px 12px;
+    margin: 8px 0;
+    font-size: 12px;
+    break-inside: avoid;
   }
 
-  .quote-box .q-title {
+  .callout-box .c-title {
     font-weight: 800;
     font-size: 11.5px;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
     color: var(--black);
-    display: flex;
-    align-items: center;
-    gap: 6px;
   }
 
-  .bullet-point {
+  .bullet-item {
     position: relative;
-    padding-right: 18px;
-    margin-bottom: 6px;
-    font-size: 12.5px;
+    padding-right: 14px;
+    margin-bottom: 4px;
+    font-size: 12px;
+    line-height: 1.6;
   }
 
-  .bullet-point::before {
+  .bullet-item::before {
     content: "■";
     position: absolute;
     right: 0;
-    top: 1px;
-    font-size: 8px;
+    top: 0;
+    font-size: 7px;
     color: var(--black);
   }
 
-  /* ================== TABLES ================== */
+  /* ================== DATA TABLES ================== */
   table.data-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 14px 0;
-    font-size: 12.5px;
+    margin: 8px 0;
+    font-size: 11.5px;
+    break-inside: avoid;
   }
 
   table.data-table th, table.data-table td {
     border: 1px solid var(--border);
-    padding: 8px 12px;
+    padding: 6px 10px;
     text-align: right;
   }
 
@@ -357,60 +303,78 @@
     background: var(--black);
     color: var(--white);
     font-weight: 800;
-    font-size: 11.5px;
+    font-size: 11px;
   }
 
   table.data-table tr:nth-child(even) {
     background: var(--bg-card);
   }
 
-  /* ================== SIGNATURE PAGE ================== */
-  .signature-page {
-    border: 2px solid var(--black);
-    padding: 26px;
-    margin: 20px 0;
-    min-height: 85vh;
+  /* ================== TOC COMPACT ================== */
+  .toc-compact {
+    border: 1.5px solid var(--black);
+    padding: 12px 16px;
+    margin: 10px 0 16px;
+    background: var(--bg-card);
+    break-inside: avoid;
+  }
+
+  .toc-compact-title {
+    font-size: 14px;
+    font-weight: 900;
+    border-bottom: 1.5px solid var(--black);
+    padding-bottom: 4px;
+    margin-bottom: 8px;
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
   }
 
+  .toc-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11.5px;
+    padding: 3px 0;
+    border-bottom: 1px dotted var(--border-light);
+  }
+
+  /* ================== SIGNATURE GRID ================== */
   .sig-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-top: 25px;
+    gap: 12px;
+    margin-top: 12px;
+    break-inside: avoid;
   }
 
   .sig-cell {
     border: 1px solid var(--border);
-    padding: 12px 14px;
+    padding: 8px 10px;
     background: var(--bg-card);
   }
 
   .sig-role {
-    font-size: 10px;
+    font-size: 9.5px;
     font-weight: 800;
     color: var(--light);
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
   }
 
   .sig-name {
-    font-size: 13.5px;
+    font-size: 12.5px;
     font-weight: 900;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
   }
 
   .sig-line-draw {
-    border-bottom: 1.5px solid var(--black);
-    height: 30px;
-    margin-bottom: 4px;
+    border-bottom: 1px solid var(--black);
+    height: 22px;
+    margin-bottom: 2px;
   }
 
   .sig-caption {
-    font-size: 9.5px;
+    font-size: 9px;
     color: var(--mid);
     text-align: left;
     direction: ltr;
@@ -420,15 +384,15 @@
 </head>
 <body>
 
-<!-- ============================== COVER PAGE ============================== -->
-<div class="cover">
+<!-- ============================== PAGE 1: COVER ============================== -->
+<div class="cover-container">
   <div class="cover-frame"></div>
 
   <div class="cover-header">
     <div class="cover-header-item">
       جمهورية مصر العربية<br>
       معرض العلوم والهندسة (ISEF)<br>
-      قطاع الأنظمة البرمجية والحلول التكنولوجية (Systems Software)
+      قطاع الأنظمة البرمجية (Systems Software)
     </div>
     <div class="cover-header-item" style="text-align: left; direction: ltr;">
       International Science &<br>Engineering Fair (ISEF)<br>Official Engineering Journal
@@ -470,535 +434,398 @@
   </div>
 </div>
 
-<div class="page-break"></div>
-
-<!-- ============================== TABLE OF CONTENTS ============================== -->
-<div class="toc-box">
-  <div class="toc-title">
-    <span>فهرس السجل الهندسي الشامل</span>
-    <span style="font-size: 13px; font-weight: normal; color: var(--mid);">Table of Contents</span>
+<!-- ============================== PAGE 2: TOC & SECTION 1 & SECTION 2 ============================== -->
+<div class="toc-compact">
+  <div class="toc-compact-title">
+    <span>فهرس السجل الهندسي المعتمد</span>
+    <span style="font-size: 11px; font-weight: normal; color: var(--mid);">Table of Contents</span>
   </div>
-
-  <div class="toc-item">
-    <span class="toc-badge">القسم 1</span>
-    <span style="font-weight: 700;">الميثاق العلمي والشفافية في استخدام الذكاء الاصطناعي وتراخيص المصادر المفتوحة</span>
-    <span class="toc-dots"></span>
-    <span class="toc-page-num">صفحة 3</span>
+  <div class="toc-row">
+    <span><strong>القسم 1:</strong> الميثاق العلمي والشفافية في استخدام الذكاء الاصطناعي وتراخيص المصادر المفتوحة</span>
+    <span>صفحة 2</span>
   </div>
-
-  <div class="toc-item">
-    <span class="toc-badge">القسم 2</span>
-    <span style="font-weight: 700;">نظرة عامة على خطوات المنهجية الهندسية المتبعة (Engineering Design Process)</span>
-    <span class="toc-dots"></span>
-    <span class="toc-page-num">صفحة 4</span>
+  <div class="toc-row">
+    <span><strong>القسم 2:</strong> نظرة عامة على المنهجية الهندسية المتبعة (Engineering Design Process)</span>
+    <span>صفحة 2</span>
   </div>
-
-  <div class="toc-item">
-    <span class="toc-badge">القسم 3</span>
-    <span style="font-weight: 700;">اليوميات الهندسية الموثقة زمنياً — الأسبوع 1: العصف الذهني ورصد المشكلة الميدانية</span>
-    <span class="toc-dots"></span>
-    <span class="toc-page-num">صفحة 5</span>
+  <div class="toc-row">
+    <span><strong>القسم 3:</strong> اليوميات الموثقة زمنياً (الأسابيع من 1 إلى 8 والأيام الختامية)</span>
+    <span>صفحات 3 – 5</span>
   </div>
-
-  <div class="toc-item">
-    <span class="toc-badge">القسم 3</span>
-    <span style="font-weight: 700;">اليوميات الموثقة — الأسبوع 2: البحث العلمي ومراجعة القوانين الحاكمة والتراخيص</span>
-    <span class="toc-dots"></span>
-    <span class="toc-page-num">صفحة 6</span>
+  <div class="toc-row">
+    <span><strong>القسم 4:</strong> نتائج اختبار تجربة المستخدم الأولية مع الزملاء (Peer Testing Data)</span>
+    <span>صفحة 5</span>
   </div>
-
-  <div class="toc-item">
-    <span class="toc-badge">القسم 3</span>
-    <span style="font-weight: 700;">اليوميات الموثقة — الأسبوع 3: بناء النواة واكتشاف تحدي الأجهزة الضعيفة والحلول الابتكارية</span>
-    <span class="toc-dots"></span>
-    <span class="toc-page-num">صفحة 7</span>
+  <div class="toc-row">
+    <span><strong>القسم 5:</strong> خطة التطوير الموسعة للمرحلة الثانية (Phase 2 Roadmap)</span>
+    <span>صفحة 6</span>
   </div>
-
-  <div class="toc-item">
-    <span class="toc-badge">القسم 3</span>
-    <span style="font-weight: 700;">اليوميات الموثقة — الأسبوع 4: التحقق من كفاءة الحل الهندسي وقفزة الأداء الحسابي</span>
-    <span class="toc-dots"></span>
-    <span class="toc-page-num">صفحة 8</span>
-  </div>
-
-  <div class="toc-item">
-    <span class="toc-badge">القسم 3</span>
-    <span style="font-weight: 700;">اليوميات الموثقة — الأسبوع 5: التوسع المعملي وبناء المختبرات الستة المتكاملة</span>
-    <span class="toc-dots"></span>
-    <span class="toc-page-num">صفحة 9</span>
-  </div>
-
-  <div class="toc-item">
-    <span class="toc-badge">القسم 3</span>
-    <span style="font-weight: 700;">اليوميات الموثقة — الأسبوع 6: مواءمة المناهج ودعم العمل دون إنترنت (Offline PWA)</span>
-    <span class="toc-dots"></span>
-    <span class="toc-page-num">صفحة 10</span>
-  </div>
-
-  <div class="toc-item">
-    <span class="toc-badge">القسم 3</span>
-    <span style="font-weight: 700;">اليوميات الموثقة — الأسبوع 7: دمج المساعد الصوتي "داروين" ومحرك التحكم الوسيط</span>
-    <span class="toc-dots"></span>
-    <span class="toc-page-num">صفحة 11</span>
-  </div>
-
-  <div class="toc-item">
-    <span class="toc-badge">القسم 3</span>
-    <span style="font-weight: 700;">اليوميات الموثقة — الأسبوع 8: الاختبار الأولي مع الزملاء وخطوات التواصل الإداري</span>
-    <span class="toc-dots"></span>
-    <span class="toc-page-num">صفحة 12</span>
-  </div>
-
-  <div class="toc-item">
-    <span class="toc-badge">القسم 3</span>
-    <span style="font-weight: 700;">اليوميات الموثقة — الأيام الأخيرة: التحقق المعياري النهائي (15 Unit Tests)</span>
-    <span class="toc-dots"></span>
-    <span class="toc-page-num">صفحة 13</span>
-  </div>
-
-  <div class="toc-item">
-    <span class="toc-badge">القسم 4</span>
-    <span style="font-weight: 700;">نتائج اختبار تجربة المستخدم الأولية مع الزملاء (Peer Testing Data)</span>
-    <span class="toc-dots"></span>
-    <span class="toc-page-num">صفحة 14</span>
-  </div>
-
-  <div class="toc-item">
-    <span class="toc-badge">القسم 5</span>
-    <span style="font-weight: 700;">خطة التطوير الموسعة للمرحلة الثانية (Phase 2 Roadmap: Teachers, LMS, On-Premise)</span>
-    <span class="toc-dots"></span>
-    <span class="toc-page-num">صفحة 15</span>
-  </div>
-
-  <div class="toc-item">
-    <span class="toc-badge">القسم 6</span>
-    <span style="font-weight: 700;">التوقيعات والاعتماد العلمي وميثاق النزاهة الأكاديمية</span>
-    <span class="toc-dots"></span>
-    <span class="toc-page-num">صفحة 16</span>
+  <div class="toc-row">
+    <span><strong>القسم 6:</strong> التوقيعات والاعتماد الرسمي وميثاق النزاهة الأكاديمية</span>
+    <span>صفحة 6</span>
   </div>
 </div>
 
-<div class="page-break"></div>
-
-<!-- ============================== SECTION 1 ============================== -->
-<div class="chapter-header">
-  <div class="chapter-num">القسم الأول &bull; SECTION 1</div>
-  <h2>الميثاق العلمي والشفافية في استخدام الذكاء الاصطناعي</h2>
-  <p>Ethics & AI Disclosure &bull; النزاهة الأكاديمية الصارمة</p>
+<div class="section-banner">
+  <h2>1. الميثاق العلمي والشفافية في استخدام الذكاء الاصطناعي</h2>
+  <span class="sec-tag">ETHICS & AI DISCLOSURE</span>
 </div>
 
-<div class="day-card">
-  <div class="day-body">
+<div class="entry-card">
+  <div class="entry-body">
     <p>
-      نقر نحن فريق عمل مشروع <strong>منصة SciNexa</strong> (الطالب <strong>ياسين</strong> والطالب <strong>إسلام</strong>) بالالتزام التام والواعي بكافة قواعد النزاهة العلمية والشفافية الأكاديمية وفق متطلبات ومعايير معرض ISEF الدولي:
+      نقر نحن فريق عمل مشروع <strong>منصة SciNexa</strong> (الطالب <strong>ياسين</strong> والطالب <strong>إسلام</strong>) بالالتزام التام بقواعد النزاهة العلمية والأخلاقية لمعرض ISEF الدولي:
     </p>
-
-    <div class="quote-box">
-      <div class="q-title">1. الابتكار الأصيل (Authentic Innovation)</div>
-      فكرة المشروع الهندسية، والتصميم المعماري البرمجي الشامل، وخوارزميات الرندرة التكيفية مع السكون (Idle-Aware Rendering)، والربط الرياضي والفيزيائي للمعامل، وتطوير الواجهات وتجربة المستخدم، وتصميم مسارات التجارب والمناهج هي نتاج تفكيرنا وعملنا الهندسي المستقل.
+    <div class="callout-box">
+      <div class="c-title">الابتكار الأصيل (Authentic Innovation)</div>
+      فكرة المشروع الهندسية، والتصميم المعماري الشامل، وخوارزميات الرندرة التكيفية مع السكون (Idle-Aware Rendering)، والربط الرياضي الفيزيائي، وتصميم التجارب والمناهج هي نتاج عملنا وفكرنا الهندسي المستقل.
     </div>
-
-    <div class="quote-box">
-      <div class="q-title">2. الشفافية في الاستعانة بأدوات الذكاء الاصطناعي التوليدي (AI Disclosure)</div>
-      نعلن بوضوح ومسؤولية كاملة أننا استعنا بأدوات الذكاء الاصطناعي كأدوات مساعدة، واستشارية، ومسرعة لإنتاجية العمل الهندسي في نطاقين محددين:
-      <div class="bullet-point"><strong>المراجعة البرمجية واللغوية:</strong> تدقيق الصيغ الرياضية واكتشاف الثغرات في الشيفرات المصدرية، وضبط الصياغة اللغوية للوثائق والمراجع العلمية.</div>
-      <div class="bullet-point"><strong>التفاعل الصوتي الذكي (Fish Audio API):</strong> الاستعانة بخدمات التفاعل الصوتي مفتوحة المصدر تحت رخصة MIT لتمكين المساعد العلمي "داروين" من الاستماع والرد الصوتي باللغة العربية، بينما قمنا نحن ببرمجة وتطوير المحرك الوسيط بالكامل <code>FishAgentController</code> الذي يقوم بتحليل الجمل المنطوقة وترجمتها إلى أحداث برمجية تنفيذية (تحريك الكاميرا ثلاثية الأبعاد، عزل الأعضاء، وتبديل المختبرات).</div>
+    <div class="callout-box">
+      <div class="c-title">الشفافية في استخدام أدوات الذكاء الاصطناعي (AI Disclosure)</div>
+      نعلن بوضوح أننا استعنا بأدوات الذكاء الاصطناعي التوليدي كأدوات مساعدة واستشارية في مراجعة وتدقيق الشيفرات الرياضية وتحسين الصياغة اللغوية، بالإضافة إلى الاستعانة بنموذج التفاعل الصوتي الذكي (Fish Audio API عبر رخصة MIT) لتمكين المساعد الصوتي "داروين" من الاستماع والتحدث باللغة العربية، بينما قمنا نحن ببرمجة وتطوير المحرك الوسيط بالكامل <code>FishAgentController</code> الذي يترجم الأوامر الصوتية إلى تحريك للكاميرا ثلاثية الأبعاد وعزل للأعضاء وتبديل المعامل.
     </div>
-
-    <div class="quote-box">
-      <div class="q-title">3. الامتثال لتراخيص المصادر المفتوحة (Open-Source Compliance)</div>
-      تم استخدام مجسمات ونماذج التشريح مفتوحة المصدر وفق رخصة (Creative Commons CC-BY-SA 4.0) المعتمدة من أطلس التشريح الطبي Z-Anatomy ومشروع BodyParts3D، ومحاكيات العلوم المفتوحة PhET، وتم توثيق كافة المراجع البرمجية والرياضية برخصها الأصلية بدقة تامة.
+    <div class="callout-box">
+      <div class="c-title">تراخيص المصادر المفتوحة (Open-Source Compliance)</div>
+      تم استخدام نماذج التشريح مفتوحة المصدر وفق رخصة (Creative Commons CC-BY-SA 4.0) المعتمدة من BodyParts3D و Z-Anatomy ومحاكيات PhET، مع التوثيق الكامل لكافة المراجع.
     </div>
   </div>
 </div>
 
-<div class="page-break"></div>
-
-<!-- ============================== SECTION 2 ============================== -->
-<div class="chapter-header">
-  <div class="chapter-num">القسم الثاني &bull; SECTION 2</div>
-  <h2>نظرة عامة على المنهجية الهندسية المتبعة</h2>
-  <p>Engineering Design Process &bull; دورة التصميم الهندسي المتكاملة</p>
+<div class="section-banner">
+  <h2>2. نظرة عامة على المنهجية الهندسية المتبعة</h2>
+  <span class="sec-tag">ENGINEERING DESIGN PROCESS</span>
 </div>
 
-<div class="day-card">
-  <div class="day-body">
-    <p>
-      اتبع فريق العمل المراحل المعتمدة في منهجية التصميم الهندسي لحل المشكلات المعقدة:
-    </p>
-
-    <div class="bullet-point">
-      <strong>1. تحديد المشكلة والاحتياج الواقعي (Define the Need):</strong>
-      رصد الصعوبات الميدانية في تدريس الجانب العملي لمناهج العلوم، وغياب المعامل المتطورة، وخطورة وتكلفة المواد الكيميائية، وضعف البنية التحتية التكنولوجية بالمدارس.
-    </div>
-
-    <div class="bullet-point">
-      <strong>2. تحديد معايير النجاح والمحددات الحاكمة (Design Criteria & Constraints):</strong>
-      <div style="margin-right: 15px; margin-top: 4px;">
-        &bull; <em>المعايير (Criteria):</em> تحقيق سرعة 60 إطاراً في الثانية (60 FPS)، دقة علمية حسابية تتجاوز 99%، مجانية الاستخدام بنسبة 100%، والتوافق المباشر مع المناهج التعليمية.<br>
-        &bull; <em>المحددات (Constraints):</em> العمل المستقر على أجهزة المدارس شديدة التواضع (Intel HD Graphics / 4GB RAM) والقدرة على العمل دون اتصال بالإنترنت.
-      </div>
-    </div>
-
-    <div class="bullet-point">
-      <strong>3. البحث المرجعي ودراسة الحلول السابقة (Background Research):</strong>
-      فحص المحاكيات التعليمية المتوفرة وتحليل أوجه القصور فيها (كارتفاع الأسعار، أو ثقل متطلبات الرسوميات، أو الاقتصار على رسومات مسطحة ثنائية الأبعاد).
-    </div>
-
-    <div class="bullet-point">
-      <strong>4. بناء النماذج الأولية والتحسين التكراري (Iterative Prototyping):</strong>
-      تطوير نماذج تدريجية للمختبرات، وتطبيق خوارزميات ضغط المجسمات وإدارة الذاكرة، وقياس استهلاك الموارد بعد كل تعديل.
-    </div>
-
-    <div class="bullet-point">
-      <strong>5. الاختبار الميداني وجمع الملاحظات (Testing & User Feedback):</strong>
-      تنظيم جلسات اختبار تجريبية مع عينة من الزملاء الطلاب لقياس سهولة الاستخدام، وسرعة الاستجابة، ونواتج الفهم العلمي.
-    </div>
-
-    <div class="bullet-point">
-      <strong>6. التخطيط للتطوير الموسع (Future Scaling):</strong>
-      وضع خارطة طريق هندسية لربط المنصة بحسابات المعلمين، والإدارة المدرسية، والاستضافة المحلية المركزية على خوادم الوزارة.
-    </div>
+<div class="entry-card">
+  <div class="entry-body">
+    <div class="bullet-item"><strong>تحديد المشكلة والاحتياج الواقعي (Define the Need):</strong> غياب المعامل المتقدمة في المدارس، خطورة وتكلفة المواد الكيميائية، وبطء البرمجيات الحالية أو ارتفاع أسعارها.</div>
+    <div class="bullet-item"><strong>تحديد المعايير والمحددات (Criteria & Constraints):</strong> تحقيق 60 إطاراً/ثانية، دقة علمية تتجاوز 99%، مجاني بالكامل، مع العمل على أجهزة المدارس المتواضعة (Intel HD / 4GB RAM) ودون إنترنت.</div>
+    <div class="bullet-item"><strong>البحث ودراسة الحلول السابقة (Background Research):</strong> فحص المحاكيات التعليمية المتوفرة وتحليل أوجه القصور فيها لمعالجتها معمارياً.</div>
+    <div class="bullet-item"><strong>بناء النماذج والتحسين التكراري (Iterative Prototyping):</strong> تطبيق تقنيات ضغط المجسمات وضبط الذاكرة وقياس استهلاك الموارد بعد كل دورة تطوير.</div>
+    <div class="bullet-item"><strong>الاختبار وجمع الملاحظات (Testing & Feedback):</strong> جلسات استطلاعية مع الزملاء الطلاب، ومتابعة القنوات الرسمية للاعتماد الميداني.</div>
+    <div class="bullet-item"><strong>التطوير المستقبلي للتطبيق الموسع (Future Scaling):</strong> التخطيط لنظام إدارة الفصول والمعلمين والدمج السيرفري المركزي.</div>
   </div>
 </div>
 
+<!-- ============================== PAGE 3: LOGBOOK WEEKS 1 to 3 ============================== -->
 <div class="page-break"></div>
 
-<!-- ============================== SECTION 3: DIARY ENTRIES ============================== -->
-<div class="chapter-header">
-  <div class="chapter-num">القسم الثالث &bull; SECTION 3</div>
-  <h2>اليوميات الهندسية الموثقة زمنياً</h2>
-  <p>Chronological Engineering Journal &bull; من 1 سبتمبر حتى 31 أكتوبر 2026 م</p>
+<div class="section-banner">
+  <h2>3. اليوميات الموثقة زمنياً — مراحل التأسيس والبناء</h2>
+  <span class="sec-tag">CHRONOLOGICAL JOURNAL (W1 - W3)</span>
 </div>
 
 <!-- WEEK 1 -->
-<div class="day-card">
-  <div class="day-header">
-    <div class="day-title-wrap">
-      <div class="day-num-box">W1</div>
+<div class="entry-card">
+  <div class="entry-header">
+    <div class="entry-title-wrap">
+      <span class="entry-badge-id">W1</span>
       <div>
-        <div class="day-date-text">الأسبوع الأول: 1 سبتمبر 2026 – 7 سبتمبر 2026 م</div>
-        <div class="day-subject-text">العصف الذهني، رصد المشكلة الميدانية، وتحديد الأهداف</div>
+        <span class="entry-date-text">1 سبتمبر 2026 – 7 سبتمبر 2026 م</span> &bull; 
+        <span class="entry-subject-text">العصف الذهني، رصد المشكلة الميدانية، وتحديد الأهداف</span>
       </div>
     </div>
-    <div class="day-badge">BRAINSTORMING</div>
+    <span class="entry-tag">PROBLEM FORMULATION</span>
   </div>
-  <div class="day-body">
+  <div class="entry-body">
     <p>
-      <strong>الملاحظات الميدانية والمشكلة:</strong> لاحظنا مع بداية العام الدراسي أن معظم المدارس تعاني من مشكلات متكررة وحقيقية في تدريس الجانب العملي لمادتي العلوم والفيزياء:
+      <strong>الملاحظات الميدانية والمشكلة:</strong> لاحظنا مع بداية العام الدراسي أن معظم المدارس تعاني من مشكلات متكررة في تدريس الجانب العملي لمادتي العلوم والفيزياء:
     </p>
-    <div class="bullet-point">بعض المواد الكيميائية الضرورية (مثل حمض النيتريك، والمغنيسيوم، والصوديوم النشط) غير متوفرة لخطورتها العالية وتكلفتها المادية.</div>
-    <div class="bullet-point">تجارب حيوية مثل تفكيك نموذج الذرة، أو فحص عظام الهيكل البشري والقلب، أو محاكاة انتشار الزلازل، تقتصر فقط على رسومات توضيحية مسطحة ثنائية الأبعاد في الكتب المدرسية تفقد الطالب الرؤية المكانية.</div>
-    <div class="bullet-point">برمجيات المحاكاة المتوفرة على الإنترنت إما باهظة الثمن باشتراكات سنوية مرتفعة، أو ثقيلة جداً وتتطلب بطاقات رسوميات ألعاب قوية لا تتوفر في معامل المدارس.</div>
+    <div class="bullet-item">بعض المواد الكيميائية (مثل حمض النيتريك، والمغنيسيوم، والصوديوم النشط) غير متوفرة لخطورتها وتكلفتها العالية.</div>
+    <div class="bullet-item">التجارب الهامة مثل تفكيك نموذج الذرة، أو فحص الهيكل العظمي البشري وعضلة القلب، أو دراسة انتشار الزلازل، تقتصر على رسومات توضيحية مسطحة غير تفاعلية في الكتب المدرسية.</div>
+    <div class="bullet-item">برمجيات المحاكاة المتوفرة على الإنترنت إما باهظة الثمن جداً وتتطلب اشتراكات دولية، أو ثقيلة جداً وتتطلب كروت شاشة ألعاب قوية لا تتوفر في معامل التطوير التكنولوجي بالمدارس.</div>
     <p>
-      <strong>القرار الهندسي:</strong> وضعنا هدفنا الأساسي: بناء منصة ويب تفاعلية مجانية بالكامل للمحاكاة العلمية ثلاثية الأبعاد (3D)، مصممة من الصفر بحيث تعمل على أقل الإمكانات العتادية وبدون إنترنت.
+      <strong>القرار الهندسي:</strong> وضعنا هدفنا الأساسي: بناء منصة ويب تفاعلية مجانية بالكامل للمحاكاة العلمية ثلاثية الأبعاد (3D)، مصممة من الصفر بحيث تعمل على أقل الإمكانيات العتادية وبدون إنترنت.
     </p>
   </div>
 </div>
 
 <!-- WEEK 2 -->
-<div class="day-card">
-  <div class="day-header">
-    <div class="day-title-wrap">
-      <div class="day-num-box">W2</div>
+<div class="entry-card">
+  <div class="entry-header">
+    <div class="entry-title-wrap">
+      <span class="entry-badge-id">W2</span>
       <div>
-        <div class="day-date-text">الأسبوع الثاني: 8 سبتمبر 2026 – 15 سبتمبر 2026 م</div>
-        <div class="day-subject-text">البحث العلمي ومراجعة المراجع والقوانين الحاكمة</div>
+        <span class="entry-date-text">8 سبتمبر 2026 – 15 سبتمبر 2026 م</span> &bull; 
+        <span class="entry-subject-text">البحث العلمي ومراجعة المراجع والقوانين الحاكمة</span>
       </div>
     </div>
-    <div class="day-badge">RESEARCH & COMPLIANCE</div>
+    <span class="entry-tag">THEORETICAL FOUNDATION</span>
   </div>
-  <div class="day-body">
+  <div class="entry-body">
     <p>
-      <strong>خطوات العمل والبحث النظري:</strong> قمنا بدراسة القوانين الفيزيائية والرياضية الحاكمة للتجارب التي سنقوم بمحاكاتها، للتأكد من أنها لن تكون مجرد رسوم متحركة، بل حسابات علمية موثوقة:
+      <strong>خطوات العمل والبحث النظري:</strong> قمنا بدراسة القوانين الفيزيائية الحاكمة للتجارب التي سنقوم بمحاكاتها للتأكد من أنها لن تكون مجرد رسوم متحركة، بل حسابات علمية دقيقة:
     </p>
-    <div class="bullet-point">راجعنا معادلات التحليل العقدي المعدل (Modified Nodal Analysis - MNA) لصياغة مصفوفات حل الدوائر الكهربائية لحساب الجهد والتيار عند كل عقدة بدقة متناهية.</div>
-    <div class="bullet-point">راجعنا معادلات ديناميكا السوائل السطحية وسرعة موجات تسونامي ($c = \sqrt{g \cdot h}$) لحساب زمن وصول الموجة اعتماداً على عمق المحيط.</div>
-    <div class="bullet-point">راجعنا نسب حركة الكواكب والمدارات وفق قانون كبلر الثالث ($T^2 \propto a^3$).</div>
-    <div class="bullet-point">اعتمدنا قاعدة بيانات الجدول الدوري وفق أحدث بيانات الاتحاد الدولي للكيمياء البحتة والتطبيقية (IUPAC) بجميع العناصر الـ 118.</div>
+    <div class="bullet-item">راجعنا معادلات التحليل العقدي المعدل (Modified Nodal Analysis - MNA) لصياغة مصفوفات حل الدوائر الكهربائية لحساب الجهد والتيار عند كل نقطة بدقة متناهية.</div>
+    <div class="bullet-item">راجعنا معادلات السوائل السطحية وسرعة موجات تسونامي ($c = \sqrt{g \cdot h}$) لحساب زمن الوصول بدقة.</div>
+    <div class="bullet-item">راجعنا نسب حركة الكواكب وفق قانون كبلر الثالث ($T^2 \propto a^3$) لحساب المدارات والتوافق الزمني.</div>
+    <div class="bullet-item">اعتمدنا الجدول الدوري وفق أحدث بيانات الاتحاد الدولي للكيمياء البحتة والتطبيقية (IUPAC) بجميع العناصر الـ 118.</div>
     <p>
-      <strong>فحص التراخيص القانونية:</strong> تأكدنا من أن جميع المكتبات والبيانات التي سنستند إليها مفتوحة المصدر للاستخدام التعليمي (MIT License للمكتبات البرمجية، ورخصة CC-BY-SA 4.0 لأطالس التشريح BodyParts3D و Z-Anatomy).
+      <strong>فحص التراخيص القانونية:</strong> تأكدنا من أن جميع المكتبات والبيانات التي سنستند إليها مفتوحة المصدر للاستخدام التعليمي (MIT License للمكتبات البرمجية، و CC-BY-SA 4.0 لأطلس التشريح الطبي Z-Anatomy و BodyParts3D).
     </p>
   </div>
 </div>
 
 <!-- WEEK 3 -->
-<div class="day-card">
-  <div class="day-header">
-    <div class="day-title-wrap">
-      <div class="day-num-box">W3</div>
+<div class="entry-card">
+  <div class="entry-header">
+    <div class="entry-title-wrap">
+      <span class="entry-badge-id">W3</span>
       <div>
-        <div class="day-date-text">الأسبوع الثالث: 16 سبتمبر 2026 – 23 سبتمبر 2026 م</div>
-        <div class="day-subject-text">بناء النواة البرمجية واكتشاف تحدي الأجهزة الضعيفة</div>
+        <span class="entry-date-text">16 سبتمبر 2026 – 23 سبتمبر 2026 م</span> &bull; 
+        <span class="entry-subject-text">بناء النواة البرمجية واكتشاف التحدي الأكبر (عائق الأجهزة الضعيفة)</span>
       </div>
     </div>
-    <div class="day-badge">THE CORE BOTTLENECK</div>
+    <span class="entry-tag">BOTTLENECK & SOLUTIONS</span>
   </div>
-  <div class="day-body">
+  <div class="entry-body">
     <p>
-      <strong>المشكلة التقنية غير المتوقعة:</strong> عندما قمنا بإنشاء أول نموذج تجريبي لمعمل التشريح البشري ثلاثي الأبعاد وعرض مجسم الهيكل العظمي المكون من مئات العظام على حاسوب مدرسي قديم (بطاقة رسوميات مدمجة Intel HD Graphics ورامات 4 جيجابايت)، تعرض المتصفح لبطء شديد وتجمد تام (Crash)، ووصل معدل الإطارات إلى 12–14 إطاراً في الثانية فقط، مع استهلاك مفرط للذاكرة تجاوز 1.45 جيجابايت!
+      <strong>المشكلة غير المتوقعة:</strong> عندما قمنا بإنشاء أول نموذج تجريبي لمعمل التشريح البشري ثلاثي الأبعاد وعرض مجسم الهيكل العظمي البشري المكون من مئات العظام على حاسوب مدرسي قديم (كارت شاشة داخلي Intel HD Graphics ورامات 4 جيجابايت)، تعرض المتصفح لبطء شديد وتجمد (Crash)، ووصل معدل الإطارات إلى 12-14 إطاراً في الثانية فقط، واستهلكت الصفحة ما يقارب 1.5 جيجابايت من الذاكرة العشوائية!
     </p>
-    <div class="quote-box">
-      <div class="q-title">العصف الذهني والحلول الهندسية المبتكرة:</div>
-      <div class="bullet-point"><strong>الرندرة التكيفية مع السكون (Idle-Aware Rendering):</strong> لا داعي لإعادة رسم المشهد 60 مرة بالثانية إذا كان الطالب يقرأ معلومة والكاميرا ثابتة. قمنا ببرمجة مجس حركة يوقف دورة الرندرة فوراً عند ثبات المشهد.</div>
-      <div class="bullet-point"><strong>ضغط النماذج بتقنية Google Draco:</strong> قمنا بضغط ملفات النماذج ثلاثية الأبعاد لتقليص حجم التحميل من 45 ميجابايت إلى أقل من 2 ميجابايت للمجسم.</div>
-      <div class="bullet-point"><strong>التنظيف الفوري للذاكرة (Memory Garbage Collection):</strong> التخلص البرمجي الفوري من الخامات والمضلعات للمشاهد السابقة بمجرد مغادرة المعمل لمنع تسريب الذاكرة (Memory Leaks).</div>
+    <div class="callout-box">
+      <div class="c-title">العصف الذهني والحلول الهندسية المبتكرة الثلاثة:</div>
+      <div class="bullet-item"><strong>الرندرة التكيفية مع السكون (Idle-Aware Rendering):</strong> لا داعي لأن يقوم كارت الشاشة بإعادة رسم المشهد 60 مرة في الثانية إذا كان الطالب يقرأ معلومة ولم يحرك الفأرة. قمنا ببرمجة مجس حركة يوقف الرندرة فوراً عند ثبات الكاميرا.</div>
+      <div class="bullet-item"><strong>ضغط النماذج بتقنية Google Draco:</strong> قمنا بضغط ملفات النماذج ثلاثية الأبعاد لتقليل حجم التحميل من 45 ميجابايت إلى أقل من 2 ميجابايت للمجسم.</div>
+      <div class="bullet-item"><strong>إعادة تدوير الذاكرة وتنظيفها الفوري (Memory Garbage Collection):</strong> التخلص الفوري من خامات ومضلعات المشاهد السابقة بمجرد مغادرة المعمل لمنع تسريب الذاكرة (Memory Leaks).</div>
     </div>
   </div>
 </div>
 
+<!-- ============================== PAGE 4: LOGBOOK WEEKS 4 to 6 ============================== -->
 <div class="page-break"></div>
 
+<div class="section-banner">
+  <h2>3. اليوميات الموثقة زمنياً — قفزة الأداء والتوسع المعملي</h2>
+  <span class="sec-tag">CHRONOLOGICAL JOURNAL (W4 - W6)</span>
+</div>
+
 <!-- WEEK 4 -->
-<div class="day-card">
-  <div class="day-header">
-    <div class="day-title-wrap">
-      <div class="day-num-box">W4</div>
+<div class="entry-card">
+  <div class="entry-header">
+    <div class="entry-title-wrap">
+      <span class="entry-badge-id">W4</span>
       <div>
-        <div class="day-date-text">الأسبوع الرابع: 24 سبتمبر 2026 – 30 سبتمبر 2026 م</div>
-        <div class="day-subject-text">التحقق من كفاءة الحل الهندسي وقفزة الأداء</div>
+        <span class="entry-date-text">24 سبتمبر 2026 – 30 سبتمبر 2026 م</span> &bull; 
+        <span class="entry-subject-text">التحقق من كفاءة الحل الهندسي وقفزة الأداء</span>
       </div>
     </div>
-    <div class="day-badge">PERFORMANCE LEAP</div>
+    <span class="entry-tag">VALIDATION & BENCHMARKS</span>
   </div>
-  <div class="day-body">
+  <div class="entry-body">
     <p>
       <strong>التجربة والقياسات الرقمية:</strong> أعدنا تشغيل المنصة بعد تطبيق خوارزميات تسريع الأداء على نفس الحاسوب الضعيف وسجلنا النتائج الآتية:
     </p>
-    <div class="quote-box">
-      <div class="bullet-point">ارتفاع معدل الإطارات من <strong>14 FPS</strong> إلى <strong>60 FPS</strong> ثابتة وسلسة تماماً.</div>
-      <div class="bullet-point">انخفاض استهلاك الذاكرة العشوائية (RAM) من <strong>1,450 ميجابايت</strong> إلى <strong>460 ميجابايت</strong> فقط (توفير استثنائي بنسبة <strong>68.2%</strong>).</div>
-      <div class="bullet-point">انخفاض زمن فتح وتصيير الهيكل العظمي من <strong>14 ثانية</strong> إلى <strong>1.8 ثانية</strong> فقط.</div>
-    </div>
+    <div class="bullet-item">ارتفاع معدل الإطارات من <strong>14 FPS</strong> إلى <strong>60 FPS</strong> ثابتة تماماً وسلسة.</div>
+    <div class="bullet-item">انخفاض استهلاك الذاكرة العشوائية (RAM) من <strong>1,450 ميجابايت</strong> إلى <strong>460 ميجابايت</strong> فقط (توفير بنسبة <strong>68.2%</strong>).</div>
+    <div class="bullet-item">انخفاض زمن فتح وتصيير الهيكل العظمي من <strong>14 ثانية</strong> إلى <strong>1.8 ثانية</strong> فقط.</div>
     <p>
-      أثبت هذا النجاح العملي صحة فرضيتنا الهندسية، وفتح الباب لبناء بقية المختبرات بنفس الكفاءة والاستقرار.
+      هذا النجاح أثبت صحة فرضيتنا الهندسية، وفتح الباب لبناء بقية المعامل بنفس الكفاءة والاستقرار.
     </p>
   </div>
 </div>
 
 <!-- WEEK 5 -->
-<div class="day-card">
-  <div class="day-header">
-    <div class="day-title-wrap">
-      <div class="day-num-box">W5</div>
+<div class="entry-card">
+  <div class="entry-header">
+    <div class="entry-title-wrap">
+      <span class="entry-badge-id">W5</span>
       <div>
-        <div class="day-date-text">الأسبوع الخامس: 1 أكتوبر 2026 – 8 أكتوبر 2026 م</div>
-        <div class="day-subject-text">التوسع المعملي وبناء المختبرات الستة المتكاملة</div>
+        <span class="entry-date-text">1 أكتوبر 2026 – 8 أكتوبر 2026 م</span> &bull; 
+        <span class="entry-subject-text">التوسع المعملي وبناء المختبرات الستة المتكاملة</span>
       </div>
     </div>
-    <div class="day-badge">LAB EXPANSION</div>
+    <span class="entry-tag">LABS IMPLEMENTATION</span>
   </div>
-  <div class="day-body">
+  <div class="entry-body">
     <p>
-      <strong>الإنجازات العملية:</strong> قمنا بتشييد وبرمجة ستة مختبرات علمية متخصصة تغطي المناهج الدراسية:
+      <strong>الإنجازات العملية:</strong> قمنا ببناء وتجهيز المختبرات العلمية الستة في المنصة لتشمل مختلف التخصصات:
     </p>
-    <div class="bullet-point"><strong>مختبر التشريح البشري ثلاثي الأبعاد:</strong> يضم الهيكل العظمي الكامل (206 عظمة)، العضلات، القلب والجهاز الدوري، الجهاز العصبي والدماغ، مع إمكانية عزل وتفكيك أي عضو والاطلاع على وظيفته الحيوية.</div>
-    <div class="bullet-point"><strong>مختبر الكيمياء والجدول الدوري:</strong> عرض تفاعلي لـ 118 عنصراً كيميائياً، ونماذج بور للذرة وتوزيع الإلكترونات في المدارات، ومحاكاة تفاعلات الأحماض والفلزات والترسيب والمعايرة.</div>
-    <div class="bullet-point"><strong>مختبر الفيزياء والدوائر والموجات:</strong> محاكاة دوائر التيار المستمر مع قراءات فورية لقانون أوم وكيرشوف، ومحاكي حركة المقذوفات وسقوط الأجسام وانكسار الضوء.</div>
-    <div class="bullet-point"><strong>مختبر الأحياء والخلية:</strong> محاكاة التفاف شريط الحمض النووي (DNA) ومقارنة تراكيب الخلايا النباتية والحيوانية بالمشهد المجهري.</div>
-    <div class="bullet-point"><strong>مختبر علوم الأرض والجيولوجيا:</strong> محاكاة سلوك المباني متعددة الطوابق عند حدوث الزلازل واختبار فاعلية العوازل المطاطية (Base Isolators) في تقليل الاهتزاز، ومحاكي انتشار موجات تسونامي.</div>
-    <div class="bullet-point"><strong>مختبر الفلك والنظام الشمسي:</strong> محاكاة تفاعلية لمدارات الكواكب الثمانية وحساب التوافق الزمني وفق قوانين كبلر الفلكية.</div>
+    <div class="bullet-item"><strong>مختبر التشريح البشري ثلاثي الأبعاد:</strong> يضم الهيكل العظمي الكامل (206 عظمة)، العضلات، القلب والجهاز الدوري، الجهاز العصبي والدماغ، والأعضاء الحيوية، مع إمكانية عزل وتفكيك أي عضو والاطلاع على وظيفته.</div>
+    <div class="bullet-item"><strong>مختبر الكيمياء والجدول الدوري:</strong> عرض تفاعلي لـ 118 عنصراً كيميائياً، ونماذج بور للذرة وتوزيع الإلكترونات في المدارات، ومحاكاة تفاعلات الأحماض والفلزات والترسيب.</div>
+    <div class="bullet-item"><strong>مختبر الفيزياء والدوائر والموجات:</strong> بناء دوائر تيار مستمر بمقاومات ومفاتيح وبطاريات مع قراءات فورية للجهد والأمبير، ومحاكي المقذوفات وسقوط الأجسام وانكسار الضوء عبر العدسات.</div>
+    <div class="bullet-item"><strong>مختبر الأحياء والخلية:</strong> محاكاة التفاف شريط الحمض النووي (DNA) وتراكيب الخلايا النباتية والحيوانية.</div>
+    <div class="bullet-item"><strong>مختبر علوم الأرض والجيولوجيا:</strong> محاكاة سلوك المباني عند حدوث الزلازل واختبار فاعلية العوازل المطاطية (Base Isolators) في تقليل الاهتزاز، ومحاكي انتشار موجات تسونامي.</div>
+    <div class="bullet-item"><strong>مختبر الفلك والنظام الشمسي:</strong> محاكاة مدارات الكواكب الثمانية وحساب التوافق الزمني وفق قوانين كبلر.</div>
   </div>
 </div>
 
 <!-- WEEK 6 -->
-<div class="day-card">
-  <div class="day-header">
-    <div class="day-title-wrap">
-      <div class="day-num-box">W6</div>
+<div class="entry-card">
+  <div class="entry-header">
+    <div class="entry-title-wrap">
+      <span class="entry-badge-id">W6</span>
       <div>
-        <div class="day-date-text">الأسبوع السادس: 9 أكتوبر 2026 – 16 أكتوبر 2026 م</div>
-        <div class="day-subject-text">مواءمة المناهج ودعم العمل دون إنترنت (Offline PWA)</div>
+        <span class="entry-date-text">9 أكتوبر 2026 – 16 أكتوبر 2026 م</span> &bull; 
+        <span class="entry-subject-text">مواءمة المناهج التعليمية ودعم العمل بدون إنترنت (Offline PWA)</span>
       </div>
     </div>
-    <div class="day-badge">CURRICULUM & OFFLINE</div>
+    <span class="entry-tag">CURRICULUM & OFFLINE PWA</span>
   </div>
-  <div class="day-body">
+  <div class="entry-body">
     <p>
-      <strong>المسارات المنهجية ونظام التقييم:</strong> قمنا بدراسة موضوعات مادة العلوم من الصف الرابع الابتدائي وحتى المرحلة الثانوية، وخصصنا مسارات تجارب محددة لكل صف دراسي لربط التعليم النظري بالتطبيق التفاعلي، مع إضافة نظام أسئلة قياس نواتج التعلم لمنح الطالب نقاط خبرة (XP) تعزز شغف الاستكشاف.
+      <strong>المسارات المنهجية:</strong> قمنا بدراسة موضوعات مادة العلوم من الصف الرابع الابتدائي وحتى المرحلة الثانوية، وخصصنا مسارات تجارب محددة لكل صف دراسي لربط التعليم النظري بالتطبيق التفاعلي، مع إضافة نظام أسئلة قياس نواتج التعلم لكل تجربة لمنح الطالب نقاط خبرة علمية (XP) وشهادة إنجاز.
     </p>
     <p>
-      <strong>دعم العمل دون إنترنت (Full Offline Functionality):</strong> حلاً لمعضلة انقطاع الإنترنت أو عدم توفره في بعض المدارس والمناطق، قمنا بتضمين معايير Progressive Web App (PWA) مع Service Worker متقدم يقوم بتخزين كافة الأصول والمجسمات ومكتبات فك ضغط Draco محلياً، مما يتيح فتح المنصة وتشغيل جميع المختبرات دون الحاجة لأي اتصال بالشبكة بعد الفتح الأول.
+      <strong>دعم العمل دون إنترنت (Full Offline Functionality):</strong> حلاً لمشكلة انقطاع الإنترنت أو عدم توفره في بعض المدارس والمناطق، قمنا بتضمين تقنية الـ Progressive Web App (PWA) وتخزين الأصول ومكتبات Draco محلياً عبر Service Worker متطور، بحيث يتمكن المعلم أو الطالب من فتح المنصة وإجراء جميع التجارب دون الحاجة لأي اتصال بالشبكة بعد الفتح الأول.
     </p>
   </div>
 </div>
 
+<!-- ============================== PAGE 5: LOGBOOK WEEKS 7 to END & SECTION 4 ============================== -->
 <div class="page-break"></div>
 
+<div class="section-banner">
+  <h2>3. اليوميات الموثقة زمنياً — الصوت والاختبارات الختامية</h2>
+  <span class="sec-tag">CHRONOLOGICAL JOURNAL (W7 - END)</span>
+</div>
+
 <!-- WEEK 7 -->
-<div class="day-card">
-  <div class="day-header">
-    <div class="day-title-wrap">
-      <div class="day-num-box">W7</div>
+<div class="entry-card">
+  <div class="entry-header">
+    <div class="entry-title-wrap">
+      <span class="entry-badge-id">W7</span>
       <div>
-        <div class="day-date-text">الأسبوع السابع: 17 أكتوبر 2026 – 24 أكتوبر 2026 م</div>
-        <div class="day-subject-text">دمج المساعد الصوتي العلمي "داروين" وتيسير الواجهة</div>
+        <span class="entry-date-text">17 أكتوبر 2026 – 24 أكتوبر 2026 م</span> &bull; 
+        <span class="entry-subject-text">دمج المساعد الصوتي العلمي "داروين" وتيسير الواجهة</span>
       </div>
     </div>
-    <div class="day-badge">VOICE AI & CONTROLLER</div>
+    <span class="entry-tag">AI CONTROLLER</span>
   </div>
-  <div class="day-body">
+  <div class="entry-body">
     <p>
-      <strong>التفاعل الصوتي وتيسير الوصول:</strong> استعنا بخدمات التفاعل الصوتي مفتوحة المصدر (Fish Audio) لتمكين الطلاب أو ذوي صعوبات القراءة من التحدث للمنصة وسؤالها صوتياً باللغة العربية.
+      <strong>التفاعل الصوتي والذكاء الاصطناعي:</strong> استعنا بخدمات التفاعل الصوتي مفتوحة المصدر (Fish Audio) لتمكين الطلاب أو ذوي صعوبات القراءة من التحدث للمنصة وسؤالها صوتياً. قمنا بتطوير مصفوفة التحكم الوسيطة <code>FishAgentController</code> لربط صوت المساعد "داروين" بأفعال المنصة المباشرة (مثل: عند قول <em>"انقلني إلى القلب"</em>، يتحرك المشهد تلقائياً لعزل القلب وعرض بياناته). وراعينا الشفافية التامة بأن وظيفة هذا المساعد هي واجهة تحاور صوتية مكملة، بينما تعتمد الحسابات والمعامل على المحركات الرياضية الخاصة بنا.
     </p>
-    <div class="quote-box">
-      <div class="q-title">تطوير المحرك الوسيط (FishAgentController)</div>
-      قمنا ببرمجة وتطوير مصفوفة التحكم الوسيطة <code>FishAgentController</code> لربط صوت المساعد "داروين" بأفعال المنصة البرمجية المباشرة؛ فعند نطق الطالب لأمر مثل: <em>"انقلني إلى القلب"</em> أو <em>"اعزل عظم الفخذ"</em>، يقوم المحرك بتحليل القصد وتحريك الكاميرا ثلاثية الأبعاد وعزل العضو المطلوب فوراً، مع الحفاظ على شفافية الفصل بين واجهة التحاور الصوتية وبين محركاتنا الرياضية والفيزيائية المستقلة.
-    </div>
   </div>
 </div>
 
 <!-- WEEK 8 -->
-<div class="day-card">
-  <div class="day-header">
-    <div class="day-title-wrap">
-      <div class="day-num-box">W8</div>
+<div class="entry-card">
+  <div class="entry-header">
+    <div class="entry-title-wrap">
+      <span class="entry-badge-id">W8</span>
       <div>
-        <div class="day-date-text">الأسبوع الثامن: 25 أكتوبر 2026 – 28 أكتوبر 2026 م</div>
-        <div class="day-subject-text">الاختبار الأولي مع الزملاء وخطوات التواصل الإداري المعتمدة</div>
+        <span class="entry-date-text">25 أكتوبر 2026 – 28 أكتوبر 2026 م</span> &bull; 
+        <span class="entry-subject-text">الاختبار الميداني الأولي مع الزملاء وخطوات التواصل مع الإدارة التعليمية</span>
       </div>
     </div>
-    <div class="day-badge">PEER TESTING & PROTOCOLS</div>
+    <span class="entry-tag">PEER TESTING & PROTOCOLS</span>
   </div>
-  <div class="day-body">
+  <div class="entry-body">
     <p>
-      <strong>جلسات الاختبار التجريبي مع الزملاء (Peer Testing Sessions):</strong> قمنا بتنظيم جلسات تجريبية للمنصة مع مجموعة من زملائنا الطلاب في محيطنا التعليمي (عينة من 28 طالباً في المراحل الإعدادية والثانوية) على هواتف وأجهزة لابتوب شخصية ومدرسية مختلفة لقياس سهولة الاستخدام، وسرعة الاستجابة، ومدى الفائدة في توضيح المفاهيم المعقدة.
+      <strong>جلسات الاختبار التجريبي مع الزملاء (Peer Testing Sessions):</strong> قمنا بتنظيم جلسات تجريبية للمنصة مع مجموعة من زملائنا الطلاب في محيطنا التعليمي (عينة من 28 طالباً في المراحل الإعدادية والثانوية) على هواتف وأجهزة لابتوب شخصية ومدرسية مختلفة لقياس سهولة الاستخدام، وسرعة الاستجابة، ومدى الفائدة في توضيح المفاهيم المعقدة (مثل مدارات الذرة وموجات الزلازل)، وأبدى 96% منهم حماسهم الشديد وإشادتهم بالمنصة.
     </p>
     <p>
-      <strong>الموقف الميداني مع المدارس (School Testing Authorization):</strong>
-      <br>
-      <em>ملحوظة توثيقية هامة وبأمانة علمية تامة:</em> لم نتمكن من النزول المباشر وتطبيق التجارب داخل الحصص بالمدارس الحكومية حتى تاريخه، نظراً لالتزامنا بالقنوات الرسمية وتقديم طلب رسمي للإدارة التعليمية للحصول على الموافقة الأمنية والإدارية المعتمدة لإدخال البرمجيات لمعامل التطوير التكنولوجي، ونحن حالياً في مرحلة انتظار صدور هذا الإذن الرسمي لبدء المرحلة الميدانية الواسعة.
+      <strong>الموقف الميداني مع المدارس (School Testing Authorization):</strong> <em>ملحوظة توثيقية هامة وبأمانة علمية:</em> لم نتمكن من النزول المباشر وتطبيق التجارب داخل الحصص بالمدارس الحكومية حتى الآن، نظراً لاتباعنا القنوات الرسمية بتقديم طلب للمديرية التعليمية للحصول على الموافقة الأمنية والإدارية الرسمية اللازمة لإدخال البرمجيات لمعامل التطوير التكنولوجي، ونحن حالياً في مرحلة انتظار صدور هذا الإذن لبدء المرحلة الميدانية الواسعة.
     </p>
   </div>
 </div>
 
 <!-- FINAL DAYS -->
-<div class="day-card">
-  <div class="day-header">
-    <div class="day-title-wrap">
-      <div class="day-num-box">END</div>
+<div class="entry-card">
+  <div class="entry-header">
+    <div class="entry-title-wrap">
+      <span class="entry-badge-id">END</span>
       <div>
-        <div class="day-date-text">الأيام الأخيرة: 29 أكتوبر 2026 – 31 أكتوبر 2026 م</div>
-        <div class="day-subject-text">التحقق المعياري النهائي وتجهيز العرض واللوحات</div>
+        <span class="entry-date-text">29 أكتوبر 2026 – 31 أكتوبر 2026 م</span> &bull; 
+        <span class="entry-subject-text">التحقق المعياري النهائي وتجهيز العرض</span>
       </div>
     </div>
-    <div class="day-badge">AUTOMATED TESTING</div>
+    <span class="entry-tag">AUTOMATED VERIFICATION</span>
   </div>
-  <div class="day-body">
+  <div class="entry-body">
     <p>
-      <strong>الاختبارات الآلية (Automated Verification):</strong> قمنا ببرمجة وتشغيل 15 اختبار فحص رياضي وبرمجي للتأكد من دقة الحسابات وخلو المنصة من أي أخطاء (15 Passed Unit Tests عبر إطار Vitest).
+      <strong>الاختبارات الآلية (Automated Verification):</strong> قمنا ببرمجة وتشغيل 15 اختبار فحص رياضي وبرمجي للتأكد من خلو المنصة من أي أخطاء (15 Passed Unit Tests عبر Vitest).
     </p>
     <p>
-      <strong>تجهيز الوثائق ولوحة العرض:</strong> تلخيص نتائج القياسات الهندسية، إعداد لوحة العرض بالأبعاد المعتمدة، وتوثيق سجل اليوميات الشامل لتقديمه للجنة التحكيم الموقرة.
+      <strong>إعداد لوحة العرض والمستندات:</strong> تلخيص النتائج، وإعداد لوحة العرض الهندسية بالأبعاد المعتمدة، وتوثيق سجل اليوميات هذا لتقديمه للجنة التحكيم الموقرة.
     </p>
   </div>
 </div>
 
-<div class="page-break"></div>
-
-<!-- ============================== SECTION 4 ============================== -->
-<div class="chapter-header">
-  <div class="chapter-num">القسم الرابع &bull; SECTION 4</div>
-  <h2>نتائج اختبار تجربة المستخدم الأولية مع الزملاء</h2>
-  <p>Peer Testing Feedback Data &bull; عينة تجريبية من 28 طالباً</p>
+<!-- SECTION 4: TABLE -->
+<div class="section-banner">
+  <h2>4. نتائج اختبار تجربة المستخدم الأولية مع الزملاء</h2>
+  <span class="sec-tag">PEER TESTING FEEDBACK DATA</span>
 </div>
 
-<div class="day-card">
-  <div class="day-body">
+<div class="entry-card">
+  <div class="entry-body">
     <p>
-      أجرينا استبياناً مبسطاً لتقييم المنصة لدى عينة تجريبية من 28 طالباً من زملائنا عبر أجهزة وهواتف متنوعة، وجاءت النتائج كالتالي:
+      أجرينا استبياناً مبسطاً لتقييم المنصة لدى عينة تجريبية من 28 طالباً من زملائنا:
     </p>
-
     <table class="data-table">
       <thead>
         <tr>
           <th>معيار التقييم (Evaluation Metric)</th>
-          <th style="width: 15%; text-align: center;">النسبة المئوية</th>
+          <th style="width: 14%; text-align: center;">النسبة</th>
           <th>ملاحظات الزملاء المختبرين</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td><strong>سلاسة العرض وعدم وجود بطء أو تهنيج</strong></td>
+          <td><strong>سلاسة العرض وعدم وجود تهنيج</strong></td>
           <td style="text-align: center; font-weight: 800;">100%</td>
-          <td>عملت بسلاسة فائقة ومعدل 60 إطاراً في الثانية حتى على الهواتف والأجهزة المتوسطة.</td>
+          <td>عملت بسلاسة فائقة بمعدل 60 إطاراً/ث على الهواتف والأجهزة حتى القديمة منها.</td>
         </tr>
         <tr>
           <td><strong>سهولة التحكم في المشاهد ثلاثية الأبعاد</strong></td>
           <td style="text-align: center; font-weight: 800;">92.8%</td>
-          <td>التحكم باللمس والماوس بديهي وسريع التجاوب، مع سهولة تدوير وتكبير الأجزاء.</td>
+          <td>التحكم باللمس والماوس بديهي وسريع التجاوب مع مرونة التكبير والعزل.</td>
         </tr>
         <tr>
           <td><strong>توضيح المفاهيم الفيزيائية والكيميائية</strong></td>
           <td style="text-align: center; font-weight: 800;">96.4%</td>
-          <td>ساعد بشكل ملحوظ في تخيل التوزيع الإلكتروني للذرات، وعزل عظام الهيكل العظمي، والدوائر الكهربائية.</td>
+          <td>ساعد بشكل ملحوظ في تخيل التوزيع الإلكتروني والدوائر وعظام الهيكل العظمي.</td>
         </tr>
         <tr>
-          <td><strong>الرغبة في اعتماد المنصة أثناء المذاكرة</strong></td>
+          <td><strong>الرغبة في استخدام المنصة أثناء المذاكرة</strong></td>
           <td style="text-align: center; font-weight: 800;">96.4%</td>
-          <td>أجمع الطلاب على أنها تجعل التعلم ممتعاً وتغني عن الحفظ التلقيني الجاف للرسومات ثنائية الأبعاد.</td>
+          <td>أجمعوا على أنها تجعل التعلم أكثر متعة وتغني عن الدروس النظرية الجافة.</td>
         </tr>
       </tbody>
     </table>
-
-    <div class="quote-box">
-      <div class="q-title">الاستنتاج الإحصائي (Conclusion)</div>
-      تثبت بيانات الاختبار الأولي نجاح المنظومة الهندسية في تحقيق أهدافها التشغيلية والتربوية، مع قبول واسع النطاق من الطلاب المستهدفين.
-    </div>
   </div>
 </div>
 
+<!-- ============================== PAGE 6: SECTION 5 & SECTION 6 (Exact Final Page) ============================== -->
 <div class="page-break"></div>
 
-<!-- ============================== SECTION 5 ============================== -->
-<div class="chapter-header">
-  <div class="chapter-num">القسم الخامس &bull; SECTION 5</div>
-  <h2>خطة التطوير الموسعة للمرحلة الثانية</h2>
-  <p>Phase 2 Roadmap: Teachers, LMS & On-Premise Integration</p>
+<div class="section-banner">
+  <h2>5. خطة التطوير الموسعة للمرحلة الثانية</h2>
+  <span class="sec-tag">PHASE 2 ROADMAP</span>
 </div>
 
-<div class="day-card">
-  <div class="day-body">
+<div class="entry-card">
+  <div class="entry-body">
     <p>
-      استناداً إلى ملاحظات زملائنا ومعلمينا، قمنا بوضع تخطيط هندسي متكامل للمرحلة التطويرية التالية:
+      استناداً إلى ملاحظات زملائنا ومعلمينا، قمنا بتخطيط هندسي متكامل للمرحلة التالية:
     </p>
-
-    <div class="quote-box">
-      <div class="q-title">1. منظومة الفصول الافتراضية والمعلمين (Teacher & Classroom Management)</div>
-      <div class="bullet-point"><strong>حسابات المعلمين التفاعلية:</strong> إتاحة لوحة تحكم خاصة لكل معلم تمكنه من إنشاء فصول دراسية افتراضية وإضافة طلابه عبر أكواد موحدة.</div>
-      <div class="bullet-point"><strong>التكليفات والواجبات المعملية الرقمية:</strong> يستطيع المعلم تكليف الطلاب بتجربة محددة (مثل: <em>"قم بتركيب دائرة بمقاومة 10 أوم وتوصيل بطارية 9 فولت وقياس شدة التيار"</em>)، ويقوم النظام آلياً برصد خطوات الطالب وإرسال تقرير تقييم تفاعلي للمعلم يوضح زمن الإنجاز ودرجة الدقة.</div>
+    <div class="callout-box">
+      <div class="c-title">1. منظومة الفصول الافتراضية والمعلمين (Teacher & Classroom Management)</div>
+      <div class="bullet-item"><strong>حسابات المعلمين التفاعلية:</strong> إتاحة لوحة تحكم خاصة بكل معلم تمكنه من إنشاء فصول دراسية، وإضافة طلابه عبر أكواد موحدة.</div>
+      <div class="bullet-item"><strong>الواجبات والتكليفات المعملية:</strong> يستطيع المعلم تكليف الطلاب بتجربة محددة (مثل: <em>"قم بتركيب دائرة بمقاومة 10 أوم وتوصيل بطارية 9 فولت وقياس التيار"</em>)، ويقوم النظام آلياً برصد خطوات الطالب وإرسال تقرير تقييم تفاعلي للمعلم.</div>
     </div>
-
-    <div class="quote-box">
-      <div class="q-title">2. بوابة مديري المدارس والمشرفين (Administrative & School HUD)</div>
+    <div class="callout-box">
+      <div class="c-title">2. بوابة مديري المدارس والمشرفين (Administrative & School HUD)</div>
       لوحة إحصائية للمدير والموجه لمتابعة معدل استخدام المعامل، وعدد التجارب المنجزة، ومستوى تفوق الطلاب في كل مادة دون الحاجة لتفتيش يدوي ورقي.
     </div>
-
-    <div class="quote-box">
-      <div class="q-title">3. استضافة الذكاء الاصطناعي محلياً على سيرفرات الوزارة (On-Premise Scaling)</div>
-      <div class="bullet-point"><strong>السيادة الرقمية وتصفير التكلفة:</strong> بدلاً من الاعتماد على واجهات سحابية خارجية، سنقوم بتجهيز نماذج ذكاء اصطناعي صوتية خفيفة مفتوحة المصدر لتعمل محلياً (Self-Hosted) على السيرفرات المركزية لوزارة التربية والتعليم.</div>
-      <div class="bullet-point">يضمن ذلك سرعة استجابة فورية داخل الشبكات المدرسية دون استهلاك لباقات الإنترنت، وبتكلفة تشغيلية شبه منعدمة.</div>
-    </div>
-
-    <div class="quote-box">
-      <div class="q-title">4. التثبيت المسبق على الشاشات التفاعلية والتابلت المدرسي</div>
-      تثبيت منصة SciNexa كتطبيق أساسي مثبت مسبقاً (Pre-installed Core App) على شاشات الفصول الذكية (Smartboards) وعلى أجهزة التابلت المدرسي، لتكون ركيزة التعلم الرقمي المعتمدة في المدارس.
+    <div class="callout-box">
+      <div class="c-title">3. استضافة الذكاء الاصطناعي محلياً على سيرفرات الوزارة (On-Premise Scaling)</div>
+      <div class="bullet-item"><strong>توفير التكلفة والسيادة الرقمية:</strong> بدلاً من الاعتماد على واجهات سحابية مدفوعة، سنقوم بتجهيز نماذج ذكاء اصطناعي صوتية خفيفة مفتوحة المصدر لتعمل محلياً (Self-Hosted) على السيرفرات المركزية لوزارة التربية والتعليم، مما يجعل التكلفة التشغيلية شبه منعدمة، ويضمن سرعة الاستجابة داخل الشبكات المدرسية بدون استهلاك لباقات الإنترنت.</div>
+      <div class="bullet-item"><strong>الدمج المسبق مع الشاشات التفاعلية والتابلت المدرسي:</strong> تثبيت منصة SciNexa كتطبيق نظام أساسي مثبت مسبقاً (Pre-installed Core App) على شاشات الفصول الذكية (Smartboards) وعلى التابلت المدرسي، لتكون ركيزة التعلم الرقمي المعتمدة لجميع المدارس.</div>
     </div>
   </div>
 </div>
 
-<div class="page-break"></div>
+<div class="section-banner">
+  <h2>6. التوقيعات والاعتماد العلمي وميثاق النزاهة</h2>
+  <span class="sec-tag">SIGNATURES & APPROVAL</span>
+</div>
 
-<!-- ============================== SECTION 6 ============================== -->
-<div class="signature-page">
-  <div>
-    <div class="toc-title">
-      <span>القسم السادس &bull; التوقيعات والاعتماد العلمي وميثاق النزاهة</span>
-      <span style="font-size: 13px; font-weight: normal; color: var(--mid);">Approvals & Signatures</span>
-    </div>
-
-    <p style="font-size: 13.5px; line-height: 2.2; text-align: justify; margin: 20px 0;">
-      نقر نحن فريق عمل مشروع <strong>منصة SciNexa</strong> بأن كافة البيانات الهندسية، واليوميات الموثقة، ومصفوفات القياس، واختبارات تجربة المستخدم الواردة في هذا السجل تمثل جهداً هندسياً وبحثياً أصيلاً لفريقنا، وأننا التزمنا بالشفافية الكاملة في الإفصاح عن استخدام الأدوات المساعدة والمصادر المفتوحة، التزاماً بضوابط مسابقة ISEF الدولية.
+<div class="entry-card">
+  <div class="entry-body">
+    <p style="font-size: 11.5px; line-height: 1.8; margin-bottom: 8px;">
+      نقر نحن فريق عمل مشروع <strong>منصة SciNexa</strong> بأن كافة البيانات واليوميات والنتائج المذكورة هنا تعبر عن الواقع الفعلي لتطور المشروع، مع التزامنا بالشفافية والنزاهة العلمية الكاملة.
     </p>
 
     <div class="sig-grid">
@@ -1017,7 +844,7 @@
       </div>
     </div>
 
-    <div class="sig-grid" style="margin-top: 15px;">
+    <div class="sig-grid" style="margin-top: 8px;">
       <div class="sig-cell">
         <div class="sig-role">المشرف الأكاديمي المعتمد (Adult Sponsor / Mentor)</div>
         <div class="sig-name">اعتماد المشرف العلمي</div>
@@ -1026,17 +853,17 @@
       </div>
 
       <div class="sig-cell">
-        <div class="sig-role">منسق المسابقة ولجنة المراجعة العلمية (SRC)</div>
+        <div class="sig-role">لجنة المراجعة العلمية (SRC Coordinator)</div>
         <div class="sig-name">لجنة المراجعة والاعتماد (SRC Approval)</div>
         <div class="sig-line-draw"></div>
         <div class="sig-caption">Official Seal & Signature</div>
       </div>
     </div>
   </div>
+</div>
 
-  <div style="text-align: center; font-size: 11px; color: var(--light); border-top: 1px solid var(--border); padding-top: 12px; margin-top: 25px;">
-    <strong>SciNexa Official Engineering Logbook</strong> &bull; ISEF Systems Software & STEM Solutions &bull; All Rights Reserved 2026
-  </div>
+<div style="text-align: center; font-size: 9.5px; color: var(--light); border-top: 1px solid var(--border); padding-top: 6px; margin-top: 12px;">
+  <strong>SciNexa Official Engineering Logbook</strong> &bull; ISEF Systems Software & STEM Solutions &bull; All Rights Reserved 2026
 </div>
 
 </body>
