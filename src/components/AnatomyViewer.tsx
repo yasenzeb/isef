@@ -676,7 +676,11 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
   const toolbarScrollRef = useRef<HTMLDivElement | null>(null);
 
   const needsRenderRef = useRef<boolean>(true);
-  const requestRender = () => { needsRenderRef.current = true; };
+  const requestRender = () => {
+    if (rendererRef.current && sceneRef.current && cameraRef.current) {
+      rendererRef.current.render(sceneRef.current, cameraRef.current);
+    }
+  };
   const loadingInProgressRef = useRef<Set<string>>(new Set());
   const materialCacheRef = useRef<Map<string, THREE.MeshStandardMaterial>>(new Map());
 
@@ -906,7 +910,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     camera.position.set(0, 1.2, 2.5);
     cameraRef.current = camera;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: !isLowPowerDevice(), powerPreference: 'high-performance' });
+    const renderer = new THREE.WebGLRenderer({ antialias: !isLowPowerDevice(), powerPreference: 'default' });
     renderer.setSize(width, height);
     renderer.setPixelRatio(getOptimalPixelRatio());
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -915,8 +919,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     rendererRef.current = renderer;
 
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
+    controls.enableDamping = false;
     controls.target.set(0, 1.0, 0);
     controlsRef.current = controls;
 
@@ -1376,40 +1379,29 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
             desc: descAr || descEn,
           }
         }));
+
+        // Render selected highlight immediately
+        render();
       }
     };
 
     renderer.domElement.addEventListener('click', handleClick);
 
-    let animId: number;
-    let isMoving = false;
-    const lastCamPos = new THREE.Vector3();
-    const lastTarget = new THREE.Vector3();
-    controls.addEventListener('change', () => { isMoving = true; });
-
-    const animate = () => {
-      animId = requestAnimationFrame(animate);
-      const isPinpointActive = Boolean(targetPinpointRef.current && targetPinpointRef.current.visible);
-      if (isPinpointActive) {
-        const t = performance.now() * 0.003;
-        const s = 1.0 + Math.sin(t * 3.5) * 0.12;
-        targetPinpointRef.current!.scale.set(s, s, s);
-      }
-      controls.update();
-      const cameraChanged = !camera.position.equals(lastCamPos) || !controls.target.equals(lastTarget);
-      if (cameraChanged) {
-        lastCamPos.copy(camera.position);
-        lastTarget.copy(controls.target);
-      }
-      if (cameraChanged || isPinpointActive || isMoving || needsRenderRef.current) {
-        renderer.render(scene, camera);
-        needsRenderRef.current = false;
-        if (!cameraChanged && !isPinpointActive) {
-          isMoving = false;
-        }
-      }
+    // ── True Zero-Idle-Load Render-on-Demand (0% CPU / 0% GPU at rest) ──────
+    const render = () => {
+      if (typeof document !== 'undefined' && document.hidden) return;
+      renderer.render(scene, camera);
     };
-    animate();
+
+    controls.addEventListener('change', render);
+
+    const onVisibility = () => {
+      if (!document.hidden) render();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+
+    // Initial draw
+    render();
 
     const handleResize = () => {
       if (!mount) return;
@@ -1418,13 +1410,15 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
+      render();
     };
     window.addEventListener('resize', handleResize);
 
     return () => {
+      document.removeEventListener('visibilitychange', onVisibility);
       window.removeEventListener('resize', handleResize);
+      controls.removeEventListener('change', render);
       renderer.domElement.removeEventListener('click', handleClick);
-      cancelAnimationFrame(animId);
       dracoLoader.dispose();
       renderer.dispose();
       if (mount.contains(renderer.domElement)) {

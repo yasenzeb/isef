@@ -58,7 +58,7 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-black text-slate-100 flex flex-col justify-between selection:bg-white selection:text-black">
+    <div className="min-h-screen bg-transparent relative z-10 text-slate-100 flex flex-col justify-between selection:bg-white selection:text-black">
       <div>
         <Navbar
           currentTab={currentTab}

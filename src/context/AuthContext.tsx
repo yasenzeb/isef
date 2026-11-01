@@ -99,7 +99,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<SciNexaProfile | null>(() => {
     try {
       const cached = localStorage.getItem('scinexa_cached_profile');
-      return cached ? JSON.parse(cached) : null;
+      if (cached) return JSON.parse(cached);
+      // Default guest profile so offline/standalone mode opens immediately without auth barrier
+      return {
+        id: 'guest_default',
+        email: 'guest@scinexa.edu',
+        displayName: 'طالب استكشافي',
+        role: 'student',
+        isGuest: true,
+        governorateAr: 'جمهورية مصر العربية',
+        gender: 'male',
+      };
     } catch {
       return null;
     }
@@ -180,12 +190,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setSession(data.session);
           syncProfile(buildProfile(data.session.user));
         } else {
-          // Preserve guest mode if active
+          // Preserve guest mode or default guest profile if offline
           const cached = localStorage.getItem('scinexa_cached_profile');
           if (cached) {
             try {
               const parsed = JSON.parse(cached);
-              if (parsed?.isGuest) {
+              if (parsed) {
                 setUser(parsed);
                 setIsLoading(false);
                 return;
@@ -193,7 +203,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             } catch {}
           }
           setSession(null);
-          syncProfile(null);
+          const defaultGuest: SciNexaProfile = {
+            id: 'guest_default',
+            email: 'guest@scinexa.edu',
+            displayName: 'طالب استكشافي',
+            role: 'student',
+            isGuest: true,
+            governorateAr: 'جمهورية مصر العربية',
+            gender: 'male',
+          };
+          syncProfile(defaultGuest);
         }
         setIsLoading(false);
       });

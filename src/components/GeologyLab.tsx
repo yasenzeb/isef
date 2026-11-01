@@ -347,14 +347,21 @@ export const GeologyLab: React.FC = () => {
     const cMesh = new THREE.Mesh(cGeo, cMat);
     globeGroup.add(cMesh);
 
-    let animId: number;
-    const animate = () => {
-      animId = requestAnimationFrame(animate);
-      globeGroup.rotation.y += 0.002;
-      controls.update();
+    // ── True Zero-Idle-Load Render-on-Demand (0% CPU/GPU at rest) ──────
+    const render = () => {
+      if (typeof document !== 'undefined' && document.hidden) return;
       renderer.render(scene, camera);
     };
-    animate();
+
+    controls.addEventListener('change', render);
+
+    const onVisibility = () => {
+      if (!document.hidden) render();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+
+    // Initial draw
+    render();
 
     const handleResize = () => {
       if (!container) return;
@@ -370,7 +377,8 @@ export const GeologyLab: React.FC = () => {
     resizeObserver.observe(container);
 
     return () => {
-      cancelAnimationFrame(animId);
+      document.removeEventListener('visibilitychange', onVisibility);
+      controls.removeEventListener('change', render);
       resizeObserver.disconnect();
       renderer.dispose();
       icGeo.dispose();

@@ -181,32 +181,57 @@ const Atom3DViewer: React.FC<Atom3DViewerProps> = ({ element, language }) => {
       scene.add(shellGroup);
     });
 
-    // --- 3. Animation Loop ---
+    // --- 3. Render-on-Demand Loop ---
     let animId: number;
+    let renderRequested = false;
     let clockTime = 0;
+    let lastTick = performance.now();
 
-    const animate = () => {
-      animId = requestAnimationFrame(animate);
+    const scheduleRender = () => {
+      if (!renderRequested) {
+        renderRequested = true;
+        animId = requestAnimationFrame(() => {
+          renderRequested = false;
+          if (typeof document !== 'undefined' && document.hidden) return;
 
-      if (isRotatingRef.current) {
-        clockTime += 0.016;
-        nucleusGroup.rotation.y += 0.005;
-        nucleusGroup.rotation.x += 0.002;
-
-        electronList.forEach(e => {
-          const currentAngle = e.baseAngle + clockTime * e.speed;
-          e.mesh.position.set(
-            Math.cos(currentAngle) * e.shellRadius,
-            0,
-            Math.sin(currentAngle) * e.shellRadius
-          );
+          const now = performance.now();
+          if (isRotatingRef.current) {
+            // Cap to smooth 30 FPS when orbiting (cuts GPU work by 50%)
+            if (now - lastTick >= 32) {
+              const delta = (now - lastTick) / 1000;
+              lastTick = now;
+              clockTime += delta;
+              nucleusGroup.rotation.y += 0.005;
+              nucleusGroup.rotation.x += 0.002;
+              electronList.forEach(e => {
+                const currentAngle = e.baseAngle + clockTime * e.speed;
+                e.mesh.position.set(
+                  Math.cos(currentAngle) * e.shellRadius,
+                  0,
+                  Math.sin(currentAngle) * e.shellRadius
+                );
+              });
+              controls.update();
+              renderer.render(scene, camera);
+            }
+            // Only continue loop if active
+            scheduleRender();
+          } else {
+            // When paused, render once then stop loop completely
+            controls.update();
+            renderer.render(scene, camera);
+          }
         });
       }
-
-      controls.update();
-      renderer.render(scene, camera);
     };
-    animate();
+
+    controls.addEventListener('change', scheduleRender);
+    const onVisibility1 = () => {
+      if (!document.hidden) scheduleRender();
+      else cancelAnimationFrame(animId);
+    };
+    document.addEventListener('visibilitychange', onVisibility1);
+    scheduleRender();
 
     const handleResize = () => {
       if (!mount) return;
@@ -221,6 +246,8 @@ const Atom3DViewer: React.FC<Atom3DViewerProps> = ({ element, language }) => {
     return () => {
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animId);
+      document.removeEventListener('visibilitychange', onVisibility1);
+      controls.removeEventListener('change', scheduleRender);
       protonGeo.dispose();
       neutronGeo.dispose();
       protonMat.dispose();
@@ -367,14 +394,18 @@ const PolyatomicGroup3DViewer: React.FC<PolyatomicGroup3DViewerProps> = ({ group
 
     scene.add(molGroup);
 
-    let animId: number;
-    const animate = () => {
-      animId = requestAnimationFrame(animate);
-      molGroup.rotation.y += 0.005;
-      controls.update();
+    // ── True Zero-Idle-Load Render-on-Demand for Molecule (0% CPU/GPU at rest) ──
+    const renderMol = () => {
+      if (typeof document !== 'undefined' && document.hidden) return;
       renderer.render(scene, camera);
     };
-    animate();
+
+    controls.addEventListener('change', renderMol);
+    const onVisibility2 = () => {
+      if (!document.hidden) renderMol();
+    };
+    document.addEventListener('visibilitychange', onVisibility2);
+    renderMol();
 
     const handleResize = () => {
       if (!mount) return;
@@ -388,7 +419,8 @@ const PolyatomicGroup3DViewer: React.FC<PolyatomicGroup3DViewerProps> = ({ group
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      cancelAnimationFrame(animId);
+      document.removeEventListener('visibilitychange', onVisibility2);
+      controls.removeEventListener('change', renderMol);
       renderer.dispose();
       if (mount.contains(renderer.domElement)) {
         mount.removeChild(renderer.domElement);

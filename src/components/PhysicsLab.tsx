@@ -78,6 +78,12 @@ function WaveSimulator({ language }: { language: string }) {
       const k = (2 * Math.PI) / lambda;
       const omega = 2 * Math.PI * frequency;
 
+      // Pause rendering completely if tab is hidden
+      if (typeof document !== 'undefined' && document.hidden) {
+        if (isRunning) rafRef.current = requestAnimationFrame(render);
+        return;
+      }
+
       // Build path once
       ctx.beginPath();
       for (let px = 0; px <= W; px += 2) {
@@ -86,30 +92,24 @@ function WaveSimulator({ language }: { language: string }) {
         else ctx.lineTo(px, y);
       }
 
-      // Glow pass
-      ctx.shadowColor = '#6366f1';
-      ctx.shadowBlur = 14;
-      ctx.strokeStyle = 'rgba(99,102,241,0.5)';
-      ctx.lineWidth = 4;
+      // High-performance double-stroke pass (zero CPU software shadowBlur)
+      ctx.strokeStyle = 'rgba(99,102,241,0.25)';
+      ctx.lineWidth = 5;
       ctx.stroke();
 
       // Main crisp wave pass
-      ctx.shadowBlur = 0;
       ctx.strokeStyle = '#818cf8';
-      ctx.lineWidth = 2.5;
+      ctx.lineWidth = 2;
       ctx.stroke();
 
-      // Analytical Wave Crest Markers (direct mathematical solution, zero linear scanning)
+      // Analytical Wave Crest Markers (direct mathematical solution, hardware accelerated dots)
       ctx.fillStyle = '#22d3ee';
-      ctx.shadowColor = '#22d3ee';
-      ctx.shadowBlur = 8;
       const firstPeak = (((Math.PI / 2 + omega * t) / k) % lambda + lambda) % lambda;
       for (let px = firstPeak; px <= W; px += lambda) {
         ctx.beginPath();
-        ctx.arc(px, cx - amplitude, 4, 0, Math.PI * 2);
+        ctx.arc(px, cx - amplitude, 3.5, 0, Math.PI * 2);
         ctx.fill();
       }
-      ctx.shadowBlur = 0;
 
       // Labels
       ctx.fillStyle = 'rgba(99,102,241,0.7)';

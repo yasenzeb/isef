@@ -501,43 +501,21 @@ export const BiologyLab: React.FC = () => {
 
     renderer.domElement.addEventListener('click', handleClick);
 
-    let animId: number;
-    let clock = new THREE.Clock();
-
-    const animate = () => {
-      animId = requestAnimationFrame(animate);
-      const elapsedTime = clock.getElapsedTime();
-
-      // Slow majestic rotation
-      cellGroup.rotation.y += 0.0025;
-
-      // Realistic cytoplasmic organelle drifting & respiration pulse
-      const mito = organelleMeshes.current.get('mitochondria');
-      if (mito) {
-        mito.position.y = 0.7 + Math.sin(elapsedTime * 2.2) * 0.04;
-        mito.rotation.z = Math.PI / 3 + Math.sin(elapsedTime * 1.5) * 0.05;
-      }
-
-      const nucleus = organelleMeshes.current.get('nucleus');
-      if (nucleus) {
-        const pulse = 1 + Math.sin(elapsedTime * 1.8) * 0.02;
-        nucleus.scale.set(pulse, pulse, pulse);
-      }
-
-      const chloroplast = organelleMeshes.current.get('chloroplast');
-      if (chloroplast) {
-        chloroplast.position.y = 0.9 + Math.cos(elapsedTime * 2.0) * 0.03;
-      }
-
-      const golgi = organelleMeshes.current.get('golgi');
-      if (golgi) {
-        golgi.position.x = -1.2 + Math.sin(elapsedTime * 1.2) * 0.03;
-      }
-
-      controls.update();
+    // ── True Zero-Idle-Load Render-on-Demand (0% CPU/GPU at rest) ──────
+    const render = () => {
+      if (typeof document !== 'undefined' && document.hidden) return;
       renderer.render(scene, camera);
     };
-    animate();
+
+    controls.addEventListener('change', render);
+
+    const onVisibility = () => {
+      if (!document.hidden) render();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+
+    // Initial draw
+    render();
 
     const handleResize = () => {
       if (!mount) return;
@@ -552,7 +530,8 @@ export const BiologyLab: React.FC = () => {
     return () => {
       window.removeEventListener('resize', handleResize);
       renderer.domElement.removeEventListener('click', handleClick);
-      cancelAnimationFrame(animId);
+      document.removeEventListener('visibilitychange', onVisibility);
+      controls.removeEventListener('change', render);
       renderer.dispose();
       if (mount.contains(renderer.domElement)) {
         mount.removeChild(renderer.domElement);
@@ -641,17 +620,22 @@ export const BiologyLab: React.FC = () => {
 
     scene.add(helixGroup);
 
-    let animId: number;
-    const animate = () => {
-      animId = requestAnimationFrame(animate);
-      helixGroup.rotation.y += 0.01;
-      controls.update();
+    // ── True Zero-Idle-Load Render-on-Demand (0% CPU/GPU at rest) ──────
+    const renderDna = () => {
+      if (typeof document !== 'undefined' && document.hidden) return;
       renderer.render(scene, camera);
     };
-    animate();
+
+    controls.addEventListener('change', renderDna);
+    const onVisibilityDna = () => {
+      if (!document.hidden) renderDna();
+    };
+    document.addEventListener('visibilitychange', onVisibilityDna);
+    renderDna();
 
     return () => {
-      cancelAnimationFrame(animId);
+      document.removeEventListener('visibilitychange', onVisibilityDna);
+      controls.removeEventListener('change', renderDna);
       bbGeo.dispose();
       bbMat1.dispose();
       bbMat2.dispose();

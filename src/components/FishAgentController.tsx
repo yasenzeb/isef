@@ -503,7 +503,7 @@ Rules:
     setupObserver();
 
     // Pulse sweep every 500ms to catch any stream updates
-    const sweepInterval = setInterval(checkLatestTranscriptMessage, 500);
+    const sweepInterval = setInterval(checkLatestTranscriptMessage, 1500);
 
     return () => {
       if (observer) observer.disconnect();
@@ -513,6 +513,7 @@ Rules:
 
   // 5. POLL VERCEL ENDPOINT (Graceful fallback from switch_lab webhook with in-flight lock & visibility awareness)
   useEffect(() => {
+    if (typeof window !== "undefined" && (!navigator.onLine || window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) return;
     let isPolling = false;
     const pollInterval = setInterval(async () => {
       // Don't poll if page is hidden in background or previous poll still in flight

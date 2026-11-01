@@ -73,13 +73,28 @@
   <body class="bg-black text-slate-100 antialiased selection:bg-white selection:text-black">
     <div id="root"></div>
 
-    <!-- Fish Audio Agent Widget Embed Script & Custom Element -->
-    <fish-agent agent-id="97720634298f4e94bdec0811de4cb3f3"></fish-agent>
-    <script
-      src="https://unpkg.com/@fishaudio/agent-widget-embed"
-      async
-      type="text/javascript"
-    ></script>
+    <!-- Fish Audio Agent Widget � loaded lazily on first user interaction -->
+    <script type="text/javascript">
+      (function() {
+        var loaded = false;
+        function loadFishAgent() {
+          if (loaded) return;
+          loaded = true;
+          var el = document.createElement('fish-agent');
+          el.setAttribute('agent-id', '97720634298f4e94bdec0811de4cb3f3');
+          document.body.insertBefore(el, document.getElementById('fish-agent-placeholder'));
+          var s = document.createElement('script');
+          s.src = 'https://unpkg.com/@fishaudio/agent-widget-embed';
+          s.async = true;
+          s.type = 'text/javascript';
+          document.body.appendChild(s);
+        }
+        ['click','touchstart','keydown'].forEach(function(e){
+          window.addEventListener(e, loadFishAgent, { once: true, passive: true });
+        });
+      })();
+    </script>
+    <div id="fish-agent-placeholder"></div>
 
     <script type="module" src="/src/main.tsx"></script>
   </body>
