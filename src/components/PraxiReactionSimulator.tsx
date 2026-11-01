@@ -221,6 +221,10 @@ export const PraxiReactionSimulator: React.FC = () => {
     let animTime = 0;
 
     const render = () => {
+      if (typeof document !== 'undefined' && document.hidden) {
+        animFrameRef.current = requestAnimationFrame(render);
+        return;
+      }
       animTime++;
       ctx.clearRect(0, 0, logicalW, logicalH);
 

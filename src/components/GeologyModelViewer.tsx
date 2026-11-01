@@ -354,6 +354,7 @@ export const GeologyModelViewer: React.FC<GeologyModelViewerProps> = ({
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
+      if (typeof document !== 'undefined' && document.hidden) return;
 
       const delta = Math.min(clock.getDelta(), 0.05);
       const elapsed = clock.getElapsedTime();

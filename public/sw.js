@@ -2,7 +2,9 @@
 // Constant cache names ensure stable offline caching without leaking caches on worker restart
 const CACHE_VERSION = 'scinexa-v2-static';
 const MODEL_CACHE = 'scinexa-v2-models-1';
-const KEEP_CACHES = [CACHE_VERSION, MODEL_CACHE];
+// The "Offline" modal (OfflineDownloadModal.tsx) fills this cache by hand: never delete it, and always read from it.
+const OFFLINE_CACHE = 'scinexa-offline-v2';
+const KEEP_CACHES = [CACHE_VERSION, MODEL_CACHE, OFFLINE_CACHE];
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
@@ -89,19 +91,20 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 3a. 3D models, Draco decoder and anatomy JSON: CACHE-FIRST in dedicated MODEL_CACHE
-  // Avoids re-downloading multi-MB .glb models in the background on every view
+  // 3a. 3D models, Draco decoder and anatomy JSON: CACHE-FIRST in a versioned cache
   if (url.pathname.startsWith('/models/') || url.pathname.startsWith('/draco/')) {
     event.respondWith(
-      caches.open(MODEL_CACHE).then((cache) =>
-        cache.match(req).then((cached) => {
-          if (cached) return cached;
-          return fetch(req).then((res) => {
-            if (res && res.status === 200) cache.put(req, res.clone());
-            return res;
-          });
-        })
-      )
+      // caches.match() looks in ALL caches, so files saved by the Offline modal are found too
+      caches.match(req).then((cached) => {
+        if (cached) return cached;
+        return fetch(req).then((res) => {
+          if (res && res.status === 200) {
+            const clone = res.clone();
+            caches.open(MODEL_CACHE).then((cache) => cache.put(req, clone));
+          }
+          return res;
+        });
+      })
     );
     return;
   }
