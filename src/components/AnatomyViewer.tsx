@@ -25,7 +25,6 @@ import {
 } from 'lucide-react';
 import { SKETCHFAB_ANATOMY_COLLECTION, AnatomyAtlasModel } from '../data/sketchfabAnatomyData';
 import { SketchfabViewerModal } from './SketchfabViewerModal';
-import SKELETAL_BONE_DICTIONARY from '../data/skeletalBoneDictionary.json';
 import { loadState, saveState } from '../utils/persistence';
 import { getOptimalPixelRatio, isLowPowerDevice } from '../utils/devicePerf';
 
@@ -650,15 +649,24 @@ function resolveMuscleFromHit(hit: THREE.Mesh, hitPoint: THREE.Vector3): { en: s
 }
 
 // Pre-computed lowercase lookup cache for O(1) instantaneous anatomical search (eliminates 9,000 array allocations per click)
-let boneDictCache: Map<string, { ar: string; descEn: string; descAr: string }> | null = null;
-function getBoneDictLookup(): Map<string, { ar: string; descEn: string; descAr: string }> {
-  if (!boneDictCache) {
-    boneDictCache = new Map();
-    const raw = SKELETAL_BONE_DICTIONARY as Record<string, { ar: string; descEn: string; descAr: string }>;
-    for (const [key, val] of Object.entries(raw)) {
-      boneDictCache.set(key.toLowerCase(), val);
-    }
+type BoneDictEntry = { ar: string; descEn: string; descAr: string };
+let boneDictCache: Map<string, BoneDictEntry> | null = null;
+let boneDictPromise: Promise<void> | null = null;
+const EMPTY_BONE_DICT = new Map<string, BoneDictEntry>();
+// The 3.6 MB dictionary is loaded lazily (idle time) instead of being parsed with the viewer chunk.
+function loadBoneDict(): Promise<void> {
+  if (!boneDictPromise) {
+    boneDictPromise = import('../data/skeletalBoneDictionary.json').then((m) => {
+      const raw = (m.default ?? m) as Record<string, BoneDictEntry>;
+      const map = new Map<string, BoneDictEntry>();
+      for (const [key, val] of Object.entries(raw)) map.set(key.toLowerCase(), val);
+      boneDictCache = map;
+    }).catch(() => { boneDictPromise = null; });
   }
+  return boneDictPromise;
+}
+function getBoneDictLookup(): Map<string, BoneDictEntry> {
+  if (!boneDictCache) { void loadBoneDict(); return EMPTY_BONE_DICT; }
   return boneDictCache;
 }
 
@@ -675,12 +683,10 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
   const definitionsRef = useRef<Record<string, string>>({});
   const toolbarScrollRef = useRef<HTMLDivElement | null>(null);
 
-  const needsRenderRef = useRef<boolean>(true);
-  const requestRender = () => {
-    if (rendererRef.current && sceneRef.current && cameraRef.current) {
-      rendererRef.current.render(sceneRef.current, cameraRef.current);
-    }
-  };
+  // All redraws go through one rAF-coalesced scheduler: at most one render per display frame
+  const scheduleRenderRef = useRef<() => void>(() => {});
+  const requestRender = () => scheduleRenderRef.current();
+  const layerTrisRef = useRef<Record<string, number>>({});
   const loadingInProgressRef = useRef<Set<string>>(new Set());
   const materialCacheRef = useRef<Map<string, THREE.MeshLambertMaterial>>(new Map());
 
@@ -736,13 +742,14 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
       (gltf) => {
         const root = gltf.scene;
         root.name = sysConfig.id;
-        const isLowPower = isLowPowerDevice();
+        let layerTris = 0;
 
         root.traverse((child) => {
           if ((child as THREE.Mesh).isMesh) {
             const mesh = child as THREE.Mesh;
-            mesh.castShadow = !isLowPower;
-            mesh.receiveShadow = !isLowPower;
+            mesh.castShadow = false;
+            mesh.receiveShadow = false;
+            mesh.matrixAutoUpdate = false;
 
             const name = (mesh.name || '').toLowerCase();
             let matColor = sysConfig.color;
@@ -752,6 +759,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
             // Completely hide pleura membrane covering lungs so lung lobes are directly visible & inspectable
             if (name.includes('pleura')) {
               mesh.visible = false;
+              mesh.userData.hiddenByRule = true;
               mesh.raycast = () => {};
               return;
             }
@@ -760,6 +768,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
             const isObscuringFascia = /fascia(?!e\s*latae)|intermuscular\s*septum|retinaculum|aponeurosis(?!.*bicipit)/i.test(name);
             if (isObscuringFascia) {
               mesh.visible = false;
+              mesh.userData.hiddenByRule = true;
               mesh.raycast = () => {};
               return;
             }
@@ -769,6 +778,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
             if (isNasalCartilage) {
               if (sysConfig.id === 'skeletal') {
                 mesh.visible = false;
+                mesh.userData.hiddenByRule = true;
                 mesh.raycast = () => {};
                 return;
               }
@@ -859,6 +869,9 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
               systemName: sysConfig.labelEn,
               rawName: mesh.name || sysConfig.labelEn,
             };
+            const g = mesh.geometry as THREE.BufferGeometry;
+            layerTris += (g.index ? g.index.count : (g.attributes.position?.count ?? 0)) / 3;
+            mesh.updateMatrix();
           }
         });
 
@@ -867,6 +880,13 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         root.scale.set(1, 1, 1);
 
         root.visible = sysConfig.id === 'skeletal' ? true : (visibleSystemsRef.current[sysConfig.id] ?? !!sysConfig.defaultVisible);
+
+        // Discard if component unmounted while loading
+        if (sceneRef.current !== scene) {
+          root.traverse((c) => { if ((c as THREE.Mesh).isMesh) (c as THREE.Mesh).geometry.dispose(); });
+          return;
+        }
+        layerTrisRef.current[sysConfig.id] = layerTris;
 
         scene.add(root);
         systemGroups.current.set(sysConfig.id, root);
@@ -901,7 +921,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
 
     const renderer = new THREE.WebGLRenderer({
       antialias: false,
-      powerPreference: 'low-power',
+      powerPreference: 'high-performance',
       precision: 'mediump',
       stencil: false,
       depth: true,
@@ -1028,7 +1048,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
 
         if (selectedMeshRef.current && selectedMeshRef.current !== hit) {
           const prevMat = originalMaterials.current.get(selectedMeshRef.current);
-          if (prevMat) selectedMeshRef.current.material = prevMat.clone();
+          if (prevMat) selectedMeshRef.current.material = prevMat;
         }
 
         selectedMeshRef.current = hit;
@@ -1376,12 +1396,46 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     renderer.domElement.addEventListener('click', handleClick);
 
     // ── True Zero-Idle-Load Render-on-Demand (0% CPU / 0% GPU at rest) ──────
+    let rafId = 0;
     const render = () => {
       if (typeof document !== 'undefined' && document.hidden) return;
-      renderer.render(scene, camera);
+      if (rafId) return; // already scheduled for this frame
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        renderer.render(scene, camera);
+      });
     };
+    scheduleRenderRef.current = render;
 
+    // Adaptive resolution: when lots of geometry is visible, render at lower resolution
+    // while the user is dragging/zooming and snap back to full quality when they stop.
+    const basePixelRatio = getOptimalPixelRatio();
+    const HEAVY_TRIS = 1_000_000;
+    const visibleTris = () => {
+      let n = 0;
+      systemGroups.current.forEach((grp, id) => { if (grp.visible) n += layerTrisRef.current[id] || 0; });
+      return n;
+    };
+    const onControlsStart = () => {
+      if (visibleTris() > HEAVY_TRIS) {
+        renderer.setPixelRatio(basePixelRatio * 0.6);
+        renderer.setSize(mount.clientWidth, mount.clientHeight || 650);
+      }
+    };
+    const onControlsEnd = () => {
+      if (renderer.getPixelRatio() !== basePixelRatio) {
+        renderer.setPixelRatio(basePixelRatio);
+        renderer.setSize(mount.clientWidth, mount.clientHeight || 650);
+        render();
+      }
+    };
     controls.addEventListener('change', render);
+    controls.addEventListener('start', onControlsStart);
+    controls.addEventListener('end', onControlsEnd);
+
+    // Parse the big bone dictionary when the browser is idle (not during first paint)
+    const idle = (window as any).requestIdleCallback as ((cb: () => void) => number) | undefined;
+    if (idle) idle(() => { void loadBoneDict(); }); else setTimeout(() => { void loadBoneDict(); }, 1500);
 
     const onVisibility = () => {
       if (!document.hidden) render();
@@ -1406,7 +1460,29 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
       document.removeEventListener('visibilitychange', onVisibility);
       window.removeEventListener('resize', handleResize);
       controls.removeEventListener('change', render);
+      controls.removeEventListener('start', onControlsStart);
+      controls.removeEventListener('end', onControlsEnd);
       renderer.domElement.removeEventListener('click', handleClick);
+      if (rafId) cancelAnimationFrame(rafId);
+      scheduleRenderRef.current = () => {};
+      controls.dispose();
+      // Free GPU memory held by every loaded layer, then reset bookkeeping so a remount reloads cleanly
+      systemGroups.current.forEach((grp) => {
+        grp.traverse((c) => {
+          const m = c as THREE.Mesh;
+          if (m.isMesh) {
+            m.geometry.dispose();
+          }
+        });
+      });
+      systemGroups.current.clear();
+      loadingInProgressRef.current.clear();
+      originalMaterials.current.clear();
+      materialCacheRef.current.forEach((mat) => mat.dispose());
+      materialCacheRef.current.clear();
+      layerTrisRef.current = {};
+      selectedMeshRef.current = null;
+      sceneRef.current = null;
       dracoLoader.dispose();
       renderer.dispose();
       if (mount.contains(renderer.domElement)) {
@@ -1470,7 +1546,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     const handleFocusPart = (e: any) => {
       const partQuery = (e.detail?.part || '').toLowerCase().trim();
       if (!partQuery || !sceneRef.current) return;
-      const q = partQuery.replace(/[_s-]/g, '').toLowerCase();
+      const q = partQuery.replace(/[_\s-]/g, '').toLowerCase();
 
       let matchedMesh: THREE.Mesh | null = null;
       systemGroups.current.forEach((grp) => {
@@ -1479,7 +1555,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           if (matchedMesh) return;
           if ((child as THREE.Mesh).isMesh) {
             const mesh = child as THREE.Mesh;
-            const mName = (mesh.name || '').replace(/[_s-]/g, '').toLowerCase();
+            const mName = (mesh.name || '').replace(/[_\s-]/g, '').toLowerCase();
             if (mName.includes(q) || q.includes(mName)) {
               matchedMesh = mesh;
             }
@@ -1508,10 +1584,11 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         const hit = matchedMesh as THREE.Mesh;
         if (selectedMeshRef.current && selectedMeshRef.current !== hit) {
           const prevMat = originalMaterials.current.get(selectedMeshRef.current);
-          if (prevMat) selectedMeshRef.current.material = prevMat.clone();
+          if (prevMat) selectedMeshRef.current.material = prevMat;
         }
         selectedMeshRef.current = hit;
         hit.material = highlightMaterialRef.current;
+        requestRender();
 
         const box = new THREE.Box3().setFromObject(hit);
         const center = box.getCenter(new THREE.Vector3());
@@ -1542,6 +1619,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
       cameraRef.current.position.set(0, 1.2, 2.5);
       controlsRef.current.target.set(0, 1.0, 0);
       controlsRef.current.update();
+      requestRender();
     }
   };
 
@@ -1555,7 +1633,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     if (newIsolate) {
       const origMat = originalMaterials.current.get(hit);
       if (origMat) {
-        hit.material = origMat.clone();
+        hit.material = origMat;
       }
 
       // Smoothly focus camera onto the selected individual specimen
@@ -1571,10 +1649,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
       }
     } else {
       // When exiting isolation, restore selection highlight on active mesh (Fast Lambert)
-      hit.material = new THREE.MeshLambertMaterial({
-        color: 0x38bdf8,
-        emissive: 0x0284c7,
-      });
+      hit.material = highlightMaterialRef.current;
     }
 
     systemGroups.current.forEach((grp) => {
@@ -1585,11 +1660,13 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
             mesh.visible = mesh === hit;
           } else {
             const sysId = mesh.userData.systemId as AnatomySystemId;
-            mesh.visible = !!visibleSystems[sysId];
+            // Keep pleura / fasciae / nasal cartilage hidden, and read the live ref
+            mesh.visible = !mesh.userData.hiddenByRule && !!visibleSystemsRef.current[sysId];
           }
         }
       });
     });
+    requestRender();
   };
 
   return (
@@ -1639,7 +1716,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         <div className="lg:col-span-3 sci-card overflow-hidden relative flex flex-col h-[520px] sm:h-[620px] lg:h-[700px]">
           
           {/* Top Layer Toggles Toolbar with responsive chevron scroll navigation */}
-          <div className="bg-slate-950/85 backdrop-blur-md px-2 sm:px-4 py-2 border-b border-sky-500/15 flex items-center z-10 relative">
+          <div className="bg-slate-950/95 px-2 sm:px-4 py-2 border-b border-sky-500/15 flex items-center z-10 relative">
             <span className="text-xs font-bold text-slate-400 shrink-0 uppercase tracking-wider hidden sm:flex items-center space-x-1 mr-2">
               <Layers className="w-3.5 h-3.5 text-sky-400" />
               <span>{language === 'ar' ? 'الطبقات:' : 'Systems:'}</span>
@@ -1706,7 +1783,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
 
           {/* Loading HUD overlay for weak devices and slow connections */}
           {Object.values(loadingSystems).some(Boolean) && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-950/70 backdrop-blur-sm pointer-events-none transition-opacity duration-300">
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-950/80 pointer-events-none transition-opacity duration-300">
               <div className="sci-card px-5 py-4 border border-sky-500/30 flex items-center space-x-3 space-x-reverse bg-slate-900/90 shadow-2xl">
                 <RefreshCw className="w-5 h-5 text-sky-400 animate-spin" />
                 <div className="text-right">
@@ -1738,7 +1815,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           </div>
 
           {/* Bottom HUD */}
-          <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-10 bg-slate-950/85 backdrop-blur-md px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-sky-500/15 text-[11px] sm:text-xs text-slate-300 flex items-center gap-2 sm:gap-3 flex-wrap max-w-[90%]">
+          <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-10 bg-slate-950/95 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-sky-500/15 text-[11px] sm:text-xs text-slate-300 flex items-center gap-2 sm:gap-3 flex-wrap max-w-[90%]">
             <span>🖱️ {language === 'ar' ? 'انقر على أي عظم أو عضو للاختيار' : 'Click any bone/organ to inspect'}</span>
             <span className="text-slate-600 hidden sm:inline">•</span>
             <span className="hidden sm:inline">{language === 'ar' ? 'اسحب للتدوير 360°' : 'Drag to rotate 360°'}</span>

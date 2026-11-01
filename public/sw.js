@@ -1,5 +1,8 @@
 // SciNexa Progressive Offline Service Worker v2.0
-const CACHE_VERSION = 'scinexa-v2-' + Date.now();
+// Constant cache names ensure stable offline caching without leaking caches on worker restart
+const CACHE_VERSION = 'scinexa-v2-static';
+const MODEL_CACHE = 'scinexa-v2-models-1';
+const KEEP_CACHES = [CACHE_VERSION, MODEL_CACHE];
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
@@ -25,7 +28,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((keys) => {
       return Promise.all(
         keys.map((key) => {
-          if (key !== CACHE_VERSION) {
+          if (!KEEP_CACHES.includes(key)) {
             return caches.delete(key);
           }
         })
@@ -52,7 +55,6 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(req.url);
 
   // 1. Navigation requests (HTML documents): NETWORK-FIRST
-  // This guarantees that any user or judges refreshing the page always gets the fresh version immediately!
   if (req.mode === 'navigate') {
     event.respondWith(
       fetch(req)
@@ -71,7 +73,6 @@ self.addEventListener('fetch', (event) => {
   }
 
   // 2. Static Vite hashed assets (JS/CSS with hash like index-XYZ.js): CACHE-FIRST
-  // Hashed assets are immutable, safe to cache permanently
   if (url.pathname.startsWith('/assets/')) {
     event.respondWith(
       caches.match(req).then((cached) => {
@@ -88,8 +89,24 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 3. 3D GLB Models and JSON data: STALE-WHILE-REVALIDATE
-  // Serve from cache immediately so models load fast, but fetch from network in background to update
+  // 3a. 3D models, Draco decoder and anatomy JSON: CACHE-FIRST in dedicated MODEL_CACHE
+  // Avoids re-downloading multi-MB .glb models in the background on every view
+  if (url.pathname.startsWith('/models/') || url.pathname.startsWith('/draco/')) {
+    event.respondWith(
+      caches.open(MODEL_CACHE).then((cache) =>
+        cache.match(req).then((cached) => {
+          if (cached) return cached;
+          return fetch(req).then((res) => {
+            if (res && res.status === 200) cache.put(req, res.clone());
+            return res;
+          });
+        })
+      )
+    );
+    return;
+  }
+
+  // 3b. Other static files and data: STALE-WHILE-REVALIDATE
   event.respondWith(
     caches.match(req).then((cached) => {
       const fetchPromise = fetch(req)

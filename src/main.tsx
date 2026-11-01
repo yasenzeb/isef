@@ -33,9 +33,14 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
       })
       .catch(() => {});
 
-    // Reload seamlessly when the new service worker takes control
+    // Reload seamlessly when a NEW service worker replaces an old one.
+    // On the very first visit there is no previous controller: clients.claim() fires
+    // 'controllerchange' too, and reloading then just restarts whatever the user already opened
+    // (e.g. the anatomy models that were still downloading).
+    const hadController = !!navigator.serviceWorker.controller;
     let refreshing = false;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!hadController) return;
       if (!refreshing) {
         refreshing = true;
         window.location.reload();
