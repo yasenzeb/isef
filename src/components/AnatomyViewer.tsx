@@ -682,7 +682,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     }
   };
   const loadingInProgressRef = useRef<Set<string>>(new Set());
-  const materialCacheRef = useRef<Map<string, THREE.MeshStandardMaterial>>(new Map());
+  const materialCacheRef = useRef<Map<string, THREE.MeshLambertMaterial>>(new Map());
 
   // Scene references
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -692,11 +692,9 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
   const systemGroups = useRef<Map<AnatomySystemId, THREE.Group>>(new Map());
   const selectedMeshRef = useRef<THREE.Mesh | null>(null);
   const originalMaterials = useRef<Map<THREE.Mesh, THREE.Material>>(new Map());
-  const highlightMaterialRef = useRef<THREE.MeshStandardMaterial>(new THREE.MeshStandardMaterial({
+  const highlightMaterialRef = useRef<THREE.MeshLambertMaterial>(new THREE.MeshLambertMaterial({
     color: 0x38bdf8,
     emissive: 0x0284c7,
-    emissiveIntensity: 0.5,
-    roughness: 0.25,
   }));
   const dracoLoaderRef = useRef<DRACOLoader | null>(null);
   const targetPinpointRef = useRef<THREE.Group | null>(null);
@@ -836,27 +834,18 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
               }
             }
 
-            // Low-power GPU optimization: flatten roughness/metalness
-            const finalRoughness = isLowPower ? 0.95 : roughness;
-            const finalMetalness = isLowPower ? 0.0 : metalness;
-
-            // For models with embedded textures, preserve their original texture map
+            // Fast GPU-efficient Lambert shading (zero microfacet calculations)
             const origMat = (Array.isArray(mesh.material) ? mesh.material[0] : mesh.material) as THREE.MeshStandardMaterial;
             if (origMat && origMat.map) {
-              const texturedMat = origMat.clone();
-              texturedMat.roughness = finalRoughness;
-              texturedMat.metalness = finalMetalness;
+              const texturedMat = new THREE.MeshLambertMaterial({ map: origMat.map });
               mesh.material = texturedMat;
               originalMaterials.current.set(mesh, texturedMat);
             } else {
-              // High-efficiency material sharing: collapses 600+ individual shaders into shared materials
-              const matKey = `${matColor}_${finalRoughness}_${finalMetalness}`;
+              const matKey = String(matColor);
               let sharedMat = materialCacheRef.current.get(matKey);
               if (!sharedMat) {
-                sharedMat = new THREE.MeshStandardMaterial({
+                sharedMat = new THREE.MeshLambertMaterial({
                   color: matColor,
-                  roughness: finalRoughness,
-                  metalness: finalMetalness,
                 });
                 materialCacheRef.current.set(matKey, sharedMat);
               }
@@ -910,11 +899,16 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     camera.position.set(0, 1.2, 2.5);
     cameraRef.current = camera;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: !isLowPowerDevice(), powerPreference: 'default' });
+    const renderer = new THREE.WebGLRenderer({
+      antialias: false,
+      powerPreference: 'low-power',
+      precision: 'mediump',
+      stencil: false,
+      depth: true,
+    });
     renderer.setSize(width, height);
     renderer.setPixelRatio(getOptimalPixelRatio());
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.25;
+    renderer.toneMapping = THREE.NoToneMapping;
     mount.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
@@ -923,17 +917,11 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     controls.target.set(0, 1.0, 0);
     controlsRef.current = controls;
 
-    // Lighting
-    scene.add(new THREE.AmbientLight(0xffffff, 0.85));
-    const keyLight = new THREE.DirectionalLight(0xfff5e6, 1.5);
-    keyLight.position.set(3, 4, 3);
+    // Ultra-lightweight 2-pass lighting: 1 HemisphereLight (sky + ground) + 1 DirectionalLight
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x1e293b, 1.3));
+    const keyLight = new THREE.DirectionalLight(0xffffff, 0.85);
+    keyLight.position.set(2, 4, 3);
     scene.add(keyLight);
-    const fillLight = new THREE.DirectionalLight(0x38bdf8, 0.8);
-    fillLight.position.set(-3, 2, -2);
-    scene.add(fillLight);
-    const rimLight = new THREE.DirectionalLight(0xffffff, 0.9);
-    rimLight.position.set(0, 3, -4);
-    scene.add(rimLight);
 
     // DRACO Loader - Preloaded immediately for zero-lag decompression
     const dracoLoader = new DRACOLoader();
@@ -1582,12 +1570,10 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         controlsRef.current.update();
       }
     } else {
-      // When exiting isolation, restore selection highlight on active mesh
-      hit.material = new THREE.MeshStandardMaterial({
+      // When exiting isolation, restore selection highlight on active mesh (Fast Lambert)
+      hit.material = new THREE.MeshLambertMaterial({
         color: 0x38bdf8,
         emissive: 0x0284c7,
-        emissiveIntensity: 0.5,
-        roughness: 0.25,
       });
     }
 

@@ -13,12 +13,8 @@ export function isLowPowerDevice(): boolean {
   return isMobile || lowCores || lowMemory;
 }
 
-export function getOptimalPixelRatio(maxDesktopDpr = 1.05): number {
+export function getOptimalPixelRatio(maxDesktopDpr = 1.0): number {
   if (typeof window === 'undefined') return 1;
   const dpr = window.devicePixelRatio || 1;
-  if (isLowPowerDevice()) {
-    // 1.0 on mobile and standard laptops provides crisp clarity while reducing GPU workload by up to 60%
-    return 1.0;
-  }
   return Math.min(dpr, maxDesktopDpr);
 }

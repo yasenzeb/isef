@@ -299,12 +299,10 @@ export const GeologyLab: React.FC = () => {
 
     // 1. Inner Core (Solid glowing incandescent sphere of crystalline Fe-Ni)
     const icGeo = new THREE.SphereGeometry(0.7, coreSegs, coreSegs, 0, Math.PI * 1.5);
-    const icMat = new THREE.MeshStandardMaterial({
+    const icMat = new THREE.MeshLambertMaterial({
       color: 0xfffbeb,
       emissive: 0xfef08a,
       emissiveIntensity: 0.9,
-      roughness: 0.15,
-      metalness: 0.8,
       side: THREE.DoubleSide
     });
     const icMesh = new THREE.Mesh(icGeo, icMat);
@@ -312,12 +310,10 @@ export const GeologyLab: React.FC = () => {
 
     // 2. Outer Core (Turbulent liquid magma dynamo)
     const ocGeo = new THREE.SphereGeometry(1.25, coreSegs, coreSegs, 0, Math.PI * 1.5);
-    const ocMat = new THREE.MeshStandardMaterial({
+    const ocMat = new THREE.MeshLambertMaterial({
       color: 0xea580c,
       emissive: 0xc2410c,
       emissiveIntensity: 0.6,
-      roughness: 0.35,
-      metalness: 0.4,
       side: THREE.DoubleSide
     });
     const ocMesh = new THREE.Mesh(ocGeo, ocMat);
@@ -325,12 +321,10 @@ export const GeologyLab: React.FC = () => {
 
     // 3. Mantle (Viscous convective silicates with natural striations)
     const mGeo = new THREE.SphereGeometry(1.85, coreSegs, coreSegs, 0, Math.PI * 1.5);
-    const mMat = new THREE.MeshStandardMaterial({
+    const mMat = new THREE.MeshLambertMaterial({
       color: 0xd97706,
       emissive: 0x78350f,
       emissiveIntensity: 0.25,
-      roughness: 0.8,
-      metalness: 0.1,
       side: THREE.DoubleSide
     });
     const mMesh = new THREE.Mesh(mGeo, mMat);
@@ -338,10 +332,8 @@ export const GeologyLab: React.FC = () => {
 
     // 4. Crust & Oceanic surface (Procedural continents and oceanic crust)
     const cGeo = new THREE.SphereGeometry(2.1, crustSegs, crustSegs, 0, Math.PI * 1.5);
-    const cMat = new THREE.MeshStandardMaterial({
+    const cMat = new THREE.MeshLambertMaterial({
       map: earthCrustTex,
-      roughness: 0.6,
-      metalness: 0.05,
       side: THREE.DoubleSide
     });
     const cMesh = new THREE.Mesh(cGeo, cMat);

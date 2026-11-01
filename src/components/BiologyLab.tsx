@@ -296,11 +296,10 @@ export const BiologyLab: React.FC = () => {
       ? new THREE.BoxGeometry(4.8, 3.8, 3.8)
       : new THREE.SphereGeometry(2.4, isLowPowerDevice() ? 16 : 32, isLowPowerDevice() ? 16 : 32, 0, Math.PI * (isCrossSection ? 1.5 : 2));
 
-    const membraneMat = new THREE.MeshStandardMaterial({
+    const membraneMat = new THREE.MeshLambertMaterial({
       color: cellType === 'plant' ? 0x15803d : 0x0284c7,
       transparent: true,
       opacity: 0.18,
-      roughness: 0.25,
       side: THREE.DoubleSide,
     });
     const membraneMesh = new THREE.Mesh(membraneGeo, membraneMat);
@@ -316,10 +315,8 @@ export const BiologyLab: React.FC = () => {
       if (org.id === 'nucleus') {
         // Double-membrane nuclear envelope with nucleolus inside and chromatin texture
         const envelopeGeo = new THREE.SphereGeometry(org.radius, isLowPowerDevice() ? 16 : 32, isLowPowerDevice() ? 16 : 32, 0, Math.PI * 1.6);
-        const envelopeMat = new THREE.MeshStandardMaterial({
+        const envelopeMat = new THREE.MeshLambertMaterial({
           color: 0x7c3aed,
-          roughness: 0.35,
-          metalness: 0.1,
           side: THREE.DoubleSide,
         });
         const envelopeMesh = new THREE.Mesh(envelopeGeo, envelopeMat);
@@ -329,11 +326,10 @@ export const BiologyLab: React.FC = () => {
 
         // Dense inner Nucleolus
         const nucleolusGeo = new THREE.SphereGeometry(org.radius * 0.42, isLowPowerDevice() ? 12 : 24, isLowPowerDevice() ? 12 : 24);
-        const nucleolusMat = new THREE.MeshStandardMaterial({
+        const nucleolusMat = new THREE.MeshLambertMaterial({
           color: 0xa855f7,
           emissive: 0x6b21a8,
           emissiveIntensity: 0.3,
-          roughness: 0.5,
         });
         const nucleolusMesh = new THREE.Mesh(nucleolusGeo, nucleolusMat);
         nucleolusMesh.userData = { id: org.id };
@@ -342,11 +338,10 @@ export const BiologyLab: React.FC = () => {
       } else if (org.id === 'mitochondria') {
         // Outer mitochondrial membrane
         const outerGeo = new THREE.CapsuleGeometry(0.24, 0.55, 16, 24);
-        const outerMat = new THREE.MeshStandardMaterial({
+        const outerMat = new THREE.MeshLambertMaterial({
           color: 0xea580c,
           transparent: true,
           opacity: 0.85,
-          roughness: 0.35,
         });
         const mitoMesh = new THREE.Mesh(outerGeo, outerMat);
         mitoMesh.userData = { id: org.id };
@@ -357,7 +352,7 @@ export const BiologyLab: React.FC = () => {
         // Inner folding cristae (stacked internal discs)
         for (let c = -2; c <= 2; c++) {
           const cristaGeo = new THREE.TorusGeometry(0.14, 0.03, 8, 16);
-          const cristaMat = new THREE.MeshStandardMaterial({ color: 0xfb923c, roughness: 0.3 });
+          const cristaMat = new THREE.MeshLambertMaterial({ color: 0xfb923c, });
           const cristaMesh = new THREE.Mesh(cristaGeo, cristaMat);
           cristaMesh.position.set(0, c * 0.1, 0);
           cristaMesh.rotation.x = Math.PI / 2;
@@ -367,9 +362,8 @@ export const BiologyLab: React.FC = () => {
       } else if (org.id === 'chloroplast') {
         // Biconvex chloroplast stroma
         const stromaGeo = new THREE.CylinderGeometry(0.45, 0.45, 0.22, 24);
-        const stromaMat = new THREE.MeshStandardMaterial({
+        const stromaMat = new THREE.MeshLambertMaterial({
           color: 0x059669,
-          roughness: 0.4,
           transparent: true,
           opacity: 0.9,
         });
@@ -383,7 +377,7 @@ export const BiologyLab: React.FC = () => {
           for (let gy = -0.06; gy <= 0.06; gy += 0.04) {
             const thylakoid = new THREE.Mesh(
               new THREE.CylinderGeometry(0.1, 0.1, 0.02, 16),
-              new THREE.MeshStandardMaterial({ color: 0x34d399, roughness: 0.2 })
+              new THREE.MeshLambertMaterial({ color: 0x34d399, })
             );
             thylakoid.position.set(gx, gy, 0);
             chloroMesh.add(thylakoid);
@@ -402,9 +396,8 @@ export const BiologyLab: React.FC = () => {
 
         for (let i = 0; i < 4; i++) {
           const cisternaGeo = new THREE.TorusGeometry(0.35 + i * 0.06, 0.04, 12, 24, Math.PI * 0.85);
-          const cisternaMat = new THREE.MeshStandardMaterial({
+          const cisternaMat = new THREE.MeshLambertMaterial({
             color: 0xeab308,
-            roughness: 0.35,
           });
           const cisterna = new THREE.Mesh(cisternaGeo, cisternaMat);
           cisterna.position.set(0, (i - 1.5) * 0.09, 0);
@@ -417,7 +410,7 @@ export const BiologyLab: React.FC = () => {
         for (let v = 0; v < 3; v++) {
           const vesicle = new THREE.Mesh(
             new THREE.SphereGeometry(0.06, 12, 12),
-            new THREE.MeshStandardMaterial({ color: 0xfde047 })
+            new THREE.MeshLambertMaterial({ color: 0xfde047 })
           );
           vesicle.position.set(0.35 + v * 0.1, 0.1 - v * 0.1, 0.1);
           orgSubgroup.add(vesicle);
@@ -435,9 +428,8 @@ export const BiologyLab: React.FC = () => {
 
         for (let ring = 0; ring < 3; ring++) {
           const tubeGeo = new THREE.TorusGeometry(0.4 + ring * 0.15, 0.05, 12, 32, Math.PI * 1.2);
-          const tubeMat = new THREE.MeshStandardMaterial({
+          const tubeMat = new THREE.MeshLambertMaterial({
             color: 0xdb2777,
-            roughness: 0.4,
           });
           const tube = new THREE.Mesh(tubeGeo, tubeMat);
           tube.position.set((ring - 1) * 0.08, (ring - 1) * 0.06, 0);
@@ -449,12 +441,10 @@ export const BiologyLab: React.FC = () => {
       } else if (org.id === 'vacuole') {
         // Turgid liquid reservoir
         const vacGeo = new THREE.SphereGeometry(org.radius, isLowPowerDevice() ? 14 : 28, isLowPowerDevice() ? 14 : 28);
-        const vacMat = new THREE.MeshStandardMaterial({
+        const vacMat = new THREE.MeshLambertMaterial({
           color: 0x06b6d4,
           transparent: true,
           opacity: 0.65,
-          roughness: 0.1,
-          metalness: 0.1,
         });
         const vacMesh = new THREE.Mesh(vacGeo, vacMat);
         vacMesh.userData = { id: org.id };
@@ -463,9 +453,8 @@ export const BiologyLab: React.FC = () => {
 
       } else {
         const fallbackGeo = new THREE.DodecahedronGeometry(org.radius);
-        const fallbackMat = new THREE.MeshStandardMaterial({
+        const fallbackMat = new THREE.MeshLambertMaterial({
           color: org.color,
-          roughness: 0.4,
         });
         const fallbackMesh = new THREE.Mesh(fallbackGeo, fallbackMat);
         fallbackMesh.userData = { id: org.id };
@@ -579,10 +568,10 @@ export const BiologyLab: React.FC = () => {
     const cylSegs = isLowPower ? 8 : 12;
 
     const bbGeo = new THREE.SphereGeometry(0.12, sphereSegs, sphereSegs);
-    const bbMat1 = new THREE.MeshStandardMaterial({ color: 0x38bdf8 });
-    const bbMat2 = new THREE.MeshStandardMaterial({ color: 0x818cf8 });
-    const rungMatRed = new THREE.MeshStandardMaterial({ color: 0xef4444 });
-    const rungMatGreen = new THREE.MeshStandardMaterial({ color: 0x10b981 });
+    const bbMat1 = new THREE.MeshLambertMaterial({ color: 0x38bdf8 });
+    const bbMat2 = new THREE.MeshLambertMaterial({ color: 0x818cf8 });
+    const rungMatRed = new THREE.MeshLambertMaterial({ color: 0xef4444 });
+    const rungMatGreen = new THREE.MeshLambertMaterial({ color: 0x10b981 });
     const rungGeos: THREE.CylinderGeometry[] = [];
 
     for (let i = 0; i < pointsCount; i++) {

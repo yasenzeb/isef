@@ -71,17 +71,13 @@ const Atom3DViewer: React.FC<Atom3DViewerProps> = ({ element, language }) => {
     const nucleusGroup = new THREE.Group();
     const protonGeo = new THREE.SphereGeometry(0.12, particleSegs, particleSegs);
     const neutronGeo = new THREE.SphereGeometry(0.12, particleSegs, particleSegs);
-    const protonMat = new THREE.MeshStandardMaterial({
+    const protonMat = new THREE.MeshLambertMaterial({
       color: 0xef4444, // Red
-      roughness: 0.25,
-      metalness: 0.1,
       emissive: 0x7f1d1d,
       emissiveIntensity: 0.45,
     });
-    const neutronMat = new THREE.MeshStandardMaterial({
+    const neutronMat = new THREE.MeshLambertMaterial({
       color: 0x94a3b8, // Slate / Cyan-gray
-      roughness: 0.35,
-      metalness: 0.2,
       emissive: 0x1e293b,
       emissiveIntensity: 0.35,
     });
@@ -120,10 +116,8 @@ const Atom3DViewer: React.FC<Atom3DViewerProps> = ({ element, language }) => {
 
     // --- 2. Concentric Electron Shells & Orbiting Electrons ---
     const electronGeo = new THREE.SphereGeometry(0.075, particleSegs, particleSegs);
-    const electronMat = new THREE.MeshStandardMaterial({
+    const electronMat = new THREE.MeshLambertMaterial({
       color: 0x22d3ee, // Bright glowing Cyan
-      roughness: 0.15,
-      metalness: 0.4,
       emissive: 0x06b6d4,
       emissiveIntensity: 0.9,
     });
@@ -364,11 +358,9 @@ const PolyatomicGroup3DViewer: React.FC<PolyatomicGroup3DViewerProps> = ({ group
 
     // Atoms (Spheres)
     group.atoms.forEach((atom) => {
-      const geo = new THREE.SphereGeometry(atom.radius, isLowPowerDevice() ? 16 : 32, isLowPowerDevice() ? 16 : 32);
-      const mat = new THREE.MeshStandardMaterial({
+      const geo = new THREE.SphereGeometry(atom.radius, isLowPowerDevice() ? 12 : 20, isLowPowerDevice() ? 12 : 20);
+      const mat = new THREE.MeshLambertMaterial({
         color: atom.color,
-        roughness: 0.3,
-        metalness: 0.1,
       });
       const mesh = new THREE.Mesh(geo, mat);
       mesh.position.set(atom.x, atom.y, atom.z);
@@ -382,8 +374,8 @@ const PolyatomicGroup3DViewer: React.FC<PolyatomicGroup3DViewerProps> = ({ group
       const posB = new THREE.Vector3(group.atoms[idxB].x, group.atoms[idxB].y, group.atoms[idxB].z);
 
       const distance = posA.distanceTo(posB);
-      const bondGeo = new THREE.CylinderGeometry(0.065, 0.065, distance, 16);
-      const bondMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.4 });
+      const bondGeo = new THREE.CylinderGeometry(0.065, 0.065, distance, 12);
+      const bondMat = new THREE.MeshLambertMaterial({ color: 0x94a3b8 });
       const bondMesh = new THREE.Mesh(bondGeo, bondMat);
 
       const mid = new THREE.Vector3().addVectors(posA, posB).multiplyScalar(0.5);
