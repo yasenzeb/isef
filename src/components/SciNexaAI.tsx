@@ -1187,7 +1187,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
                   <div
                     className="flex-1 rounded-2xl border border-white/10 bg-slate-950/90 overflow-hidden flex flex-col items-center justify-center p-3 min-h-[400px] relative shadow-2xl"
                     dangerouslySetInnerHTML={{
-                      __html: '<fish-agent agent-id="929a1bf391db4185b03ae62f05a49707"></fish-agent>'
+                      __html: '<fish-agent agent-id="929a1bf391db4185b03ae62f05a49207"></fish-agent>'
                     }}
                   />
                 </div>
