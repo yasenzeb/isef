@@ -3,7 +3,7 @@
 // This allows the browser to connect directly via livekit-client SDK
 // giving Darwin full real-time awareness of lab state via publishData
 
-const DARWIN_AGENT_ID = '97720634298f4e94bdec0811de4cb3f3';
+const DARWIN_AGENT_ID = '929a1bf391db4185b03ae62f05a49707';
 
 export default async function handler(req: any, res?: any) {
   const isNode = Boolean(res && typeof res.status === 'function');
