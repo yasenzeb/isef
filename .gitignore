@@ -10,8 +10,7 @@ coverage/
 dist/
 build/
 
-# Local Environment Variables
-.env
+# Local secrets (never commit)
 .env.local
 .env.development.local
 .env.test.local
