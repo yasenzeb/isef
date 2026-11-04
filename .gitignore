@@ -31,3 +31,7 @@ build/
 _anatomy_repo/
 .temp/
 *.log
+
+# macOS
+.DS_Store
+**/.DS_Store

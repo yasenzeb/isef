@@ -1382,7 +1382,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           descAr: descAr,
           region: worldHitPos.y > 1.3 ? 'Cranial / Head & Neck (الرأس والعنق)' : worldHitPos.y > 0.7 ? 'Thorax & Trunk (الصدر والجذع)' : 'Lower Extremities (الأطراف السفلية)',
         });
-        // Darwin Context Bridge: notify DarwinAssistant of selected structure
+        // Context bridge: broadcast the selected structure to optional controllers
         window.dispatchEvent(new CustomEvent('scinexa:context', {
           detail: {
             lab: 'anatomy',
@@ -1518,7 +1518,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     }
   };
 
-  // Listen to remote layer switch & part focus orders from Darwin (Fish Audio)
+  // Listen to remote layer switch and part focus orders (optional external controller)
   useEffect(() => {
     const handleSwitchLayer = (e: any) => {
       const targetId = e.detail?.layer;

@@ -14,7 +14,6 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
     navigator.serviceWorker
       .register('/sw.js')
       .then((reg) => {
-        // Automatically check for updates on page load and every 5 minutes
         reg.update().catch(() => {});
         setInterval(() => {
           reg.update().catch(() => {});
@@ -25,7 +24,6 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
           if (!installingWorker) return;
           installingWorker.addEventListener('statechange', () => {
             if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // A new version is installed, notify worker to activate immediately and reload
               installingWorker.postMessage({ type: 'SKIP_WAITING' });
             }
           });
@@ -33,10 +31,6 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
       })
       .catch(() => {});
 
-    // Reload seamlessly when a NEW service worker replaces an old one.
-    // On the very first visit there is no previous controller: clients.claim() fires
-    // 'controllerchange' too, and reloading then just restarts whatever the user already opened
-    // (e.g. the anatomy models that were still downloading).
     const hadController = !!navigator.serviceWorker.controller;
     let refreshing = false;
     navigator.serviceWorker.addEventListener('controllerchange', () => {

@@ -466,7 +466,7 @@ export const ChemistryLab: React.FC = () => {
   // Scientist card
   const mendeleev = REAL_SCIENTISTS.find(s => s.id === 'mendeleev');
 
-  // Listen to remote tab switch orders from Darwin (Fish Audio)
+  // Listen to remote tab switch orders (optional external controller)
   useEffect(() => {
     const handleSwitch = (e: any) => {
       const tab = e.detail?.tab;
@@ -714,7 +714,7 @@ export const ChemistryLab: React.FC = () => {
                       key={el.number}
                       onClick={() => {
                         setSelectedElement(el);
-                        // Darwin Context Bridge
+                        // Context bridge
                         window.dispatchEvent(new CustomEvent('scinexa:context', {
                           detail: {
                             lab: 'chemistry',
