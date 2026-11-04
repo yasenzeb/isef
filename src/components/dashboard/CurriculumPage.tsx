@@ -199,9 +199,21 @@ export const CurriculumPage: React.FC = () => {
   const [stars, setStars] = useState(() => readNumber('scinexa_user_stars', 6));
   const [quizLesson, setQuizLesson] = useState<CurriculumLesson | null>(null);
   const [videoLesson, setVideoLesson] = useState<CurriculumLesson | null>(null);
+  const [selectedStage, setSelectedStage] = useState<'all' | 'secondary' | 'prep' | 'foundation'>('secondary');
+  const [searchFilter, setSearchFilter] = useState('');
 
   const pathway = CURRICULUM_PATHWAY;
-  const lessons = pathway.lessons;
+  const allLessons = pathway.lessons;
+  const lessons = allLessons.filter((l) => {
+    const q = searchFilter.trim().toLowerCase();
+    if (!q) return true;
+    return (
+      l.titleAr.includes(q) ||
+      l.titleEn.toLowerCase().includes(q) ||
+      l.unitTitleAr.includes(q) ||
+      l.unitTitleEn.toLowerCase().includes(q)
+    );
+  });
   const completedCount = lessons.filter((lesson) => completed.includes(lesson.id)).length;
   const progress = Math.round((completedCount / Math.max(1, lessons.length)) * 100);
 

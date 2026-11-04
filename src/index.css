@@ -667,3 +667,148 @@ select.sn-input {
   background-image: none !important;
   box-shadow: none !important;
 }
+
+/* ═════════════════════════════════════════════════════════════════════════
+   SciNexa Dark Mode & Seamless 3D Lab Observatory Tokens
+   ═════════════════════════════════════════════════════════════════════════ */
+
+html.dark, :root[data-theme="dark"], .dark {
+  --canvas: #09090b;
+  --paper: #121215;
+  --surface-alt: #18181b;
+  --ink: #f4f4f5;
+  --ink-soft: #e4e4e7;
+  --mid: #a1a1aa;
+  --hairline: #27272a;
+  --hairline-strong: #3f3f46;
+  --ember: #ef4444;
+
+  --edu-blue: #3b82f6;
+  --edu-blue-soft: rgba(59, 130, 246, 0.15);
+  --edu-amber: #f59e0b;
+  --edu-amber-soft: rgba(245, 158, 11, 0.15);
+  --edu-emerald: #10b981;
+  --edu-emerald-soft: rgba(16, 185, 129, 0.15);
+  --edu-rose: #f43f5e;
+  --edu-rose-soft: rgba(244, 63, 94, 0.15);
+  --edu-violet: #8b5cf6;
+  --edu-violet-soft: rgba(139, 92, 246, 0.15);
+  --edu-cyan: #06b6d4;
+  --edu-cyan-soft: rgba(6, 182, 212, 0.15);
+
+  --shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 2px 8px rgba(0, 0, 0, 0.5);
+  --shadow-float: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 20px 50px -12px rgba(0, 0, 0, 0.7);
+}
+
+html.dark body {
+  background: var(--canvas) !important;
+  color: var(--ink) !important;
+}
+
+html.dark .sn-blueprint {
+  background-color: var(--canvas) !important;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px) !important;
+}
+
+html.dark .sn-sidebar {
+  background: #0d0d10 !important;
+  border-color: #27272a !important;
+}
+
+html.dark .sn-topbar {
+  background: rgba(13, 13, 16, 0.85) !important;
+  border-color: #27272a !important;
+}
+
+html.dark .sn-navitem {
+  color: #a1a1aa !important;
+}
+
+html.dark .sn-navitem:hover {
+  background: #18181b !important;
+  color: #f4f4f5 !important;
+}
+
+html.dark .sn-navitem.active {
+  background: #18181b !important;
+  color: #ffffff !important;
+}
+
+html.dark .sn-card {
+  background: var(--paper) !important;
+  border-color: var(--hairline) !important;
+  color: var(--ink) !important;
+}
+
+html.dark .sn-input {
+  background: #141418 !important;
+  border-color: #27272a !important;
+  color: #f4f4f5 !important;
+}
+
+html.dark .sn-btn-primary {
+  background: #f4f4f5 !important;
+  color: #09090b !important;
+}
+
+html.dark .sn-btn-primary:hover {
+  background: #e4e4e7 !important;
+}
+
+html.dark .sn-btn-outline {
+  border-color: #27272a !important;
+  color: #f4f4f5 !important;
+  background: #141418 !important;
+}
+
+html.dark .sn-btn-outline:hover {
+  background: #1f1f23 !important;
+  border-color: #3f3f46 !important;
+}
+
+html.dark .sn-btn-quiet {
+  color: #a1a1aa !important;
+}
+
+html.dark .sn-btn-quiet:hover {
+  background: #18181b !important;
+  color: #ffffff !important;
+}
+
+html.dark .sn-segmented {
+  background: #141418 !important;
+  border-color: #27272a !important;
+}
+
+html.dark .sn-segment {
+  color: #a1a1aa !important;
+}
+
+html.dark .sn-segment:hover {
+  color: #ffffff !important;
+}
+
+html.dark .sn-segment.active {
+  background: #27272a !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Seamless Integrated Lab Canvas */
+.sn-lab-stage-seamless {
+  background: #090c12;
+  border-radius: var(--radius-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 16px 48px -12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  position: relative;
+}
+
+.sn-lab-stage-seamless .sci-card,
+.sn-lab-stage-seamless .glass-card {
+  background: rgba(14, 17, 24, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}

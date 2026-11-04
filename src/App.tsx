@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from
 import { AuthenticateWithRedirectCallback, ClerkProvider } from '@clerk/clerk-react';
 import { CLERK_PUBLISHABLE_KEY, clerkAppearance, isClerkConfigured } from './lib/clerkConfig';
 import { LanguageProvider } from './context/LanguageContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { SessionProvider, useSession, type AppRole } from './context/SessionContext';
 import { LandingPage } from './components/site/LandingPage';
 import { AuthPage } from './components/auth/AuthPage';
@@ -162,7 +163,8 @@ const ClerkWithRouter: React.FC<{ children: React.ReactNode }> = ({ children }) 
 };
 
 export const App: React.FC = () => (
-  <LanguageProvider>
+  <ThemeProvider>
+    <LanguageProvider>
     <BrowserRouter>
       <ClerkWithRouter>
         <SessionProvider>
@@ -173,6 +175,7 @@ export const App: React.FC = () => (
       </ClerkWithRouter>
     </BrowserRouter>
   </LanguageProvider>
+  </ThemeProvider>
 );
 
 export default App;

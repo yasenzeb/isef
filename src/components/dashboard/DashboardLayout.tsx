@@ -1,3 +1,7 @@
+import { SciNexaNavDock } from '../SciNexaNavDock';
+import { LanguageSelector } from '../ui/LanguageSelector';
+import { ThemeToggle } from '../ui/ThemeToggle';
+import { StudentProfileOnboardingModal } from '../auth/StudentProfileOnboardingModal';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
@@ -448,7 +452,7 @@ export const DashboardLayout: React.FC = () => {
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-[1280px] px-4 py-6 md:px-6 md:py-8">
+        <main className="mx-auto w-full max-w-[1280px] px-4 py-6 md:px-6 md:py-8 pb-28">
           <Outlet />
         </main>
       </div>

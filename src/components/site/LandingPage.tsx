@@ -1,3 +1,5 @@
+import { LanguageSelector } from '../ui/LanguageSelector';
+import { ThemeToggle } from '../ui/ThemeToggle';
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
@@ -122,126 +124,64 @@ const LandingHeader: React.FC<{ ar: boolean; signedIn: boolean }> = ({ ar, signe
   );
 };
 
-const DashboardPreview: React.FC<{ ar: boolean }> = ({ ar }) => (
+const InteractiveLabsShowcase: React.FC<{ ar: boolean; onOpenLab: (id: string) => void }> = ({ ar, onOpenLab }) => (
   <div className="relative min-w-0">
-    <div className="absolute -inset-6 -z-10 rounded-[36px] bg-[radial-gradient(circle_at_70%_20%,#e8efff_0,transparent_58%)]" />
-    <div className="sn-card overflow-hidden p-0 shadow-[0_24px_70px_-28px_rgba(10,10,10,0.35)]">
-      <div className="flex items-center gap-2 border-b border-[#e5e5e5] bg-[#fafafa] px-4 py-3">
-        <span className="h-2 w-2 rounded-full bg-[#e5e5e5]" />
-        <span className="h-2 w-2 rounded-full bg-[#e5e5e5]" />
-        <span className="h-2 w-2 rounded-full bg-[#e5e5e5]" />
-        <span className="ms-3 rounded-full border border-[#e5e5e5] bg-white px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.12em] text-[#737373]">
-          app.scinexa.school
-        </span>
+    <div className="absolute -inset-4 -z-10 rounded-[32px] bg-[radial-gradient(circle_at_60%_30%,rgba(37,99,235,0.18)_0,transparent_65%)]" />
+    
+    <div className="rounded-[24px] border border-white/20 dark:border-white/10 bg-[#0a0d14] text-white p-5 sm:p-6 shadow-[0_25px_70px_-20px_rgba(0,0,0,0.6)]">
+      {/* Terminal Bar */}
+      <div className="flex items-center justify-between border-b border-white/10 pb-3.5 mb-4">
+        <div className="flex items-center gap-2">
+          <span className="h-3 w-3 rounded-full bg-red-500/80" />
+          <span className="h-3 w-3 rounded-full bg-amber-500/80" />
+          <span className="h-3 w-3 rounded-full bg-emerald-500/80" />
+          <span className="ms-2 font-mono text-[10px] text-white/50 tracking-wider">
+            SCINEXA.LABS.TERMINAL
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="font-mono text-[10px] text-emerald-400 font-semibold">6 LABS LIVE</span>
+        </div>
       </div>
 
-      <div className="grid grid-cols-[88px_1fr] sm:grid-cols-[112px_1fr]">
-        <div className="border-e border-[#e5e5e5] bg-[#fafafa] p-3">
-          <div className="mb-4 flex items-center gap-1.5">
-            <BrandMark size={20} />
-            <span className="text-[11px] font-semibold tracking-tight">SciNexa</span>
-          </div>
-          <div className="space-y-1.5">
-            {[
-              { icon: BarChart3, active: true },
-              { icon: BookOpen },
-              { icon: FlaskConical },
-              { icon: Users },
-              { icon: Presentation },
-            ].map((item, i) => {
-              const Icon = item.icon;
-              return (
-                <div
-                  key={i}
-                  className={`flex h-6 items-center gap-1.5 rounded-[7px] px-1.5 ${
-                    item.active ? 'border border-[#e5e5e5] bg-white' : ''
-                  }`}
-                >
-                  <Icon size={11} strokeWidth={1.6} className={item.active ? 'text-[#0a0a0a]' : 'text-[#a3a3a3]'} />
-                  <span className={`h-1 rounded-full ${item.active ? 'w-8 bg-[#d4d4d4]' : 'w-6 bg-[#ececec]'}`} />
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="min-w-0 p-4">
-          <div className="mb-3 flex items-center justify-between">
-            <div>
-              <div className="text-[9px] uppercase tracking-[0.12em] text-[#a3a3a3]">
-                {ar ? 'لوحة الطالب' : 'Student overview'}
-              </div>
-              <div className="text-[13px] font-semibold tracking-tight">
-                {ar ? 'صباح الخير، ياسين' : 'Good morning, Yaseen'}
-              </div>
-            </div>
-            <span className="rounded-full bg-[#ecfdf5] px-2 py-0.5 text-[8px] font-medium text-[#047857]">
-              {ar ? '٣ أيام متتالية' : '3-day streak'}
+      {/* Grid of 6 Labs */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+        {[
+          { id: 'anatomy', nameAr: 'أطلس التشريح 3D', nameEn: '3D Anatomy', count: '2,821', unitAr: 'بنية طبية', color: 'from-rose-600 to-red-600' },
+          { id: 'physics', nameAr: 'الفيزياء والدوائر', nameEn: 'Physics & Waves', count: '60 FPS', unitAr: 'محاكاة حية', color: 'from-blue-600 to-indigo-600' },
+          { id: 'chemistry', nameAr: 'الكيمياء والتفاعلات', nameEn: 'Chemistry Lab', count: '118', unitAr: 'عنصر وتفاعل', color: 'from-amber-600 to-orange-600' },
+          { id: 'biology', nameAr: 'الأحياء والخلية', nameEn: 'Biology & Cells', count: '4K', unitAr: 'مجاهر رقمية', color: 'from-emerald-600 to-teal-600' },
+          { id: 'geology', nameAr: 'الزلازل وعلوم الأرض', nameEn: 'Earth & Seismic', count: 'M9.0', unitAr: 'محاكي انهيار', color: 'from-purple-600 to-violet-600' },
+          { id: 'astronomy', nameAr: 'الفلك ومدارات كبلر', nameEn: 'Kepler Orbits', count: '8', unitAr: 'كواكب وفضاء', color: 'from-cyan-600 to-sky-600' },
+        ].map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => onOpenLab(item.id)}
+            className="flex flex-col items-start p-3 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all text-start group cursor-pointer active:scale-95"
+          >
+            <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${item.color} mb-2 group-hover:scale-125 transition-transform`} />
+            <span className="text-[12px] font-semibold text-white group-hover:text-cyan-300 transition-colors">
+              {ar ? item.nameAr : item.nameEn}
             </span>
-          </div>
-
-          <div className="mb-3 grid grid-cols-3 gap-2">
-            {[
-              { v: '68%', l: ar ? 'تقدم المنهج' : 'Curriculum' },
-              { v: '12', l: ar ? 'دروس مكتملة' : 'Lessons' },
-              { v: '480', l: ar ? 'نقاط' : 'XP' },
-            ].map((s) => (
-              <div key={s.l} className="rounded-[10px] border border-[#e5e5e5] bg-white p-2">
-                <div className="text-[15px] font-semibold tracking-[-0.04em]">{s.v}</div>
-                <div className="text-[8px] text-[#737373]">{s.l}</div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mb-2 flex items-end justify-between">
-            <div className="text-[10px] font-semibold">{ar ? 'متابعة التعلم' : 'Continue learning'}</div>
-            <div className="text-[8px] text-[#737373]">{ar ? 'عرض الكل' : 'View all'}</div>
-          </div>
-
-          <div className="space-y-1.5">
-            {[
-              { name: ar ? 'اختزال أكاسيد الفلزات' : 'Metal oxide reduction', accent: 'chemistry', pct: 72 },
-              { name: ar ? 'الحركة على وتر' : 'Wave on a string', accent: 'physics', pct: 45 },
-              { name: ar ? 'الجهاز العصبي' : 'Nervous system', accent: 'anatomy', pct: 28 },
-            ].map((row) => (
-              <div
-                key={row.name}
-                className={`sn-${row.accent} flex items-center gap-2 rounded-[9px] border border-[#e5e5e5] bg-white px-2 py-1.5`}
-              >
-                <span className="sn-accent-line h-5 w-[2px] rounded-full" />
-                <span className="flex-1 text-[9px] font-medium">{row.name}</span>
-                <span className="h-1 w-10 overflow-hidden rounded-full bg-[#f0f0f0]">
-                  <span className="block h-full rounded-full bg-[#0a0a0a]" style={{ width: `${row.pct}%` }} />
-                </span>
-                <ChevronRight size={10} className="text-[#a3a3a3]" />
-              </div>
-            ))}
-          </div>
-        </div>
+            <div className="mt-1 flex items-baseline gap-1 text-[10px] text-white/50">
+              <span className="font-mono font-bold text-white/80">{item.count}</span>
+              <span>{item.unitAr}</span>
+            </div>
+          </button>
+        ))}
       </div>
-    </div>
 
-    <div className="absolute -bottom-5 -start-5 hidden sn-card sn-card-pad !p-3 shadow-lg sm:block">
-      <div className="flex items-center gap-2">
-        <span className="flex h-7 w-7 items-center justify-center rounded-[8px] bg-[#ecfdf5] text-[#047857]">
-          <ShieldCheck size={14} strokeWidth={1.8} />
-        </span>
-        <div>
-          <div className="text-[10px] font-semibold">{ar ? 'مطابق للمنهج' : 'MOE aligned'}</div>
-          <div className="text-[8px] text-[#737373]">K–12 · Advanced Sciences</div>
+      {/* Quick Audio Darwin Bar */}
+      <div className="mt-4 pt-3.5 border-t border-white/10 flex items-center justify-between text-[11px] text-white/70">
+        <div className="flex items-center gap-2">
+          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500/20 text-blue-400">
+            <Sparkles size={12} />
+          </span>
+          <span>{ar ? 'مرشد داروين الصوتي (Fish Audio) متاح للمساعدة' : 'Darwin AI Voice Assistant available'}</span>
         </div>
-      </div>
-    </div>
-
-    <div className="absolute -top-4 -end-3 hidden sn-card sn-card-pad !p-3 shadow-lg sm:block">
-      <div className="flex items-center gap-2">
-        <span className="flex h-7 w-7 items-center justify-center rounded-[8px] bg-[#eff6ff] text-[#1d4ed8]">
-          <Play size={13} strokeWidth={1.8} className="fill-current" />
-        </span>
-        <div>
-          <div className="text-[10px] font-semibold">{ar ? 'مباشر الآن' : 'Live simulation'}</div>
-          <div className="text-[8px] text-[#737373]">{ar ? '٦ معامل' : '6 labs online'}</div>
-        </div>
+        <span className="text-[10px] font-mono text-cyan-400 font-bold">ISEF 2026</span>
       </div>
     </div>
   </div>
@@ -373,7 +313,16 @@ export const LandingPage: React.FC = () => {
                 </span>
               </div>
 
-              <h1 className="sn-display">{copy.title}</h1>
+              <div>
+                <h1 className="sn-display text-[clamp(2.5rem,5.6vw,4.5rem)] font-extrabold tracking-tight">
+                  SciNexa <span className="text-[#1d4ed8] dark:text-blue-500">| ساينكسا</span>
+                </h1>
+                <p className="mt-2 text-[19px] sm:text-[23px] font-bold text-[#171717] dark:text-white leading-snug">
+                  {ar
+                    ? 'المنصة العلمية التفاعلية والمختبرات ثلاثية الأبعاد'
+                    : 'The Next-Generation Interactive 3D Science Platform'}
+                </p>
+              </div>
 
               <p className="mt-6 max-w-[48ch] text-[15px] leading-[1.7] text-[#737373]">
                 {copy.subtitle}
@@ -406,7 +355,7 @@ export const LandingPage: React.FC = () => {
             </div>
 
             <div className="sn-rise sn-rise-2 min-w-0">
-              <DashboardPreview ar={ar} />
+              <InteractiveLabsShowcase ar={ar} onOpenLab={openLab} />
             </div>
           </div>
 

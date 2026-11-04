@@ -1,3 +1,5 @@
+import { useTheme } from '../../context/ThemeContext';
+import { Sun, Moon } from 'lucide-react';
 import React, { useState } from 'react';
 import { useClerk } from '@clerk/clerk-react';
 import { useLanguage } from '../../context/LanguageContext';
@@ -61,6 +63,7 @@ const Toggle: React.FC<{ on: boolean; onChange: () => void; label: string }> = (
 export const SettingsPage: React.FC = () => {
   const { language, setLanguage } = useLanguage();
   const { user, role, isDemo, isRolePreview, switchDemoRole, clearRolePreview, signOut } = useSession();
+  const { theme, setTheme, isDark } = useTheme();
   const ar = language === 'ar';
 
   const [notifications, setNotifications] = useState({
