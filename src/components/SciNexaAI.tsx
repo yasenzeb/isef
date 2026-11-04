@@ -1187,7 +1187,7 @@ export const SciNexaAI: React.FC<SciNexaAIProps> = ({ currentTab }) => {
                   <div
                     className="flex-1 rounded-2xl border border-white/10 bg-slate-950/90 overflow-hidden flex flex-col items-center justify-center p-3 min-h-[400px] relative shadow-2xl"
                     dangerouslySetInnerHTML={{
-                      __html: '<fish-agent agent-id="929a1bf391db4185b03ae62f05a49207" language="ar" greeting="أهلاً بك يا بطل! أنا داروين مرشدك العلمي في منصة ساينكسا، جاهز لاستكشاف أي تجربة أو فحص أي عضو معايا؟"></fish-agent>'
+                      __html: '<fish-agent agent-id="929a1bf391db4185b03ae62f05a49207" language="ar" greeting="\u0623\u0647\u0644\u0627\u064b \u0628\u0643 \u064a\u0627 \u0635\u062f\u064a\u0642\u064a \u064a\u0627 \u0628\u0637\u0644! \u0623\u0646\u0627 \u062f\u0627\u0631\u0648\u064a\u0646 \u0645\u0631\u0634\u062f\u0643 \u0627\u0644\u0639\u0644\u0645\u064a \u0641\u064a \u0645\u0646\u0635\u0629 \u0633\u0627\u064a\u0646\u0643\u0633\u0627\u060c \u062c\u0627\u0647\u0632 \u0646\u0628\u062f\u0623 \u0631\u062d\u0644\u062a\u0646\u0627 \u0648\u062a\u062c\u0627\u0631\u0628\u0646\u0627 \u0627\u0644\u0639\u0644\u0645\u064a\u0629\u061f"></fish-agent>'
                     }}
                   />
                 </div>
