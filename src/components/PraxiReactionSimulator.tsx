@@ -106,7 +106,7 @@ export const PraxiReactionSimulator: React.FC = () => {
     setSelectedReagentIds(selectedReagentIds.filter(id => id !== reagentId));
   };
 
-  // ── تجارب الصف الثاني الثانوي بكالوريا - الفصل الثالث (المواد غير العضوية) ──
+  // ── تجارب تحضير الغازات والمواد غير العضوية ──
   const BAC2_LESSON_PRESETS = [
     {
       id: 'bac2-1',
@@ -651,17 +651,17 @@ export const PraxiReactionSimulator: React.FC = () => {
             </p>
           </div>
 
-          {/* Baccalaureate 2nd Secondary Inorganic Chemistry Special Presets */}
+          {/* Inorganic Gas Synthesis Laboratory Presets */}
           <div className="p-3.5 rounded-2xl bg-gradient-to-r from-blue-950/60 via-indigo-950/40 to-slate-900 border border-indigo-500/30 space-y-2.5 shadow-xl">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-                <span className="text-xs font-bold font-mono text-amber-300">
-                  {ar ? '⭐ تجارب الصف الثاني الثانوي بكالوريا — الفصل الثالث (المواد غير العضوية)' : '⭐ 2nd Secondary Baccalaureate Inorganic Chemistry Labs'}
+                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+                <span className="text-xs font-bold font-mono text-cyan-300">
+                  {ar ? '🧪 تجارب تحضير الغازات والمواد غير العضوية' : '🧪 Inorganic Chemistry & Gas Synthesis Laboratory'}
                 </span>
               </div>
               <span className="text-[10px] font-mono text-cyan-300 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded-full">
-                {ar ? 'حرية الاستكشاف لجميع الطلاب مفتوحة بالكامل 🔓' : 'Full Free Exploration for All Grades 🔓'}
+                {ar ? 'محاكاة تفاعلية ثلاثية الأبعاد 3D ⚡' : 'Interactive 3D Simulation ⚡'}
               </span>
             </div>
 
@@ -878,7 +878,7 @@ export const PraxiReactionSimulator: React.FC = () => {
             <div className="flex flex-wrap gap-1 text-[11px] font-mono">
               {[
                 { id: 'all', labelAr: 'الكل', labelEn: 'All' },
-                { id: 'bac2', labelAr: '⭐ بكالوريا 2 ثانوي (ف 3)', labelEn: '⭐ 2nd Sec Baccalaureate' },
+                { id: 'bac2', labelAr: 'تحضير الغازات والمركبات', labelEn: 'Gas Synthesis & Inorganic' },
                 { id: 'metals', labelAr: 'فلزات ولا فلزات', labelEn: 'Metals & Gases' },
                 { id: 'acids_bases', labelAr: 'أحماض وقواعد', labelEn: 'Acids & Bases' },
                 { id: 'salts', labelAr: 'أملاح ومحاليل', labelEn: 'Salts' },

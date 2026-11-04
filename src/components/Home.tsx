@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { QureoCurriculumPathway } from './QureoCurriculumPathway';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -22,8 +21,7 @@ import {
   ChevronRight,
   Tv,
   Compass,
-  Radio,
-  BookOpen
+  Radio
 } from 'lucide-react';
 
 interface HomeProps {
@@ -104,16 +102,6 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal, onOp
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const isArabic = language === 'ar';
-  const [homeViewMode, setHomeViewMode] = useState<'curriculum' | 'free_labs'>('curriculum');
-
-  const handleNavigateLab = (tab: string, presetReagents?: string[], heat?: boolean) => {
-    if (presetReagents && presetReagents.length > 0) {
-      try {
-        sessionStorage.setItem('scinexa_pending_preset', JSON.stringify({ reagents: presetReagents, heat }));
-      } catch {}
-    }
-    onNavigate(tab);
-  };
 
   // Smart Search Matching Engine
   const detectedAIIntent = useMemo(() => {
@@ -235,95 +223,9 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal, onOp
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 pb-28 pt-3" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 pb-28 pt-3" dir={isRTL ? 'rtl' : 'ltr'}>
       
-      {/* ── 0. DUAL MODE SWITCHER: QUREO CURRICULUM VS FREE 3D LABS ── */}
-      <section className="flex flex-col sm:flex-row items-center justify-between gap-3 p-2.5 rounded-2xl bg-[#141829] border border-cyan-500/25 shadow-xl">
-        <div className="flex items-center gap-2 px-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
-          <span className="text-xs font-mono font-bold text-white uppercase tracking-wider">
-            {isArabic ? 'نظام التعلم المزدوج:' : 'Dual Learning System:'}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-950/90 border border-white/10 w-full sm:w-auto">
-          <button
-            onClick={() => setHomeViewMode('curriculum')}
-            className={`flex-1 sm:flex-none py-2 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all ${
-              homeViewMode === 'curriculum'
-                ? 'bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-lg shadow-cyan-500/25 scale-[1.02]'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <BookOpen className="w-4 h-4" />
-            <span>{isArabic ? 'مسارات المناهج والمستويات (كيريو)' : 'Curriculum & Missions (QUREO)'}</span>
-          </button>
-
-          <button
-            onClick={() => setHomeViewMode('free_labs')}
-            className={`flex-1 sm:flex-none py-2 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all ${
-              homeViewMode === 'free_labs'
-                ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 scale-[1.02]'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <Compass className="w-4 h-4" />
-            <span>{isArabic ? 'الاستكشاف الحر لجميع المعامل 3D' : 'Free 3D Labs Sandbox'}</span>
-          </button>
-        </div>
-      </section>
-
-      {/* ── 1. QUREO CURRICULUM PATHWAY (When in Curriculum Mode) ── */}
-      {homeViewMode === 'curriculum' && (
-        <div className="space-y-6">
-          <QureoCurriculumPathway
-            onNavigateLab={handleNavigateLab}
-            onExploreFreeLabs={() => setHomeViewMode('free_labs')}
-          />
-
-          {/* Prompt to switch to Free Exploration */}
-          <div
-            onClick={() => setHomeViewMode('free_labs')}
-            className="p-4 rounded-2xl bg-slate-900/60 border border-white/10 hover:border-emerald-400/40 flex items-center justify-between text-slate-300 hover:text-white cursor-pointer transition-all shadow-md group"
-          >
-            <div className="flex items-center gap-3">
-              <span className="text-xl">🌐</span>
-              <div>
-                <span className="text-xs font-bold text-white block">
-                  {isArabic ? 'هل ترغب في استكشاف معمل حر دون التقيد بدروس كتاب الوزارة؟' : 'Looking for unguided lab experimentation?'}
-                </span>
-                <span className="text-[11px] text-slate-400 font-mono">
-                  {isArabic ? 'انقر هنا للانتقال إلى الاستكشاف الحر لكافة المعامل الستة (الفيزياء، الكيمياء، التشريح، الأحياء، الفلك، الأرض)' : 'Explore all 6 labs freely without curriculum restrictions'}
-                </span>
-              </div>
-            </div>
-            <div className="px-3 py-1.5 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold group-hover:bg-emerald-500/30 transition-colors">
-              {isArabic ? 'الاستكشاف الحر ←' : 'Free Explore →'}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── 2. FREE LABS SANDBOX (When in Free Labs Mode) ── */}
-      {homeViewMode === 'free_labs' && (
-        <>
-          {/* Back to Curriculum Notice */}
-          <div
-            onClick={() => setHomeViewMode('curriculum')}
-            className="p-3.5 rounded-2xl bg-cyan-950/40 border border-cyan-500/30 flex items-center justify-between text-cyan-200 cursor-pointer hover:bg-cyan-950/60 transition-all shadow-md"
-          >
-            <div className="flex items-center gap-2.5">
-              <BookOpen className="w-4 h-4 text-cyan-400" />
-              <span className="text-xs font-bold">
-                {isArabic ? 'أنت الآن في وضع الاستكشاف الحر. انقر هنا للعودة لمسار منهجك الدراسي (نظام كيريو) 🎓' : 'Free exploration active. Click here to return to your curriculum pathway 🎓'}
-              </span>
-            </div>
-            <span className="text-xs font-bold text-cyan-300">
-              {isArabic ? 'العودة للمنهج ←' : 'Back to Curriculum →'}
-            </span>
-          </div>
-
-          {/* ── 1. APPLE iOS SPOTLIGHT SEARCH BAR ── */}
+      {/* ── 1. APPLE iOS SPOTLIGHT SEARCH BAR ── */}
       <section className="bg-[#1C1C1E] border border-white/10 rounded-2xl p-3 sm:p-4 shadow-xl space-y-3">
         <div className="flex items-center gap-3">
           <Search className="w-5 h-5 text-[#8E8E93] shrink-0" />
@@ -659,9 +561,6 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal, onOp
           <ChevronRight className="w-4 h-4" />
         </button>
       </section>
-        </>
-      )}
-
     </div>
   );
 };

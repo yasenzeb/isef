@@ -1,6 +1,6 @@
-// SciNexa Progressive Offline Service Worker v14.0 (QUREO Curriculum System & Grade Missions)
+// SciNexa Progressive Offline Service Worker v15.0 (Inorganic Chemistry Gas Synthesis & Real-Time Labs)
 // Constant cache names ensure stable offline caching without leaking caches on worker restart
-const CACHE_VERSION = 'scinexa-v14-qureo-curriculum';
+const CACHE_VERSION = 'scinexa-v15-clean-labs';
 const MODEL_CACHE = 'scinexa-v2-models-1';
 // The "Offline" modal (OfflineDownloadModal.tsx) fills this cache by hand: never delete it, and always read from it.
 const OFFLINE_CACHE = 'scinexa-offline-v2';

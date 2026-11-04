@@ -108,7 +108,7 @@ export const WORKBENCH_REAGENTS: WorkbenchReagent[] = [
   { id: 'CuCO3', symbol: 'CuCO₃', nameEn: 'Basic Copper Carbonate', nameAr: 'كربونات النحاس الخضراء', formula: 'CuCO₃(s)', category: 'compound', categoryAr: 'كربونات فلزية ملونة', stateAtRoomTemp: 'solid', colorHex: '#10b981', descriptionAr: 'مسحوق أخضر يتحول بالتسخين إلى أكسيد النحاس الأسود', descriptionEn: 'Green solid turning black on heating with CO2 release' },
   { id: 'Cu_OH_2', symbol: 'Cu(OH)₂', nameEn: 'Copper(II) Hydroxide', nameAr: 'هيدروكسيد النحاس الأزرق', formula: 'Cu(OH)₂(s)', category: 'compound', categoryAr: 'هيدروكسيد أزرق راسب', stateAtRoomTemp: 'solid', colorHex: '#38bdf8', descriptionAr: 'راسب أزرق ينحل بالتسخين إلى أكسيد نحاس أسود وبخار ماء', descriptionEn: 'Blue jelly precipitate decomposing to black copper oxide' },
   { id: 'NaNO3', symbol: 'NaNO₃', nameEn: 'Sodium Nitrate', nameAr: 'نترات الصوديوم (بارود تشيلي)', formula: 'NaNO₃(s)', category: 'salt', categoryAr: 'ملح نترات قابل للانحلال', stateAtRoomTemp: 'solid', colorHex: '#f8fafc', descriptionAr: 'بلورات بيضاء تنحل بالحرارة إلى نيتريت أبيض مصفر وأكسجين', descriptionEn: 'White salt decomposing on heating to nitrite and oxygen' },
-  // --- مواد وتجارب بكالوريا 2 ثانوي - الفصل الثالث (المواد غير العضوية) ---
+  // --- مواد وتجارب تحضير الغازات والمواد غير العضوية ---
   { id: 'CuO', symbol: 'CuO', nameEn: 'Copper(II) Oxide', nameAr: 'أكسيد النحاس الأسود', formula: 'CuO(s)', category: 'compound', categoryAr: 'أكسيد فلزي أسود', stateAtRoomTemp: 'solid', colorHex: '#1e293b', descriptionAr: 'مسحوق أسود فاحم يختزل بالهيدروجين بالتسخين ليعطي نحاساً أحمر', descriptionEn: 'Dense black powder reduced by H2 to red elemental copper' },
   { id: 'MnO2', symbol: 'MnO₂', nameEn: 'Manganese(IV) Oxide', nameAr: 'أكسيد المنجنيز الرباعي', formula: 'MnO₂(s)', category: 'compound', categoryAr: 'عامل حفاز ومؤكسد قوي', stateAtRoomTemp: 'solid', colorHex: '#334155', descriptionAr: 'مسحوق أسود حفاز لتحلل ماء الأكسجين وتحضير الكلور بالتسخين', descriptionEn: 'Black catalytic powder accelerating H2O2 decomposition' },
   { id: 'H2O2', symbol: 'H₂O₂', nameEn: 'Hydrogen Peroxide', nameAr: 'فوق أكسيد الهيدروجين (ماء الأكسجين)', formula: 'H₂O₂(aq)', category: 'compound', categoryAr: 'مؤكسد ومصدر للأكسجين', stateAtRoomTemp: 'aqueous', colorHex: '#bae6fd', descriptionAr: 'سائل مائي شفاف ينحل بوجود MnO2 محرراً غاز الأكسجين النقي', descriptionEn: 'Clear liquid yielding pure oxygen over MnO2 catalyst' },
@@ -756,7 +756,7 @@ export const CHEMICAL_REACTIONS_DB: ChemicalReaction[] = [
     scientificExplanationEn: 'Strong cation stabilization restricts decomposition to partial oxygen elimination, forming nitrite.'
   },
   // =========================================================================
-  // تجارب الصف الثاني الثانوي بكالوريا - الفصل الثالث (المواد غير العضوية)
+  // تجارب تحضير الغازات والمواد غير العضوية
   // =========================================================================
   {
     id: 'bac2-red-cuo-h2',
