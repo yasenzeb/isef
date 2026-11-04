@@ -1,6 +1,6 @@
-// SciNexa Progressive Offline Service Worker v13.0 (Baccalaureate 2nd Sec Reactions + Drag-Drop Simulator)
+// SciNexa Progressive Offline Service Worker v14.0 (QUREO Curriculum System & Grade Missions)
 // Constant cache names ensure stable offline caching without leaking caches on worker restart
-const CACHE_VERSION = 'scinexa-v13-bac2-drag-drop';
+const CACHE_VERSION = 'scinexa-v14-qureo-curriculum';
 const MODEL_CACHE = 'scinexa-v2-models-1';
 // The "Offline" modal (OfflineDownloadModal.tsx) fills this cache by hand: never delete it, and always read from it.
 const OFFLINE_CACHE = 'scinexa-offline-v2';

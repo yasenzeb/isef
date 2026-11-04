@@ -43,6 +43,21 @@ export const PraxiReactionSimulator: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animFrameRef = useRef<number | null>(null);
 
+  // Check for pending preset loaded from QUREO Curriculum Pathway
+  useEffect(() => {
+    try {
+      const pending = sessionStorage.getItem('scinexa_pending_preset');
+      if (pending) {
+        const parsed = JSON.parse(pending);
+        if (Array.isArray(parsed.reagents)) {
+          setSelectedReagentIds(parsed.reagents);
+          setBunsenBurnerActive(!!parsed.heat);
+        }
+        sessionStorage.removeItem('scinexa_pending_preset');
+      }
+    } catch {}
+  }, []);
+
   // Sync reaction whenever selected reagents or Bunsen heat changes
   useEffect(() => {
     const matched = findMatchingReaction(selectedReagentIds, bunsenBurnerActive);

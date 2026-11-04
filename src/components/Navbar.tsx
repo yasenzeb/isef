@@ -3,7 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { Language } from '../i18n/translations';
 import { UserProfileCard } from './UserProfileCard';
 import {
-  Atom, Languages, MapPin, Download, Presentation
+  Atom, Languages, MapPin, Download, Presentation, BookOpen
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -89,6 +89,22 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* ── Action Controls ── */}
           <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+
+            {/* QUREO Grade & Curriculum Pathway Shortcut */}
+            <button
+              onClick={() => setCurrentTab('home')}
+              title={language === 'ar' ? 'مسارات المناهج الدراسية الرسمية (نظام كيريو)' : 'QUREO Curriculum Tracks'}
+              style={{
+                background: 'rgba(0,122,255,0.12)', color: '#007AFF',
+                border: '1px solid rgba(0,122,255,0.30)',
+                backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)'
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer active:scale-95 duration-150 shadow-sm"
+            >
+              <BookOpen className="w-3.5 h-3.5 shrink-0 text-[#007AFF]" />
+              <span className="hidden sm:inline">{language === 'ar' ? 'المناهج والمستويات 🎓' : 'Missions 🎓'}</span>
+              <span className="inline sm:hidden">{language === 'ar' ? 'المنهج' : 'Grade'}</span>
+            </button>
 
             {/* Smartboard */}
             <button
