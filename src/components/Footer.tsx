@@ -1,145 +1,119 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { Atom, Shield, FileText, Copyright } from 'lucide-react';
+import { SciNexaBrand } from './SciNexaLogo';
+import { Shield, FileText, Copyright } from 'lucide-react';
 
 export const Footer: React.FC = () => {
-  const { t, isRTL, language } = useLanguage();
-  const isAr = language === 'ar';
+  const { language, isRTL } = useLanguage();
+  const ar = language === 'ar';
+
+  const footerLinks = [
+    {
+      h: ar ? 'المنتج والمعامل' : 'Product & Labs',
+      items: [
+        [ar ? 'أطلس التشريح' : 'Anatomy Atlas', '#labs'],
+        [ar ? 'الفيزياء والدوائر' : 'Physics & Circuits', '#labs'],
+        [ar ? 'الكيمياء والتفاعلات' : 'Chemistry Lab', '#labs'],
+        [ar ? 'السبورة التفاعلية' : 'Smartboard', '#roles']
+      ]
+    },
+    {
+      h: ar ? 'البيئة المدرسية' : 'School & LAN',
+      items: [
+        [ar ? 'الطلاب والمعلمون' : 'Students & Teachers', '#roles'],
+        [ar ? 'التشغيل بدون إنترنت' : 'Offline & USB LAN', '#offline'],
+        [ar ? 'معايير STEM والوزارة' : 'STEM Standards', '#curriculum']
+      ]
+    },
+    {
+      h: ar ? 'المشروع والاعتماد' : 'Project & Authors',
+      items: [
+        ['ISEF 2026', '#'],
+        [ar ? 'إسلام وياسين' : 'Islam & Yaseen', '#'],
+        [ar ? 'قانون الملكية الفكرية' : 'IP Protections', '#']
+      ]
+    }
+  ];
 
   return (
-    <footer
-      style={{ borderTop: '1px solid rgba(255,255,255,0.07)', background: '#000000' }}
-      className="text-slate-400 py-10 pb-36"
-    >
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 space-y-7">
+    <footer className="border-t border-[#e5e5e5] bg-[#fafafa] text-[#737373] pb-32 pt-14" dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className="sn-shell space-y-12">
 
-        {/* ── Brand Row ── */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 border-b border-white/[0.06] pb-6">
-          <div className="flex items-center gap-3">
-            <div
-              style={{
-                borderRadius: '22.37%',
-                background: 'linear-gradient(135deg, #007AFF, #5856D6)',
-                boxShadow: '0 4px 16px rgba(0,122,255,0.3)',
-                width: 36, height: 36,
-                display: 'flex', alignItems: 'center', justifyContent: 'center'
-              }}
-            >
-              <Atom className="w-5 h-5 text-white" />
-            </div>
-            <div className={isRTL ? 'text-right' : ''}>
-              <span className="text-base font-black text-white block tracking-wider">SciNexa</span>
-              <span className="text-xs text-slate-400 block">{t.appTagline}</span>
-            </div>
+        {/* ── Top Navigation Grid ── */}
+        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+          <div>
+            <SciNexaBrand compact={false} />
+            <p className="mt-4 max-w-[32ch] text-[13px] leading-relaxed text-[#737373]">
+              {ar
+                ? 'منصة المختبرات العلمية التفاعلية ثلاثية الأبعاد المعتمدة لمسابقة آيسف ٢٠٢٦.'
+                : 'Next-generation interactive 3D virtual science laboratories for ISEF 2026.'}
+            </p>
           </div>
-          <div className="text-xs text-slate-400 max-w-md leading-relaxed">
-            {t.footer.tagline}
-          </div>
+
+          {footerLinks.map((col) => (
+            <div key={col.h}>
+              <div className="mb-3 text-[13px] font-bold text-[#0a0a0a]">{col.h}</div>
+              <ul className="space-y-2">
+                {col.items.map(([title, href]) => (
+                  <li key={title}>
+                    <a href={href} className="text-[12px] text-[#737373] hover:text-[#0a0a0a] transition-colors">
+                      {title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
-        {/* ── Attribution & License ── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-400">
-          <div>
-            <h4 className="font-semibold text-slate-300 mb-2 flex items-center gap-1.5">
-              <FileText className="w-3.5 h-3.5 text-white" />
-              <span>{isAr ? 'إسناد البيانات العلمية والأصول' : 'Scientific Data & Assets Attribution'}</span>
+        {/* ── Intellectual Property Box ── */}
+        <div className="sn-card p-5 bg-white space-y-3">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <h4 className="font-bold text-[#0a0a0a] text-xs flex items-center gap-2">
+              <Copyright className="w-4 h-4 text-[#1d4ed8]" />
+              <span>{ar ? 'حقوق الملكية الفكرية والابتكار' : 'Intellectual Property & Author Rights'}</span>
             </h4>
-            <p className="leading-relaxed">{t.footer.credits}</p>
-            <p className="mt-1 text-[11px] text-slate-500">{t.footer.sources}</p>
+            <span className="font-mono text-[10px] text-[#737373] bg-[#f5f5f5] px-2.5 py-0.5 rounded-full border border-[#e5e5e5]">
+              ISEF 2026 · Cairo, Egypt
+            </span>
           </div>
 
-          <div>
-            <h4 className="font-semibold text-slate-300 mb-2 flex items-center gap-1.5">
-              <Shield className="w-3.5 h-3.5 text-[#34C759]" />
-              <span>{isAr ? 'التراخيص ونطاق الاستخدام الأكاديمي' : 'Licensing & Pedagogical Scope'}</span>
-            </h4>
-            <p className="leading-relaxed">{t.footer.license} {t.footer.disclaimer}</p>
-          </div>
-        </div>
-
-        {/* ══════════════════════════════════════════════════════
-            ██  حقوق الملكية الفكرية الكاملة  ██
-            ══════════════════════════════════════════════════════ */}
-        <div
-          style={{
-            borderRadius: 16,
-            background: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.09)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-          }}
-          className="p-4 space-y-3"
-        >
-          <h4 className="font-bold text-white text-sm flex items-center gap-2">
-            <Copyright className="w-4 h-4 text-[#007AFF]" />
-            {isAr ? 'حقوق الملكية الفكرية' : 'Intellectual Property Rights'}
-          </h4>
-
-          <div className="text-xs leading-relaxed space-y-2 text-slate-300">
-            {isAr ? (
+          <p className="text-[12px] leading-relaxed text-[#525252]">
+            {ar ? (
               <>
-                <p>
-                  <span className="text-white font-semibold">منصة SciNexa</span> — جميع حقوق الملكية الفكرية محفوظة لأصحابها:
-                  <span className="text-[#007AFF] font-bold"> إسلام </span>و<span className="text-[#007AFF] font-bold"> ياسين</span>،
-                  مشروع ISEF 2026.
-                </p>
-                <p>
-                  يُحظر نسخ أو توزيع أو استخدام أي جزء من هذا البرنامج أو تصميمه أو بنيته التقنية أو محتواه العلمي لأغراض تجارية
-                  أو أكاديمية دون إذن كتابي صريح من المؤلفين.
-                </p>
-                <p>
-                  هذا المشروع محمي بموجب قوانين حقوق النشر الدولية (<span className="font-mono text-slate-300">Berne Convention</span>)
-                  وقوانين الملكية الفكرية المصرية (قانون رقم 82 لسنة 2002).
-                </p>
-                <p className="text-slate-400">
-                  يُسمح بالاستخدام الشخصي والتعليمي غير التجاري مع الإشارة الصريحة إلى المصدر والمؤلفين.
-                </p>
+                <strong className="text-[#0a0a0a]">منصة SciNexa</strong> — جميع حقوق الملكية الفكرية والتقنية والابتكارية محفوظة للمؤلفين:{' '}
+                <strong className="text-[#1d4ed8]">إسلام </strong>و<strong className="text-[#1d4ed8]">ياسين</strong>، مشروع مسابقة ISEF 2026.
+                محمي بموجب قوانين حماية حقوق الملكية الفكرية المصرية (قانون رقم 82 لسنة 2002) والاتفاقيات الدولية (Berne Convention).
               </>
             ) : (
               <>
-                <p>
-                  <span className="text-white font-semibold">SciNexa Platform</span> — All intellectual property rights reserved to:
-                  <span className="text-[#007AFF] font-bold"> Islam </span>&amp;<span className="text-[#007AFF] font-bold"> Yaseen</span>,
-                  ISEF 2026 Project.
-                </p>
-                <p>
-                  Copying, distributing, or using any part of this software, its design, technical architecture, or scientific
-                  content for commercial or academic purposes is strictly prohibited without explicit written permission from the authors.
-                </p>
-                <p>
-                  This project is protected under international copyright law (<span className="font-mono text-slate-300">Berne Convention</span>)
-                  and Egyptian Intellectual Property Law (Law No. 82 of 2002).
-                </p>
-                <p className="text-slate-400">
-                  Personal and non-commercial educational use is permitted with explicit attribution to the source and authors.
-                </p>
+                <strong className="text-[#0a0a0a]">SciNexa Platform</strong> — All intellectual property and innovations reserved to:{' '}
+                <strong className="text-[#1d4ed8]">Islam </strong>&amp; <strong className="text-[#1d4ed8]">Yaseen</strong>, ISEF 2026 Project.
+                Protected under international copyright law (Berne Convention) and Egyptian IP Law 82/2002.
               </>
             )}
-          </div>
+          </p>
 
-          {/* Digital Fingerprint Row */}
-          <div
-            className="flex flex-wrap items-center gap-2 pt-2 border-t border-white/[0.06]"
-          >
-            <span className="text-[10px] text-slate-500">{isAr ? 'البصمة الرقمية:' : 'Digital Fingerprint:'}</span>
-            <code
-              className="text-[10px] text-[#007AFF] font-mono break-all"
-              title="SHA-256 — SCINEXA_ISEF_2026_PROJECT_AUTHORS_ISLAM_AND_YASEEN_VIRTUAL_SCIENCE_LABS"
-            >
+          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-[#f0f0f0] text-[10px] font-mono">
+            <span className="text-[#737373]">{ar ? 'البصمة الرقمية المعتمدة (SHA-256):' : 'Verified Digital Fingerprint (SHA-256):'}</span>
+            <code className="text-[#1d4ed8] font-bold break-all bg-[#eff6ff] px-2 py-0.5 rounded">
               b35dcc2b2495508cd11d6e6294915f7211adfc93ce1a2188d81858b9cd38123f
             </code>
           </div>
         </div>
 
         {/* ── Bottom Line ── */}
-        <div className="text-center text-[11px] text-slate-500 pt-2 border-t border-white/[0.04]">
-          © {new Date().getFullYear()} SciNexa &bull;{' '}
-          {isAr
-            ? 'إسلام وياسين — منصة العلوم التفاعلية والمختبرات الافتراضية'
-            : 'Islam & Yaseen — Interactive Science Platform & Virtual Labs'}
-          {' '}· ISEF 2026
+        <div className="flex flex-col items-start justify-between gap-3 border-t border-[#e5e5e5] pt-6 text-[12px] text-[#737373] md:flex-row md:items-center">
+          <span>
+            © {new Date().getFullYear()} SciNexa · Islam &amp; Yaseen · ISEF 2026
+          </span>
+          <span className="font-mono text-[11px] text-[#a3a3a3]">
+            Science Observatory v15.0 · Clean Labs
+          </span>
         </div>
       </div>
     </footer>
   );
 };
+
+export default Footer;

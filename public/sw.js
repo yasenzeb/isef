@@ -1,6 +1,6 @@
-// SciNexa Progressive Offline Service Worker v15.0 (Inorganic Chemistry Gas Synthesis & Real-Time Labs)
+// SciNexa Progressive Offline Service Worker v16.0 (Science Observatory Redesign)
 // Constant cache names ensure stable offline caching without leaking caches on worker restart
-const CACHE_VERSION = 'scinexa-v15-clean-labs';
+const CACHE_VERSION = 'scinexa-v16-observatory-redesign';
 const MODEL_CACHE = 'scinexa-v2-models-1';
 // The "Offline" modal (OfflineDownloadModal.tsx) fills this cache by hand: never delete it, and always read from it.
 const OFFLINE_CACHE = 'scinexa-offline-v2';

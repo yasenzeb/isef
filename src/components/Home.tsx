@@ -1,566 +1,711 @@
 import React, { useState, useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
+import { LABS_CATALOG, LabCatalogItem } from '../data/labsCatalogData';
+import { SciNexaLogoIcon } from './SciNexaLogo';
 import {
   Activity,
-  Atom,
+  Zap,
+  FlaskConical,
   Dna,
   Globe2,
-  Presentation,
-  Search,
-  ArrowRight,
-  ShieldCheck,
-  Zap,
   Sparkles,
-  MapPin,
-  Play,
-  CheckCircle2,
-  Mic,
-  SlidersHorizontal,
-  Layers,
-  ChevronRight,
-  Tv,
-  Compass,
-  Radio
+  ArrowRight,
+  ArrowLeft,
+  Check,
+  Search,
+  HardDrive,
+  User,
+  GraduationCap,
+  ShieldCheck,
+  Flame,
+  BookOpen
 } from 'lucide-react';
 
 interface HomeProps {
   onNavigate: (tab: string) => void;
-  onOpenOfflineModal?: () => void;
-  onOpenLocationModal?: () => void;
+  onOpenOfflineModal: () => void;
+  onOpenLocationModal: () => void;
 }
 
-// AI Smart Keyword Knowledge Base for Instant Navigation
-const AI_SEARCH_RULES: { keywords: string[]; tab: string; labNameEn: string; labNameAr: string }[] = [
-  {
-    keywords: [
-      'قلب', 'دماغ', 'مخ', 'عصب', 'عين', 'جمجمة', 'عظم', 'كلية', 'كبد', 'معدة', 'رئة', 'تشريح', 'غضروف', 'مفصل', 'عضلة', 'أعصاب', 'شريان', 'وريد', 'جهاز عصبي', 'قرنية', 'شبكية', 'نخاع', 'رئتين',
-      'heart', 'brain', 'nerve', 'eye', 'skull', 'bone', 'kidney', 'liver', 'stomach', 'lung', 'anatomy', 'cartilage', 'joint', 'muscle', 'artery', 'vein', 'cornea', 'retina', 'medulla', 'pons'
-    ],
-    tab: 'anatomy',
-    labNameEn: 'Human 3D Anatomy Atlas',
-    labNameAr: 'أطلس تشريح جسم الإنسان 3D'
-  },
-  {
-    keywords: [
-      'فيزياء', 'قوة', 'تسارع', 'حركة', 'مقذوف', 'دائرة', 'أوم', 'كيرشوف', 'مقاومة', 'جهد', 'تيار', 'انكسار', 'عدسة', 'سنيل', 'موجة', 'وتر', 'phet', 'تردد', 'سعة', 'كهرباء', 'سرعة',
-      'physics', 'force', 'acceleration', 'motion', 'projectile', 'circuit', 'ohm', 'kirchhoff', 'resistor', 'voltage', 'current', 'refraction', 'snell', 'wave', 'string', 'frequency', 'amplitude'
-    ],
-    tab: 'physics',
-    labNameEn: 'Physics & Circuit Simulation Lab',
-    labNameAr: 'مختبر الفيزياء والدوائر والموجات'
-  },
-  {
-    keywords: [
-      'كيمياء', 'جدول دوري', 'عنصر', 'ذرة', 'بروتون', 'إلكترون', 'نيوترون', 'مدار', 'توزيع', 'هيدروجين', 'أكسجين', 'كربون', 'تفاعل', 'مركب', 'مجموعة ذرية', 'بوهر',
-      'chemistry', 'periodic table', 'element', 'atom', 'proton', 'electron', 'neutron', 'orbital', 'bohr', 'hydrogen', 'oxygen', 'carbon', 'reaction', 'radical'
-    ],
-    tab: 'chemistry',
-    labNameEn: 'Interactive Periodic Table & 3D Atoms',
-    labNameAr: 'الجدول الدوري ونماذج الذرة 3D'
-  },
-  {
-    keywords: [
-      'أحياء', 'خلية', 'نواة', 'ميتوكوندريا', 'بلاستيدة', 'جدار خلوي', 'dna', 'حمض نووي', 'وراثة', 'أميبا', 'يوجلينا', 'براميسيوم', 'بكتيريا', 'أهداب', 'سوط', 'أقدام كاذبة', 'بلعمة',
-      'biology', 'cell', 'nucleus', 'mitochondria', 'chloroplast', 'dna', 'genetics', 'amoeba', 'euglena', 'paramecium', 'microorganism', 'cilia', 'flagellum', 'pseudopodia'
-    ],
-    tab: 'biology',
-    labNameEn: 'Cytology & Molecular Genetics Lab',
-    labNameAr: 'مختبر الأحياء والخلية والكائنات الدقيقة'
-  },
-  {
-    keywords: [
-      'جيولوجيا', 'أرض', 'زلزال', 'تسونامي', 'طبقات الأرض', 'لب', 'وشاح', 'قشرة', 'انهيار', 'مبنى', 'صدع', 'ريختر', 'صخور', 'صفائح', 'ليمان',
-      'geology', 'earth', 'earthquake', 'tsunami', 'layers', 'core', 'mantle', 'crust', 'collapse', 'building', 'fault', 'richter', 'seismic', 'tectonics'
-    ],
-    tab: 'geology',
-    labNameEn: 'Geology & 3D Structural Collapse Simulator',
-    labNameAr: 'علوم الأرض ومحاكاة انهيار المباني'
-  },
-  {
-    keywords: [
-      'فلك', 'فضاء', 'شمس', 'قمر', 'كواكب', 'نظام شمسي', 'أطوار القمر', 'مدار', 'عطارد', 'الزهرة', 'المريخ', 'المشتري', 'زحل', 'أورانوس', 'نبتون', 'كيبلر', 'جاذبية', 'مد وجزر', 'محاق', 'بدر',
-      'astronomy', 'space', 'sun', 'moon', 'planets', 'solar system', 'moon phases', 'orbit', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'kepler', 'tides'
-    ],
-    tab: 'astronomy',
-    labNameEn: 'Astronomy & 3D Solar System Lab',
-    labNameAr: 'مختبر علوم الفلك والنظام الشمسي'
-  },
-  {
-    keywords: [
-      'فصل', 'شاشة', 'عرض', 'سبورة', 'بروجكتور', 'معلم', 'سمارت',
-      'classroom', 'presentation', 'smartboard', 'projector', 'teacher'
-    ],
-    tab: 'classroom',
-    labNameEn: 'Smart Classroom & Presentation Mode',
-    labNameAr: 'وضع الفصل والشاشات الذكية التفاعلية'
-  }
-];
+const LAB_ICONS: Record<string, React.FC<{ size?: number; className?: string; strokeWidth?: number }>> = {
+  anatomy: Activity,
+  physics: Zap,
+  chemistry: FlaskConical,
+  biology: Dna,
+  geology: Globe2,
+  astronomy: Sparkles
+};
 
-export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal, onOpenLocationModal }) => {
+export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal }) => {
   const { language, isRTL } = useLanguage();
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
-  const isArabic = language === 'ar';
+  const ar = language === 'ar';
 
-  // Smart Search Matching Engine
-  const detectedAIIntent = useMemo(() => {
+  const studentName = user?.displayName?.trim().split(/\s+/)[0] || (ar ? 'بطلنا' : 'Student');
+
+  // Filter labs based on search query
+  const filteredLabs = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    if (!q || q.length < 2) return null;
-    for (const rule of AI_SEARCH_RULES) {
-      for (const kw of rule.keywords) {
-        if (q.includes(kw.toLowerCase())) {
-          return {
-            tab: rule.tab,
-            matchedTerm: kw,
-            labNameEn: rule.labNameEn,
-            labNameAr: rule.labNameAr
-          };
-        }
-      }
-    }
-    return null;
+    if (!q) return LABS_CATALOG;
+    return LABS_CATALOG.filter(
+      (lab) =>
+        lab.nameEn.toLowerCase().includes(q) ||
+        lab.nameAr.includes(q) ||
+        lab.categoryEn.toLowerCase().includes(q) ||
+        lab.categoryAr.includes(q) ||
+        lab.taglineAr.includes(q) ||
+        lab.taglineEn.toLowerCase().includes(q)
+    );
   }, [searchQuery]);
 
-  // The 6 Signature Apple iOS App Widgets
-  const labWidgets = [
-    {
-      id: 'anatomy',
-      title: isArabic ? 'أطلس التشريح البشري 3D' : 'Human Anatomy Atlas 3D',
-      category: isArabic ? 'العلوم الطبية والتشريح' : 'Medical Science',
-      subtitle: isArabic ? 'أكثر من 2,821 عضواً وبنية طبية حقيقية' : '2,821+ High-Precision 3D Entities',
-      description: isArabic 
-        ? 'تشريح تفاعلي معتمد: العظام، العضلات، القلب والشرايين، الدماغ والأعصاب، والأعضاء الحشوية مع ميزة العزل 3D.'
-        : 'Medical 3D anatomy: skeleton, muscular system, heart & vessels, nervous system, and visceral organs with 3D isolation.',
-      icon: Activity,
-      gradient: 'linear-gradient(135deg, #FF2D55, #FF3B30)',
-      shadowColor: 'rgba(255, 45, 85, 0.4)',
-      badge: isArabic ? 'أطلس طبي معتمد' : 'Medical Grade',
-      features: isArabic 
-        ? ['7 أجهزة تشريحية عميقة', 'فحص وعزل أي عضو', 'شرح طبي وفسيولوجي فوري'] 
-        : ['7 Deep Systems', 'Organ 3D Isolation', 'Instant Clinical Explanations']
-    },
-    {
-      id: 'physics',
-      title: isArabic ? 'الفيزياء والدوائر والموجات' : 'Physics & Circuits 3D',
-      category: isArabic ? 'العلوم الفيزيائية والكهرباء' : 'Physics & Electricity',
-      subtitle: isArabic ? 'الدوائر الكهربائية، القوى والمقذوفات، والأمواج' : 'DC Circuits, Dynamics & Wave Optics',
-      description: isArabic 
-        ? 'ركّب الدوائر الكهربائية، اختبر قانون أوم والمقاومات في الوقت الفعلي، أطلق المقذوفات بزوايا مختلفة، وشاهد انتشار الموجات.'
-        : 'Construct live DC circuits, solve Ohm & Kirchhoff laws in real-time, launch projectiles, and simulate wave harmonics.',
-      icon: Zap,
-      gradient: 'linear-gradient(135deg, #007AFF, #5856D6)',
-      shadowColor: 'rgba(0, 122, 255, 0.4)',
-      badge: isArabic ? 'محاكاة فيزيائية حية' : 'Real-Time Physics',
-      features: isArabic 
-        ? ['دوائر كهربائية DC تفاعلية', 'محاكي المقذوفات وقوانين نيوتن', 'محاكاة الموجات وانكسار الضوء'] 
-        : ['Live DC Circuit Workbench', 'Forces & Projectile Engine', 'Wave & Optics Harmonics']
-    },
-    {
-      id: 'chemistry',
-      title: isArabic ? 'الجدول الدوري وبنية الذرة 3D' : 'Periodic Table & Atoms 3D',
-      category: isArabic ? 'العلوم الكيميائية والمادة' : 'Chemical Sciences',
-      subtitle: isArabic ? '118 عنصراً كيميائياً وتفاعلات PraxiLabs' : '118 Elements & PraxiLabs Reactions',
-      description: isArabic 
-        ? 'استكشف العناصر الـ 118 مع دوران الإلكترونات في مدارات بوهر 3D، وتفاعلات المحاليل الكيميائية والمجموعات الذرية.'
-        : 'Explore 118 elements with real-time 3D Bohr electron orbitals, chemical reactions, and polyatomic ionic radicals.',
-      icon: Atom,
-      gradient: 'linear-gradient(135deg, #FF9500, #FF3B30)',
-      shadowColor: 'rgba(255, 149, 0, 0.4)',
-      badge: isArabic ? 'الجدول الدوري الشامل' : '118 IUPAC Elements',
-      features: isArabic 
-        ? ['توزيع الإلكترونات في مدارات بوهر', 'معمل PraxiLabs للتفاعلات الكيميائية', 'المجموعات الذرية ثلاثية الأبعاد'] 
-        : ['3D Bohr Orbitals', 'PraxiLabs Reaction Simulator', 'Polyatomic Radicals 3D']
-    },
-    {
-      id: 'biology',
-      title: isArabic ? 'الأحياء والخلية والوراثة' : 'Biology & Living Cells 3D',
-      category: isArabic ? 'علوم الأحياء والميكروسكوب' : 'Biological Sciences',
-      subtitle: isArabic ? 'مجسم الخلية الحقيقي، الكائنات الدقيقة، و DNA' : '3D Realistic Cell & DNA Helix',
-      description: isArabic 
-        ? 'انظر عبر المجهر إلى الخلية الحية ومكوناتها، راقب حركة الأميبا واليوجلينا والبراميسيوم، وفكك شريط الحمض النووي DNA.'
-        : 'Look through the virtual microscope into 3D cells, observe live unicellular microorganisms, and unpack the DNA double-helix.',
-      icon: Dna,
-      gradient: 'linear-gradient(135deg, #34C759, #00C7BE)',
-      shadowColor: 'rgba(52, 199, 89, 0.4)',
-      badge: isArabic ? 'أحياء مجهرية 3D' : '3D Microscopy',
-      features: isArabic 
-        ? ['مجسم ثلاثي الأبعاد حقيقي للخلية', 'كائنات مجهرية (أميبا، يوجلينا، براميسيوم)', 'شريط الحمض النووي DNA التفاعلي'] 
-        : ['Realistic 3D Cell Model', 'Microorganisms Laboratory', '3D Animated DNA Double Helix']
-    },
-    {
-      id: 'geology',
-      title: isArabic ? 'علوم الأرض ومحاكاة الزلازل' : 'Geology & Seismic Collapse',
-      category: isArabic ? 'علوم الأرض والمنشآت' : 'Geology & Seismology',
-      subtitle: isArabic ? 'الزلازل بمقياس ريختر، أمواج تسونامي، وباطن الأرض' : 'Richter Quakes, Tsunami & Earth Cutaway',
-      description: isArabic 
-        ? 'اختبر متانة المباني تحت قوى الهزات الأرضية والزلازل الحية واندفاع موجات التسونامي، واستكشف مقطع باطن الأرض 3D.'
-        : 'Test real structural stability and building collapse physics under Richter earthquakes and tsunami surges with 3D Earth layers.',
-      icon: Globe2,
-      gradient: 'linear-gradient(135deg, #AF52DE, #5856D6)',
-      shadowColor: 'rgba(175, 82, 222, 0.4)',
-      badge: isArabic ? 'محاكاة كوارث 3D' : 'Seismic Physics',
-      features: isArabic 
-        ? ['محاكاة انهيار المباني الحية', 'اندفاع قوى تسونامي الهيدروديناميكية', 'مقطع طبقات باطن الأرض ثلاثي الأبعاد'] 
-        : ['Real Building Collapse Physics', 'Tsunami Surge Hydrodynamics', '3D Earth Interior Cutaway']
-    },
-    {
-      id: 'astronomy',
-      title: isArabic ? 'علم الفلك والنظام الشمسي 3D' : 'Astronomy & Solar System 3D',
-      category: isArabic ? 'علوم الفضاء والكواكب' : 'Space & Planetary Science',
-      subtitle: isArabic ? 'مدارات الكواكب، أطوار القمر، وقوانين كيبلر' : 'Planetary Orbits, Moon Phases & Kepler',
-      description: isArabic 
-        ? 'انطلق في رحلة فضائية بين كواكب المجموعة الشمسية بدقة مدارية حقيقية، راقب دورة أطوار القمر الـ 8 في 3D، وتعرف على قوانين كيبلر.'
-        : 'Journey through the real 3D solar system with precise Keplerian orbital mechanics, explore the 8 lunar phases, and learn cosmic laws.',
-      icon: Sparkles,
-      gradient: 'linear-gradient(135deg, #5856D6, #007AFF)',
-      shadowColor: 'rgba(88, 86, 214, 0.4)',
-      badge: isArabic ? 'ميكانيكا الفضاء 3D' : 'Orbital Mechanics',
-      features: isArabic 
-        ? ['كواكب المجموعة الشمسية ثلاثية الأبعاد', 'أطوار القمر التفاعلية الثمانية', 'قوانين كيبلر والجاذبية الكونية'] 
-        : ['Real 3D Solar System', 'Interactive 8 Moon Phases', 'Kepler & Gravity Laws']
-    }
-  ];
+  const curriculumHighlights = ar
+    ? [
+        { n: '٠١', t: 'اختزال أكاسيد الفلزات وتحضير الغازات', u: 'الكيمياء غير العضوية', lab: 'chemistry', p: 'ص ٤٢–٤٧' },
+        { n: '٠٢', t: 'الحركة الموجية وتراكب النبضات', u: 'الفيزياء والميكانيكا', lab: 'physics', p: 'ص ٥٣–٥٨' },
+        { n: '٠٣', t: 'التشريح البشري والأعصاب القحفية', u: 'التشريح والأحياء', lab: 'anatomy', p: 'ص ٦٠–٦٤' }
+      ]
+    : [
+        { n: '01', t: 'Metal Oxide Reduction & Gas Synthesis', u: 'Inorganic Chemistry', lab: 'chemistry', p: 'pp. 42–47' },
+        { n: '02', t: 'Wave Motion & Superposition', u: 'Physics Dynamics', lab: 'physics', p: 'pp. 53–58' },
+        { n: '03', t: 'Human Anatomy & Cranial Nerves', u: 'Medical Anatomy', lab: 'anatomy', p: 'pp. 60–64' }
+      ];
+
+  const roles = ar
+    ? [
+        {
+          icon: User,
+          t: 'الطالب',
+          d: 'مسار واضح، تقدّم محفوظ، ومعامل ثلاثية الأبعاد تُفتح بلا انتظار.',
+          b: ['تجارب تفاعلية 3D', 'تقييمات علمية فورية', 'حفظ التقدم التلقائي']
+        },
+        {
+          icon: GraduationCap,
+          t: 'المعلم',
+          d: 'سبورة تفاعلية، تحكم بالتجارب، وشرح حي متكامل على الشاشة الكبيرة.',
+          b: ['وضع السبورة الذكية', 'أدوات قياس معملية حية', 'محاكاة تفاعلية شاملة']
+        },
+        {
+          icon: ShieldCheck,
+          t: 'الإدارة المدرسية',
+          d: 'نظرة شمولية على استخدام المعامل العلمية والتجهيز الكامل للأنشطة والمسابقات.',
+          b: ['تشغيل كامل على شبكة المدرسة', 'دعم كامل لمعارض ISEF', 'اعتماد معايير STEM']
+        }
+      ]
+    : [
+        {
+          icon: User,
+          t: 'Student',
+          d: 'A clear path, saved progress, and 3D laboratories that open instantly.',
+          b: ['Interactive 3D labs', 'Instant scientific checks', 'Automatic auto-save']
+        },
+        {
+          icon: GraduationCap,
+          t: 'Teacher',
+          d: 'A smartboard canvas, experiment control, and live demonstrations.',
+          b: ['Smartboard mode', 'Live laboratory sensors', 'Comprehensive simulations']
+        },
+        {
+          icon: ShieldCheck,
+          t: 'Administration',
+          d: 'Holistic observatory over school science lab usage and STEM readiness.',
+          b: ['Full school LAN support', 'ISEF science fair compliant', 'STEM standards ready']
+        }
+      ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 pb-28 pt-3" dir={isRTL ? 'rtl' : 'ltr'}>
-      
-      {/* ── 1. APPLE iOS SPOTLIGHT SEARCH BAR ── */}
-      <section className="bg-[#1C1C1E] border border-white/10 rounded-2xl p-3 sm:p-4 shadow-xl space-y-3">
-        <div className="flex items-center gap-3">
-          <Search className="w-5 h-5 text-[#8E8E93] shrink-0" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && detectedAIIntent) {
-                onNavigate(detectedAIIntent.tab);
-              }
-            }}
-            placeholder={isArabic ? 'بحث Spotlight: اكتب اسم أي عضو، عنصر كيميائي، أو تجربة علمية...' : 'Spotlight: Search any organ, element, circuit, or celestial body...'}
-            className="w-full bg-transparent text-white placeholder-[#8E8E93] text-sm sm:text-base outline-none font-medium"
-          />
-          <Mic className="w-4 h-4 text-[#8E8E93] shrink-0 hidden sm:block" />
-        </div>
+    <div className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a]" dir={isRTL ? 'rtl' : 'ltr'}>
+      <main>
 
-        {/* Instant Detection Alert (iOS Notification Banner style) */}
-        {detectedAIIntent && (
-          <div 
-            onClick={() => onNavigate(detectedAIIntent.tab)}
-            className="cursor-pointer p-3 rounded-xl bg-[#2C2C2E] hover:bg-[#3A3A3C] border border-white/10 flex items-center justify-between text-white transition-all active:scale-98"
-          >
-            <div className="flex items-center gap-3">
-              <div 
-                className="w-8 h-8 rounded-[8px] ios-squircle flex items-center justify-center text-white shrink-0"
-                style={{ background: 'linear-gradient(135deg, #007AFF, #5856D6)' }}
-              >
-                <Play className="w-4 h-4 fill-white" />
-              </div>
-              <div>
-                <span className="text-[11px] font-bold text-[#007AFF] block">
-                  {isArabic ? 'الانتقال المباشر للمعمل:' : 'Spotlight Match:'}
-                </span>
-                <span className="text-xs sm:text-sm font-bold text-white">
-                  {isArabic 
-                    ? `انقر هنا للانتقال فوراً إلى ${detectedAIIntent.labNameAr}`
-                    : `Click to navigate to ${detectedAIIntent.labNameEn}`}
+        {/* ── 1. HERO SECTION (Science Observatory Blueprint) ── */}
+        <section className="sn-blueprint border-b border-[#e5e5e5]">
+          <div className="sn-shell grid items-center gap-14 py-14 lg:grid-cols-[1.02fr_0.98fr] lg:py-20">
+
+            {/* Left Column: Headlines & Call to Action */}
+            <div className="sn-rise max-w-[580px]">
+
+              {/* Eyebrow Pill */}
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#e5e5e5] bg-white px-3 py-1.5 shadow-sm">
+                <span className="sn-live-dot h-2 w-2 rounded-full bg-[#1d4ed8]" />
+                <span className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#737373]">
+                  {ar ? 'آيسف ٢٠٢٦ · القاهرة، مصر' : 'ISEF 2026 · Cairo, Egypt'}
                 </span>
               </div>
-            </div>
-            <div className="flex items-center gap-1 text-xs font-bold text-white bg-[#007AFF] px-3 py-1.5 rounded-full shadow-md">
-              <span>{isArabic ? 'فتح' : 'Open'}</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </div>
-          </div>
-        )}
 
-        {/* Quick Suggestion Pills */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-1 text-xs">
-          <span className="text-[#8E8E93] text-xs font-semibold">
-            {isArabic ? 'مقترحات سريعة:' : 'Quick Jump:'}
-          </span>
-          {[
-            { label: isArabic ? '🫀 تشريح القلب' : '🫀 Heart Anatomy', tab: 'anatomy' },
-            { label: isArabic ? '⚡ دوائر الكهرباء' : '⚡ DC Circuits', tab: 'physics' },
-            { label: isArabic ? '🧪 ذرة الهيدروجين' : '🧪 Hydrogen Atom', tab: 'chemistry' },
-            { label: isArabic ? '🔬 الخلية المجهرية' : '🔬 3D Cell Specimen', tab: 'biology' },
-            { label: isArabic ? '🌋 محاكاة الزلازل' : '🌋 Earthquake Collapse', tab: 'geology' },
-            { label: isArabic ? '🪐 أطوار القمر' : '🪐 Moon Phases', tab: 'astronomy' },
-          ].map((chip, idx) => (
-            <button
-              key={idx}
-              onClick={() => onNavigate(chip.tab)}
-              className="px-2.5 py-1 rounded-full bg-[#2C2C2E] hover:bg-[#3A3A3C] text-white border border-white/5 transition-all text-xs font-medium cursor-pointer active:scale-95"
-            >
-              {chip.label}
-            </button>
-          ))}
-        </div>
-      </section>
+              {/* Display Headline */}
+              <h1 className="sn-display text-[#0a0a0a]">
+                {ar ? 'مختبر العلوم الذي يتّسع داخل المتصفح.' : 'The science lab that fits in a browser.'}
+              </h1>
 
-      {/* ── 2. APPLE HERO SECTION (Clean, Typographic, Inviting) ── */}
-      <section className="bg-[#1C1C1E] border border-white/10 rounded-[28px] p-6 sm:p-10 lg:p-12 shadow-2xl relative overflow-hidden">
-        {/* Soft Apple Light Refraction */}
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#007AFF]/15 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#AF52DE]/10 rounded-full blur-[100px] pointer-events-none" />
+              {/* Subtitle */}
+              <p className="mt-6 max-w-[50ch] text-[15px] leading-[1.7] text-[#737373] font-medium">
+                {ar
+                  ? 'ستة معامل تفاعلية ثلاثية الأبعاد، مرتبطة بمناهج وزارة التربية والتعليم المصرية. التشريح الطبي، الفيزياء، الكيمياء وتحضير الغازات، الأحياء، الأرض والزلازل، والفلك — في بيئة واحدة هادئة ودقيقة.'
+                  : 'Six interactive 3D laboratories, mapped to the Egyptian Ministry of Education curriculum. Medical anatomy, physics, chemistry & gas synthesis, biology, earth geophysics, and astronomy — in one calm, precise environment.'}
+              </p>
 
-        <div className="relative z-10 space-y-6 max-w-3xl">
-          {/* iOS Category Tag */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 text-xs font-bold text-white border border-white/10">
-            <span className="w-2 h-2 rounded-full bg-[#34C759] animate-pulse" />
-            <span>{isArabic ? 'منصة المختبرات العلمية والمحاكاة التفاعلية 3D' : 'Interactive 3D Virtual Science Suite'}</span>
-            <span className="px-2 py-0.5 rounded-full bg-[#007AFF] text-white text-[10px] font-bold">
-              ISEF 2026
-            </span>
-          </div>
+              {/* Action Buttons */}
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const el = document.getElementById('labs');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="sn-btn sn-btn-primary sn-btn-lg shadow-md"
+                >
+                  <span>{ar ? 'ابدأ مجانًا' : 'Start Free'}</span>
+                  {isRTL ? <ArrowLeft size={16} strokeWidth={1.8} /> : <ArrowRight size={16} strokeWidth={1.8} />}
+                </button>
 
-          {/* Large Apple Headline */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.15]">
-            {isArabic ? (
-              <>
-                مختبرات العلوم التفاعلية 3D <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#007AFF] via-[#30B0C7] to-[#34C759]">
-                  صُممت لتجربة علمية فائقة السلاسة
+                <a
+                  href="#labs"
+                  className="sn-btn sn-btn-ghost sn-btn-lg"
+                >
+                  {ar ? 'استكشف المعامل' : 'Explore the Labs'}
+                </a>
+              </div>
+
+              {/* Guarantee Checkmarks */}
+              <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] font-medium text-[#737373]">
+                <span className="inline-flex items-center gap-1.5">
+                  <Check size={14} strokeWidth={2.4} className="text-[#047857]" />
+                  {ar ? 'بدون بطاقة بنكية' : 'No credit card'}
                 </span>
-              </>
-            ) : (
-              <>
-                Interactive 3D Science Suite <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#007AFF] via-[#30B0C7] to-[#34C759]">
-                  Engineered for Pure Scientific Discovery
+                <span className="inline-flex items-center gap-1.5">
+                  <Check size={14} strokeWidth={2.4} className="text-[#047857]" />
+                  {ar ? 'وضع الزائر متاح' : 'Guest mode available'}
                 </span>
-              </>
-            )}
-          </h1>
-
-          {/* Subtitle */}
-          <p className="text-[#8E8E93] text-sm sm:text-base lg:text-lg leading-relaxed font-normal">
-            {isArabic
-              ? 'بيئة تعليمية متكاملة تواكب أحدث المعايير: تفكيك وعزل 2,821 عضواً بشرياً، تركيب دوائر الكهرباء، تفاعلات الجدول الدوري، محاكاة انهيار المباني والزلازل، ومساعد صوتي ذكي باللغة العربية.'
-              : 'A certified virtual science suite: inspect 2,821 anatomical structures, wire electronic circuits, solve 118 elements, simulate structural earthquake collapses, and speak directly with Arabic voice AI.'}
-          </p>
-
-          {/* Apple Action Buttons */}
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            <button
-              onClick={() => onNavigate('anatomy')}
-              className="ios-btn-primary active:scale-95 duration-150"
-            >
-              <Activity className="w-4 h-4" />
-              <span>{isArabic ? 'ابدأ بأطلس التشريح البشري' : 'Launch Anatomy Atlas'}</span>
-            </button>
-
-            <button
-              onClick={() => onNavigate('physics')}
-              className="ios-btn-secondary active:scale-95 duration-150"
-            >
-              <Zap className="w-4 h-4 text-[#007AFF]" />
-              <span>{isArabic ? 'مختبر الفيزياء والكهرباء' : 'Explore Physics Lab'}</span>
-            </button>
-
-            <button
-              onClick={() => onNavigate('classroom')}
-              className="px-6 py-3 rounded-full bg-[#FF9500]/20 hover:bg-[#FF9500]/30 text-[#FF9500] border border-[#FF9500]/40 font-bold text-sm flex items-center gap-2 active:scale-95 duration-150 transition-all cursor-pointer"
-            >
-              <Presentation className="w-4 h-4 text-[#FF9500]" />
-              <span>{isArabic ? 'السبورة التفاعلية للمعلم' : 'Smartboard Presentation'}</span>
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 3. APPLE "HOW TO USE" 3-STEP GUIDE (Apple Tips Style) ── */}
-      <section className="space-y-4">
-        <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight flex items-center gap-2">
-          <span>{isArabic ? 'كيف تبدأ استخدام المنصة؟ 3 خطوات بسيطة' : 'Getting Started: 3 Simple Steps'}</span>
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Step 1 */}
-          <div className="p-5 rounded-2xl bg-[#1C1C1E] border border-white/10 space-y-3 shadow-lg">
-            <div 
-              className="w-10 h-10 rounded-[10px] ios-squircle flex items-center justify-center text-white font-bold text-base shadow-md"
-              style={{ background: 'linear-gradient(135deg, #007AFF, #5856D6)' }}
-            >
-              1
+                <span className="inline-flex items-center gap-1.5">
+                  <Check size={14} strokeWidth={2.4} className="text-[#047857]" />
+                  {ar ? 'مطابق للمنهج والمعايير' : 'Curriculum-mapped'}
+                </span>
+              </div>
             </div>
-            <h3 className="text-base font-bold text-white">
-              {isArabic ? 'اختر المعمل العلمي' : '1. Select Your Lab'}
-            </h3>
-            <p className="text-xs text-[#8E8E93] leading-relaxed">
-              {isArabic
-                ? 'انقر على أي معمل من المعامل الستة في الأسفل (التشريح، الفيزياء، الكيمياء، الأحياء، الجيولوجيا، أو الفلك).'
-                : 'Choose any of the 6 specialized laboratories below to enter instantly with zero loading friction.'}
-            </p>
-          </div>
 
-          {/* Step 2 */}
-          <div className="p-5 rounded-2xl bg-[#1C1C1E] border border-white/10 space-y-3 shadow-lg">
-            <div 
-              className="w-10 h-10 rounded-[10px] ios-squircle flex items-center justify-center text-white font-bold text-base shadow-md"
-              style={{ background: 'linear-gradient(135deg, #34C759, #00C7BE)' }}
-            >
-              2
-            </div>
-            <h3 className="text-base font-bold text-white">
-              {isArabic ? 'تفاعل وتحكّم بالمجسمات 3D' : '2. Interact in Real 3D'}
-            </h3>
-            <p className="text-xs text-[#8E8E93] leading-relaxed">
-              {isArabic
-                ? 'استخدم الماوس أو شاشة اللمس لتدوير النماذج، عزل الأعضاء، بناء الدوائر الكهربائية، أو اختبار الزلازل.'
-                : 'Rotate, zoom, isolate body parts, build electronic circuits, or trigger live earthquake collapse simulations.'}
-            </p>
-          </div>
+            {/* Right Column: Interactive Window Mockup (app.scinexa.school) */}
+            <div className="sn-rise sn-rise-2 min-w-0">
+              <div className="relative min-w-0">
 
-          {/* Step 3 */}
-          <div className="p-5 rounded-2xl bg-[#1C1C1E] border border-white/10 space-y-3 shadow-lg">
-            <div 
-              className="w-10 h-10 rounded-[10px] ios-squircle flex items-center justify-center text-white font-bold text-base shadow-md"
-              style={{ background: 'linear-gradient(135deg, #FF9500, #FF3B30)' }}
-            >
-              3
-            </div>
-            <h3 className="text-base font-bold text-white">
-              {isArabic ? 'تحدث مع المرشد داروين' : '3. Speak with Darwin AI'}
-            </h3>
-            <p className="text-xs text-[#8E8E93] leading-relaxed">
-              {isArabic
-                ? 'اضغط على زر داروين الصوتي أسفل الشاشة واسأله بصوتك عن أي مفهوم وسيرشدك فوراً.'
-                : 'Click the voice assistant icon in the bottom corner and talk freely to learn and navigate directly.'}
-            </p>
-          </div>
-        </div>
-      </section>
+                {/* Soft Ambient Glow */}
+                <div className="absolute -inset-6 -z-10 rounded-[36px] bg-[radial-gradient(circle_at_70%_20%,#e8efff_0,transparent_58%)]" />
 
-      {/* ── 4. THE 6 SIGNATURE LABS (Apple App Widgets Grid) ── */}
-      <section className="space-y-6">
-        <div>
-          <span className="text-xs font-bold text-[#007AFF] uppercase tracking-wider block mb-1">
-            {isArabic ? 'المعامل العلمية المعتمدة' : 'Official Virtual Laboratories'}
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            {isArabic ? 'المعامل العلمية الستة' : 'The 6 Core Virtual Laboratories'}
-          </h2>
-        </div>
+                {/* Window Frame */}
+                <div className="sn-card overflow-hidden p-0 shadow-[0_24px_70px_-28px_rgba(10,10,10,0.30)]">
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {labWidgets.map((widget) => {
-            const Icon = widget.icon;
-            return (
-              <div
-                key={widget.id}
-                onClick={() => onNavigate(widget.id)}
-                className="group bg-[#1C1C1E] hover:bg-[#242426] border border-white/10 hover:border-white/20 rounded-[28px] p-6 shadow-xl transition-all duration-200 hover:-translate-y-1 cursor-pointer flex flex-col justify-between active:scale-[0.98]"
-              >
-                <div className="space-y-4">
-                  {/* Top Row: Authentic Apple App Icon Squircle + Action Pill */}
-                  <div className="flex items-center justify-between">
-                    <div 
-                      className="w-14 h-14 rounded-[14px] ios-squircle flex items-center justify-center text-white shadow-xl transition-transform group-hover:scale-105"
-                      style={{ 
-                        background: widget.gradient,
-                        boxShadow: `0 6px 20px ${widget.shadowColor}`
-                      }}
-                    >
-                      <Icon className="w-7 h-7 text-white" />
+                  {/* Window Titlebar */}
+                  <div className="flex items-center gap-2 border-b border-[#e5e5e5] bg-[#fafafa] px-4 py-3">
+                    <span className="h-2 w-2 rounded-full bg-[#e5e5e5]" />
+                    <span className="h-2 w-2 rounded-full bg-[#e5e5e5]" />
+                    <span className="h-2 w-2 rounded-full bg-[#e5e5e5]" />
+                    <span className="ms-3 rounded-full border border-[#e5e5e5] bg-white px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.12em] text-[#737373]">
+                      app.scinexa.school
+                    </span>
+                  </div>
+
+                  {/* Window Content */}
+                  <div className="grid grid-cols-[88px_1fr] sm:grid-cols-[112px_1fr]">
+
+                    {/* Mini Sidebar */}
+                    <div className="border-e border-[#e5e5e5] bg-[#fafafa] p-3 flex flex-col justify-between">
+                      <div>
+                        <div className="mb-4 flex items-center gap-1.5">
+                          <SciNexaLogoIcon size={20} />
+                          <span className="text-[11px] font-bold tracking-tight text-[#0a0a0a]">SciNexa</span>
+                        </div>
+                        <div className="space-y-1.5">
+                          {[Activity, Zap, FlaskConical, Dna, Globe2].map((IconComp, idx) => (
+                            <div
+                              key={idx}
+                              className={`flex h-6 items-center gap-1.5 rounded-[7px] px-1.5 ${
+                                idx === 0 ? 'border border-[#e5e5e5] bg-white shadow-xs' : ''
+                              }`}
+                            >
+                              <IconComp
+                                size={11}
+                                strokeWidth={1.8}
+                                className={idx === 0 ? 'text-[#0a0a0a]' : 'text-[#a3a3a3]'}
+                              />
+                              <span
+                                className={`h-1 rounded-full ${
+                                  idx === 0 ? 'w-8 bg-[#d4d4d4]' : 'w-6 bg-[#ececec]'
+                                }`}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="pt-3 border-t border-[#e5e5e5] text-[8px] font-mono text-[#a3a3a3]">
+                        v15.0
+                      </div>
                     </div>
 
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onNavigate(widget.id);
-                      }}
-                      className="px-4 py-1.5 rounded-full text-xs font-bold bg-white/10 group-hover:bg-[#007AFF] text-[#007AFF] group-hover:text-white uppercase tracking-wider transition-all active:scale-95"
-                    >
-                      {isArabic ? 'فتح' : 'OPEN'}
-                    </button>
-                  </div>
+                    {/* Mini Dashboard Content */}
+                    <div className="min-w-0 p-4">
 
-                  {/* Title & Category */}
-                  <div>
-                    <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider block">
-                      {widget.category}
-                    </span>
-                    <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight mt-0.5">
-                      {widget.title}
-                    </h3>
-                    <p className="text-xs text-[#8E8E93] mt-1 font-medium">
-                      {widget.subtitle}
-                    </p>
-                  </div>
-
-                  {/* Description */}
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    {widget.description}
-                  </p>
-
-                  {/* Features List */}
-                  <div className="space-y-2 pt-2 border-t border-white/[0.06]">
-                    {widget.features.map((feat, fIdx) => (
-                      <div key={fIdx} className="flex items-center gap-2 text-xs text-slate-300">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#34C759] shrink-0" />
-                        <span>{feat}</span>
+                      {/* Header in Mockup */}
+                      <div className="mb-3 flex items-center justify-between">
+                        <div>
+                          <div className="text-[9px] uppercase tracking-[0.12em] text-[#a3a3a3] font-mono">
+                            {ar ? 'لوحة الطالب' : 'Student Overview'}
+                          </div>
+                          <div className="text-[13px] font-bold tracking-tight text-[#0a0a0a]">
+                            {ar ? `صباح الخير، ${studentName}` : `Good morning, ${studentName}`}
+                          </div>
+                        </div>
+                        <div className="rounded-full bg-[#ecfdf5] px-2 py-0.5 text-[8px] font-bold text-[#047857] flex items-center gap-1">
+                          <Flame size={10} className="text-[#047857]" />
+                          {ar ? '٣ أيام متتالية' : '3-day streak'}
+                        </div>
                       </div>
-                    ))}
+
+                      {/* Metric Tiles */}
+                      <div className="mb-3 grid grid-cols-3 gap-2">
+                        {[
+                          { v: '68%', l: ar ? 'تقدم المنهج' : 'Curriculum' },
+                          { v: '12', l: ar ? 'دروس مكتملة' : 'Lessons' },
+                          { v: '480', l: ar ? 'نقاط XP' : 'XP Points' }
+                        ].map((m) => (
+                          <div key={m.l} className="rounded-[10px] border border-[#e5e5e5] bg-white p-2 shadow-xs">
+                            <div className="text-[15px] font-bold tracking-[-0.04em] text-[#0a0a0a] font-mono">{m.v}</div>
+                            <div className="text-[8px] font-medium text-[#737373]">{m.l}</div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* In-Progress Lessons */}
+                      <div className="mb-2 flex items-end justify-between">
+                        <div className="text-[10px] font-bold text-[#0a0a0a]">
+                          {ar ? 'متابعة التجارب' : 'Continue learning'}
+                        </div>
+                        <div className="text-[8px] text-[#737373]">
+                          {ar ? 'عرض الكل' : 'View all'}
+                        </div>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        {[
+                          { name: ar ? 'اختزال أكسيد النحاس بالهيدروجين' : 'Reduction of CuO by H2', accent: 'chemistry', pct: 85 },
+                          { name: ar ? 'الحركة على وتر والموجات' : 'Wave on a string', accent: 'physics', pct: 60 },
+                          { name: ar ? 'تشريح الجهاز العصبي والدماغ' : 'Nervous system & brain', accent: 'anatomy', pct: 40 }
+                        ].map((item) => (
+                          <div
+                            key={item.name}
+                            className={`sn-${item.accent} flex items-center gap-2 rounded-[9px] border border-[#e5e5e5] bg-white px-2 py-1.5 shadow-xs`}
+                          >
+                            <span className="sn-accent-line h-4 w-[2.5px] rounded-full" />
+                            <span className="flex-1 text-[9px] font-semibold truncate text-[#0a0a0a]">
+                              {item.name}
+                            </span>
+                            <div className="h-1 w-10 overflow-hidden rounded-full bg-[#f0f0f0]">
+                              <span
+                                className="block h-full rounded-full bg-[#0a0a0a]"
+                                style={{ width: `${item.pct}%` }}
+                              />
+                            </div>
+                            <span className="text-[8px] font-mono text-[#737373]">{item.pct}%</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {/* Bottom Row: Badge */}
-                <div className="pt-4 mt-4 border-t border-white/[0.06] flex items-center justify-between">
-                  <span className="text-[10px] font-mono font-bold text-[#8E8E93]">
-                    {widget.badge}
-                  </span>
-                  <span className="text-xs font-bold text-[#007AFF] flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                    <span>{isArabic ? 'دخول المعمل' : 'Launch'}</span>
-                    <ChevronRight className="w-4 h-4" />
-                  </span>
+                {/* Floating Bottom Badge */}
+                <div className="absolute -bottom-4 -start-4 hidden sm:block sn-card !p-3 shadow-lg">
+                  <div className="flex items-center gap-2">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-[8px] bg-[#ecfdf5] text-[#047857]">
+                      <Check size={14} strokeWidth={2.4} />
+                    </span>
+                    <div>
+                      <div className="text-[10px] font-bold text-[#0a0a0a]">
+                        {ar ? 'مطابق للمنهج والمعايير' : 'MOE Aligned'}
+                      </div>
+                      <div className="text-[8px] text-[#737373] font-mono">
+                        K–12 · Baccalaureate
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Floating Top Badge */}
+                <div className="absolute -top-4 -end-3 hidden sm:block sn-card !p-3 shadow-lg">
+                  <div className="flex items-center gap-2">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-[8px] bg-[#eff6ff] text-[#1d4ed8]">
+                      <Sparkles size={14} strokeWidth={2} />
+                    </span>
+                    <div>
+                      <div className="text-[10px] font-bold text-[#0a0a0a]">
+                        {ar ? 'معامل حية 3D' : 'Live 3D Labs'}
+                      </div>
+                      <div className="text-[8px] text-[#737373] font-mono">
+                        {ar ? '٦ معامل تفاعلية نشطة' : '6 labs online'}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* ── 5. APPLE KEYNOTE CLASSROOM MODE CARD ── */}
-      <section 
-        onClick={() => onNavigate('classroom')}
-        className="p-6 sm:p-8 rounded-[28px] bg-[#1C1C1E] border border-white/10 hover:border-[#FF9500]/50 transition-all cursor-pointer shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 active:scale-[0.99]"
-      >
-        <div className="flex items-start gap-4">
-          <div 
-            className="w-14 h-14 rounded-[14px] ios-squircle flex items-center justify-center text-white shrink-0 shadow-xl"
-            style={{ 
-              background: 'linear-gradient(135deg, #FFCC00, #FF9500)',
-              boxShadow: '0 6px 20px rgba(255, 149, 0, 0.4)'
-            }}
-          >
-            <Presentation className="w-7 h-7 text-white" />
+            </div>
           </div>
 
-          <div className="space-y-1.5">
-            <span className="text-xs font-bold text-[#FF9500] uppercase tracking-wider block">
-              {isArabic ? 'وضع المعلم والشاشات الذكية' : 'Teacher Smartboard Mode'}
-            </span>
-            <h3 className="text-xl sm:text-2xl font-bold text-white">
-              {isArabic ? 'السبورة التفاعلية لشاشات الفصول وأجهزة العرض' : 'Engineered for Classroom Touchscreens & Projectors'}
-            </h3>
-            <p className="text-xs sm:text-sm text-[#8E8E93] leading-relaxed">
-              {isArabic
-                ? 'واجهة ذات تباين فائق، نصوص كبيرة واضحة، وأدوات عرض خطوة بخطوة لشرح التجارب العلمية للطلاب بوضوح تام.'
-                : 'High-contrast presentation mode with large typography and step-by-step tools built for classroom smartboards.'}
-            </p>
+          {/* Stats Row */}
+          <div className="border-t border-[#e5e5e5] bg-white/70">
+            <div className="sn-shell grid grid-cols-2 divide-x divide-[#e5e5e5] py-0 md:grid-cols-4 [&>*]:border-[#e5e5e5] rtl:divide-x-reverse">
+              {[
+                { v: '٦', en: '6', l: ar ? 'معامل تخصصية حية' : 'specialist 3D labs' },
+                { v: '٢٬٨٢١', en: '2,821', l: ar ? 'بنية تشريحية طبية 3D' : 'anatomical structures' },
+                { v: '١١٨', en: '118', l: ar ? 'عنصرًا وتفاعلات غازات' : 'chemical elements & reactions' },
+                { v: '١٠٠٪', en: '100%', l: ar ? 'مطابقة للمنهج والاستكشاف' : 'curriculum & inquiry aligned' }
+              ].map((s) => (
+                <div className="px-5 py-5 first:ps-0 md:px-7" key={s.l}>
+                  <div className="sn-number text-[26px] font-bold leading-none tracking-[-0.04em] text-[#0a0a0a]">
+                    {ar ? s.v : s.en}
+                  </div>
+                  <div className="mt-1.5 text-[11px] font-medium text-[#737373]">{s.l}</div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </section>
 
-        <button
-          onClick={() => onNavigate('classroom')}
-          className="px-6 py-2.5 rounded-full bg-[#FF9500] hover:bg-[#FF8500] text-black font-bold text-xs sm:text-sm shadow-lg shadow-[#FF9500]/30 transition-all shrink-0 cursor-pointer flex items-center gap-1.5 active:scale-95"
-        >
-          <span>{isArabic ? 'فتح السبورة الذكية' : 'Open Smartboard'}</span>
-          <ChevronRight className="w-4 h-4" />
-        </button>
-      </section>
+
+        {/* ── 2. LABORATORIES CATALOG GRID (#labs) ── */}
+        <section id="labs" className="border-b border-[#e5e5e5] bg-[#f5f5f5] py-16 lg:py-24">
+          <div className="sn-shell">
+
+            {/* Section Header & Filter */}
+            <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+              <div>
+                <span className="sn-eyebrow text-[#1d4ed8]">
+                  {ar ? 'المعامل التخصصية' : 'The Laboratories'}
+                </span>
+                <h2 className="sn-h1 mt-3 max-w-[24ch] text-[#0a0a0a]">
+                  {ar ? 'ستّ مساحات للاكتشاف، بلا فوضى.' : 'Six rooms for discovery. No clutter.'}
+                </h2>
+              </div>
+
+              {/* Spotlight Filter Input */}
+              <div className="w-full md:w-80">
+                <div className="relative">
+                  <Search className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#737373]" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder={ar ? 'ابحث عن معمل، تجربة، أو عنصر...' : 'Search labs, experiments, elements...'}
+                    className="sn-input ps-9 pe-4 !h-10 text-xs font-semibold"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className="absolute end-3 top-1/2 -translate-y-1/2 text-xs text-[#737373] hover:text-[#0a0a0a]"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* 6 Lab Cards Grid */}
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredLabs.map((lab: LabCatalogItem) => {
+                const IconComponent = LAB_ICONS[lab.id] || Sparkles;
+                return (
+                  <button
+                    key={lab.id}
+                    type="button"
+                    onClick={() => onNavigate(lab.id)}
+                    className={`sn-${lab.accent} sn-card sn-card-hover group flex flex-col p-6 text-start cursor-pointer transition-all`}
+                  >
+                    {/* Top Row: Icon + Index */}
+                    <div className="mb-5 flex items-start justify-between">
+                      <div className="sn-icon-tile shadow-xs">
+                        <IconComponent size={20} strokeWidth={1.8} />
+                      </div>
+                      <span className="font-mono text-[11px] font-bold tracking-[0.16em] text-[#a3a3a3]">
+                        {lab.index}
+                      </span>
+                    </div>
+
+                    {/* Category Eyebrow */}
+                    <div className="sn-eyebrow mb-1 !text-[10px] text-[#737373]">
+                      {ar ? lab.categoryAr : lab.categoryEn}
+                    </div>
+
+                    {/* Name */}
+                    <h3 className="sn-h3 mb-2 text-[#0a0a0a] group-hover:text-[#1d4ed8] transition-colors">
+                      {ar ? lab.nameAr : lab.nameEn}
+                    </h3>
+
+                    {/* Tagline */}
+                    <p className="mb-5 text-[13px] leading-relaxed text-[#737373] line-clamp-2">
+                      {ar ? lab.taglineAr : lab.taglineEn}
+                    </p>
+
+                    {/* Features list */}
+                    <div className="mb-5 flex flex-wrap gap-1.5">
+                      {(ar ? lab.featuresAr : lab.featuresEn).map((f) => (
+                        <span
+                          key={f}
+                          className="px-2 py-0.5 rounded-md bg-[#fafafa] border border-[#e5e5e5] text-[10px] font-semibold text-[#525252]"
+                        >
+                          {f}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Footer Row: Metric Stat + Open Arrow */}
+                    <div className="mt-auto flex items-end justify-between border-t border-[#f0f0f0] pt-4">
+                      <div>
+                        <div className="sn-number text-[20px] font-bold leading-none tracking-[-0.04em] text-[#0a0a0a]">
+                          {lab.statValue}
+                        </div>
+                        <div className="mt-1 text-[10px] font-medium text-[#737373]">
+                          {ar ? lab.statLabelAr : lab.statLabelEn}
+                        </div>
+                      </div>
+
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full border border-[#e5e5e5] text-[#737373] transition-all group-hover:border-[#0a0a0a] group-hover:bg-[#0a0a0a] group-hover:text-white shadow-xs">
+                        {isRTL ? <ArrowLeft size={14} strokeWidth={2} /> : <ArrowRight size={14} strokeWidth={2} />}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+
+        {/* ── 3. CURRICULUM ALIGNMENT SHOWCASE (#curriculum) ── */}
+        <section id="curriculum" className="border-b border-[#e5e5e5] bg-white py-16 lg:py-24">
+          <div className="sn-shell grid items-center gap-14 lg:grid-cols-2">
+
+            {/* Left Column: Text & Features */}
+            <div>
+              <span className="sn-eyebrow text-[#1d4ed8]">
+                {ar ? 'المناهج والتجارب التفاعلية' : 'Curriculum & Inquiry'}
+              </span>
+              <h2 className="sn-h1 mt-3 max-w-[22ch] text-[#0a0a0a]">
+                {ar ? 'كل درس له تجربة. كل تجربة لها دليل.' : 'Every lesson has an experiment. Every experiment has evidence.'}
+              </h2>
+              <p className="mt-5 max-w-[46ch] text-[14px] leading-[1.7] text-[#737373]">
+                {ar
+                  ? 'منهج علمي تفاعلي يربط وحدات كتاب الوزارة بتجارب ثلاثية الأبعاد حية، مع أدوات تفاعل السحب والإفلات والتسخين وقياس الملاحظات العلمية لحظياً.'
+                  : 'An interactive scientific curriculum connecting Ministry textbook units with real-time 3D experiments, complete with drag & drop reagent mixing and thermal reactions.'}
+              </p>
+
+              <div className="mt-8 space-y-4">
+                {[
+                  ar ? 'تجارب تحضير الغازات والمواد غير العضوية بالسحب والإفلات والتسخين.' : 'Gas synthesis & inorganic reactions with live drag & drop.',
+                  ar ? 'ربط مباشر بالمفاهيم الفيزيائية والتشريحية بدون تعقيد أو تشويش.' : 'Direct coupling to physical and anatomical concepts without clutter.',
+                  ar ? 'الاستكشاف المعملي الحر متاح لجميع الطلاب في أي وقت.' : 'Free laboratory sandbox open for all students at any time.'
+                ].map((text) => (
+                  <div className="flex items-start gap-3" key={text}>
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#eff6ff] text-[#1d4ed8]">
+                      <Check size={12} strokeWidth={2.4} />
+                    </span>
+                    <span className="text-[13px] font-medium leading-relaxed text-[#171717]">{text}</span>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => onNavigate('chemistry')}
+                className="sn-link mt-8 cursor-pointer font-semibold"
+              >
+                <span>{ar ? 'افتح معمل التفاعلات الكيميائية الآن' : 'Open Chemical Reactions Workbench'}</span>
+                {isRTL ? <ArrowLeft size={14} strokeWidth={2} /> : <ArrowRight size={14} strokeWidth={2} />}
+              </button>
+            </div>
+
+            {/* Right Column: Interactive Curriculum Card */}
+            <div className="sn-card overflow-hidden p-0 shadow-lg">
+              <div className="flex items-center justify-between border-b border-[#e5e5e5] px-5 py-4 bg-[#fafafa]">
+                <div>
+                  <div className="sn-eyebrow text-[#737373]">
+                    {ar ? 'تجارب تحضير الغازات والمواد غير العضوية' : 'Gas Synthesis Lab'}
+                  </div>
+                  <div className="mt-1 text-[15px] font-bold text-[#0a0a0a]">
+                    {ar ? 'معمل التفاعلات الكيميائية والاستقصاء' : 'Virtual Chemical Reactions Lab'}
+                  </div>
+                </div>
+                <span className="sn-badge sn-badge-green font-mono font-bold">
+                  {ar ? 'جاهز للاستكشاف' : 'Ready'}
+                </span>
+              </div>
+
+              <div className="divide-y divide-[#f0f0f0]">
+                {curriculumHighlights.map((item) => (
+                  <div
+                    key={item.n}
+                    onClick={() => onNavigate(item.lab)}
+                    className="flex items-center gap-4 px-5 py-4 hover:bg-[#fafafa] transition-colors cursor-pointer group"
+                  >
+                    <span className="font-mono text-[10px] font-bold tracking-[0.12em] text-[#a3a3a3]">
+                      {item.n}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-[13px] font-bold text-[#0a0a0a] group-hover:text-[#1d4ed8] transition-colors">
+                        {item.t}
+                      </div>
+                      <div className="mt-0.5 text-[11px] text-[#737373]">
+                        {item.u} · {item.p}
+                      </div>
+                    </div>
+                    <span
+                      className={`sn-${item.lab} sn-badge`}
+                      style={{
+                        background: 'var(--sn-accent-soft)',
+                        color: 'var(--sn-accent)'
+                      }}
+                    >
+                      {ar ? 'ابدأ التجربة' : 'Launch'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex items-center justify-between border-t border-[#e5e5e5] bg-[#fafafa] px-5 py-3">
+                <span className="text-[11px] font-medium text-[#737373]">
+                  {ar ? 'محاكاة تفاعلية ثلاثية الأبعاد 3D' : 'Interactive 3D simulation'}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => onNavigate('chemistry')}
+                  className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0a0a0a] hover:text-[#1d4ed8]"
+                >
+                  <span>{ar ? 'فتح المعمل' : 'Open lab'}</span>
+                  {isRTL ? <ArrowLeft size={12} strokeWidth={2} /> : <ArrowRight size={12} strokeWidth={2} />}
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        {/* ── 4. ROLES SECTION (#roles) ── */}
+        <section id="roles" className="border-b border-[#e5e5e5] bg-[#f5f5f5] py-16 lg:py-24">
+          <div className="sn-shell">
+            <span className="sn-eyebrow text-[#1d4ed8]">{ar ? 'الأدوار والبيئات' : 'Designed for everyone'}</span>
+            <h2 className="sn-h1 mt-3 max-w-[24ch] text-[#0a0a0a]">
+              {ar ? 'مصمّم للطالب، والمعلم، والمدرسة.' : 'Designed for the student, teacher and school.'}
+            </h2>
+
+            <div className="mt-10 grid gap-4 md:grid-cols-3">
+              {roles.map((r) => {
+                const RoleIcon = r.icon;
+                return (
+                  <div className="sn-card sn-card-hover p-6 bg-white" key={r.t}>
+                    <span className="flex h-10 w-10 items-center justify-center rounded-[12px] border border-[#e5e5e5] bg-[#fafafa] text-[#0a0a0a]">
+                      <RoleIcon size={18} strokeWidth={1.8} />
+                    </span>
+                    <h3 className="sn-h3 mt-5 text-[#0a0a0a]">{r.t}</h3>
+                    <p className="mt-2 text-[13px] leading-relaxed text-[#737373]">{r.d}</p>
+                    <ul className="mt-5 space-y-2 border-t border-[#f0f0f0] pt-4">
+                      {r.b.map((feat) => (
+                        <li className="flex items-center gap-2 text-[12px] font-medium text-[#171717]" key={feat}>
+                          <Check size={13} strokeWidth={2.4} className="text-[#047857]" />
+                          {feat}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+
+        {/* ── 5. OFFLINE & LAN DEPLOYMENT (#offline) ── */}
+        <section id="offline" className="bg-white py-14 border-b border-[#e5e5e5]">
+          <div className="sn-shell">
+            <div className="sn-card flex flex-col items-start justify-between gap-6 p-6 md:flex-row md:items-center md:p-8 bg-[#fafafa]">
+              <div className="flex items-start gap-4">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[12px] bg-[#eff6ff] text-[#1d4ed8]">
+                  <HardDrive size={20} strokeWidth={1.8} />
+                </span>
+                <div>
+                  <h3 className="sn-h3 text-[#0a0a0a]">
+                    {ar ? 'يعمل حين تنقطع الشبكة.' : 'Works when the network does not.'}
+                  </h3>
+                  <p className="mt-1 max-w-[58ch] text-[13px] leading-relaxed text-[#737373]">
+                    {ar
+                      ? 'نسخة محلية كاملة جاهزة للعمل على فلاش ميموري USB أو خادم المدرسة المحلي، مع إمكانية التحميل المسبق لكافة النماذج والتجارب.'
+                      : 'A complete local build ready on USB or school LAN server, with full offline precaching of 3D models and simulations.'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="sn-badge sn-badge-outline font-mono text-[11px]">
+                  USB · LAN · PWA
+                </span>
+                <button
+                  type="button"
+                  onClick={onOpenOfflineModal}
+                  className="sn-btn sn-btn-primary sn-btn-sm"
+                >
+                  {ar ? 'تحميل المعمل محلياً' : 'Download Lab'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        {/* ── 6. CALL TO ACTION (Dark Science Observatory Banner) ── */}
+        <section className="bg-white pb-20 pt-10">
+          <div className="sn-shell">
+            <div className="relative overflow-hidden rounded-[24px] bg-[#0a0a0a] px-6 py-12 md:px-12 md:py-14 text-white shadow-2xl">
+              <div className="absolute inset-0 opacity-[0.08] [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:48px_48px]" />
+              <div className="relative flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
+                <div>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/45">
+                    {ar ? 'ابدأ الآن' : 'Get Started'}
+                  </span>
+                  <h2 className="mt-3 max-w-[20ch] text-[clamp(1.75rem,3.4vw,2.5rem)] font-bold leading-[1.12] tracking-[-0.04em] text-white">
+                    {ar ? 'افتح أول معمل خلال دقيقة.' : 'Open your first lab in a minute.'}
+                  </h2>
+                  <p className="mt-3 max-w-[42ch] text-[13px] leading-relaxed text-white/60">
+                    {ar
+                      ? 'اختر المعمل العلمي الذي ترغب في استكشافه الآن وابدأ التجربة ثلاثية الأبعاد فوراً دون تثبيت أي برامج خارجية.'
+                      : 'Choose the scientific lab you wish to explore right now and launch real-time 3D inquiry without any installs.'}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const el = document.getElementById('labs');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="sn-btn sn-btn-lg bg-white text-[#0a0a0a] hover:bg-[#f0f0f0] shadow-lg font-bold"
+                  >
+                    <span>{ar ? 'استكشف المعامل 3D' : 'Explore 3D Labs'}</span>
+                    {isRTL ? <ArrowLeft size={16} strokeWidth={2} /> : <ArrowRight size={16} strokeWidth={2} />}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => onNavigate('classroom')}
+                    className="sn-btn sn-btn-lg border border-white/20 bg-transparent text-white hover:bg-white/10"
+                  >
+                    <BookOpen size={16} strokeWidth={1.8} />
+                    <span>{ar ? 'وضع السبورة' : 'Smartboard'}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
   );
 };
