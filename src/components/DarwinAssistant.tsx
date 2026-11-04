@@ -121,6 +121,15 @@ export const DarwinAssistant: React.FC<DarwinAssistantProps> = ({
     };
   }, [currentTab, setCurrentTab]);
 
+  useEffect(() => {
+    const handleOpen = () => {
+      setIsOpen(true);
+      setIsMinimized(false);
+    };
+    window.addEventListener('open-darwin', handleOpen);
+    return () => window.removeEventListener('open-darwin', handleOpen);
+  }, []);
+
   // ── Handlers ─────────────────────────────────────────────────────
   const handleConnect = async () => {
     if (isConnected || isConnecting) {

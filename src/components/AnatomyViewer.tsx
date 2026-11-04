@@ -718,14 +718,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     descEn: string;
     descAr: string;
     region?: string;
-  }>({
-    nameEn: 'Femur (Thigh Bone)',
-    nameAr: 'عظم الفخذ',
-    system: 'Skeletal System (الهيكل العظمي)',
-    descEn: 'The longest, heaviest, and strongest bone in the human skeleton. Supports high mechanical compressive loads.',
-    descAr: 'أطول وأثقل وأقوى عظم في الهيكل العظمي البشري، ينقل ثقل الجسم من الحوض إلى عظم الساق.',
-    region: 'Lower Extremity (الطرف السفلي)',
-  });
+  } | null>(null);
 
   const [isIsolated, setIsIsolated] = useState(false);
   const [activeSketchfabModel, setActiveSketchfabModel] = useState<AnatomyAtlasModel | null>(null);
@@ -1813,20 +1806,22 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
           )}
 
           {/* Callout Indicator HUD */}
-          <div className="absolute top-16 right-4 z-10 sci-card p-3 max-w-xs border border-sky-500/30">
-            <div className="flex items-center space-x-2 mb-1">
-              <div className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
-              <span className="text-[11px] font-bold text-sky-300 uppercase tracking-wider">
-                {language === 'ar' ? 'المؤشر التشريحي النشط' : 'Active Specimen Pin'}
+          {selectedStructure && (
+            <div className="absolute top-16 right-4 z-10 sci-card p-3 max-w-xs border border-sky-500/30">
+              <div className="flex items-center space-x-2 mb-1">
+                <div className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
+                <span className="text-[11px] font-bold text-sky-300 uppercase tracking-wider">
+                  {language === 'ar' ? 'المؤشر التشريحي النشط' : 'Active Specimen Pin'}
+                </span>
+              </div>
+              <span className="text-xs font-bold text-white block">
+                {language === 'ar' ? selectedStructure?.nameAr : selectedStructure?.nameEn}
+              </span>
+              <span className="text-[10px] text-slate-400 block mt-0.5">
+                {selectedStructure?.region}
               </span>
             </div>
-            <span className="text-xs font-bold text-white block">
-              {language === 'ar' ? selectedStructure?.nameAr : selectedStructure?.nameEn}
-            </span>
-            <span className="text-[10px] text-slate-400 block mt-0.5">
-              {selectedStructure?.region}
-            </span>
-          </div>
+          )}
 
           {/* Bottom Mission-Control Telemetry HUD */}
           <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-10 bg-slate-950/90 border border-sky-500/25 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs text-slate-300 flex items-center gap-2.5 sm:gap-3 flex-wrap max-w-[95%] shadow-xl">
@@ -1852,7 +1847,9 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         {/* Specimen Inspector & Scientific Pioneer (1 column) */}
         <div className="space-y-6">
           <div className="sci-card p-5 space-y-4 relative" style={{ transform: 'translateZ(0)', isolation: 'isolate', backfaceVisibility: 'hidden' }}>
-            <div className="border-b border-sky-500/15 pb-3">
+            {selectedStructure ? (
+              <>
+                <div className="border-b border-sky-500/15 pb-3">
               <span className="text-xs text-slate-400 block uppercase tracking-wider">
                 {language === 'ar' ? 'فحص البنية التشريحية' : 'Specimen Inspection'}
               </span>
@@ -1915,6 +1912,29 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
                 {language === 'ar' ? 'اختبر فهمك لهذه البنية (Interactive Quiz)' : 'Quiz Me on this Specimen'}
               </span>
             </button>
+              </>
+            ) : (
+              <div className="text-center py-6 px-3 space-y-4">
+                <div className="w-14 h-14 rounded-2xl bg-sky-500/10 border border-sky-400/20 flex items-center justify-center mx-auto text-sky-400 shadow-inner">
+                  <Sparkles className="w-7 h-7 text-sky-400 animate-pulse" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-white mb-1.5">
+                    {language === 'ar' ? 'لم يتم تحديد أي بنية تشريحية' : 'No Specimen Selected'}
+                  </h4>
+                  <p className="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
+                    {language === 'ar'
+                      ? 'انقر مباشرة بالفأرة أو اللمس على أي عظم أو عضو في المجسم ثلاثي الأبعاد لعرض البيانات الطبية ووظائفه الفسيولوجية.'
+                      : 'Click directly on any bone, organ, or muscle in the 3D model to inspect its physiological function.'}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-1.5 pt-2 text-[10px] text-sky-300">
+                  <span className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10">🖱️ تدوير 360°</span>
+                  <span className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10">🔍 تكبير وتصغير</span>
+                  <span className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10">🎯 فحص وعزل 3D</span>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Pioneer Card: Andreas Vesalius */}
@@ -1953,7 +1973,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
       )}
 
       {/* Interactive Formative Assessment / Quiz Modal (ISEF Innovation) */}
-      {showQuizModal && (
+      {showQuizModal && selectedStructure && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in">
           <div className="sci-card max-w-lg w-full p-6 border border-sky-500/30 bg-slate-900/95 shadow-2xl relative space-y-4">
             <div className="flex items-center justify-between border-b border-sky-500/20 pb-3">
