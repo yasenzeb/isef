@@ -56,10 +56,10 @@ export const UserProfileCard: React.FC<{ language?: string }> = ({ language = 'a
         {/* ── Trigger Pill ── */}
         <button
           onClick={() => setDropdownOpen(p => !p)}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/10 hover:border-indigo-400/40 transition-all cursor-pointer text-slate-200 shadow-sm"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/15 border border-white/10 transition-all cursor-pointer text-white shadow-sm active:scale-95 duration-150"
         >
           {/* Avatar Icon */}
-          <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-sm shadow-inner shrink-0">
+          <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-[#007AFF] to-[#5856D6] flex items-center justify-center text-sm shadow-inner shrink-0">
             {avatarIcon}
           </div>
 
@@ -84,7 +84,7 @@ export const UserProfileCard: React.FC<{ language?: string }> = ({ language = 'a
         {dropdownOpen && (
           <div
             dir={isAr ? 'rtl' : 'ltr'}
-            className={`absolute top-full mt-2 ${isAr ? 'left-0' : 'right-0'} w-72 rounded-2xl bg-[#12141a] border border-white/10 shadow-2xl p-4 z-[999] text-slate-200`}
+            className={`absolute top-full mt-2 ${isAr ? 'left-0' : 'right-0'} w-72 rounded-2xl bg-[#1C1C1E]/95 backdrop-blur-2xl border border-white/15 shadow-2xl p-4 z-[999] text-white`}
             style={{ boxShadow: '0 20px 40px -10px rgba(0,0,0,0.85)' }}
           >
             {/* Profile header */}

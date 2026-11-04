@@ -1,6 +1,6 @@
-// SciNexa Progressive Offline Service Worker v5.0 (HeroUI Design System)
+// SciNexa Progressive Offline Service Worker v6.0 (Apple iOS HIG Design System)
 // Constant cache names ensure stable offline caching without leaking caches on worker restart
-const CACHE_VERSION = 'scinexa-v5-heroui';
+const CACHE_VERSION = 'scinexa-v6-ios-hig';
 const MODEL_CACHE = 'scinexa-v2-models-1';
 // The "Offline" modal (OfflineDownloadModal.tsx) fills this cache by hand: never delete it, and always read from it.
 const OFFLINE_CACHE = 'scinexa-offline-v2';

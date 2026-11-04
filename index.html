@@ -42,7 +42,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://unpkg.com" />
-    <link rel="dns-prefetch" href="https://api.fish.audio" />
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
     <!-- Structured Data (JSON-LD) for Google Search Engine Optimization -->
@@ -72,32 +71,6 @@
   </head>
   <body class="bg-black text-slate-100 antialiased selection:bg-white selection:text-black">
     <div id="root"></div>
-
-    <!-- Fish Audio Agent Widget � loaded lazily on first user interaction -->
-    <script type="text/javascript">
-      (function() {
-        var loaded = false;
-        function loadFishAgent() {
-          if (loaded) return;
-          loaded = true;
-          var el = document.createElement('fish-agent');
-          el.setAttribute('agent-id', '929a1bf391db4185b03ae62f05a49207');
-          el.setAttribute('language', 'ar');
-          el.setAttribute('greeting', 'أهلاً بك يا بطل! أنا داروين مرشدك العلمي في منصة ساينكسا، جاهز لاستكشاف أي تجربة أو فحص أي عضو معايا؟');
-          document.body.insertBefore(el, document.getElementById('fish-agent-placeholder'));
-          var s = document.createElement('script');
-          s.src = 'https://unpkg.com/@fishaudio/agent-widget-embed';
-          s.async = true;
-          s.type = 'text/javascript';
-          document.body.appendChild(s);
-        }
-        ['click','touchstart','keydown'].forEach(function(e){
-          window.addEventListener(e, loadFishAgent, { once: true, passive: true });
-        });
-      })();
-    </script>
-    <div id="fish-agent-placeholder"></div>
-
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
