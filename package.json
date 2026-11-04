@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "authors": ["Islam", "Yaseen"],
+  "project": "ISEF 2026 — SciNexa Interactive 3D Science Labs",
+  "fingerprint": "b35dcc2b2495508cd11d6e6294915f7211adfc93ce1a2188d81858b9cd38123f",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
