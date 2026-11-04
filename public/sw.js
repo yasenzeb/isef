@@ -1,6 +1,6 @@
-// SciNexa Progressive Offline Service Worker v9.0 (Fish Audio Darwin & Anatomy Fix)
+// SciNexa Progressive Offline Service Worker v10.0 (Custom Apple Darwin Modal & Fish Theme)
 // Constant cache names ensure stable offline caching without leaking caches on worker restart
-const CACHE_VERSION = 'scinexa-v9-fish-darwin';
+const CACHE_VERSION = 'scinexa-v10-darwin-modal';
 const MODEL_CACHE = 'scinexa-v2-models-1';
 // The "Offline" modal (OfflineDownloadModal.tsx) fills this cache by hand: never delete it, and always read from it.
 const OFFLINE_CACHE = 'scinexa-offline-v2';
