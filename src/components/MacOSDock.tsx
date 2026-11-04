@@ -90,7 +90,42 @@ export const MacOSDock: React.FC<MacOSDockProps> = ({ currentTab, setCurrentTab 
 
   const handleOpenDarwin = () => {
     if (typeof window === 'undefined') return;
-    window.dispatchEvent(new CustomEvent('open-darwin'));
+
+    // Load Fish Audio script if not already loaded
+    if (!document.querySelector('script[src*="agent-widget-embed"]')) {
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/@fishaudio/agent-widget-embed';
+      s.async = true;
+      document.body.appendChild(s);
+    }
+
+    // Inject <fish-agent> element if not already in DOM
+    if (!document.querySelector('fish-agent')) {
+      const el = document.createElement('fish-agent');
+      el.setAttribute('agent-id', '929a1bf391db4185b03ae62f05a49207');
+      el.setAttribute('language', 'ar');
+      el.setAttribute(
+        'greeting',
+        'أهلاً بك يا بطل! أنا داروين مرشدك العلمي في منصة ساينكسا، جاهز لاستكشاف أي تجربة أو فحص أي عضو معايا؟'
+      );
+      document.body.appendChild(el);
+    }
+
+    // Try to trigger the widget's internal open button after it mounts
+    const tryOpen = () => {
+      const el = document.querySelector('fish-agent') as Element & { shadowRoot?: ShadowRoot };
+      if (el?.shadowRoot) {
+        const btn = el.shadowRoot.querySelector('button') as HTMLElement | null;
+        if (btn) { btn.click(); return true; }
+      }
+      return false;
+    };
+
+    // Attempt multiple times to handle async widget initialization
+    let attempts = 0;
+    const interval = setInterval(() => {
+      if (tryOpen() || attempts++ >= 15) clearInterval(interval);
+    }, 300);
   };
 
   return (
