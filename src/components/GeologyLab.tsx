@@ -407,23 +407,23 @@ export const GeologyLab: React.FC = () => {
         </div>
 
         {/* Module Switcher: ONLY 3D Interactive Simulations */}
-        <div className="flex items-center space-x-2 sci-surface p-1.5">
+        <div className="flex items-center flex-wrap gap-1.5 sci-surface p-1.5">
           <button
             onClick={() => setActiveModule('disaster3d')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
               activeModule === 'disaster3d' ? 'bg-white text-black font-bold shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
-            <Building2 className="w-3.5 h-3.5" style={{ color: activeModule === 'disaster3d' ? 'black' : '#f43f5e' }} />
+            <Building2 className="w-3.5 h-3.5 shrink-0" style={{ color: activeModule === 'disaster3d' ? 'black' : '#f43f5e' }} />
             <span>{language === 'ar' ? 'محاكاة انهيار المباني (الزلازل والتسونامي)' : '3D Building Disaster Simulation'}</span>
           </button>
           <button
             onClick={() => setActiveModule('earthCutaway3d')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
               activeModule === 'earthCutaway3d' ? 'bg-white text-black font-bold shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
-            <Globe2 className="w-3.5 h-3.5" style={{ color: activeModule === 'earthCutaway3d' ? 'black' : '#818cf8' }} />
+            <Globe2 className="w-3.5 h-3.5 shrink-0" style={{ color: activeModule === 'earthCutaway3d' ? 'black' : '#818cf8' }} />
             <span>{language === 'ar' ? 'مقطع طبقات الأرض 3D' : '3D Earth Interior Cutaway'}</span>
           </button>
         </div>

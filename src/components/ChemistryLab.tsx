@@ -513,37 +513,37 @@ export const ChemistryLab: React.FC = () => {
         </div>
 
         {/* Tab switcher: 3 tabs */}
-        <div className="flex items-center space-x-2 sci-surface p-1.5">
+        <div className="flex items-center flex-wrap gap-1.5 sci-surface p-1.5">
           <button
             onClick={() => setActiveTab('periodic')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
               activeTab === 'periodic' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
             style={activeTab === 'periodic' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
           >
-            <Atom className="w-3.5 h-3.5" />
+            <Atom className="w-3.5 h-3.5 shrink-0" />
             <span>{ar ? 'الجدول الدوري وبنية الذرة 3D' : 'Periodic Table & 3D Atom'}</span>
           </button>
 
           <button
             onClick={() => setActiveTab('reactions')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
               activeTab === 'reactions' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
             style={activeTab === 'reactions' ? { background: 'linear-gradient(135deg, #06b6d4, #10b981)' } : undefined}
           >
-            <FlaskConical className="w-3.5 h-3.5" />
+            <FlaskConical className="w-3.5 h-3.5 shrink-0" />
             <span>{ar ? 'معمل التفاعلات الكيميائية (PraxiLabs)' : 'Reaction Lab (PraxiLabs)'}</span>
           </button>
 
           <button
             onClick={() => setActiveTab('atomic-groups')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
               activeTab === 'atomic-groups' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
             style={activeTab === 'atomic-groups' ? { background: 'linear-gradient(135deg, #6366f1, #06b6d4)' } : undefined}
           >
-            <Layers className="w-3.5 h-3.5" />
+            <Layers className="w-3.5 h-3.5 shrink-0" />
             <span>{ar ? 'المجموعات الذرية 3D' : 'Polyatomic Groups 3D'}</span>
           </button>
         </div>

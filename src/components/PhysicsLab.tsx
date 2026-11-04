@@ -447,7 +447,7 @@ export const PhysicsLab: React.FC = () => {
         <div className="flex items-center flex-wrap gap-1.5 sci-surface p-1.5">
           <button
             onClick={() => setActiveModule('circuits')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shrink-0 whitespace-nowrap ${
               activeModule === 'circuits' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
             style={activeModule === 'circuits' ? activeTabStyle : undefined}
@@ -456,7 +456,7 @@ export const PhysicsLab: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveModule('forces')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shrink-0 whitespace-nowrap ${
               activeModule === 'forces' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
             style={activeModule === 'forces' ? activeTabStyle : undefined}
@@ -465,7 +465,7 @@ export const PhysicsLab: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveModule('projectiles')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shrink-0 whitespace-nowrap ${
               activeModule === 'projectiles' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
             style={activeModule === 'projectiles' ? activeTabStyle : undefined}
@@ -474,7 +474,7 @@ export const PhysicsLab: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveModule('optics')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shrink-0 whitespace-nowrap ${
               activeModule === 'optics' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
             style={activeModule === 'optics' ? activeTabStyle : undefined}
@@ -483,7 +483,7 @@ export const PhysicsLab: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveModule('waves')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shrink-0 whitespace-nowrap ${
               activeModule === 'waves' ? 'text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
             style={activeModule === 'waves' ? activeTabStyle : undefined}

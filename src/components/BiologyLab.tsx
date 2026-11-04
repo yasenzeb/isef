@@ -657,29 +657,29 @@ export const BiologyLab: React.FC = () => {
         <div className="flex flex-wrap items-center gap-1.5 sci-surface p-1.5">
           <button
             onClick={() => setActiveTab('sketchfab_cell')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
               activeTab === 'sketchfab_cell' ? 'bg-white text-black font-bold shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5" style={{ color: activeTab === 'sketchfab_cell' ? 'black' : '#34d399' }} />
+            <Sparkles className="w-3.5 h-3.5 shrink-0" style={{ color: activeTab === 'sketchfab_cell' ? 'black' : '#34d399' }} />
             <span>{language === 'ar' ? 'مجسم الخلية الحقيقي 3D' : 'Realistic 3D Cell Specimen'}</span>
           </button>
           <button
             onClick={() => setActiveTab('microorganisms')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
               activeTab === 'microorganisms' ? 'bg-white text-black font-bold shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5" style={{ color: activeTab === 'microorganisms' ? 'black' : '#06b6d4' }} />
+            <Sparkles className="w-3.5 h-3.5 shrink-0" style={{ color: activeTab === 'microorganisms' ? 'black' : '#06b6d4' }} />
             <span>{language === 'ar' ? 'الكائنات وحيدة الخلية (اليوجلينا، الأميبا، البراميسيوم)' : 'Unicellular Microorganisms 3D'}</span>
           </button>
           <button
             onClick={() => setActiveTab('dna')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
               activeTab === 'dna' ? 'bg-white text-black font-bold shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
-            <Dna className="w-3.5 h-3.5" />
+            <Dna className="w-3.5 h-3.5 shrink-0" />
             <span>{language === 'ar' ? 'الحمض النووي DNA' : '3D Animated DNA Helix'}</span>
           </button>
         </div>

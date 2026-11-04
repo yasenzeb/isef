@@ -1701,10 +1701,10 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
             </h1>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={resetCamera}
-              className="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold sci-surface hover:bg-slate-800 text-slate-200 transition-colors"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold sci-surface hover:bg-slate-800 text-slate-200 transition-colors cursor-pointer shrink-0"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>{t.anatomy.resetCamera}</span>
@@ -1712,7 +1712,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
             <button
               onClick={toggleIsolate}
               disabled={!selectedMeshRef.current}
-              className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-colors ${
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer shrink-0 ${
                 isIsolated ? 'bg-sky-600 text-white' : 'sci-surface text-slate-300 hover:bg-slate-800'
               }`}
             >
@@ -1740,10 +1740,10 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
             <button
               onClick={() => {
                 if (toolbarScrollRef.current) {
-                  toolbarScrollRef.current.scrollBy({ left: language === 'ar' ? 180 : -180, behavior: 'smooth' });
+                  toolbarScrollRef.current.scrollBy({ left: -200, behavior: 'smooth' });
                 }
               }}
-              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors shrink-0 mr-1"
+              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors shrink-0 mx-1 cursor-pointer"
               title={language === 'ar' ? 'السابق' : 'Scroll left'}
               aria-label="Scroll layers left"
             >
@@ -1763,13 +1763,13 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
                   <button
                     key={sys.id}
                     onClick={() => toggleSystem(sys)}
-                    className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all shrink-0 cursor-pointer ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all shrink-0 cursor-pointer whitespace-nowrap ${
                       isVis
                         ? 'bg-gradient-to-r from-indigo-500 to-cyan-500 text-white shadow-lg shadow-indigo-500/25'
                         : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border border-white/5'
                     }`}
                   >
-                    <Icon className="w-3.5 h-3.5" />
+                    <Icon className="w-3.5 h-3.5 shrink-0" />
                     <span>{language === 'ar' ? sys.labelAr : sys.labelEn}</span>
                     {isLoad && <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping ml-1" />}
                   </button>
@@ -1781,10 +1781,10 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
             <button
               onClick={() => {
                 if (toolbarScrollRef.current) {
-                  toolbarScrollRef.current.scrollBy({ left: language === 'ar' ? -180 : 180, behavior: 'smooth' });
+                  toolbarScrollRef.current.scrollBy({ left: 200, behavior: 'smooth' });
                 }
               }}
-              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors shrink-0 ml-1"
+              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors shrink-0 mx-1 cursor-pointer"
               title={language === 'ar' ? 'التالي' : 'Scroll right'}
               aria-label="Scroll layers right"
             >
