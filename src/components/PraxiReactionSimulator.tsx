@@ -29,6 +29,8 @@ export const PraxiReactionSimulator: React.FC = () => {
   const [bunsenBurnerActive, setBunsenBurnerActive] = useState<boolean>(false);
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('all');
   const [reagentCategoryFilter, setReagentCategoryFilter] = useState<string>('all');
+  const [isDraggingOverVessel, setIsDraggingOverVessel] = useState<boolean>(false);
+  const [draggedReagentId, setDraggedReagentId] = useState<string | null>(null);
 
   // Simulation State
   const [reaction, setReaction] = useState<ChemicalReaction | null>(null);
@@ -89,6 +91,91 @@ export const PraxiReactionSimulator: React.FC = () => {
     setSelectedReagentIds(selectedReagentIds.filter(id => id !== reagentId));
   };
 
+  // ── تجارب الصف الثاني الثانوي بكالوريا - الفصل الثالث (المواد غير العضوية) ──
+  const BAC2_LESSON_PRESETS = [
+    {
+      id: 'bac2-1',
+      titleAr: '1. اختزال أكسيد النحاس بالهيدروجين (CuO + H₂)',
+      titleEn: '1. Reduction of CuO by H2',
+      reagents: ['CuO', 'H2'],
+      heat: true,
+      badgeAr: 'حرارة مرتفعة',
+      color: 'from-orange-500/20 to-amber-600/30 border-orange-500/40 text-orange-200'
+    },
+    {
+      id: 'bac2-2',
+      titleAr: '2. تحضير غاز الهيدروجين (Fe + H₂SO₄)',
+      titleEn: '2. Preparation of H2 (Fe + H2SO4)',
+      reagents: ['Fe', 'H2SO4'],
+      heat: false,
+      badgeAr: 'إحلال بسيط',
+      color: 'from-emerald-500/20 to-teal-600/30 border-emerald-500/40 text-emerald-200'
+    },
+    {
+      id: 'bac2-3',
+      titleAr: '3. تحضير غاز الكلور (MnO₂ + HCl)',
+      titleEn: '3. Chlorine Gas Prep (MnO2 + HCl)',
+      reagents: ['MnO2', 'HCl'],
+      heat: true,
+      badgeAr: 'تسخين + مؤكسد',
+      color: 'from-lime-500/20 to-green-600/30 border-lime-500/40 text-lime-200'
+    },
+    {
+      id: 'bac2-4',
+      titleAr: '4. تحضير غاز الأكسجين (H₂O₂ + MnO₂)',
+      titleEn: '4. Oxygen Prep (H2O2 + MnO2)',
+      reagents: ['H2O2', 'MnO2'],
+      heat: false,
+      badgeAr: 'حفاز MnO2',
+      color: 'from-sky-500/20 to-cyan-600/30 border-sky-500/40 text-sky-200'
+    },
+    {
+      id: 'bac2-5',
+      titleAr: '5. تحضير النشادر بهابر-بوش (N₂ + 3H₂ ⇌ 2NH₃)',
+      titleEn: '5. Haber-Bosch NH3 (N2 + 3H2)',
+      reagents: ['N2', 'H2'],
+      heat: true,
+      badgeAr: 'اتزان ⇌ Fe₃O₄',
+      color: 'from-blue-500/20 to-indigo-600/30 border-blue-500/40 text-blue-200'
+    },
+    {
+      id: 'bac2-6',
+      titleAr: '6. تحضير حمض النيتريك بأوستفالد (NH₃ + O₂)',
+      titleEn: '6. Ostwald Nitric Acid (NH3 + O2)',
+      reagents: ['NH3', 'O2'],
+      heat: true,
+      badgeAr: 'بلاتين Pt + حرارة',
+      color: 'from-amber-500/20 to-red-600/30 border-amber-500/40 text-amber-200'
+    },
+    {
+      id: 'bac2-7',
+      titleAr: '7. تحضير أول أكسيد الكربون (HCOOH + H₂SO₄)',
+      titleEn: '7. Carbon Monoxide Prep (HCOOH + H2SO4)',
+      reagents: ['HCOOH', 'H2SO4'],
+      heat: true,
+      badgeAr: 'نزع ماء + لهب أزرق',
+      color: 'from-cyan-500/20 to-blue-600/30 border-cyan-500/40 text-cyan-200'
+    },
+    {
+      id: 'bac2-8',
+      titleAr: '8. تحضير ثاني أكسيد الكربون (CaCO₃ + HCl)',
+      titleEn: '8. CO2 Prep (CaCO3 + HCl)',
+      reagents: ['CaCO3', 'HCl'],
+      heat: false,
+      badgeAr: 'فوران الحجر الجيري',
+      color: 'from-slate-500/20 to-zinc-600/30 border-slate-500/40 text-slate-200'
+    },
+    {
+      id: 'bac2-9',
+      titleAr: 'الكشف التأكيدي: ماء الجير الرائق (CO₂ + Ca(OH)₂)',
+      titleEn: 'Limewater Test: CO2 + Ca(OH)2',
+      reagents: ['CO2', 'Ca_OH_2'],
+      heat: false,
+      badgeAr: 'تعكر أبيض حليبي',
+      color: 'from-purple-500/20 to-pink-600/30 border-purple-500/40 text-purple-200'
+    }
+  ];
+
   // Fast preset loader
   const loadPreset = (reagentIds: string[], heat: boolean = false) => {
     setSelectedReagentIds(reagentIds);
@@ -96,8 +183,15 @@ export const PraxiReactionSimulator: React.FC = () => {
   };
 
   // Reagents list based on filter
+  const bac2ReagentIds = [
+    'CuO', 'H2', 'Fe', 'H2SO4', 'MnO2', 'HCl', 'H2O2', 
+    'N2', 'Fe3O4', 'NH3', 'Pt', 'NO', 'NO2', 'HNO3', 
+    'HCOOH', 'CO', 'CaCO3', 'Ca_OH_2', 'CO2'
+  ];
+
   const filteredReagents = WORKBENCH_REAGENTS.filter(r => {
     if (reagentCategoryFilter === 'all') return true;
+    if (reagentCategoryFilter === 'bac2') return bac2ReagentIds.includes(r.id);
     if (reagentCategoryFilter === 'metals') return r.category === 'metal' || r.category === 'nonmetal';
     if (reagentCategoryFilter === 'acids_bases') return r.category === 'acid' || r.category === 'base' || r.category === 'water';
     if (reagentCategoryFilter === 'salts') return r.category === 'salt';
@@ -542,10 +636,44 @@ export const PraxiReactionSimulator: React.FC = () => {
             </p>
           </div>
 
-          {/* Quick Curriculum Jump Pills */}
+          {/* Baccalaureate 2nd Secondary Inorganic Chemistry Special Presets */}
+          <div className="p-3.5 rounded-2xl bg-gradient-to-r from-blue-950/60 via-indigo-950/40 to-slate-900 border border-indigo-500/30 space-y-2.5 shadow-xl">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+                <span className="text-xs font-bold font-mono text-amber-300">
+                  {ar ? '⭐ تجارب الصف الثاني الثانوي بكالوريا — الفصل الثالث (المواد غير العضوية)' : '⭐ 2nd Secondary Baccalaureate Inorganic Chemistry Labs'}
+                </span>
+              </div>
+              <span className="text-[10px] font-mono text-cyan-300 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded-full">
+                {ar ? 'حرية الاستكشاف لجميع الطلاب مفتوحة بالكامل 🔓' : 'Full Free Exploration for All Grades 🔓'}
+              </span>
+            </div>
+
+            {/* Horizontal Scrollable Presets Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2">
+              {BAC2_LESSON_PRESETS.map((preset) => (
+                <button
+                  key={preset.id}
+                  onClick={() => loadPreset(preset.reagents, preset.heat)}
+                  className={`p-2.5 rounded-xl border text-right flex flex-col justify-between transition-all hover:scale-[1.02] active:scale-95 bg-gradient-to-b ${preset.color} hover:shadow-lg`}
+                >
+                  <span className="text-[11px] font-bold text-white line-clamp-2 leading-snug">
+                    {ar ? preset.titleAr : preset.titleEn}
+                  </span>
+                  <div className="flex items-center justify-between mt-2 pt-1 border-t border-white/10 text-[9px] font-mono">
+                    <span className="text-white/80 font-bold">{preset.badgeAr}</span>
+                    <span className="text-cyan-300 font-mono">تحميل للتجربة ←</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Quick Curriculum Jump Pills (Other Famous Experiments) */}
           <div className="flex flex-wrap items-center gap-1.5 pt-1">
             <span className="text-[11px] font-mono text-slate-400 block w-full lg:w-auto">
-              {ar ? 'تجارب المنهج الجاهزة:' : 'Curriculum Presets:'}
+              {ar ? 'تجارب كلاسيكية عامة:' : 'Classic Presets:'}
             </span>
             <button
               onClick={() => loadPreset(['Zn', 'HCl'])}
@@ -599,7 +727,22 @@ export const PraxiReactionSimulator: React.FC = () => {
             </div>
 
             {/* Active Reagent Slots (1 & 2) */}
-            <div className="grid grid-cols-2 gap-3">
+            <div
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'copy';
+                setIsDraggingOverVessel(true);
+              }}
+              onDragLeave={() => setIsDraggingOverVessel(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setIsDraggingOverVessel(false);
+                const rId = e.dataTransfer.getData('text/plain');
+                if (rId) handleAddReagent(rId);
+                setDraggedReagentId(null);
+              }}
+              className="grid grid-cols-2 gap-3"
+            >
               {[0, 1].map(slotIdx => {
                 const rId = selectedReagentIds[slotIdx];
                 const reagent = WORKBENCH_REAGENTS.find(r => r.id === rId);
@@ -720,6 +863,7 @@ export const PraxiReactionSimulator: React.FC = () => {
             <div className="flex flex-wrap gap-1 text-[11px] font-mono">
               {[
                 { id: 'all', labelAr: 'الكل', labelEn: 'All' },
+                { id: 'bac2', labelAr: '⭐ بكالوريا 2 ثانوي (ف 3)', labelEn: '⭐ 2nd Sec Baccalaureate' },
                 { id: 'metals', labelAr: 'فلزات ولا فلزات', labelEn: 'Metals & Gases' },
                 { id: 'acids_bases', labelAr: 'أحماض وقواعد', labelEn: 'Acids & Bases' },
                 { id: 'salts', labelAr: 'أملاح ومحاليل', labelEn: 'Salts' },
@@ -746,6 +890,13 @@ export const PraxiReactionSimulator: React.FC = () => {
                 return (
                   <div
                     key={reagent.id}
+                    draggable={true}
+                    onDragStart={(e) => {
+                      e.dataTransfer.setData('text/plain', reagent.id);
+                      e.dataTransfer.effectAllowed = 'copy';
+                      setDraggedReagentId(reagent.id);
+                    }}
+                    onDragEnd={() => setDraggedReagentId(null)}
                     onClick={() => {
                       if (isSelected) {
                         handleRemoveReagent(reagent.id);
@@ -753,11 +904,11 @@ export const PraxiReactionSimulator: React.FC = () => {
                         handleAddReagent(reagent.id);
                       }
                     }}
-                    className={`p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all cursor-pointer relative group ${
+                    className={`p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all cursor-grab active:cursor-grabbing relative group ${
                       isSelected
                         ? 'border-cyan-400 bg-cyan-950/40 ring-1 ring-cyan-400/80 shadow-md shadow-cyan-500/20'
                         : 'border-white/10 bg-slate-950/70 hover:border-white/30 hover:bg-slate-900'
-                    }`}
+                    } ${draggedReagentId === reagent.id ? 'opacity-40 scale-95 border-cyan-400' : ''}`}
                   >
                     {isSelected && (
                       <span className="w-2 h-2 rounded-full bg-cyan-400 absolute top-1.5 right-1.5 shadow-[0_0_8px_#22d3ee]" />
@@ -779,11 +930,17 @@ export const PraxiReactionSimulator: React.FC = () => {
               })}
             </div>
 
-            <p className="text-[10px] text-slate-400 leading-relaxed font-mono">
-              {ar
-                ? '💡 انقر على أي مادة لإضافتها إلى كأس التفاعل أو إزالتها مباشرة.'
-                : '💡 Click any reagent to drop it into or remove it from the reaction vessel.'}
-            </p>
+            <div className="p-2.5 rounded-xl bg-slate-900/80 border border-white/5 space-y-1">
+              <p className="text-[11px] text-cyan-300 font-bold font-mono flex items-center gap-1.5">
+                <span>✋</span>
+                <span>{ar ? 'طريقة السحب والإفلات التفاعلية:' : 'Interactive Drag & Drop:'}</span>
+              </p>
+              <p className="text-[10px] text-slate-300 leading-relaxed font-mono">
+                {ar
+                  ? 'اسحب أي عنصر بالماوس وأفلته مباشرة داخل كأس التفاعل، ثم اسحب العنصر الثاني وأفلته فوقه لمزجهما وبدء التفاعل الكيميائي!'
+                  : 'Drag any chemical card and drop it directly onto the beaker, then drag the second reagent on top to combine and react!'}
+              </p>
+            </div>
           </div>
 
         </div>
@@ -814,8 +971,51 @@ export const PraxiReactionSimulator: React.FC = () => {
             </div>
 
             {/* Canvas Box */}
-            <div className="w-full relative rounded-xl overflow-hidden border border-white/10 bg-[#060a18]">
+            <div
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'copy';
+                if (!isDraggingOverVessel) setIsDraggingOverVessel(true);
+              }}
+              onDragLeave={(e) => {
+                // Only leave if not hovering child
+                if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                  setIsDraggingOverVessel(false);
+                }
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                setIsDraggingOverVessel(false);
+                const rId = e.dataTransfer.getData('text/plain');
+                if (rId) handleAddReagent(rId);
+                setDraggedReagentId(null);
+              }}
+              className={`w-full relative rounded-xl overflow-hidden border transition-all duration-300 bg-[#060a18] ${
+                isDraggingOverVessel
+                  ? 'border-cyan-400 ring-4 ring-cyan-500/30 shadow-2xl shadow-cyan-500/40'
+                  : 'border-white/10'
+              }`}
+            >
               <canvas ref={canvasRef} className="w-full block" />
+
+              {/* Drag & Drop Visual Target Overlay */}
+              {isDraggingOverVessel && (
+                <div className="absolute inset-0 bg-cyan-950/80 backdrop-blur-sm border-2 border-dashed border-cyan-400 rounded-xl flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-150 z-30 pointer-events-none">
+                  <div className="w-14 h-14 rounded-full bg-cyan-500/20 border-2 border-cyan-400 flex items-center justify-center mb-3 animate-bounce shadow-lg shadow-cyan-500/40">
+                    <FlaskConical className="w-7 h-7 text-cyan-300" />
+                  </div>
+                  <span className="text-base sm:text-lg font-black font-mono text-white tracking-wide">
+                    {selectedReagentIds.length === 0
+                      ? (ar ? '🎯 أسقط المتفاعل الأول في كأس التفاعل' : '🎯 Drop 1st Reagent into Vessel')
+                      : selectedReagentIds.length === 1
+                      ? (ar ? '🧪 أسقط المتفاعل الثاني فوق الأول لبدء التفاعل الكيميائي!' : '🧪 Drop 2nd Reagent on top to react!')
+                      : (ar ? '🔄 أسقط لاستبدال المتفاعل' : '🔄 Drop to replace reagent')}
+                  </span>
+                  <span className="text-xs font-mono text-cyan-300 mt-1">
+                    {ar ? 'اترك الماوس للإسقاط والخلط الفوري' : 'Release mouse to drop & combine instantly'}
+                  </span>
+                </div>
+              )}
 
               {/* Reaction Progress Overlay Bar */}
               {isReacting && (

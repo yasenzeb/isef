@@ -1,7 +1,7 @@
 /**
- * MacOSDock.tsx — شريط تنقل زجاجي كبسولي (Apple macOS Dock Pill)
+ * SciNexaNavDock.tsx — شريط التنقل الكبسولي العلمي الموحد لمنصة ساينكسا
  * يضم جميع المعامل العلمية بالإضافة لزر المساعد العلمي الذكي "داروين".
- * حركة الماوس ديناميكية وحية ومكبرة بسلاسة تامة.
+ * حركة ديناميكية وحية وسلسة تليق بأقوى المنصات العلمية التفاعلية.
  *
  * © Islam & Yaseen — SciNexa ISEF 2026
  * SHA-256: b35dcc2b2495508cd11d6e6294915f7211adfc93ce1a2188d81858b9cd38123f
@@ -17,10 +17,9 @@ import {
   Dna,
   Globe2,
   Sparkles,
-  Bot
 } from 'lucide-react';
 
-interface MacOSDockProps {
+interface SciNexaNavDockProps {
   currentTab: string;
   setCurrentTab: (tab: string) => void;
 }
@@ -84,7 +83,7 @@ const LABS = [
   },
 ];
 
-export const MacOSDock: React.FC<MacOSDockProps> = ({ currentTab, setCurrentTab }) => {
+export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ currentTab, setCurrentTab }) => {
   const { language, isRTL } = useLanguage();
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
@@ -272,4 +271,4 @@ export const MacOSDock: React.FC<MacOSDockProps> = ({ currentTab, setCurrentTab 
   );
 };
 
-export default MacOSDock;
+export default SciNexaNavDock;

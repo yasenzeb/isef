@@ -7,7 +7,7 @@ import { Home } from './components/Home';
 import { EgyptLocationModal } from './components/EgyptLocationModal';
 import { OfflineDownloadModal } from './components/OfflineDownloadModal';
 import { Footer } from './components/Footer';
-import { MacOSDock } from './components/MacOSDock';
+import { SciNexaNavDock } from './components/SciNexaNavDock';
 import { FishAgentController } from './components/FishAgentController';
 import { saveState, loadState } from './utils/persistence';
 import { CheckCircle2 } from 'lucide-react';
@@ -109,8 +109,8 @@ const AppContent: React.FC = () => {
 
       <Footer />
 
-      {/* ── macOS-style Glass Dock — replaces both old MobileBottomNav & Navbar Tier 2 ── */}
-      <MacOSDock currentTab={currentTab} setCurrentTab={setCurrentTab} />
+      {/* ── SciNexa Unified Navigation Dock — شريط الملاحة العلمي الموحد ── */}
+      <SciNexaNavDock currentTab={currentTab} setCurrentTab={setCurrentTab} />
 
       <EgyptLocationModal
         isOpen={isLocationModalOpen}
