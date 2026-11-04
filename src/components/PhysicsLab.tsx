@@ -245,7 +245,7 @@ export const PhysicsLab: React.FC = () => {
     saveState('physics_module', activeModule);
   }, [activeModule]);
 
-  // Listen to remote module switch orders from Darwin (Fish Audio)
+  // Listen to remote module switch orders (optional external controller)
   useEffect(() => {
     const handleSwitch = (e: any) => {
       const mod = e.detail?.module;
@@ -301,7 +301,7 @@ export const PhysicsLab: React.FC = () => {
         setSavedCircuit(payload);
         saveState('saved_circuit', payload);
 
-        // Darwin Context Bridge: notify when circuit changes
+        // Context bridge: broadcast circuit state for optional external controllers
         if (payload.count > 0) {
           const parts = [];
           if (payload.batteries > 0) parts.push(`${payload.batteries} بطارية`);
