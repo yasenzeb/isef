@@ -305,16 +305,22 @@ export const DarwinVoiceModal: React.FC<DarwinVoiceModalProps> = ({
       {/* ── Modal Header (Apple Glassmorphic Bar) ── */}
       <div className="px-4 py-3 bg-white/[0.04] border-b border-white/[0.08] flex items-center justify-between shrink-0 select-none">
         <div className="flex items-center gap-2.5">
-          {/* Darwin Squircle Avatar */}
+          {/* Darwin Voice Avatar (Matching Dock Button) */}
           <div
-            className="w-9 h-9 rounded-[11px] flex items-center justify-center text-white shrink-0 shadow-lg relative"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-white shrink-0 shadow-lg relative"
             style={{
-              background: 'linear-gradient(135deg, #10b981, #06b6d4, #6366f1)',
-              boxShadow: '0 4px 16px rgba(6, 182, 212, 0.45)',
+              background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
+              boxShadow: '0 4px 16px rgba(37, 99, 235, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.35)',
             }}
           >
-            <Bot className="w-5 h-5 text-white" />
-            <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-black" />
+            <svg className="w-4 h-4 text-white shrink-0" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="3.5" y="9" width="2" height="6" rx="1" />
+              <rect x="7.5" y="6" width="2" height="12" rx="1" />
+              <rect x="11.5" y="3.5" width="2" height="17" rx="1" />
+              <rect x="15.5" y="6" width="2" height="12" rx="1" />
+              <rect x="19.5" y="9" width="2" height="6" rx="1" />
+            </svg>
+            <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-blue-400 border-2 border-black" />
           </div>
 
           <div>
@@ -427,18 +433,24 @@ export const DarwinVoiceModal: React.FC<DarwinVoiceModalProps> = ({
                         ? 'linear-gradient(135deg, #10b981, #06b6d4)'
                         : isSpeaking
                           ? 'linear-gradient(135deg, #6366f1, #007AFF)'
-                          : 'linear-gradient(135deg, #1e293b, #0f172a)',
-                      border: '2px solid rgba(255, 255, 255, 0.3)',
+                          : 'linear-gradient(135deg, #2563EB, #1D4ED8)',
+                      border: '2px solid rgba(255, 255, 255, 0.35)',
                       boxShadow: isListening
                         ? '0 0 32px rgba(6, 182, 212, 0.6)'
-                        : '0 8px 24px rgba(0, 0, 0, 0.5)',
+                        : '0 8px 24px rgba(37, 99, 235, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.4)',
                     }}
                     title={isListening ? 'اضغط لإيقاف الاستماع' : 'اضغط للتحدث مع داروين'}
                   >
                     {isListening ? (
                       <Mic className="w-8 h-8 text-white animate-bounce" />
                     ) : (
-                      <Mic className="w-8 h-8 text-white" />
+                      <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
+                        <rect x="3.5" y="9" width="2" height="6" rx="1" />
+                        <rect x="7.5" y="6" width="2" height="12" rx="1" />
+                        <rect x="11.5" y="3.5" width="2" height="17" rx="1" />
+                        <rect x="15.5" y="6" width="2" height="12" rx="1" />
+                        <rect x="19.5" y="9" width="2" height="6" rx="1" />
+                      </svg>
                     )}
                   </button>
                 </div>

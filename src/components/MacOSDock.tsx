@@ -182,7 +182,7 @@ export const MacOSDock: React.FC<MacOSDockProps> = ({ currentTab, setCurrentTab 
         {/* ── Subtle Frosted Divider ── */}
         <div className="h-6 w-px bg-white/20 mx-0.5 sm:mx-1 shrink-0" />
 
-        {/* ── Darwin AI Assistant Button ── */}
+        {/* ── Darwin AI Voice Agent Button (Exact Blue Soundwave Button) ── */}
         <div className="relative flex flex-col items-center justify-center shrink-0">
           {hoveredId === 'darwin' && (
             <div
@@ -195,7 +195,7 @@ export const MacOSDock: React.FC<MacOSDockProps> = ({ currentTab, setCurrentTab 
                 boxShadow: '0 4px 16px rgba(0, 0, 0, 0.45)',
               }}
             >
-              {language === 'ar' ? 'داروين | المرشد العلمي الصوتي 🎙️' : 'Darwin AI Voice Assistant 🎙️'}
+              {language === 'ar' ? 'وكيل داروين الصوتي الذكي 🎙️' : 'Darwin AI Voice Agent 🎙️'}
             </div>
           )}
 
@@ -205,21 +205,32 @@ export const MacOSDock: React.FC<MacOSDockProps> = ({ currentTab, setCurrentTab 
             onMouseLeave={() => setHoveredId(null)}
             onFocus={() => setHoveredId('darwin')}
             onBlur={() => setHoveredId(null)}
-            aria-label={language === 'ar' ? 'المساعد العلمي داروين' : 'Darwin AI Assistant'}
-            className="w-10 h-10 sm:w-11 sm:h-11 rounded-[11px] flex items-center justify-center transition-all duration-200 cursor-pointer select-none active:scale-95 shrink-0 group"
+            aria-label={language === 'ar' ? 'المساعد الصوتي داروين' : 'Darwin AI Voice Assistant'}
+            className="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer select-none active:scale-95 shrink-0 group"
             style={{
-              background: 'linear-gradient(135deg, #10b981, #06b6d4, #6366f1)',
+              background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
               transform: hoveredId === 'darwin' ? 'scale(1.18) translateY(-4px)' : 'scale(1)',
               boxShadow: hoveredId === 'darwin'
-                ? '0 6px 22px rgba(6, 182, 212, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.4)'
-                : '0 2px 10px rgba(6, 182, 212, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.25)',
+                ? '0 6px 24px rgba(37, 99, 235, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.5)'
+                : '0 3px 14px rgba(37, 99, 235, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.35)',
             }}
           >
-            <Bot className="w-5 h-5 text-white shrink-0 group-hover:rotate-12 transition-transform duration-300 drop-shadow-sm" />
+            {/* White Audio Waveform Bars Icon */}
+            <svg
+              className="w-5 h-5 text-white shrink-0 group-hover:scale-110 transition-transform duration-200"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <rect x="3.5" y="9" width="2" height="6" rx="1" />
+              <rect x="7.5" y="6" width="2" height="12" rx="1" />
+              <rect x="11.5" y="3.5" width="2" height="17" rx="1" />
+              <rect x="15.5" y="6" width="2" height="12" rx="1" />
+              <rect x="19.5" y="9" width="2" height="6" rx="1" />
+            </svg>
           </button>
 
           {/* Indicator Dot for Darwin */}
-          <div className="mt-1 w-1 h-1 rounded-full bg-teal-400/80 shadow-[0_0_6px_#2dd4bf]" />
+          <div className="mt-1 w-1 h-1 rounded-full bg-blue-400 shadow-[0_0_6px_#60a5fa]" />
         </div>
       </nav>
     </aside>
