@@ -132,7 +132,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal, onOp
         ? 'استكشف أدق التفاصيل الطبية لجسم الإنسان: الهيكل العظمي، العضلات، القلب والشرايين، الدماغ والأعصاب، والأعضاء الحشوية مع ميزة العزل 3D.'
         : 'Explore certified medical 3D anatomy: skeleton, muscular system, heart & vessels, nervous system, and visceral organs with 3D isolation.',
       icon: Activity,
-      accentColor: '#f43f5e',
+      accentColor: '#F31260',
       gradient: 'from-rose-500/20 via-pink-500/10 to-transparent',
       borderColor: 'hover:border-rose-500/50',
       badge: isArabic ? 'أطلس طبي معتمد' : 'Medical Grade 3D',
@@ -150,11 +150,11 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal, onOp
         ? 'ركّب الدوائر الكهربائية، اختبر قانون أوم والمقاومات في الوقت الفعلي، أطلق المقذوفات بزوايا مختلفة، وشاهد انتشار الموجات وانكسار الضوء.'
         : 'Construct live DC circuits, solve Ohm & Kirchhoff laws in real-time, launch projectile motion, and simulate wave harmonics.',
       icon: Zap,
-      accentColor: '#38bdf8',
-      gradient: 'from-sky-500/20 via-cyan-500/10 to-transparent',
-      borderColor: 'hover:border-sky-500/50',
+      accentColor: '#006FEE',
+      gradient: 'from-blue-600/20 via-cyan-500/10 to-transparent',
+      borderColor: 'hover:border-[#006FEE]/50',
       badge: isArabic ? 'محاكاة فيزيائية حية' : 'Real-Time Physics',
-      badgeColor: 'bg-sky-500/15 text-sky-300 border-sky-500/30',
+      badgeColor: 'bg-[#006FEE]/15 text-blue-300 border-[#006FEE]/30',
       features: isArabic 
         ? ['دوائر كهربائية DC تفاعلية', 'محاكي المقذوفات والقوى', 'محاكاة الموجات والضوء'] 
         : ['Interactive DC Circuits', 'Forces & Projectile Engine', 'Wave & Optics Simulation'],
@@ -168,7 +168,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal, onOp
         ? 'تعرف على العناصر الـ 118 مع دوران الإلكترونات في مدارات بوهر ثلاثية الأبعاد، واستكشف تفاعلات المحاليل الكيميائية والمجموعات الذرية.'
         : 'Explore 118 elements with real-time 3D Bohr electron orbitals, chemical solution reactions, and polyatomic ionic structures.',
       icon: Atom,
-      accentColor: '#f59e0b',
+      accentColor: '#F5A524',
       gradient: 'from-amber-500/20 via-orange-500/10 to-transparent',
       borderColor: 'hover:border-amber-500/50',
       badge: isArabic ? 'الجدول الدوري الشامل' : '118 IUPAC Elements',
@@ -186,7 +186,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal, onOp
         ? 'انظر عبر المجهر إلى الخلية الحية ومكوناتها الدقيقة، راقب حركة الأميبا واليوجلينا والبراميسيوم، وفكك التركيب الحلزوني للحمض النووي DNA.'
         : 'Look through the virtual microscope into 3D cells, observe live unicellular microorganisms, and unpack the DNA double-helix.',
       icon: Dna,
-      accentColor: '#10b981',
+      accentColor: '#17C964',
       gradient: 'from-emerald-500/20 via-teal-500/10 to-transparent',
       borderColor: 'hover:border-emerald-500/50',
       badge: isArabic ? 'أحياء مجهرية 3D' : '3D Cell Microscopy',
@@ -204,8 +204,8 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal, onOp
         ? 'قم باختبار متانة المباني والمنشآت تحت قوى الهزات الأرضية والزلازل الحية واندفاع موجات التسونامي، واستكشف مقطعاً تفاعلياً لطبقات الأرض.'
         : 'Test real structural stability and building collapse physics under Richter earthquakes and tsunami surges with 3D Earth layers.',
       icon: Globe2,
-      accentColor: '#a855f7',
-      gradient: 'from-purple-500/20 via-indigo-500/10 to-transparent',
+      accentColor: '#7828C8',
+      gradient: 'from-purple-600/20 via-indigo-500/10 to-transparent',
       borderColor: 'hover:border-purple-500/50',
       badge: isArabic ? 'محاكاة كوارث 3D' : '3D Seismic Physics',
       badgeColor: 'bg-purple-500/15 text-purple-300 border-purple-500/30',
@@ -222,7 +222,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onOpenOfflineModal, onOp
         ? 'انطلق في رحلة فضائية بين كواكب المجموعة الشمسية بدقة مدارية حقيقية، راقب دورة أطوار القمر الـ 8 في 3D، وتعرف على قوانين كيبلر والجاذبية.'
         : 'Journey through the real 3D solar system with precise Keplerian orbital mechanics, explore the 8 lunar phases, and learn cosmic laws.',
       icon: Sparkles,
-      accentColor: '#eab308',
+      accentColor: '#EAB308',
       gradient: 'from-yellow-500/20 via-amber-500/10 to-transparent',
       borderColor: 'hover:border-yellow-500/50',
       badge: isArabic ? 'محاكاة مدارات الفضاء' : 'Orbital Mechanics 3D',

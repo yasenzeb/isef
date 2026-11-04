@@ -143,7 +143,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* ── Tier 2: Dedicated Modern Laboratory Navigation Strip ── */}
-      <div className="border-t border-white/[0.06] bg-[#03050a]/95 backdrop-blur-md">
+      <div className="border-t border-white/[0.06] bg-[#070b16]/95 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-2 sm:px-6">
           <nav 
             className="flex items-center justify-start sm:justify-center overflow-x-auto scrollbar-none gap-1 sm:gap-2 py-2 px-1 scroll-smooth"
@@ -158,13 +158,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onClick={() => setCurrentTab(item.id)}
                   className={`flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 whitespace-nowrap cursor-pointer select-none ${
                     isActive
-                      ? 'bg-white text-black shadow-lg shadow-white/20 scale-[1.02] ring-1 ring-white'
-                      : 'text-slate-300 hover:text-white bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06]'
+                      ? 'bg-gradient-to-r from-[#006FEE] to-[#005BC4] text-white shadow-lg shadow-[#006FEE]/30 scale-[1.02] ring-1 ring-[#006FEE]/60 font-black'
+                      : 'text-slate-300 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08]'
                   }`}
                 >
                   <Icon 
                     className="w-4 h-4 shrink-0 transition-transform" 
-                    style={{ color: isActive ? '#000000' : item.color }} 
+                    style={{ color: isActive ? '#ffffff' : item.color }} 
                   />
                   <span>{item.label}</span>
                 </button>
