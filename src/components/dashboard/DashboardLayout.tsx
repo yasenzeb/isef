@@ -1,6 +1,5 @@
 import { SciNexaNavDock } from '../SciNexaNavDock';
 import { LanguageSelector } from '../ui/LanguageSelector';
-import { ThemeToggle } from '../ui/ThemeToggle';
 import { StudentProfileOnboardingModal } from '../auth/StudentProfileOnboardingModal';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -333,6 +332,8 @@ export const DashboardLayout: React.FC = () => {
             </span>
           </button>
 
+          <LanguageSelector compact />
+
           <div className="relative">
             <button
               type="button"
@@ -456,6 +457,12 @@ export const DashboardLayout: React.FC = () => {
           <Outlet />
         </main>
       </div>
+
+      {/* Application Bottom Taskbar Dock */}
+      <SciNexaNavDock />
+
+      {/* Mandatory Onboarding Modal for School Enrollment */}
+      <StudentProfileOnboardingModal />
 
       {/* Search dialog */}
       {searchOpen && (

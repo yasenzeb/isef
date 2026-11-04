@@ -4,6 +4,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { CURRICULUM_PATHWAY, type CurriculumLesson } from '../../data/curriculumPathway';
 import { PageHeader, ProgressBar } from './ui';
 import {
+  Search,
   Activity,
   Atom,
   FlaskConical,
@@ -189,6 +190,13 @@ const QuizModal: React.FC<{
   );
 };
 
+const STAGES = [
+  { id: 'all', ar: 'جميع المراحل والدروس', en: 'All Lessons' },
+  { id: 'secondary', ar: 'المرحلة الثانوية', en: 'Secondary' },
+  { id: 'prep', ar: 'المرحلة الإعدادية', en: 'Preparatory' },
+  { id: 'stem', ar: 'مدارس المتفوقين STEM', en: 'STEM High School' },
+] as const;
+
 export const CurriculumPage: React.FC = () => {
   const { language } = useLanguage();
   const navigate = useNavigate();
@@ -272,6 +280,51 @@ export const CurriculumPage: React.FC = () => {
           </>
         }
       />
+
+      {/* Educational Stage Filter & Live Search */}
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-[#e5e5e5] bg-white p-3 shadow-sm">
+        <div className="flex flex-wrap items-center gap-1.5" role="tablist">
+          {STAGES.map((st) => {
+            const active = selectedStage === st.id;
+            return (
+              <button
+                key={st.id}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                onClick={() => setSelectedStage(st.id as any)}
+                className={`sn-btn sn-btn-sm !h-8 !px-3 text-[12px] font-semibold transition-all rounded-xl ${
+                  active
+                    ? 'bg-[#0a0a0a] text-white shadow-sm'
+                    : 'text-[#737373] hover:text-[#0a0a0a] hover:bg-[#f5f5f5]'
+                }`}
+              >
+                {ar ? st.ar : st.en}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="relative min-w-[220px]">
+          <Search size={14} className="absolute start-3 top-1/2 -translate-y-1/2 text-[#a3a3a3]" />
+          <input
+            type="text"
+            value={searchFilter}
+            onChange={(e) => setSearchFilter(e.target.value)}
+            placeholder={ar ? 'ابحث في التجارب والدروس...' : 'Search lessons & experiments...'}
+            className="h-8 w-full rounded-xl border border-[#e5e5e5] bg-[#fafafa] ps-8 pe-3 text-[12px] text-[#0a0a0a] outline-none transition-colors focus:border-[#0a0a0a] focus:bg-white"
+          />
+          {searchFilter && (
+            <button
+              type="button"
+              onClick={() => setSearchFilter('')}
+              className="absolute end-2 top-1/2 -translate-y-1/2 text-[10px] text-[#a3a3a3] hover:text-[#0a0a0a]"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      </div>
 
       <div className="grid gap-4 lg:grid-cols-[286px_1fr]">
         <aside className="space-y-3">
