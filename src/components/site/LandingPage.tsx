@@ -228,7 +228,7 @@ const DashboardPreview: React.FC<{ ar: boolean }> = ({ ar }) => (
         </span>
         <div>
           <div className="text-[10px] font-semibold">{ar ? 'مطابق للمنهج' : 'MOE aligned'}</div>
-          <div className="text-[8px] text-[#737373]">K–12 · Baccalaureate</div>
+          <div className="text-[8px] text-[#737373]">K–12 · Advanced Sciences</div>
         </div>
       </div>
     </div>
@@ -473,8 +473,8 @@ export const LandingPage: React.FC = () => {
             <div className="sn-card overflow-hidden p-0">
               <div className="flex items-center justify-between border-b border-[#e5e5e5] px-5 py-4">
                 <div>
-                  <div className="sn-eyebrow">{ar ? 'الصف الثاني الثانوي' : '2nd Secondary'}</div>
-                  <div className="mt-1 text-[15px] font-semibold">{ar ? 'الكيمياء · بكالوريا' : 'Chemistry · Baccalaureate'}</div>
+                  <div className="sn-eyebrow">{ar ? 'المسار العلمي المتقدم' : 'Advanced Science Pathway'}</div>
+                  <div className="mt-1 text-[15px] font-semibold">{ar ? 'الكيمياء · تحضير الغازات غير العضوية' : 'Chemistry · Inorganic Synthesis'}</div>
                 </div>
                 <span className="sn-badge sn-badge-soft">13%</span>
               </div>

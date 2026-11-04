@@ -57,14 +57,14 @@ export interface CurriculumPathway {
 }
 
 export const CURRICULUM_PATHWAY: CurriculumPathway = {
-  "id": "sec2_chem_bac",
-  "titleAr": "الكيمياء · مسار البكالوريا",
-  "titleEn": "Chemistry · Baccalaureate pathway",
-  "subjectAr": "الكيمياء — الفصل الثالث (المواد غير العضوية)",
-  "subjectEn": "Chemistry — Chapter 3 (Inorganic Chemistry)",
-  "textbookPdfName": "Chemistry_Arabic_2_Secondary_TR1.pdf",
-  "descriptionAr": "منهج الكيمياء غير العضوية والبكالوريا: تحضير الغازات الصناعية والمعملية، تفاعلات الأكسدة والاختزال، وطريقة هابر-بوش وأوستفالد والكشف عن الغازات.",
-  "descriptionEn": "Inorganic Chemistry & Baccalaureate: preparation of industrial gases, redox, Haber-Bosch and Ostwald catalytic syntheses.",
+  "id": "chem_inorganic_synthesis",
+  "titleAr": "الكيمياء · تحضير الغازات والمواد غير العضوية",
+  "titleEn": "Chemistry · Inorganic Synthesis Pathway",
+  "subjectAr": "الكيمياء — الفصل الثالث: تحضير الغازات والمواد غير العضوية",
+  "subjectEn": "Chemistry — Chapter 3: Inorganic Gas Synthesis",
+  "textbookPdfName": "Inorganic_Chemistry_Experiments.pdf",
+  "descriptionAr": "منهج الكيمياء غير العضوية: تحضير الغازات الصناعية والمعملية، تفاعلات الأكسدة والاختزال، وطريقة هابر-بوش وأوستفالد والكشف عن الغازات.",
+  "descriptionEn": "Inorganic Chemistry: preparation of industrial gases, redox, Haber-Bosch and Ostwald catalytic syntheses.",
   "lessons": [
     {
       "id": "sec2-lesson-1",
@@ -159,7 +159,7 @@ export const CURRICULUM_PATHWAY: CurriculumPathway = {
         "titleAr": "تحضير واختبار غاز الهيدروجين وتفاعله مع الأحماض المخففة",
         "youtubeId": "pS3vW9Xk5Z8",
         "durationMinutes": 5,
-        "channelName": "بوابة التعليم التفاعلي — كيمياء البكالوريا"
+        "channelName": "بوابة التعليم التفاعلي — الكيمياء غير العضوية"
       },
       "weeklyAssessment": {
         "weekNumber": 2,
@@ -230,7 +230,7 @@ export const CURRICULUM_PATHWAY: CurriculumPathway = {
         "titleAr": "التجربة المعملية لتحضير غاز الكلور الأخضر المصفر في خزانة الغازات",
         "youtubeId": "k7J3m5p9Q2w",
         "durationMinutes": 4,
-        "channelName": "معامل البكالوريا الوطنية"
+        "channelName": "المعامل الكيميائية التفاعلية"
       },
       "weeklyAssessment": {
         "weekNumber": 3,
@@ -383,7 +383,7 @@ export const CURRICULUM_PATHWAY: CurriculumPathway = {
         "titleAr": "مراحل طريقة أوستفالد لتحضير حمض النيتريك وأكسدة النشادر",
         "youtubeId": "w9M4p2k1Q8x",
         "durationMinutes": 5,
-        "channelName": "مدرستنا الثانوية"
+        "channelName": "منصة مدرستنا التعليمية"
       },
       "weeklyAssessment": {
         "weekNumber": 6,
@@ -434,7 +434,7 @@ export const CURRICULUM_PATHWAY: CurriculumPathway = {
         "titleAr": "تجربة نزع الماء من حمض الفورميك واشتعال غاز أول أكسيد الكربون بلهب أزرق",
         "youtubeId": "z7P3m9k2X1w",
         "durationMinutes": 4,
-        "channelName": "معامل البكالوريا التفاعلية"
+        "channelName": "المعامل العلمية التفاعلية"
       },
       "weeklyAssessment": {
         "weekNumber": 7,

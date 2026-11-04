@@ -57,7 +57,7 @@ const ASSIGNMENTS = [
 const INSTITUTIONS = [
   { nameEn: 'Nile STEM School', nameAr: 'مدرسة النيل للعلوم', cityEn: 'Cairo', cityAr: 'القاهرة', users: 420, labs: 6120, status: 'active' },
   { nameEn: 'Alexandria Science College', nameAr: 'كلية العلوم بالإسكندرية', cityEn: 'Alexandria', cityAr: 'الإسكندرية', users: 380, labs: 5340, status: 'active' },
-  { nameEn: 'Mansoura Baccalaureate', nameAr: 'بكالوريا المنصورة', cityEn: 'Dakahlia', cityAr: 'الدقهلية', users: 296, labs: 4120, status: 'active' },
+  { nameEn: 'Mansoura STEM Academy', nameAr: 'أكاديمية المنصورة للعلوم', cityEn: 'Dakahlia', cityAr: 'الدقهلية', users: 296, labs: 4120, status: 'active' },
   { nameEn: 'Assiut STEM Academy', nameAr: 'أكاديمية أسيوط', cityEn: 'Assiut', cityAr: 'أسيوط', users: 214, labs: 2890, status: 'trial' },
   { nameEn: 'Giza International School', nameAr: 'مدرسة الجيزة الدولية', cityEn: 'Giza', cityAr: 'الجيزة', users: 188, labs: 2410, status: 'active' },
   { nameEn: 'Port Said Science Hub', nameAr: 'مركز بورسعيد العلمي', cityEn: 'Port Said', cityAr: 'بورسعيد', users: 96, labs: 870, status: 'trial' },

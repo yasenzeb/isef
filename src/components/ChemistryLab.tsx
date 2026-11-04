@@ -449,7 +449,12 @@ const PolyatomicGroup3DViewer: React.FC<PolyatomicGroup3DViewerProps> = ({ group
 
 export const ChemistryLab: React.FC = () => {
   const { t, language, isRTL } = useLanguage();
-  const [activeTab, setActiveTab] = useState<'periodic' | 'reactions' | 'atomic-groups'>(() => (loadState('chemistry_tab', 'periodic') as any));
+  const [activeTab, setActiveTab] = useState<'periodic' | 'reactions' | 'atomic-groups'>(() => {
+    try {
+      if (sessionStorage.getItem('scinexa_pending_preset')) return 'reactions';
+    } catch {}
+    return (loadState('chemistry_tab', 'periodic') as any);
+  });
 
   useEffect(() => {
     saveState('chemistry_tab', activeTab);

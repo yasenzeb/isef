@@ -130,7 +130,7 @@ const Avatar: React.FC<{ name: string; url?: string; size?: number }> = ({ name,
 };
 
 export const DashboardLayout: React.FC = () => {
-  const { language, t } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const { user, role, isDemo, isRolePreview, signOut, switchDemoRole, clearRolePreview } = useSession();
   const ar = language === 'ar';
   const navigate = useNavigate();
