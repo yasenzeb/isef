@@ -8,7 +8,6 @@ import { EgyptLocationModal } from './components/EgyptLocationModal';
 import { OfflineDownloadModal } from './components/OfflineDownloadModal';
 import { Footer } from './components/Footer';
 import { MacOSDock } from './components/MacOSDock';
-import { DarwinAssistant } from './components/DarwinAssistant';
 import { FishAgentController } from './components/FishAgentController';
 import { saveState, loadState } from './utils/persistence';
 import { CheckCircle2 } from 'lucide-react';
@@ -112,9 +111,6 @@ const AppContent: React.FC = () => {
 
       {/* ── macOS-style Glass Dock — replaces both old MobileBottomNav & Navbar Tier 2 ── */}
       <MacOSDock currentTab={currentTab} setCurrentTab={setCurrentTab} />
-
-      {/* Darwin AI Assistant (Voice & Platform Command Hub) */}
-      <DarwinAssistant currentTab={currentTab} setCurrentTab={setCurrentTab} />
 
       <EgyptLocationModal
         isOpen={isLocationModalOpen}

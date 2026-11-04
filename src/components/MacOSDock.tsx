@@ -89,9 +89,54 @@ export const MacOSDock: React.FC<MacOSDockProps> = ({ currentTab, setCurrentTab 
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   const handleOpenDarwin = () => {
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('open-darwin'));
+    if (typeof window === 'undefined') return;
+
+    // 1. Ensure <fish-agent> element exists in the DOM
+    let agentEl = document.querySelector('fish-agent') as any;
+    if (!agentEl) {
+      agentEl = document.createElement('fish-agent');
+      agentEl.setAttribute('agent-id', '929a1bf391db4185b03ae62f05a49207');
+      agentEl.setAttribute('language', language === 'ar' ? 'ar' : 'en');
+      agentEl.setAttribute('theme', 'dark');
+      agentEl.setAttribute(
+        'greeting',
+        language === 'ar'
+          ? 'أهلاً بك يا بطل! أنا داروين مرشدك العلمي في منصة ساينكسا، جاهز لاستكشاف أي تجربة أو فحص أي عضو معايا؟'
+          : 'Welcome! I am Darwin, your scientific AI guide in SciNexa. Ready to explore labs and experiments together?'
+      );
+      document.body.appendChild(agentEl);
     }
+
+    // 2. Ensure official Fish Audio widget script is loaded
+    if (!document.querySelector('script[src*="agent-widget-embed"]')) {
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/@fishaudio/agent-widget-embed';
+      s.async = true;
+      document.body.appendChild(s);
+    }
+
+    // 3. Trigger open/expand action on Fish Audio Agent widget
+    const triggerExpand = () => {
+      try {
+        document.dispatchEvent(new CustomEvent('fish-agent:expand'));
+        const el = document.querySelector('fish-agent') as any;
+        if (el) {
+          el.setAttribute('open', 'true');
+          el.expanded = true;
+          const innerBtn = el.shadowRoot?.querySelector('button, [role="button"]') as HTMLElement;
+          if (innerBtn) {
+            innerBtn.click();
+          }
+        }
+      } catch (err) {
+        console.warn('Fish agent trigger error:', err);
+      }
+    };
+
+    triggerExpand();
+    setTimeout(triggerExpand, 350);
+    setTimeout(triggerExpand, 850);
+    setTimeout(triggerExpand, 1600);
   };
 
   return (
