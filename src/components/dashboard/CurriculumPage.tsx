@@ -359,17 +359,17 @@ export const CurriculumPage: React.FC = () => {
 
   // 3. User Gamification and Progress
   const [completed, setCompleted] = useState<string[]>(() => {
-    return getPersistedJSON<string[]>('scinexa_completed_lessons', ['sec-chem-1', 'sec-phys-1']);
+    return getPersistedJSON<string[]>('scinexa_completed_lessons', []);
   });
 
   const [xp, setXp] = useState<number>(() => {
     const v = getPersistedItem('scinexa_user_xp');
-    return v ? parseInt(v, 10) : 480;
+    return v ? parseInt(v, 10) : 0;
   });
 
   const [stars, setStars] = useState<number>(() => {
     const v = getPersistedItem('scinexa_user_stars');
-    return v ? parseInt(v, 10) : 6;
+    return v ? parseInt(v, 10) : 0;
   });
 
   // 4. Student Enrollment and Locked Grade

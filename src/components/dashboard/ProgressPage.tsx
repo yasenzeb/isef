@@ -21,12 +21,12 @@ export const ProgressPage: React.FC = () => {
   const ar = language === 'ar';
 
   const completed = useMemo(() => {
-    return getPersistedJSON<string[]>('scinexa_completed_lessons', ['sec_chem_inorganic', 'sec_physics_waves']);
+    return getPersistedJSON<string[]>('scinexa_completed_lessons', []);
   }, []);
 
-  const xp = parseInt(getPersistedItem('scinexa_user_xp', '480'), 10);
-  const stars = parseInt(getPersistedItem('scinexa_user_stars', '6'), 10);
-  const realStreak = useMemo(() => updateAndGetRealStreak(), []);
+  const xp = parseInt(getPersistedItem('scinexa_user_xp', '0'), 10);
+  const stars = parseInt(getPersistedItem('scinexa_user_stars', '0'), 10);
+  const realStreak = parseInt(getPersistedItem('scinexa_user_streak', '0'), 10);
   const submissions = useMemo(() => getSubmissions(), []);
 
   // Compute real subject mastery based on completed lessons
@@ -39,12 +39,12 @@ export const ProgressPage: React.FC = () => {
     const astroCount = completed.filter((id) => id.includes('prep') || id.includes('astro')).length;
 
     return [
-      { en: 'Chemistry', ar: 'الكيمياء', accent: 'chemistry', mastery: Math.min(100, 60 + chemCount * 12), lessons: Math.max(chemCount, 4), assessments: 2 },
-      { en: 'Physics', ar: 'الفيزياء', accent: 'physics', mastery: Math.min(100, 50 + physCount * 15), lessons: Math.max(physCount, 3), assessments: 1 },
-      { en: 'Biology', ar: 'الأحياء', accent: 'biology', mastery: Math.min(100, 45 + bioCount * 14), lessons: Math.max(bioCount, 3), assessments: 1 },
-      { en: 'Anatomy', ar: 'التشريح', accent: 'anatomy', mastery: Math.min(100, 40 + anatCount * 15), lessons: Math.max(anatCount, 2), assessments: 1 },
-      { en: 'Geology', ar: 'الجيولوجيا', accent: 'geology', mastery: Math.min(100, 35 + geoCount * 16), lessons: Math.max(geoCount, 2), assessments: 1 },
-      { en: 'Astronomy', ar: 'الفلك', accent: 'astronomy', mastery: Math.min(100, 30 + astroCount * 14), lessons: Math.max(astroCount, 2), assessments: 1 },
+      { en: 'Chemistry', ar: 'الكيمياء', accent: 'chemistry', mastery: chemCount > 0 ? Math.min(100, chemCount * 25) : 0, lessons: chemCount, assessments: 2 },
+      { en: 'Physics', ar: 'الفيزياء', accent: 'physics', mastery: physCount > 0 ? Math.min(100, physCount * 25) : 0, lessons: physCount, assessments: 1 },
+      { en: 'Biology', ar: 'الأحياء', accent: 'biology', mastery: bioCount > 0 ? Math.min(100, bioCount * 25) : 0, lessons: bioCount, assessments: 1 },
+      { en: 'Anatomy', ar: 'التشريح', accent: 'anatomy', mastery: anatCount > 0 ? Math.min(100, anatCount * 25) : 0, lessons: anatCount, assessments: 1 },
+      { en: 'Geology', ar: 'الجيولوجيا', accent: 'geology', mastery: geoCount > 0 ? Math.min(100, geoCount * 25) : 0, lessons: geoCount, assessments: 1 },
+      { en: 'Astronomy', ar: 'الفلك', accent: 'astronomy', mastery: astroCount > 0 ? Math.min(100, astroCount * 25) : 0, lessons: astroCount, assessments: 1 },
     ];
   }, [completed]);
 

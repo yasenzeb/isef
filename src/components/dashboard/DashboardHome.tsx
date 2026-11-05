@@ -39,7 +39,7 @@ const ICONS: Record<string, React.ComponentType<{ size?: number; strokeWidth?: n
 };
 
 const readCompleted = (): string[] => {
-  return getPersistedJSON<string[]>('scinexa_completed_lessons', ['sec_chem_inorganic', 'sec_physics_waves']);
+  return getPersistedJSON<string[]>('scinexa_completed_lessons', []);
 };
 
 export const DashboardHome: React.FC = () => {
@@ -51,9 +51,9 @@ export const DashboardHome: React.FC = () => {
   // Real Enrollment & Streak
   const studentQuadName = getPersistedItem('scinexa_user_fullname') || user?.name || '';
   const linkedStudent = useMemo(() => checkStudentLink(studentQuadName, user?.email), [studentQuadName, user]);
-  const realStreak = useMemo(() => updateAndGetRealStreak(), []);
-  const xp = parseInt(getPersistedItem('scinexa_user_xp', '480'), 10);
-  const progressPercent = Math.min(100, Math.round((completed.length / 24) * 100));
+  const realStreak = parseInt(getPersistedItem('scinexa_user_streak', '0'), 10);
+  const xp = parseInt(getPersistedItem('scinexa_user_xp', '0'), 10);
+  const progressPercent = completed.length > 0 ? Math.min(100, Math.round((completed.length / 24) * 100)) : 0;
   const levelInfo = useMemo(() => calculateStudentLevel(xp), [xp]);
 
   const firstName = user?.name?.trim().split(/\s+/)[0] || (ar ? 'بطلنا' : 'there');
@@ -102,9 +102,9 @@ export const DashboardHome: React.FC = () => {
         ? ar
           ? 'استخدام المنصة ارتفع ١٨٪ خلال ٣٠ يومًا، مع ١٢ مدرسة متصلة.'
           : 'Platform usage is up 18% over 30 days, with 12 schools connected.'
-        : ar
-          ? 'أكملت ٣ دروس هذا الأسبوع. الدرس التالي يفتح معمل الكيمياء مباشرة.'
-          : 'You completed 3 lessons this week. The next lesson opens the chemistry lab directly.';
+        : completed.length > 0
+          ? (ar ? `أكملت ${completed.length} درسًا حتى الآن. تابع تقدمك الدراسي.` : `You completed ${completed.length} lessons so far. Keep going!`)
+          : (ar ? 'مرحباً بك في منصة SciNexa. ابدأ باختيار درس من المنهج أو خوض أولى تجاربك في المعمل ثلاثي الأبعاد.' : 'Welcome to SciNexa. Start by picking a lesson from the curriculum or exploring a 3D lab.');
 
   return (
     <div>

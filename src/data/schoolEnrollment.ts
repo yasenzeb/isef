@@ -1,3 +1,4 @@
+import { dbFetchClasses, dbCreateClass, dbFetchEnrolledStudents, dbEnrollStudent, dbFetchAssignments, dbCreateAssignment, dbSubmitAssignment } from '../lib/supabase';
 /**
  * schoolEnrollment.ts
  * إدارة بيانات الطلاب والربط الأكاديمي مع المعلمين والفصول والواجبات ونظام الستريك الحقيقي.
@@ -175,59 +176,7 @@ const STORAGE_ASSIGNMENTS = 'scinexa_assignments_list';
 const STORAGE_SUBMISSIONS = 'scinexa_student_submissions';
 
 // Initial pre-enrolled mock students (matching the demo records)
-const DEFAULT_ENROLLED: EnrolledStudent[] = [
-  {
-    id: 'std-1',
-    quadName: 'ياسين محمد إبراهيم زيد',
-    email: 'yaseen@scinexa.school',
-    schoolName: 'مدرسة المتفوقين للعلوم والتكنولوجيا (STEM)',
-    governorateId: 'cairo',
-    administrationId: 'maadi',
-    gradeLevel: 'sec2',
-    classId: '2a',
-    classNameAr: 'كيمياء ٢أ (الصف الثاني الثانوي)',
-    teacherId: 't-mona',
-    teacherNameAr: 'أ. منى فتحي',
-    enrolledAt: '2026-09-15',
-    mastery: 88,
-    streak: 4,
-    lastActiveDate: new Date().toISOString().slice(0, 10),
-  },
-  {
-    id: 'std-2',
-    quadName: 'مريم حسن عبد الله السيد',
-    email: 'mariam@scinexa.school',
-    schoolName: 'مدرسة النيل المصرية الدولية',
-    governorateId: 'giza',
-    administrationId: 'dokki',
-    gradeLevel: 'sec2',
-    classId: '2a',
-    classNameAr: 'كيمياء ٢أ (الصف الثاني الثانوي)',
-    teacherId: 't-mona',
-    teacherNameAr: 'أ. منى فتحي',
-    enrolledAt: '2026-09-16',
-    mastery: 92,
-    streak: 6,
-    lastActiveDate: new Date().toISOString().slice(0, 10),
-  },
-  {
-    id: 'std-3',
-    quadName: 'عمر عادل أحمد رضوان',
-    email: 'omar@scinexa.school',
-    schoolName: 'مدرسة الأورمان الثانوية بنين',
-    governorateId: 'giza',
-    administrationId: 'agouza',
-    gradeLevel: 'sec3',
-    classId: '3b',
-    classNameAr: 'فيزياء ٣ب (الصف الثالث الثانوي)',
-    teacherId: 't-hala',
-    teacherNameAr: 'أ. هالة نبيل',
-    enrolledAt: '2026-09-18',
-    mastery: 76,
-    streak: 3,
-    lastActiveDate: new Date().toISOString().slice(0, 10),
-  },
-];
+const DEFAULT_ENROLLED: EnrolledStudent[] = [];
 
 export const getEnrolledStudents = (): EnrolledStudent[] => {
   return getPersistedJSON<EnrolledStudent[]>(STORAGE_ENROLLED, DEFAULT_ENROLLED);
@@ -313,6 +262,23 @@ export const addStudentToClassByTeacher = (params: {
 
   const updated = [newStudent, ...list];
   saveEnrolledStudents(updated);
+  void dbEnrollStudent({
+    id: newStudent.id,
+    quad_name: newStudent.quadName,
+    email: newStudent.email,
+    school_name: newStudent.schoolName,
+    governorate_id: newStudent.governorateId,
+    administration_id: newStudent.administrationId,
+    grade_level: newStudent.gradeLevel,
+    class_id: newStudent.classId,
+    class_name_ar: newStudent.classNameAr,
+    teacher_id: newStudent.teacherId,
+    teacher_name_ar: newStudent.teacherNameAr,
+    enrolled_at: newStudent.enrolledAt,
+    mastery: newStudent.mastery,
+    streak: newStudent.streak,
+    last_active_date: newStudent.lastActiveDate,
+  });
   return newStudent;
 };
 
@@ -322,12 +288,10 @@ export const addStudentToClassByTeacher = (params: {
 export const updateAndGetRealStreak = (): number => {
   const today = new Date().toISOString().slice(0, 10);
   const lastDate = getPersistedItem('scinexa_last_visit_date');
-  let currentStreak = parseInt(getPersistedItem('scinexa_user_streak', '1'), 10);
+  let currentStreak = parseInt(getPersistedItem('scinexa_user_streak', '0'), 10);
 
   if (!lastDate) {
-    setPersistedItem('scinexa_last_visit_date', today);
-    setPersistedItem('scinexa_user_streak', '1');
-    return 1;
+    return currentStreak;
   }
 
   if (lastDate === today) {
@@ -364,40 +328,7 @@ export const calculateStudentLevel = (xp: number) => {
 /**
  * قائمة الواجبات الافتراضية للمعلمين
  */
-export const DEFAULT_ASSIGNMENTS: AssignmentItem[] = [
-  {
-    id: 'asg-1',
-    titleAr: 'تقرير تجربة اختزال أكسيد النحاس بالهيدروجين وحساب كتل النواتج',
-    titleEn: 'Hydrogen reduction lab report & stoichiometric yields',
-    classId: '2a',
-    classNameAr: 'كيمياء ٢أ (الصف الثاني الثانوي)',
-    teacherId: 't-mona',
-    teacherNameAr: 'أ. منى فتحي',
-    linkedLab: 'chemistry',
-    dueDateAr: 'الخميس القادم · ١٠:٠٠ م',
-    dueDateEn: 'Next Thursday · 10:00 PM',
-    descriptionAr: 'قم بفتح معمل الكيمياء 3D واختيار أكسيد النحاس CuO مع غاز الهيدروجين H2 وتشغيل التسخين، ثم سجل معادلة التفاعل والكتل الناتجة في التقرير.',
-    descriptionEn: 'Open Chemistry 3D Lab, select CuO with H2, trigger heating, and record observed color shifts and stoichiometry.',
-    totalPoints: 100,
-    assignedAt: '2026-11-01',
-  },
-  {
-    id: 'asg-2',
-    titleAr: 'ورقة عمل حساب التردد والرنين وسرعة الموجة في وتر مشدود',
-    titleEn: 'Wave Harmonics & String Tension Calculation Worksheet',
-    classId: '3b',
-    classNameAr: 'فيزياء ٣ب (الصف الثالث الثانوي)',
-    teacherId: 't-hala',
-    teacherNameAr: 'أ. هالة نبيل',
-    linkedLab: 'physics',
-    dueDateAr: 'الأحد القادم · ٠٨:٠٠ م',
-    dueDateEn: 'Next Sunday · 08:00 PM',
-    descriptionAr: 'اختبر تغيير التردد في معمل الموجات ولاحظ العقد والبطون واحسب سرعة انتشار الموجة بدقة.',
-    descriptionEn: 'Observe standing waves, antinodes, and calculate wave propagation velocity under different tension loads.',
-    totalPoints: 100,
-    assignedAt: '2026-11-02',
-  },
-];
+export const DEFAULT_ASSIGNMENTS: AssignmentItem[] = [];
 
 export const getAssignments = (): AssignmentItem[] => {
   return getPersistedJSON<AssignmentItem[]>(STORAGE_ASSIGNMENTS, DEFAULT_ASSIGNMENTS);
@@ -407,20 +338,26 @@ export const addAssignment = (item: AssignmentItem): void => {
   const list = getAssignments();
   const updated = [item, ...list];
   setPersistedJSON(STORAGE_ASSIGNMENTS, updated);
+  void dbCreateAssignment({
+    id: item.id,
+    title_ar: item.titleAr,
+    title_en: item.titleEn,
+    class_id: item.classId,
+    class_name_ar: item.classNameAr,
+    teacher_id: item.teacherId,
+    teacher_name_ar: item.teacherNameAr,
+    linked_lab: item.linkedLab,
+    due_date_ar: item.dueDateAr,
+    due_date_en: item.dueDateEn,
+    description_ar: item.descriptionAr,
+    description_en: item.descriptionEn,
+    total_points: item.totalPoints,
+    assigned_at: item.assignedAt,
+  });
 };
 
 export const getSubmissions = (): StudentSubmission[] => {
-  return getPersistedJSON<StudentSubmission[]>(STORAGE_SUBMISSIONS, [
-    {
-      id: 'sub-1',
-      assignmentId: 'asg-1',
-      studentQuadName: 'ياسين محمد إبراهيم زيد',
-      submittedAt: new Date().toISOString().slice(0, 10),
-      status: 'graded',
-      score: 95,
-      teacherFeedback: 'ممتاز جداً، المعادلات موزونة وحسابات المردود دقيقة.',
-    },
-  ]);
+  return getPersistedJSON<StudentSubmission[]>(STORAGE_SUBMISSIONS, []);
 };
 
 export const recordSubmission = (submission: StudentSubmission): void => {
@@ -436,4 +373,70 @@ export const recordSubmission = (submission: StudentSubmission): void => {
     updated = [submission, ...current];
   }
   setPersistedJSON(STORAGE_SUBMISSIONS, updated);
+  void dbSubmitAssignment({
+    id: submission.id,
+    assignment_id: submission.assignmentId,
+    student_quad_name: submission.studentQuadName,
+    score: submission.score,
+    status: submission.status,
+    teacher_feedback: submission.teacherFeedback,
+    submitted_at: submission.submittedAt,
+  });
+};
+
+/**
+ * مزامنة الطلاب المسجلين مع سوبابيز وقاعدة البيانات الحقيقية
+ */
+export const fetchAndSyncEnrollment = async (): Promise<EnrolledStudent[]> => {
+  const remote = await dbFetchEnrolledStudents();
+  if (remote && remote.length > 0) {
+    const mapped: EnrolledStudent[] = remote.map((r: any) => ({
+      id: r.id,
+      quadName: r.quad_name,
+      email: r.email,
+      schoolName: r.school_name,
+      governorateId: r.governorate_id,
+      administrationId: r.administration_id,
+      gradeLevel: r.grade_level,
+      classId: r.class_id,
+      classNameAr: r.class_name_ar,
+      teacherId: r.teacher_id,
+      teacherNameAr: r.teacher_name_ar,
+      enrolledAt: r.enrolled_at || new Date().toISOString().slice(0, 10),
+      mastery: r.mastery ?? 0,
+      streak: r.streak ?? 0,
+      lastActiveDate: r.last_active_date || new Date().toISOString().slice(0, 10),
+    }));
+    saveEnrolledStudents(mapped);
+    return mapped;
+  }
+  return getEnrolledStudents();
+};
+
+/**
+ * مزامنة التكليفات والواجبات المدرسية مع سوبابيز
+ */
+export const fetchAndSyncAssignments = async (): Promise<AssignmentItem[]> => {
+  const remote = await dbFetchAssignments();
+  if (remote && remote.length > 0) {
+    const mapped: AssignmentItem[] = remote.map((a: any) => ({
+      id: a.id,
+      titleAr: a.title_ar,
+      titleEn: a.title_en,
+      classId: a.class_id,
+      classNameAr: a.class_name_ar,
+      teacherId: a.teacher_id,
+      teacherNameAr: a.teacher_name_ar,
+      linkedLab: a.linked_lab,
+      dueDateAr: a.due_date_ar,
+      dueDateEn: a.due_date_en,
+      descriptionAr: a.description_ar,
+      descriptionEn: a.description_en,
+      totalPoints: a.total_points,
+      assignedAt: a.assigned_at,
+    }));
+    setPersistedJSON(STORAGE_ASSIGNMENTS, mapped);
+    return mapped;
+  }
+  return getAssignments();
 };

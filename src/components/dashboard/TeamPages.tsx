@@ -6,7 +6,9 @@ import {
   INITIAL_CLASSES,
   TEACHERS,
   type EnrolledStudent,
-  type AssignmentItem
+  type AssignmentItem,
+  fetchAndSyncAssignments,
+  fetchAndSyncEnrollment
 } from '../../data/schoolEnrollment';
 import { EGYPT_GOVERNORATES } from '../../data/egyptLocationData';
 import React, { useMemo, useState } from 'react';
@@ -287,6 +289,12 @@ export const StudentsPage: React.FC = () => {
   const [onlyReview, setOnlyReview] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [customList, setCustomList] = useState<EnrolledStudent[]>(() => getEnrolledStudents());
+
+  React.useEffect(() => {
+    void fetchAndSyncEnrollment().then((list) => {
+      if (list && list.length > 0) setCustomList(list);
+    });
+  }, []);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   const rows = useMemo(() => {
@@ -305,7 +313,7 @@ export const StudentsPage: React.FC = () => {
       isCustom: true,
     }));
 
-    const all = [...customMapped, ...STUDENTS];
+    const all = customMapped;
     return all.filter((student) => {
       const matches =
         !q ||
@@ -584,6 +592,12 @@ export const AssignmentsPage: React.FC = () => {
   const { language } = useLanguage();
   const ar = language === 'ar';
   const [assignmentsList, setAssignmentsList] = useState<AssignmentItem[]>(() => getAssignments());
+
+  React.useEffect(() => {
+    void fetchAndSyncAssignments().then((list) => {
+      if (list && list.length > 0) setAssignmentsList(list);
+    });
+  }, []);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 

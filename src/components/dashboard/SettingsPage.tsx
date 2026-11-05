@@ -256,35 +256,27 @@ export const SettingsPage: React.FC = () => {
               </div>
             </div>
 
-            {(isDemo || import.meta.env.DEV) && (
-              <div className="mt-4">
-                <div className="mb-2 flex items-center justify-between text-[10px] uppercase tracking-[0.08em] text-[#a3a3a3]">
-                  <span className="flex items-center gap-1.5">
-                    <UserCog size={11} strokeWidth={1.8} />
-                    {ar ? 'معاينة الدور' : 'Preview role'}
-                  </span>
-                  {isRolePreview && (
-                    <button type="button" onClick={clearRolePreview} className="normal-case tracking-normal text-[#1d4ed8] hover:underline">
-                      {ar ? 'إعادة ضبط' : 'Reset'}
-                    </button>
-                  )}
-                </div>
-                <div className="grid grid-cols-3 gap-1.5">
-                  {(['student', 'teacher', 'admin'] as AppRole[]).map((r) => (
-                    <button
-                      key={r}
-                      type="button"
-                      onClick={() => switchDemoRole(r)}
-                      className={`rounded-[10px] border px-2 py-2 text-[11px] font-medium transition-all ${
-                        role === r ? 'border-[#0a0a0a] bg-white shadow-[0_0_0_1px_#0a0a0a]' : 'border-[#e5e5e5] bg-[#fafafa] hover:border-[#d4d4d4]'
-                      }`}
-                    >
-                      {ar ? ROLE_META[r].ar : ROLE_META[r].en}
-                    </button>
-                  ))}
-                </div>
+            <div className="mt-4 pt-3 border-t border-[#f0f0f0] flex flex-col gap-2">
+              <span className="text-[10px] uppercase tracking-[0.08em] text-[#a3a3a3] font-semibold">
+                {ar ? 'بوابات الدخول المعتمدة والتحقق الأمني' : 'Official Verified Portals'}
+              </span>
+              <div className="grid grid-cols-2 gap-2">
+                <a
+                  href="/portal/teacher"
+                  className="rounded-xl border border-[#e5e5e5] bg-[#fafafa] hover:bg-white hover:border-[#0a0a0a] p-2.5 text-[11px] font-semibold text-[#047857] flex items-center justify-between transition-all"
+                >
+                  <span>{ar ? 'بوابة المعلمين المشرفين' : 'Teacher Portal'}</span>
+                  <span>➔</span>
+                </a>
+                <a
+                  href="/portal/admin"
+                  className="rounded-xl border border-[#e5e5e5] bg-[#fafafa] hover:bg-white hover:border-[#0a0a0a] p-2.5 text-[11px] font-semibold text-amber-700 flex items-center justify-between transition-all"
+                >
+                  <span>{ar ? 'بوابة الإدارة المدرسية' : 'Admin Portal'}</span>
+                  <span>➔</span>
+                </a>
               </div>
-            )}
+            </div>
           </SectionCard>
 
           <SectionCard title={ar ? 'العمل دون إنترنت' : 'Offline access'} action={<WifiOff size={14} strokeWidth={1.7} className="text-[#a3a3a3]" />}>

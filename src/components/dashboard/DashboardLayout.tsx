@@ -425,38 +425,16 @@ export const DashboardLayout: React.FC = () => {
                   {ar ? 'الموقع العام' : 'Public site'}
                 </Link>
 
-                {/* Role Switcher - Always available so Admin & Teacher can be previewed anytime */
-                true && (
-                  <>
-                    <div className="my-1 h-px bg-[#f0f0f0]" />
-                    <div className="flex items-center justify-between px-2 py-1">
-                      <span className="text-[10px] uppercase tracking-[0.1em] text-[#a3a3a3]">
-                        {ar ? 'معاينة الدور' : 'Preview role'}
-                      </span>
-                      {isRolePreview && (
-                        <button
-                          type="button"
-                          onClick={clearRolePreview}
-                          className="text-[9px] font-medium text-[#1d4ed8] hover:underline"
-                        >
-                          {ar ? 'إعادة ضبط' : 'Reset'}
-                        </button>
-                      )}
-                    </div>
-                    {(['student', 'teacher', 'admin'] as AppRole[]).map((r) => (
-                      <button
-                        key={r}
-                        type="button"
-                        onClick={() => switchDemoRole(r)}
-                        className={`sn-navitem !h-8 !text-[12px] ${role === r ? 'active' : ''}`}
-                      >
-                        <UserCog size={14} strokeWidth={1.7} />
-                        {ar ? ROLE_LABEL[r].ar : ROLE_LABEL[r].en}
-                        {role === r && <span className="sn-navdot" />}
-                      </button>
-                    ))}
-                  </>
-                )}
+                {/* Portals Access Link for Educators */}
+                <div className="my-1 h-px bg-[#f0f0f0]" />
+                <Link to="/portal/teacher" className="sn-navitem !h-8 !text-[12px] text-[#047857]">
+                  <GraduationCap size={14} strokeWidth={1.7} />
+                  {ar ? 'بوابة المعلمين المشرفين' : 'Teacher Portal'}
+                </Link>
+                <Link to="/portal/admin" className="sn-navitem !h-8 !text-[12px] text-amber-700">
+                  <Building2 size={14} strokeWidth={1.7} />
+                  {ar ? 'بوابة الإدارة المدرسية' : 'Admin Portal'}
+                </Link>
 
                 <div className="my-1 h-px bg-[#f0f0f0]" />
                 <button

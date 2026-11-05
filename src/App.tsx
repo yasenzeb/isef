@@ -25,6 +25,8 @@ import {
 } from './components/dashboard/TeamPages';
 import { BrandMark } from './components/ui/Brand';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
+import { TeacherPortalLogin } from './components/auth/TeacherPortalLogin';
+import { AdminPortalLogin } from './components/auth/AdminPortalLogin';
 
 const SsoCallback: React.FC = () => {
   if (!isClerkConfigured) return <Navigate to="/" replace />;
@@ -58,7 +60,11 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
 const RoleGate: React.FC<{ roles: AppRole[]; children: React.ReactNode }> = ({ roles, children }) => {
   const { role } = useSession();
-  if (!roles.includes(role)) return <Navigate to="/app" replace />;
+  if (!roles.includes(role)) {
+    if (roles.includes('admin')) return <Navigate to="/portal/admin" replace />;
+    if (roles.includes('teacher')) return <Navigate to="/portal/teacher" replace />;
+    return <Navigate to="/app" replace />;
+  }
   return <>{children}</>;
 };
 
@@ -67,6 +73,10 @@ const AppRoutes: React.FC = () => (
     <Route path="/" element={<LandingPage />} />
     <Route path="/sign-in/*" element={<AuthPage mode="signin" />} />
     <Route path="/sign-up/*" element={<AuthPage mode="signup" />} />
+    <Route path="/portal/teacher" element={<TeacherPortalLogin />} />
+    <Route path="/teacher/login" element={<TeacherPortalLogin />} />
+    <Route path="/portal/admin" element={<AdminPortalLogin />} />
+    <Route path="/admin/login" element={<AdminPortalLogin />} />
     <Route path="/sso-callback" element={<SsoCallback />} />
     <Route path="/sign-in/sso-callback" element={<SsoCallback />} />
     <Route path="/sign-up/sso-callback" element={<SsoCallback />} />
