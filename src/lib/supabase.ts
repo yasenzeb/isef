@@ -118,15 +118,32 @@ export interface DbInstitution {
 export async function dbUpsertProfile(profile: Partial<DbProfile> & { id: string }): Promise<void> {
   if (isSupabaseConfigured && supabase) {
     try {
+      let targetId = profile.id;
+      if (profile.email) {
+        const { data: existing } = await supabase.from('profiles').select('id').eq('email', profile.email).maybeSingle();
+        if (existing?.id) {
+          targetId = existing.id;
+        }
+      }
+
       const payload: Record<string, any> = {
-        id: profile.id,
+        id: targetId,
         display_name: profile.display_name || profile.quad_name || 'مستخدم',
         role: profile.role || 'student',
         email: profile.email || undefined,
         school_code: profile.school_code || undefined,
         student_code: profile.student_code || profile.national_id || undefined,
       };
-      await supabase.from('profiles').upsert([payload]);
+
+      const { error } = await supabase.from('profiles').upsert([payload]);
+      if (error && profile.email) {
+        // Fallback: update by email if UUID primary key prevents inserting non-UUID id
+        await supabase.from('profiles').update({
+          display_name: payload.display_name,
+          school_code: payload.school_code,
+          student_code: payload.student_code,
+        }).eq('email', profile.email);
+      }
     } catch (e) {
       console.warn('Supabase upsert profile error', e);
     }

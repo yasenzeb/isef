@@ -83,6 +83,17 @@ const ClerkSessionProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const effectiveRole = previewRole ?? normalized?.role ?? 'student';
 
+  useEffect(() => {
+    if (normalized?.email) {
+      void dbUpsertProfile({
+        id: normalized.id,
+        email: normalized.email,
+        display_name: normalized.name,
+        role: normalized.role,
+      });
+    }
+  }, [normalized?.id, normalized?.email, normalized?.name, normalized?.role]);
+
   const value = useMemo<SessionValue>(
     () => ({
       user: normalized,

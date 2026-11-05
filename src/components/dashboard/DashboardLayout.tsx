@@ -425,16 +425,22 @@ export const DashboardLayout: React.FC = () => {
                   {ar ? 'الموقع العام' : 'Public site'}
                 </Link>
 
-                {/* Portals Access Link for Educators */}
-                <div className="my-1 h-px bg-[#f0f0f0]" />
-                <Link to="/portal/teacher" className="sn-navitem !h-8 !text-[12px] text-[#047857]">
-                  <GraduationCap size={14} strokeWidth={1.7} />
-                  {ar ? 'بوابة المعلمين المشرفين' : 'Teacher Portal'}
-                </Link>
-                <Link to="/portal/admin" className="sn-navitem !h-8 !text-[12px] text-amber-700">
-                  <Building2 size={14} strokeWidth={1.7} />
-                  {ar ? 'بوابة الإدارة المدرسية' : 'Admin Portal'}
-                </Link>
+                {/* Portals Access Link only for authorized educators */}
+                {(role === 'teacher' || role === 'admin') && (
+                  <>
+                    <div className="my-1 h-px bg-[#f0f0f0]" />
+                    <Link to="/portal/teacher" className="sn-navitem !h-8 !text-[12px] text-[#047857]">
+                      <GraduationCap size={14} strokeWidth={1.7} />
+                      {ar ? 'بوابة المعلمين المشرفين' : 'Teacher Portal'}
+                    </Link>
+                  </>
+                )}
+                {role === 'admin' && (
+                  <Link to="/portal/admin" className="sn-navitem !h-8 !text-[12px] text-amber-700">
+                    <Building2 size={14} strokeWidth={1.7} />
+                    {ar ? 'بوابة الإدارة المدرسية' : 'Admin Portal'}
+                  </Link>
+                )}
 
                 <div className="my-1 h-px bg-[#f0f0f0]" />
                 <button

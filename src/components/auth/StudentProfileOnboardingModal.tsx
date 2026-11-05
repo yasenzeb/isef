@@ -146,6 +146,20 @@ export const StudentProfileOnboardingModal: React.FC = () => {
  setPersistedItem('scinexa_gov_id', profileData.governorateId);
  setPersistedItem('scinexa_admin_id', profileData.administrationId);
  setPersistedItem('scinexa_grade', profileData.gradeLevel);
+
+ void dbUpsertProfile({
+   id: user?.id || ('st_' + Date.now()),
+   email: user?.email,
+   display_name: profileData.quadName,
+   quad_name: profileData.quadName,
+   school_code: profileData.schoolName,
+   school_name: profileData.schoolName,
+   governorate_id: profileData.governorateId,
+   administration_id: profileData.administrationId,
+   grade_level: profileData.gradeLevel,
+   role: 'student'
+ });
+
  setIsOpen(false);
  } catch {
  setError(ar ? 'تعذّر حفظ البيانات، يرجى المحاولة مرة أخرى.' : 'Failed to save, please try again.');
