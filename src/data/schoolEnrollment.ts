@@ -1,4 +1,3 @@
-import { dbFetchClasses, dbCreateClass, dbFetchEnrolledStudents, dbEnrollStudent, dbFetchAssignments, dbCreateAssignment, dbSubmitAssignment } from '../lib/supabase';
 /**
  * schoolEnrollment.ts
  * إدارة بيانات الطلاب والربط الأكاديمي مع المعلمين والفصول والواجبات ونظام الستريك الحقيقي.
@@ -6,14 +5,27 @@ import { dbFetchClasses, dbCreateClass, dbFetchEnrolledStudents, dbEnrollStudent
  * © SciNexa Platform — ISEF 2026
  */
 
+import {
+  dbFetchClasses,
+  dbCreateClass,
+  dbDeleteClass,
+  dbFetchEnrolledStudents,
+  dbEnrollStudent,
+  dbDeleteEnrolledStudent,
+  dbFetchAssignments,
+  dbCreateAssignment,
+  dbDeleteAssignment,
+  dbSubmitAssignment,
+  type DbClass
+} from '../lib/supabase';
 import { getPersistedItem, setPersistedItem, getPersistedJSON, setPersistedJSON } from '../lib/cookies';
 
 export interface TeacherInfo {
   id: string;
   nameAr: string;
   nameEn: string;
-  nameFr: string;
-  nameDe: string;
+  nameFr?: string;
+  nameDe?: string;
   subjectAr: string;
   subjectEn: string;
   email: string;
@@ -79,122 +91,30 @@ export interface StudentSubmission {
   teacherFeedback?: string;
 }
 
-export const TEACHERS: TeacherInfo[] = [
-  {
-    id: 't-mona',
-    nameAr: 'أ. منى فتحي',
-    nameEn: 'Ms. Mona Fathy',
-    nameFr: 'Mme Mona Fathy',
-    nameDe: 'Fr. Mona Fathy',
-    subjectAr: 'الكيمياء والعلوم التطبيقية',
-    subjectEn: 'Chemistry & Applied Sciences',
-    email: 'mona@scinexa.school',
-    classes: ['2a', '1b'],
-  },
-  {
-    id: 't-hala',
-    nameAr: 'أ. هالة نبيل',
-    nameEn: 'Ms. Hala Nabil',
-    nameFr: 'Mme Hala Nabil',
-    nameDe: 'Fr. Hala Nabil',
-    subjectAr: 'الفيزياء وميكانيكا الفضاء',
-    subjectEn: 'Physics & Space Mechanics',
-    email: 'hala@scinexa.school',
-    classes: ['3b', 'stem-phys'],
-  },
-  {
-    id: 't-tarek',
-    nameAr: 'أ. طارق محمود',
-    nameEn: 'Mr. Tarek Mahmoud',
-    nameFr: 'M. Tarek Mahmoud',
-    nameDe: 'Hr. Tarek Mahmoud',
-    subjectAr: 'الأحياء والجيولوجيا',
-    subjectEn: 'Biology & Earth Sciences',
-    email: 'tarek@scinexa.school',
-    classes: ['1c', '3a-geo'],
-  },
-];
-
-export const INITIAL_CLASSES: ClassInfo[] = [
-  {
-    id: '2a',
-    nameAr: 'كيمياء ٢أ (الصف الثاني الثانوي)',
-    nameEn: 'Chemistry 2A (2nd Sec)',
-    teacherId: 't-mona',
-    teacherNameAr: 'أ. منى فتحي',
-    grade: 'sec2',
-    subjectAr: 'الكيمياء',
-    subjectEn: 'Chemistry',
-    accent: 'chemistry',
-  },
-  {
-    id: '3b',
-    nameAr: 'فيزياء ٣ب (الصف الثالث الثانوي)',
-    nameEn: 'Physics 3B (3rd Sec)',
-    teacherId: 't-hala',
-    teacherNameAr: 'أ. هالة نبيل',
-    grade: 'sec3',
-    subjectAr: 'الفيزياء',
-    subjectEn: 'Physics',
-    accent: 'physics',
-  },
-  {
-    id: '1c',
-    nameAr: 'أحياء ١ج (الصف الأول الثانوي)',
-    nameEn: 'Biology 1C (1st Sec)',
-    teacherId: 't-tarek',
-    teacherNameAr: 'أ. طارق محمود',
-    grade: 'sec1',
-    subjectAr: 'الأحياء',
-    subjectEn: 'Biology',
-    accent: 'biology',
-  },
-  {
-    id: '1b',
-    nameAr: 'علوم ١ب (الصف الأول الإعدادي)',
-    nameEn: 'Science 1B (1st Prep)',
-    teacherId: 't-mona',
-    teacherNameAr: 'أ. منى فتحي',
-    grade: 'prep1',
-    subjectAr: 'العلوم العامة',
-    subjectEn: 'General Science',
-    accent: 'chemistry',
-  },
-  {
-    id: 'stem-phys',
-    nameAr: 'ميكانيكا متقدمة (مدارس STEM)',
-    nameEn: 'Advanced Mechanics (STEM)',
-    teacherId: 't-hala',
-    teacherNameAr: 'أ. هالة نبيل',
-    grade: 'stem',
-    subjectAr: 'الفيزياء التطبيقية',
-    subjectEn: 'Applied Physics',
-    accent: 'physics',
-  },
-];
+// Zero fake data: Empty lists by default. Real data comes from Supabase.
+export const TEACHERS: TeacherInfo[] = [];
+export const INITIAL_CLASSES: ClassInfo[] = [];
 
 const STORAGE_ENROLLED = 'scinexa_enrolled_students';
 const STORAGE_ASSIGNMENTS = 'scinexa_assignments_list';
 const STORAGE_SUBMISSIONS = 'scinexa_student_submissions';
 
-// Initial pre-enrolled mock students (matching the demo records)
-const DEFAULT_ENROLLED: EnrolledStudent[] = [];
-
 export const getEnrolledStudents = (): EnrolledStudent[] => {
-  const rawList = getPersistedJSON<any[]>(STORAGE_ENROLLED, DEFAULT_ENROLLED);
+  const rawList = getPersistedJSON<any[]>(STORAGE_ENROLLED, []);
   if (!Array.isArray(rawList)) return [];
   return rawList.map((r: any) => ({
     id: String(r.id || `st_${Math.random().toString(36).slice(2, 9)}`),
     quadName: String(r.quadName || r.quad_name || r.name || 'طالب مسجل'),
+    nationalId: r.nationalId || r.national_id || undefined,
     email: r.email ? String(r.email) : undefined,
     schoolName: String(r.schoolName || r.school_name || 'المدرسة المسجلة'),
     governorateId: String(r.governorateId || r.governorate_id || 'cairo'),
     administrationId: String(r.administrationId || r.administration_id || ''),
-    gradeLevel: String(r.gradeLevel || r.grade_level || 'sec2'),
-    classId: String(r.classId || r.class_id || '2a'),
-    classNameAr: String(r.classNameAr || r.class_name_ar || 'كيمياء ٢أ'),
-    teacherId: String(r.teacherId || r.teacher_id || 't-mona'),
-    teacherNameAr: String(r.teacherNameAr || r.teacher_name_ar || 'أ. منى فتحي'),
+    gradeLevel: String(r.gradeLevel || r.grade_level || 'sec1'),
+    classId: String(r.classId || r.class_id || ''),
+    classNameAr: String(r.classNameAr || r.class_name_ar || 'فصل عام'),
+    teacherId: String(r.teacherId || r.teacher_id || 't-admin'),
+    teacherNameAr: String(r.teacherNameAr || r.teacher_name_ar || 'معلم الفصل'),
     enrolledAt: String(r.enrolledAt || r.enrolled_at || new Date().toISOString().slice(0, 10)),
     mastery: typeof r.mastery === 'number' ? r.mastery : 0,
     streak: typeof r.streak === 'number' ? r.streak : 0,
@@ -204,6 +124,13 @@ export const getEnrolledStudents = (): EnrolledStudent[] => {
 
 export const saveEnrolledStudents = (list: EnrolledStudent[]): void => {
   setPersistedJSON(STORAGE_ENROLLED, list);
+};
+
+export const deleteStudentEnrollment = (id: string): void => {
+  const list = getEnrolledStudents();
+  const updated = list.filter((s) => s.id !== id);
+  saveEnrolledStudents(updated);
+  void dbDeleteEnrolledStudent(id);
 };
 
 /**
@@ -228,7 +155,6 @@ export const checkStudentLink = (
   const targetQuad = userQuadName ? normalize(userQuadName) : '';
   const targetEmail = userEmail ? (userEmail || '').trim().toLowerCase() : '';
 
-  // 1. Check exact or fuzzy quadName
   if (targetQuad) {
     const found = list.find((s) => {
       const sQuad = normalize(s.quadName);
@@ -237,7 +163,6 @@ export const checkStudentLink = (
     if (found) return found;
   }
 
-  // 2. Check email
   if (targetEmail) {
     const foundByEmail = list.find((s) => s.email && s.email.toLowerCase() === targetEmail);
     if (foundByEmail) return foundByEmail;
@@ -258,10 +183,18 @@ export const addStudentToClassByTeacher = (params: {
   gradeLevel: string;
   email?: string;
   nationalId?: string;
+  classNameAr?: string;
+  teacherId?: string;
+  teacherNameAr?: string;
 }): EnrolledStudent => {
   const list = getEnrolledStudents();
-  const cls = INITIAL_CLASSES.find((c) => c.id === params.classId) || INITIAL_CLASSES[0];
-  const teacher = TEACHERS.find((t) => t.id === cls.teacherId) || TEACHERS[0];
+  const cachedClasses = getPersistedJSON<any[]>('scinexa_supabase_classes_cache', []);
+  const cls = cachedClasses.find((c) => c.id === params.classId);
+
+  const finalClassId = params.classId;
+  const finalClassNameAr = params.classNameAr || cls?.name_ar || cls?.nameAr || 'فصل دراسي';
+  const finalTeacherId = params.teacherId || cls?.teacher_id || cls?.teacherId || 't-admin';
+  const finalTeacherNameAr = params.teacherNameAr || cls?.teacher_name_ar || cls?.teacherNameAr || 'المعلم المشرف';
 
   const newStudent: EnrolledStudent = {
     id: `std-${Date.now()}`,
@@ -271,14 +204,14 @@ export const addStudentToClassByTeacher = (params: {
     schoolName: params.schoolName.trim() || 'المدرسة المسجلة',
     governorateId: params.governorateId || 'cairo',
     administrationId: params.administrationId || 'default',
-    gradeLevel: params.gradeLevel || cls.grade,
-    classId: cls.id,
-    classNameAr: cls.nameAr,
-    teacherId: teacher.id,
-    teacherNameAr: teacher.nameAr,
+    gradeLevel: params.gradeLevel || cls?.grade || 'sec1',
+    classId: finalClassId,
+    classNameAr: finalClassNameAr,
+    teacherId: finalTeacherId,
+    teacherNameAr: finalTeacherNameAr,
     enrolledAt: new Date().toISOString().slice(0, 10),
-    mastery: 75,
-    streak: 1,
+    mastery: 0,
+    streak: 0,
     lastActiveDate: new Date().toISOString().slice(0, 10),
   };
 
@@ -306,7 +239,7 @@ export const addStudentToClassByTeacher = (params: {
 };
 
 /**
- * حساب الستريك الحقيقي (Real Consecutive Days Streak) متزامن مع الكوكيز
+ * حساب الستريك الحقيقي متزامن مع الكوكيز
  */
 export const updateAndGetRealStreak = (): number => {
   const today = new Date().toISOString().slice(0, 10);
@@ -348,13 +281,8 @@ export const calculateStudentLevel = (xp: number) => {
   return { level: 5, titleAr: 'عالم فيزيائي متميز', titleEn: 'Distinguished Fellow', nextXp: 5000, progress: 100 };
 };
 
-/**
- * قائمة الواجبات الافتراضية للمعلمين
- */
-export const DEFAULT_ASSIGNMENTS: AssignmentItem[] = [];
-
 export const getAssignments = (): AssignmentItem[] => {
-  const raw = getPersistedJSON<any[]>(STORAGE_ASSIGNMENTS, DEFAULT_ASSIGNMENTS);
+  const raw = getPersistedJSON<any[]>(STORAGE_ASSIGNMENTS, []);
   if (!Array.isArray(raw)) return [];
   return raw.map((a: any) => ({
     id: String(a.id || `as_${Math.random().toString(36).slice(2, 9)}`),
@@ -398,6 +326,13 @@ export const addAssignment = (item: AssignmentItem): void => {
   });
 };
 
+export const deleteAssignmentById = (id: string): void => {
+  const list = getAssignments();
+  const updated = list.filter((a) => a.id !== id);
+  setPersistedJSON(STORAGE_ASSIGNMENTS, updated);
+  void dbDeleteAssignment(id);
+};
+
 export const getSubmissions = (): StudentSubmission[] => {
   return getPersistedJSON<StudentSubmission[]>(STORAGE_SUBMISSIONS, []);
 };
@@ -427,7 +362,28 @@ export const recordSubmission = (submission: StudentSubmission): void => {
 };
 
 /**
- * مزامنة الطلاب المسجلين مع سوبابيز وقاعدة البيانات الحقيقية
+ * مزامنة الفصول مع سوبابيز
+ */
+export const fetchAndSyncClasses = async (): Promise<ClassInfo[]> => {
+  const remote = await dbFetchClasses();
+  if (remote) {
+    return remote.map((c) => ({
+      id: c.id,
+      nameAr: c.name_ar,
+      nameEn: c.name_en,
+      teacherId: c.teacher_id,
+      teacherNameAr: c.teacher_name_ar,
+      grade: c.grade,
+      subjectAr: c.subject_ar,
+      subjectEn: c.subject_en,
+      accent: c.accent || 'chemistry',
+    }));
+  }
+  return [];
+};
+
+/**
+ * مزامنة الطلاب المسجلين مع سوبابيز
  */
 export const fetchAndSyncEnrollment = async (): Promise<EnrolledStudent[]> => {
   const remote = await dbFetchEnrolledStudents();

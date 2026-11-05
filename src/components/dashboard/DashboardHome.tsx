@@ -1,12 +1,29 @@
-import { getPersistedItem, getPersistedJSON, setPersistedItem } from '../../lib/cookies';
-import { checkStudentLink, updateAndGetRealStreak, calculateStudentLevel, getEnrolledStudents, getAssignments, INITIAL_CLASSES, fetchAndSyncEnrollment } from '../../data/schoolEnrollment';
-import { AlertCircle, UserCheck, Lock } from 'lucide-react';
-import React, { useMemo } from 'react';
+import { getPersistedItem, getPersistedJSON } from '../../lib/cookies';
+import {
+  checkStudentLink,
+  calculateStudentLevel,
+  getEnrolledStudents,
+  getAssignments,
+  fetchAndSyncEnrollment,
+  fetchAndSyncAssignments,
+  type EnrolledStudent,
+  type AssignmentItem,
+} from '../../data/schoolEnrollment';
+import {
+  dbFetchClasses,
+  dbFetchAllProfiles,
+  dbFetchInstitutions,
+  type DbClass,
+  type DbProfile,
+  type DbInstitution,
+} from '../../lib/supabase';
+import { AlertCircle, UserCheck } from 'lucide-react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import { useSession } from '../../context/SessionContext';
 import { LAB_MODULES } from '../../data/labs';
-import { PageHeader, StatCard, SectionCard, ProgressBar } from './ui';
+import { PageHeader, StatCard, SectionCard } from './ui';
 import {
   Activity,
   Atom,
@@ -15,9 +32,7 @@ import {
   Globe2,
   Sparkles,
   ArrowRight,
-  ArrowUpRight,
   BookOpen,
-  Clock,
   CheckCircle2,
   TrendingUp,
   Users,
@@ -48,6 +63,7 @@ export const DashboardHome: React.FC = () => {
   const navigate = useNavigate();
   const ar = language === 'ar';
   const completed = useMemo(readCompleted, []);
+
   // Real Enrollment & Streak
   const studentQuadName = getPersistedItem('scinexa_user_fullname') || user?.name || '';
   const linkedStudent = useMemo(() => checkStudentLink(studentQuadName, user?.email), [studentQuadName, user]);
@@ -56,21 +72,39 @@ export const DashboardHome: React.FC = () => {
   const progressPercent = completed.length > 0 ? Math.min(100, Math.round((completed.length / 24) * 100)) : 0;
   const levelInfo = useMemo(() => calculateStudentLevel(xp), [xp]);
 
-  const [enrolledStudents, setEnrolledStudents] = React.useState(() => getEnrolledStudents());
-  const [assignments, setAssignments] = React.useState(() => getAssignments());
+  // Real Supabase state
+  const [classes, setClasses] = useState<DbClass[]>([]);
+  const [enrolledStudents, setEnrolledStudents] = useState<EnrolledStudent[]>(() => getEnrolledStudents());
+  const [assignments, setAssignments] = useState<AssignmentItem[]>(() => getAssignments());
+  const [profiles, setProfiles] = useState<DbProfile[]>([]);
+  const [institutions, setInstitutions] = useState<DbInstitution[]>([]);
 
-  React.useEffect(() => {
-    void fetchAndSyncEnrollment().then((res) => {
-      if (res && res.length > 0) setEnrolledStudents(res);
-    });
+  useEffect(() => {
+    const loadRealData = async () => {
+      const [fetchedClasses, fetchedStudents, fetchedAssignments, fetchedProfiles, fetchedInst] = await Promise.all([
+        dbFetchClasses(),
+        fetchAndSyncEnrollment(),
+        fetchAndSyncAssignments(),
+        dbFetchAllProfiles(),
+        dbFetchInstitutions(),
+      ]);
+      setClasses(fetchedClasses || []);
+      if (fetchedStudents) setEnrolledStudents(fetchedStudents);
+      if (fetchedAssignments) setAssignments(fetchedAssignments);
+      setProfiles(fetchedProfiles || []);
+      setInstitutions(fetchedInst || []);
+    };
+    void loadRealData();
   }, []);
 
-  const teacherClassesCount = INITIAL_CLASSES.length;
-  const teacherStudentsCount = enrolledStudents.length;
-  const teacherAvgMastery = teacherStudentsCount > 0
-    ? Math.round(enrolledStudents.reduce((acc, s) => acc + (s.mastery || 0), 0) / teacherStudentsCount)
+  const classesCount = classes.length;
+  const studentsCount = enrolledStudents.length;
+  const avgMastery = studentsCount > 0
+    ? Math.round(enrolledStudents.reduce((acc, s) => acc + (s.mastery || 0), 0) / studentsCount)
     : 0;
-  const teacherOpenAssignments = assignments.length;
+  const openAssignments = assignments.length;
+  const institutionsCount = institutions.length;
+  const profilesCount = profiles.length;
 
   const firstName = user?.name?.trim().split(/\s+/)[0] || (ar ? 'بطلنا' : 'there');
   const hour = new Date().getHours();
@@ -90,34 +124,34 @@ export const DashboardHome: React.FC = () => {
   const stats =
     role === 'student'
       ? [
-          { label: ar ? 'تقدّم المنهج' : 'Curriculum', value: `${progressPercent}%`, trend: '+6%', hint: ar ? 'هذا الأسبوع' : 'this week', icon: BookOpen },
+          { label: ar ? 'تقدّم المنهج' : 'Curriculum', value: `${progressPercent}%`, trend: '+0%', hint: ar ? 'إنجاز فعلي' : 'real progress', icon: BookOpen },
           { label: ar ? 'دروس مكتملة' : 'Lessons', value: String(completed.length), hint: ar ? 'من ٢٤ درسًا' : 'of 24', icon: CheckCircle2 },
-          { label: ar ? 'نقاط الخبرة' : 'Experience', value: String(xp), trend: '+50', hint: 'XP', icon: TrendingUp },
+          { label: ar ? 'نقاط الخبرة' : 'Experience', value: String(xp), hint: 'XP', icon: TrendingUp },
           { label: ar ? 'أيام متتالية' : 'Streak', value: String(realStreak), hint: ar ? 'أيام متواصلة' : 'consecutive days', icon: Activity },
         ]
       : role === 'teacher'
         ? [
-            { label: ar ? 'الفصول' : 'Classes', value: String(teacherClassesCount), hint: ar ? 'معتمدة' : 'approved', icon: GraduationCap },
-            { label: ar ? 'الطلاب' : 'Students', value: String(teacherStudentsCount), hint: ar ? 'بيانات حقيقية' : 'live data', icon: Users },
-            { label: ar ? 'متوسط الإنجاز' : 'Avg. completion', value: `${teacherAvgMastery}%`, hint: ar ? 'تقييم فعلي' : 'real mastery', icon: TrendingUp },
-            { label: ar ? 'واجبات منشورة' : 'Assignments', value: String(teacherOpenAssignments), hint: ar ? 'تكليفات' : 'tasks', icon: FileCheck2 },
+            { label: ar ? 'الفصول' : 'Classes', value: String(classesCount), hint: ar ? 'فصول معتمدة' : 'in database', icon: GraduationCap },
+            { label: ar ? 'الطلاب' : 'Students', value: String(studentsCount), hint: ar ? 'بيانات حقيقية' : 'live data', icon: Users },
+            { label: ar ? 'متوسط الإنجاز' : 'Avg. completion', value: `${avgMastery}%`, hint: ar ? 'تقييم فعلي' : 'real mastery', icon: TrendingUp },
+            { label: ar ? 'واجبات منشورة' : 'Assignments', value: String(openAssignments), hint: ar ? 'تكليفات' : 'tasks', icon: FileCheck2 },
           ]
         : [
-            { label: ar ? 'المؤسسات' : 'Institutions', value: '12', hint: ar ? 'مدرسة' : 'schools', icon: Building2 },
-            { label: ar ? 'المستخدمون النشطون' : 'Active users', value: '2,480', trend: '+18%', hint: ar ? '٣٠ يومًا' : '30 days', icon: Users },
-            { label: ar ? 'جلسات المعامل' : 'Lab sessions', value: '18.4k', trend: '+9%', hint: ar ? 'هذا الشهر' : 'this month', icon: FlaskConical },
-            { label: ar ? 'جهوزية النظام' : 'Uptime', value: '99.98%', hint: ar ? 'آخر ٩٠ يومًا' : 'last 90 days', icon: Activity },
+            { label: ar ? 'المؤسسات' : 'Institutions', value: String(institutionsCount), hint: ar ? 'مدرسة مسجلة' : 'schools in DB', icon: Building2 },
+            { label: ar ? 'المستخدمون' : 'Users', value: String(profilesCount), hint: ar ? 'مستخدم في Supabase' : 'in Supabase', icon: Users },
+            { label: ar ? 'الفصول' : 'Classes', value: String(classesCount), hint: ar ? 'فصل دراسي' : 'classes', icon: GraduationCap },
+            { label: ar ? 'الطلاب' : 'Students', value: String(studentsCount), hint: ar ? 'طالب ملحق' : 'enrolled students', icon: CheckCircle2 },
           ];
 
   const roleMessage =
     role === 'teacher'
       ? ar
-        ? `لديك ${teacherClassesCount} فصول و ${teacherStudentsCount} طالب مسجل، و ${teacherOpenAssignments} واجب منشور للطلاب.`
-        : `You have ${teacherClassesCount} classes, ${teacherStudentsCount} enrolled students, and ${teacherOpenAssignments} active assignments.`
+        ? `لديك ${classesCount} فصول و ${studentsCount} طالب مسجل، و ${openAssignments} واجب منشور للطلاب.`
+        : `You have ${classesCount} classes, ${studentsCount} enrolled students, and ${openAssignments} active assignments.`
       : role === 'admin'
         ? ar
-          ? 'استخدام المنصة ارتفع ١٨٪ خلال ٣٠ يومًا، مع ١٢ مدرسة متصلة.'
-          : 'Platform usage is up 18% over 30 days, with 12 schools connected.'
+          ? `المنصة متصلة بقاعدة بيانات Supabase الحقيقية وبها ${profilesCount} مستخدم و ${institutionsCount} مؤسسة و ${classesCount} فصول.`
+          : `Connected to Supabase with ${profilesCount} users, ${institutionsCount} institutions, and ${classesCount} classes.`
         : completed.length > 0
           ? (ar ? `أكملت ${completed.length} درسًا حتى الآن. تابع تقدمك الدراسي.` : `You completed ${completed.length} lessons so far. Keep going!`)
           : (ar ? 'مرحباً بك في منصة SciNexa. ابدأ باختيار درس من المنهج أو خوض أولى تجاربك في المعمل ثلاثي الأبعاد.' : 'Welcome to SciNexa. Start by picking a lesson from the curriculum or exploring a 3D lab.');
@@ -160,7 +194,7 @@ export const DashboardHome: React.FC = () => {
               <p className="text-[12px] text-amber-800/90 leading-relaxed mt-0.5 max-w-[85ch]">
                 {ar
                   ? `يرجى إبلاغ معلمك في المدرسة باسمك الرباعي المسجل: "${studentQuadName || 'الطالب'}" ليقوم بإضافتك إلى فصله الدراسي وإرسال التقييمات والواجبات المعتمدة لك. يمكنك في هذه الأثناء استكشاف جميع المعامل ثلاثية الأبعاد بحرية!`
-                  : `Please provide your teacher with your 4-part name: "${studentQuadName || 'Student'}" so they can link you to their class and assign evaluations. In the meantime, feel free to explore all 3D labs!`}
+                  : `Please provide your teacher with your 4-part name: "${studentQuadName || 'Student'}" so they can link you to their class and assign evaluations.`}
               </p>
             </div>
           </div>
@@ -204,9 +238,8 @@ export const DashboardHome: React.FC = () => {
             <div className="flex items-center justify-between gap-3">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-white/55">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#4ade80]" />
-                {role === 'student' ? (ar ? 'الدرس التالي' : 'Up next') : ar ? 'ملخص اليوم' : 'Today'}
+                {role === 'student' ? (ar ? 'الدرس التالي' : 'Up next') : ar ? 'نظرة عامة' : 'Overview'}
               </span>
-              <span className="font-mono text-[10px] text-white/35">CH.03 · 42–47</span>
             </div>
 
             <h2 className="mt-5 max-w-[26ch] text-[22px] font-semibold leading-[1.25] tracking-[-0.03em] text-white md:text-[26px]">
@@ -225,17 +258,17 @@ export const DashboardHome: React.FC = () => {
                   ? (ar ? `أكملت ${completed.length} درساً حتى الآن. اضغط لمتابعة بقية المنهج.` : `You completed ${completed.length} lessons. Click to continue.`)
                   : (ar ? 'لم تبدأ أي دروس بعد. توجه للمنهج الدراسي أو افتح أحد المعامل الستة للبدء.' : 'No lessons completed yet. Head to the curriculum or open any 3D lab.')
                 : role === 'teacher'
-                  ? (ar ? `لديك ${teacherStudentsCount} طالب مسجل في فصولك الدراسية، مع ${teacherOpenAssignments} واجبات معتمدة.` : `${teacherStudentsCount} enrolled students across your classes, with ${teacherOpenAssignments} active assignments.`)
-                  : (ar ? 'متابعة مباشرة لنشاط المدارس والفصول وسجلات الطلاب وقاعدة بيانات سوبابيز.' : 'Real-time overview of connected schools, classes, students and Supabase records.')}
+                  ? (ar ? `لديك ${studentsCount} طالب مسجل في فصولك الدراسية، مع ${openAssignments} واجبات معتمدة في Supabase.` : `${studentsCount} enrolled students across your classes, with ${openAssignments} active assignments.`)
+                  : (ar ? `متابعة مباشرة لقاعدة بيانات Supabase: ${profilesCount} مستخدم، ${classesCount} فصول، ${institutionsCount} مؤسسة.` : `Direct Supabase integration: ${profilesCount} users, ${classesCount} classes, ${institutionsCount} institutions.`)}
             </p>
 
             <div className="mt-5 max-w-[320px]">
               <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/45">
                 <span>{ar ? 'التقدّم الفعلي' : 'Real Progress'}</span>
-                <span className="font-mono">{role === 'student' ? `${progressPercent}%` : `${teacherAvgMastery}%`}</span>
+                <span className="font-mono">{role === 'student' ? `${progressPercent}%` : `${avgMastery}%`}</span>
               </div>
               <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
-                <div className="h-full rounded-full bg-white" style={{ width: `${role === 'student' ? progressPercent : teacherAvgMastery}%` }} />
+                <div className="h-full rounded-full bg-white" style={{ width: `${role === 'student' ? progressPercent : avgMastery}%` }} />
               </div>
             </div>
 
@@ -251,7 +284,7 @@ export const DashboardHome: React.FC = () => {
                 }
                 className="sn-btn bg-white text-[#0a0a0a] hover:bg-[#f0f0f0]"
               >
-                {role === 'student' ? (ar ? 'افتح التجربة' : 'Open experiment') : role === 'teacher' ? (ar ? 'عرض الفصل' : 'View class') : ar ? 'عرض التحليلات' : 'View analytics'}
+                {role === 'student' ? (ar ? 'افتح التجربة' : 'Open experiment') : role === 'teacher' ? (ar ? 'عرض الفصول' : 'View classes') : ar ? 'عرض التحليلات' : 'View analytics'}
                 <ArrowRight size={14} strokeWidth={1.8} className={ar ? 'rotate-180' : ''} />
               </button>
               <button
@@ -268,30 +301,22 @@ export const DashboardHome: React.FC = () => {
         {/* Right column */}
         <div className="space-y-4">
           <SectionCard
-            title={ar ? 'هذا الأسبوع' : 'This week'}
-            action={<span className="sn-badge sn-badge-soft">W42</span>}
+            title={ar ? 'نشاط التعلم' : 'Learning Activity'}
             bodyClassName="p-5"
           >
             <div className="flex items-end justify-between gap-4">
               <div>
-                <div className="sn-number text-[38px] font-semibold leading-none tracking-[-0.05em]">4.2</div>
-                <div className="mt-1 text-[11px] text-[#737373]">{ar ? 'ساعات في المعامل' : 'hours in labs'}</div>
-              </div>
-              <div className="flex h-12 items-end gap-1.5">
-                {[38, 62, 45, 78, 56, 88, 70].map((h, i) => (
-                  <span
-                    key={i}
-                    className={`w-2 rounded-t-[2px] ${i === 5 ? 'bg-[#0a0a0a]' : 'bg-[#ececec]'}`}
-                    style={{ height: `${h}%` }}
-                  />
-                ))}
+                <div className="sn-number text-[38px] font-semibold leading-none tracking-[-0.05em]">
+                  {(completed.length * 0.5).toFixed(1)}
+                </div>
+                <div className="mt-1 text-[11px] text-[#737373]">{ar ? 'ساعات تدريب فعلي' : 'hours in labs'}</div>
               </div>
             </div>
             <div className="mt-5 grid grid-cols-3 gap-3 border-t border-[#f0f0f0] pt-4">
               {[
-                { v: '12', l: ar ? 'جلسات' : 'sessions' },
-                { v: '3', l: ar ? 'معامل' : 'labs' },
-                { v: '86%', l: ar ? 'إنجاز' : 'focus' },
+                { v: String(completed.length), l: ar ? 'دروس' : 'lessons' },
+                { v: String(completed.length > 0 ? Math.min(6, completed.length) : 0), l: ar ? 'معامل' : 'labs' },
+                { v: `${progressPercent}%`, l: ar ? 'إنجاز' : 'progress' },
               ].map((item) => (
                 <div key={item.l}>
                   <div className="text-[16px] font-semibold tracking-[-0.03em]">{item.v}</div>
@@ -379,56 +404,6 @@ export const DashboardHome: React.FC = () => {
             </button>
           );
         })}
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-2">
-        <SectionCard
-          title={role === 'student' ? (ar ? 'آخر النشاط' : 'Recent activity') : ar ? 'أحدث التسليمات' : 'Recent submissions'}
-          action={<span className="sn-badge sn-badge-outline">{ar ? 'اليوم' : 'Today'}</span>}
-          bodyClassName="p-2"
-        >
-          {[
-            { en: 'Completed “Metal oxide reduction” lab', ar: 'أكمل تجربة «اختزال أكاسيد الفلزات»', meta: ar ? 'كيمياء · ٤٢ دقيقة' : 'Chemistry · 42 min', icon: CheckCircle2, tone: 'text-[#047857]' },
-            { en: 'Scored 90% on the weekly assessment', ar: 'حصل على ٩٠٪ في التقييم الأسبوعي', meta: ar ? 'تقييم · ١٠ دقائق' : 'Assessment · 10 min', icon: TrendingUp, tone: 'text-[#1d4ed8]' },
-            { en: 'Isolated the nervous system in 3D', ar: 'عزل الجهاز العصبي في 3D', meta: ar ? 'تشريح · ١٨ دقيقة' : 'Anatomy · 18 min', icon: Activity, tone: 'text-[#be123c]' },
-          ].map((item) => {
-            const Icon = item.icon;
-            return (
-              <div key={item.en} className="flex items-start gap-3 rounded-[10px] px-3 py-2.5 hover:bg-[#fafafa]">
-                <Icon size={15} strokeWidth={1.8} className={`mt-0.5 shrink-0 ${item.tone}`} />
-                <div className="min-w-0 flex-1">
-                  <div className="text-[12px] leading-snug text-[#171717]">{ar ? item.ar : item.en}</div>
-                  <div className="mt-0.5 text-[10px] text-[#a3a3a3]">{item.meta}</div>
-                </div>
-              </div>
-            );
-          })}
-        </SectionCard>
-
-        <SectionCard
-          title={ar ? 'إتقان المواد' : 'Subject mastery'}
-          action={<span className="sn-badge sn-badge-soft">{ar ? 'هذا الفصل' : 'this term'}</span>}
-        >
-          <div className="space-y-3.5">
-            {[
-              { name: ar ? 'الكيمياء' : 'Chemistry', pct: 78, accent: 'chemistry' },
-              { name: ar ? 'الفيزياء' : 'Physics', pct: 62, accent: 'physics' },
-              { name: ar ? 'الأحياء' : 'Biology', pct: 54, accent: 'biology' },
-              { name: ar ? 'التشريح' : 'Anatomy', pct: 41, accent: 'anatomy' },
-              { name: ar ? 'الفلك' : 'Astronomy', pct: 29, accent: 'astronomy' },
-            ].map((subject) => (
-              <div key={subject.name} className={`sn-${subject.accent}`}>
-                <div className="mb-1.5 flex items-center justify-between text-[11px]">
-                  <span className="font-medium text-[#171717]">{subject.name}</span>
-                  <span className="font-mono text-[#737373]">{subject.pct}%</span>
-                </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-[#f0f0f0]">
-                  <div className="h-full rounded-full sn-accent-line" style={{ width: `${subject.pct}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </SectionCard>
       </div>
     </div>
   );

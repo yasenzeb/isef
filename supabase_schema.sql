@@ -108,14 +108,28 @@ CREATE TABLE IF NOT EXISTS public.submissions (
   submitted_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 6. Enable Row Level Security (RLS)
+-- 6. Educational Institutions / Schools
+CREATE TABLE IF NOT EXISTS public.institutions (
+  id TEXT PRIMARY KEY,
+  name_ar TEXT NOT NULL,
+  name_en TEXT NOT NULL,
+  city_ar TEXT NOT NULL,
+  city_en TEXT NOT NULL,
+  users_count INTEGER DEFAULT 0,
+  labs_count INTEGER DEFAULT 0,
+  status TEXT DEFAULT 'active' CHECK (status IN ('active', 'trial')),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 7. Enable Row Level Security (RLS)
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.classes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.students_enrollment ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.assignments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.submissions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.institutions ENABLE ROW LEVEL SECURITY;
 
--- 7. RLS Policies (Allow Read / Write for authenticated & anon app operations)
+-- 8. RLS Policies (Allow Read / Write for authenticated & anon app operations)
 DO $$
 BEGIN
   -- Profiles
@@ -147,13 +161,18 @@ BEGIN
   CREATE POLICY "Public submissions read" ON public.submissions FOR SELECT USING (true);
   DROP POLICY IF EXISTS "Public submissions write" ON public.submissions;
   CREATE POLICY "Public submissions write" ON public.submissions FOR ALL USING (true) WITH CHECK (true);
+
+  -- Institutions
+  DROP POLICY IF EXISTS "Public institutions read" ON public.institutions;
+  CREATE POLICY "Public institutions read" ON public.institutions FOR SELECT USING (true);
+  DROP POLICY IF EXISTS "Public institutions write" ON public.institutions FOR ALL USING (true) WITH CHECK (true);
 END $$;
 
--- 8. Enable Realtime Publications (Optional for instant live sync)
+-- 9. Enable Realtime Publications (Optional for instant live sync)
 DO $$
 BEGIN
   BEGIN
-    ALTER PUBLICATION supabase_realtime ADD TABLE public.classes, public.students_enrollment, public.assignments, public.submissions, public.profiles;
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.classes, public.students_enrollment, public.assignments, public.submissions, public.profiles, public.institutions;
   EXCEPTION WHEN OTHERS THEN
     -- Ignore if already added
     NULL;
