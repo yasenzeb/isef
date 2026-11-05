@@ -176,7 +176,7 @@ export const App: React.FC = () => (
     <BrowserRouter>
       <ClerkWithRouter>
         <SessionProvider>
-          <ErrorBoundary>
+          <ErrorBoundary scope="app">
             <AppRoutes />
           </ErrorBoundary>
         </SessionProvider>

@@ -28,6 +28,7 @@ export const TeacherPortalLogin: React.FC = () => {
   const navigate = useNavigate();
   const ar = language === 'ar';
 
+  const [fullName, setFullName] = useState('');
   const [nationalId, setNationalId] = useState('');
   const [teacherCode, setTeacherCode] = useState('');
   const [schoolCode, setSchoolCode] = useState('');
@@ -38,6 +39,15 @@ export const TeacherPortalLogin: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    const cleanFullName = fullName.trim();
+    if (!cleanFullName || cleanFullName.split(/\s+/).length < 2) {
+      setError(
+        ar
+          ? 'يرجى كتابة الاسم كاملاً (الاسم المعتمد في صحيفة الأحوال).'
+          : 'Please enter your full educator name.'
+      );
+      return;
+    }
 
     // 1. تدقيق الرقم القومي (14 رقماً مصرياً)
     const cleanNationalId = nationalId.trim();
@@ -89,7 +99,7 @@ export const TeacherPortalLogin: React.FC = () => {
       setPersistedItem('scinexa_teacher_national_id', cleanNationalId);
       setPersistedItem('scinexa_teacher_code', teacherCode.trim());
       setPersistedItem('scinexa_school_code', schoolCode.trim());
-      setPersistedItem('scinexa_user_fullname', ar ? 'أ. مصطفى عبد الرحمن (معلم معتمد)' : 'Mr. Mostafa (Teacher)');
+      setPersistedItem('scinexa_user_fullname', cleanFullName);
       switchDemoRole('teacher');
       setLoading(false);
       navigate('/app/classes');
@@ -141,6 +151,20 @@ export const TeacherPortalLogin: React.FC = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-[11px] font-semibold text-[#171717] mb-1.5">
+              {ar ? 'الاسم الرباعي المعتمد للمعلم *' : 'Official Full Name (4-part) *'}
+            </label>
+            <input
+              type="text"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder={ar ? 'مثال: أ. محمد أحمد محمود إبراهيم' : 'e.g. Dr. Mohamed Ahmed Mahmoud'}
+              className="h-10 w-full rounded-xl border border-[#e5e5e5] px-3.5 text-[12px] text-[#0a0a0a] outline-none transition-colors focus:border-[#0a0a0a]"
+              required
+            />
+          </div>
+
           <div>
             <label className="block text-[11px] font-semibold text-[#171717] mb-1.5">
               {ar ? 'الرقم القومي للمعلم (١٤ رقماً) *' : '14-Digit National ID *'}

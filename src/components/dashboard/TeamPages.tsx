@@ -7,6 +7,7 @@ import {
   TEACHERS,
   type EnrolledStudent,
   type AssignmentItem,
+  type ClassInfo,
   fetchAndSyncAssignments,
   fetchAndSyncEnrollment
 } from '../../data/schoolEnrollment';
@@ -96,6 +97,18 @@ const ROLE_BADGE: Record<string, string> = {
 export const ClassesPage: React.FC = () => {
   const { language } = useLanguage();
   const ar = language === 'ar';
+  const [classList] = useState<ClassInfo[]>(INITIAL_CLASSES);
+  const [students, setStudents] = useState<EnrolledStudent[]>(() => getEnrolledStudents());
+
+  React.useEffect(() => {
+    void fetchAndSyncEnrollment().then((res) => {
+      if (res && res.length > 0) setStudents(res);
+    });
+  }, []);
+
+  const totalStudents = students.length;
+  const avgMastery = students.length > 0 ? Math.round(students.reduce((acc, s) => acc + (s.mastery || 0), 0) / students.length) : 0;
+
   return (
     <div>
       <PageHeader
@@ -103,63 +116,70 @@ export const ClassesPage: React.FC = () => {
         title={ar ? 'فصولك، في مكان واحد.' : 'Your classes, in one room.'}
         subtitle={ar ? 'تابع الإنجاز، افتح السبورة، ووزّع الواجبات دون مغادرة اللوحة.' : 'Track completion, open the smartboard and assign work without leaving the dashboard.'}
         actions={
-          <button type="button" className="sn-btn sn-btn-primary">
+          <Link to="/app/assignments" className="sn-btn sn-btn-primary">
             <ClipboardList size={15} strokeWidth={1.8} />
             {ar ? 'واجب جديد' : 'New assignment'}
-          </button>
+          </Link>
         }
       />
       <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard label={ar ? 'الفصول' : 'Classes'} value="4" hint={ar ? 'نشطة' : 'active'} icon={GraduationCap} />
-        <StatCard label={ar ? 'الطلاب' : 'Students'} value="128" trend="+12" hint={ar ? 'هذا الشهر' : 'this month'} icon={Users} />
-        <StatCard label={ar ? 'متوسط الإنجاز' : 'Avg. completion'} value="74%" trend="+4%" hint={ar ? 'كل الفصول' : 'all classes'} icon={TrendingUp} />
-        <StatCard label={ar ? 'جلسات هذا الأسبوع' : 'Sessions'} value="18" hint={ar ? 'معمل' : 'labs'} icon={FlaskConical} />
+        <StatCard label={ar ? 'الفصول المعتمدة' : 'Classes'} value={String(classList.length)} hint={ar ? 'نشطة' : 'active'} icon={GraduationCap} />
+        <StatCard label={ar ? 'الطلاب المسجلون' : 'Students'} value={String(totalStudents)} hint={ar ? 'بيانات حقيقية' : 'live data'} icon={Users} />
+        <StatCard label={ar ? 'متوسط الإنجاز' : 'Avg. completion'} value={`${avgMastery}%`} hint={ar ? 'تقييم فعلي' : 'real mastery'} icon={TrendingUp} />
+        <StatCard label={ar ? 'المعامل التفاعلية' : 'Active Labs'} value="6" hint={ar ? 'معامل 3D' : '3D labs'} icon={FlaskConical} />
       </div>
+
       <div className="grid gap-3 md:grid-cols-2">
-        {CLASSES.map((item) => (
-          <div key={item.id} className={`sn-${item.accent} sn-card sn-card-hover p-5`}>
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <span className="sn-icon-tile !h-10 !w-10">
-                  <GraduationCap size={18} strokeWidth={1.6} />
-                </span>
-                <div>
-                  <h2 className="text-[15px] font-semibold">{ar ? item.nameAr : item.nameEn}</h2>
-                  <div className="mt-0.5 text-[11px] text-[#737373]">{item.students} {ar ? 'طالبًا' : 'students'}</div>
+        {classList.map((item) => {
+          const classStudents = students.filter((s) => s.classId === item.id);
+          const classCount = classStudents.length;
+          const classAvg = classCount > 0 ? Math.round(classStudents.reduce((a, b) => a + (b.mastery || 0), 0) / classCount) : 0;
+          return (
+            <div key={item.id} className={`sn-${item.accent} sn-card sn-card-hover p-5`}>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="sn-icon-tile !h-10 !w-10">
+                    <GraduationCap size={18} strokeWidth={1.6} />
+                  </span>
+                  <div>
+                    <h2 className="text-[15px] font-semibold">{ar ? item.nameAr : item.nameEn}</h2>
+                    <div className="mt-0.5 text-[11px] text-[#737373]">
+                      {classCount} {ar ? 'طالب مسجل' : 'students enrolled'}
+                    </div>
+                  </div>
+                </div>
+                <button type="button" className="sn-btn sn-btn-quiet sn-btn-icon" aria-label={ar ? 'خيارات' : 'Options'}>
+                  <MoreHorizontal size={16} strokeWidth={1.8} />
+                </button>
+              </div>
+              <div className="mt-5">
+                <div className="mb-1.5 flex items-center justify-between text-[10px] text-[#737373]">
+                  <span>{ar ? 'نسبة الإتقان' : 'Mastery'}</span>
+                  <span className="font-mono">{classAvg}%</span>
+                </div>
+                <div className="h-1.5 overflow-hidden rounded-full bg-[#f0f0f0]">
+                  <div className="h-full rounded-full sn-accent-line" style={{ width: `${classAvg}%` }} />
                 </div>
               </div>
-              <button type="button" className="sn-btn sn-btn-quiet sn-btn-icon" aria-label={ar ? 'خيارات' : 'Options'}>
-                <MoreHorizontal size={16} strokeWidth={1.8} />
-              </button>
-            </div>
-            <div className="mt-5">
-              <div className="mb-1.5 flex items-center justify-between text-[10px] text-[#737373]">
-                <span>{ar ? 'الإنجاز' : 'Completion'}</span>
-                <span className="font-mono">{item.completion}%</span>
-              </div>
-              <div className="h-1.5 overflow-hidden rounded-full bg-[#f0f0f0]">
-                <div className="h-full rounded-full sn-accent-line" style={{ width: `${item.completion}%` }} />
+              <div className="mt-4 flex items-center justify-between border-t border-[#f0f0f0] pt-3">
+                <span className="inline-flex items-center gap-1.5 text-[11px] text-[#737373]">
+                  <CalendarDays size={12} strokeWidth={1.8} />
+                  <span>{ar ? `المشرف: ${item.teacherNameAr}` : item.teacherNameAr}</span>
+                </span>
+                <Link to="/app/students" className="sn-link !text-[12px]">
+                  {ar ? 'عرض الطلاب' : 'Students'}
+                  <ArrowRight size={13} strokeWidth={1.8} className={ar ? 'rotate-180' : ''} />
+                </Link>
               </div>
             </div>
-            <div className="mt-4 flex items-center justify-between border-t border-[#f0f0f0] pt-3">
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-[#737373]">
-                <CalendarDays size={12} strokeWidth={1.8} />
-                {ar ? item.nextAr : item.nextEn}
-              </span>
-              <Link to="/app/students" className="sn-link !text-[12px]">
-                {ar ? 'الطلاب' : 'Students'}
-                <ArrowRight size={13} strokeWidth={1.8} className={ar ? 'rotate-180' : ''} />
-              </Link>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
 };
 
-/* ── Students ─────────────────────────────────────────────────────────────── */
-/* ── Modal to Add Student by 4-Part Name ── */
+/* ─── Students ───────────────────────────────────────────────────────────── */
 const AddStudentModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
