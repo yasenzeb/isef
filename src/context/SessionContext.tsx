@@ -10,6 +10,7 @@ import { useAuth as useClerkAuth, useUser } from '@clerk/clerk-react';
 import { isClerkConfigured } from '../lib/clerkConfig';
 
 import { getPersistedItem, setPersistedItem, removePersistedItem } from '../lib/cookies';
+import { dbUpsertProfile } from '../lib/supabase';
 
 export type AppRole = 'student' | 'teacher' | 'admin';
 

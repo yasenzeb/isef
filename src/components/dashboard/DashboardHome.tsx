@@ -302,27 +302,42 @@ export const DashboardHome: React.FC = () => {
           </SectionCard>
 
           <SectionCard
-            title={ar ? 'القادم' : 'Upcoming'}
+            title={ar ? 'القادم والتكليفات' : 'Upcoming & Assignments'}
             action={<CalendarDays size={14} strokeWidth={1.7} className="text-[#a3a3a3]" />}
             bodyClassName="p-3"
           >
-            {[
-              { t: ar ? 'تقييم الكيمياء الأسبوعي' : 'Chemistry weekly assessment', d: ar ? 'الخميس · ١٠:٠٠' : 'Thu · 10:00', icon: FileCheck2, tone: 'chemistry' },
-              { t: ar ? 'جلسة تشريح مباشرة' : 'Live anatomy session', d: ar ? 'الأحد · ١٢:٣٠' : 'Sun · 12:30', icon: Activity, tone: 'anatomy' },
-            ].map((item) => {
-              const Icon = item.icon;
-              return (
-                <div key={item.t} className="flex items-center gap-3 rounded-[10px] px-2 py-2 hover:bg-[#fafafa]">
-                  <span className={`sn-${item.tone} sn-icon-tile !h-8 !w-8 !rounded-[8px]`}>
-                    <Icon size={14} strokeWidth={1.7} />
+            {assignments.length > 0 ? (
+              assignments.slice(0, 3).map((item) => (
+                <Link
+                  key={item.id}
+                  to={'/app/labs/' + (item.linkedLab || 'chemistry')}
+                  className="flex items-center gap-3 rounded-[10px] px-2 py-2 hover:bg-[#fafafa] transition-colors"
+                >
+                  <span className={'sn-' + (item.linkedLab || 'chemistry') + ' sn-icon-tile !h-8 !w-8 !rounded-[8px]'}>
+                    <FileCheck2 size={14} strokeWidth={1.7} />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-[12px] font-medium">{item.t}</div>
-                    <div className="text-[10px] text-[#737373]">{item.d}</div>
+                    <div className="truncate text-[12px] font-medium text-[#0a0a0a]">
+                      {ar ? item.titleAr : item.titleEn}
+                    </div>
+                    <div className="flex items-center gap-1.5 text-[10px] text-[#737373]">
+                      <span>{ar ? item.dueDateAr : item.dueDateEn}</span>
+                      {item.targetStudentQuadName && (
+                        <>
+                          <span>·</span>
+                          <span className="text-blue-600 font-semibold">{ar ? 'تكليف خاص' : 'Assigned to you'}</span>
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                  <ArrowRight size={13} className={'text-[#a3a3a3] ' + (ar ? 'rotate-180' : '')} />
+                </Link>
+              ))
+            ) : (
+              <div className="py-4 text-center text-[11px] text-[#737373]">
+                {ar ? 'لا توجد تكليفات معلقة حالياً. استكشف المعامل بحرية!' : 'No pending assignments. Feel free to explore the labs!'}
+              </div>
+            )}
           </SectionCard>
         </div>
       </div>

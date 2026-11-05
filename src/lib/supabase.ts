@@ -1,6 +1,6 @@
 /**
  * supabase.ts
- * تهيئة العميل البرمجي لـ Supabase والتزامن مع متغيرات بيئة Vercel
+ * تهيئة العميل البرمجي لـ Supabase والتزامن التلقائي مع قاعدة البيانات السحابية
  * (VITE_SUPABASE_URL و VITE_SUPABASE_ANON_KEY)
  *
  * يوفر استعلامات حقيقية للفصول، الطلاب المسجلين، الواجبات، التقييمات، والتحقق الأمني بالرقم القومي.
@@ -11,9 +11,11 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { getPersistedItem, setPersistedItem, getPersistedJSON, setPersistedJSON } from './cookies';
 
-// 1. قراءة متغيرات البيئة من Vercel أو .env
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+// 1. قراءة متغيرات البيئة من Vercel أو .env مع قيم الربط الافتراضية
+const supabaseUrl =
+  import.meta.env.VITE_SUPABASE_URL || 'https://ypkcwndkvhfounqyjhyj.supabase.co';
+const supabaseAnonKey =
+  import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_JYQGjwQppf7kXWQ0x9XHog_w0EICwb-';
 
 export const isSupabaseConfigured = Boolean(
   supabaseUrl &&
@@ -22,7 +24,7 @@ export const isSupabaseConfigured = Boolean(
   !supabaseUrl.includes('your-project-id')
 );
 
-// 2. إنشاء عميل Supabase إذا كانت المفاتيح متوفرة
+// 2. إنشاء عميل Supabase
 export const supabase: SupabaseClient | null = isSupabaseConfigured
   ? createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
@@ -44,10 +46,12 @@ export interface DbProfile {
   administration_id?: string;
   grade_level?: string;
   teacher_code?: string;
+  email?: string;
   xp: number;
   streak: number;
   stars: number;
   created_at?: string;
+  updated_at?: string;
 }
 
 export interface DbClass {
@@ -70,6 +74,7 @@ export interface DbAssignment {
   title_en: string;
   class_id: string;
   class_name_ar: string;
+  target_student_quad_name?: string | null;
   teacher_id: string;
   teacher_name_ar: string;
   linked_lab: string;
@@ -92,6 +97,38 @@ export interface DbSubmission {
 }
 
 // 4. خدمات استرجاع وحفظ البيانات مع سوبابيز (مع كاش محلي موثوق)
+
+/**
+ * مزامنة ملف المستخدم الشخصي (Google Login أو Onboarding) مع جدول profiles في Supabase
+ */
+export async function dbUpsertProfile(profile: Partial<DbProfile> & { id: string }): Promise<void> {
+  if (isSupabaseConfigured && supabase) {
+    try {
+      const payload = {
+        ...profile,
+        updated_at: new Date().toISOString(),
+      };
+      await supabase.from('profiles').upsert([payload]);
+    } catch (e) {
+      console.warn('Supabase upsert profile error', e);
+    }
+  }
+}
+
+/**
+ * جلب ملف المستخدم من Supabase بالـ id
+ */
+export async function dbFetchProfile(id: string): Promise<DbProfile | null> {
+  if (isSupabaseConfigured && supabase) {
+    try {
+      const { data, error } = await supabase.from('profiles').select('*').eq('id', id).single();
+      if (!error && data) return data as DbProfile;
+    } catch (e) {
+      console.warn('Supabase fetch profile error', e);
+    }
+  }
+  return null;
+}
 
 /**
  * جلب الفصول الدراسية الحقيقية من Supabase
@@ -117,7 +154,7 @@ export async function dbFetchClasses(): Promise<DbClass[]> {
 export async function dbCreateClass(newClass: DbClass): Promise<DbClass> {
   if (isSupabaseConfigured && supabase) {
     try {
-      await supabase.from('classes').insert([newClass]);
+      await supabase.from('classes').upsert([newClass]);
     } catch (e) {
       console.warn('Supabase insert class error', e);
     }
@@ -152,7 +189,23 @@ export async function dbFetchEnrolledStudents(): Promise<any[]> {
 export async function dbEnrollStudent(student: any): Promise<void> {
   if (isSupabaseConfigured && supabase) {
     try {
-      await supabase.from('students_enrollment').insert([student]);
+      await supabase.from('students_enrollment').upsert([student]);
+      if (student.quad_name) {
+        await supabase.from('profiles').upsert([{
+          id: student.student_id || student.id,
+          role: 'student',
+          quad_name: student.quad_name,
+          national_id: student.national_id || undefined,
+          email: student.email || undefined,
+          school_name: student.school_name,
+          governorate_id: student.governorate_id,
+          administration_id: student.administration_id,
+          grade_level: student.grade_level,
+          xp: 0,
+          streak: student.streak || 0,
+          stars: 0,
+        }]);
+      }
     } catch (e) {
       console.warn('Supabase insert student error', e);
     }
@@ -186,7 +239,7 @@ export async function dbFetchAssignments(): Promise<DbAssignment[]> {
 export async function dbCreateAssignment(item: DbAssignment): Promise<void> {
   if (isSupabaseConfigured && supabase) {
     try {
-      await supabase.from('assignments').insert([item]);
+      await supabase.from('assignments').upsert([item]);
     } catch (e) {
       console.warn('Supabase insert assignment error', e);
     }
@@ -202,7 +255,7 @@ export async function dbCreateAssignment(item: DbAssignment): Promise<void> {
 export async function dbSubmitAssignment(submission: DbSubmission): Promise<void> {
   if (isSupabaseConfigured && supabase) {
     try {
-      await supabase.from('submissions').insert([submission]);
+      await supabase.from('submissions').upsert([submission]);
     } catch (e) {
       console.warn('Supabase insert submission error', e);
     }

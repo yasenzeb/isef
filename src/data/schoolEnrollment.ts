@@ -35,6 +35,7 @@ export interface ClassInfo {
 export interface EnrolledStudent {
   id: string;
   quadName: string;
+  nationalId?: string;
   email?: string;
   schoolName: string;
   governorateId: string;
@@ -56,6 +57,7 @@ export interface AssignmentItem {
   titleEn: string;
   classId: string;
   classNameAr: string;
+  targetStudentQuadName?: string | null;
   teacherId: string;
   teacherNameAr: string;
   linkedLab: string;
@@ -255,6 +257,7 @@ export const addStudentToClassByTeacher = (params: {
   administrationId: string;
   gradeLevel: string;
   email?: string;
+  nationalId?: string;
 }): EnrolledStudent => {
   const list = getEnrolledStudents();
   const cls = INITIAL_CLASSES.find((c) => c.id === params.classId) || INITIAL_CLASSES[0];
@@ -263,6 +266,7 @@ export const addStudentToClassByTeacher = (params: {
   const newStudent: EnrolledStudent = {
     id: `std-${Date.now()}`,
     quadName: params.quadName.trim(),
+    nationalId: params.nationalId?.trim() || undefined,
     email: params.email?.trim() || `${params.quadName.trim().split(/\s+/)[0].toLowerCase()}@scinexa.school`,
     schoolName: params.schoolName.trim() || 'المدرسة المسجلة',
     governorateId: params.governorateId || 'cairo',
@@ -283,6 +287,7 @@ export const addStudentToClassByTeacher = (params: {
   void dbEnrollStudent({
     id: newStudent.id,
     quad_name: newStudent.quadName,
+    national_id: newStudent.nationalId,
     email: newStudent.email,
     school_name: newStudent.schoolName,
     governorate_id: newStudent.governorateId,
@@ -357,6 +362,7 @@ export const getAssignments = (): AssignmentItem[] => {
     titleEn: String(a.titleEn || a.title_en || a.titleAr || a.title_ar || ''),
     classId: String(a.classId || a.class_id || ''),
     classNameAr: String(a.classNameAr || a.class_name_ar || ''),
+    targetStudentQuadName: a.targetStudentQuadName || a.target_student_quad_name || null,
     teacherId: String(a.teacherId || a.teacher_id || ''),
     teacherNameAr: String(a.teacherNameAr || a.teacher_name_ar || ''),
     linkedLab: String(a.linkedLab || a.linked_lab || 'chemistry'),
@@ -379,6 +385,7 @@ export const addAssignment = (item: AssignmentItem): void => {
     title_en: item.titleEn,
     class_id: item.classId,
     class_name_ar: item.classNameAr,
+    target_student_quad_name: item.targetStudentQuadName || null,
     teacher_id: item.teacherId,
     teacher_name_ar: item.teacherNameAr,
     linked_lab: item.linkedLab,
@@ -428,6 +435,7 @@ export const fetchAndSyncEnrollment = async (): Promise<EnrolledStudent[]> => {
     const mapped: EnrolledStudent[] = remote.map((r: any) => ({
       id: r.id,
       quadName: r.quad_name,
+      nationalId: r.national_id,
       email: r.email,
       schoolName: r.school_name,
       governorateId: r.governorate_id,
@@ -460,6 +468,7 @@ export const fetchAndSyncAssignments = async (): Promise<AssignmentItem[]> => {
       titleEn: a.title_en,
       classId: a.class_id,
       classNameAr: a.class_name_ar,
+      targetStudentQuadName: a.target_student_quad_name || null,
       teacherId: a.teacher_id,
       teacherNameAr: a.teacher_name_ar,
       linkedLab: a.linked_lab,

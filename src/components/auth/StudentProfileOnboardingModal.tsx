@@ -10,7 +10,8 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useSession } from '../../context/SessionContext';
 import { EGYPT_GOVERNORATES } from '../../data/egyptLocationData';
-import { getPersistedJSON, setPersistedJSON, setPersistedItem } from '../../lib/cookies';
+import { getPersistedJSON, setPersistedJSON, setPersistedItem, getPersistedItem } from '../../lib/cookies';
+import { dbUpsertProfile } from '../../lib/supabase';
 import {
  GraduationCap,
  Building2,

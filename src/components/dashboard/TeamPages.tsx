@@ -187,6 +187,7 @@ const AddStudentModal: React.FC<{
   ar: boolean;
 }> = ({ isOpen, onClose, onAdded, ar }) => {
   const [quadName, setQuadName] = useState('');
+  const [nationalId, setNationalId] = useState('');
   const [classId, setClassId] = useState('2a');
   const [schoolName, setSchoolName] = useState('');
   const [governorateId, setGovernorateId] = useState('cairo');
@@ -211,8 +212,14 @@ const AddStudentModal: React.FC<{
       return;
     }
 
+    const cleanNat = nationalId.trim();
+    if (cleanNat && !/^\d{14}$/.test(cleanNat)) {
+      setError(ar ? 'الرقم القومي يجب أن يتكون من ١٤ رقماً مصرياً صحيحاً.' : 'National ID must be 14 digits.');
+      return;
+    }
     const newStudent = addStudentToClassByTeacher({
       quadName: quadName.trim(),
+      nationalId: cleanNat || undefined,
       classId,
       schoolName: schoolName.trim(),
       governorateId,
@@ -259,6 +266,20 @@ const AddStudentModal: React.FC<{
               onChange={(e) => setQuadName(e.target.value)}
               placeholder={ar ? 'مثال: ياسين محمد إبراهيم زيد' : 'e.g. Yaseen Mohamed Ibrahim Zed'}
               className="sn-input !h-10 text-[13px]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-[12px] font-semibold text-[#171717] mb-1">
+              {ar ? 'الرقم القومي للطالب (١٤ رقماً)' : 'National ID (14 digits)'}
+            </label>
+            <input
+              type="text"
+              maxLength={14}
+              value={nationalId}
+              onChange={(e) => setNationalId(e.target.value.replace(/\D/g, ''))}
+              placeholder={ar ? 'مثال: 30801011234567' : '14-digit Egyptian National ID'}
+              className="sn-input !h-10 text-[13px] font-mono"
             />
           </div>
 
@@ -466,6 +487,8 @@ const CreateAssignmentModal: React.FC<{
 }> = ({ isOpen, onClose, onAdded, ar }) => {
   const [titleAr, setTitleAr] = useState('');
   const [classId, setClassId] = useState('2a');
+  const [targetType, setTargetType] = useState<'class' | 'student'>('class');
+  const [targetStudentQuadName, setTargetStudentQuadName] = useState('');
   const [linkedLab, setLinkedLab] = useState('chemistry');
   const [dueDateAr, setDueDateAr] = useState('الخميس القادم · ١٠:٠٠ م');
   const [descriptionAr, setDescriptionAr] = useState('');
@@ -479,6 +502,10 @@ const CreateAssignmentModal: React.FC<{
       setError(ar ? 'يرجى إدخال عنوان الواجب أو التكليف.' : 'Please enter assignment title.');
       return;
     }
+    if (targetType === 'student' && !targetStudentQuadName.trim()) {
+      setError(ar ? 'يرجى كتابة أو اختيار اسم الطالب المعني.' : 'Please enter or select target student name.');
+      return;
+    }
     const cls = INITIAL_CLASSES.find((c) => c.id === classId) || INITIAL_CLASSES[0];
     const newAssignment: AssignmentItem = {
       id: `asg-${Date.now()}`,
@@ -486,6 +513,7 @@ const CreateAssignmentModal: React.FC<{
       titleEn: titleAr.trim(),
       classId: cls.id,
       classNameAr: cls.nameAr,
+      targetStudentQuadName: targetType === 'student' ? targetStudentQuadName.trim() : null,
       teacherId: cls.teacherId,
       teacherNameAr: cls.teacherNameAr,
       linkedLab,
@@ -571,6 +599,47 @@ const CreateAssignmentModal: React.FC<{
                 <option value="astronomy">{ar ? 'معمل الفلك' : 'Astronomy Lab'}</option>
               </select>
             </div>
+          </div>
+
+          {/* Target Audience: Class or Specific Student */}
+          <div className="space-y-1.5">
+            <label className="block text-[11px] font-semibold text-[#171717]">
+              {ar ? 'توجيه التكليف إلى *' : 'Target Audience *'}
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => { setTargetType('class'); setTargetStudentQuadName(''); }}
+                className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-xl border text-[11px] font-semibold transition-all ${targetType === 'class' ? 'border-[#0a0a0a] bg-[#0a0a0a] text-white' : 'border-[#e5e5e5] bg-white text-[#737373] hover:border-[#a3a3a3]'}`}
+              >
+                <Users size={13} />
+                <span>{ar ? 'جميع طلاب الفصل' : 'All Class'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setTargetType('student')}
+                className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-xl border text-[11px] font-semibold transition-all ${targetType === 'student' ? 'border-[#0a0a0a] bg-[#0a0a0a] text-white' : 'border-[#e5e5e5] bg-white text-[#737373] hover:border-[#a3a3a3]'}`}
+              >
+                <UserCog size={13} />
+                <span>{ar ? 'طالب معين بالاسم' : 'Specific Student'}</span>
+              </button>
+            </div>
+
+            {targetType === 'student' && (
+              <div className="pt-1">
+                <input
+                  type="text"
+                  value={targetStudentQuadName}
+                  onChange={(e) => setTargetStudentQuadName(e.target.value)}
+                  placeholder={ar ? 'اكتب الاسم الرباعي للطالب المعني…' : 'Student full 4-part name…'}
+                  className="h-9 w-full rounded-xl border border-[#e5e5e5] px-3 text-[12px] text-[#0a0a0a] outline-none focus:border-[#0a0a0a]"
+                  required
+                />
+                <span className="text-[10px] text-[#737373] mt-0.5 block">
+                  {ar ? 'سيظهر هذا التكليف حصرياً في حساب هذا الطالب فور تسجيل دخوله.' : 'Will appear only in this student account.'}
+                </span>
+              </div>
+            )}
           </div>
 
           <div>
