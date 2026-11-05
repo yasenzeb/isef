@@ -61,6 +61,14 @@ const Toggle: React.FC<{ on: boolean; onChange: () => void; label: string }> = (
 export const SettingsPage: React.FC = () => {
   const { language, setLanguage } = useLanguage();
   const { user, role, isDemo, isRolePreview, switchDemoRole, clearRolePreview, signOut } = useSession();
+  const [savedGrade, setSavedGrade] = useState(() => localStorage.getItem('scinexa_grade') || 'sec2');
+  const [gradeSavedNotice, setGradeSavedNotice] = useState(false);
+  const handleSaveGrade = (newG: string) => {
+    setSavedGrade(newG);
+    localStorage.setItem('scinexa_grade', newG);
+    setGradeSavedNotice(true);
+    setTimeout(() => setGradeSavedNotice(false), 4000);
+  };
   const ar = language === 'ar';
 
   const [notifications, setNotifications] = useState({
@@ -121,6 +129,37 @@ export const SettingsPage: React.FC = () => {
             </div>
           </SectionCard>
 
+          {/* Grade Locking & Management Section */}
+          <SectionCard title={ar ? "الصف الدراسي والمرحلة التعليمية" : "Educational Grade & Stage"}>
+            <div className="flex flex-col gap-3">
+              <p className="text-[12px] text-[#737373] leading-relaxed">
+                {ar
+                  ? "الصف الدراسي يحدد المناهج والتجارب الافتراضية المرتبطة بك في المنصة. لا يمكن تغيير الصف إلا من خلال هذه الصفحة لضمان دقة السجل الأكاديمي."
+                  : "Your assigned grade defines default curriculum pathways and lab exercises. It can only be modified here."}
+              </p>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2">
+                <select
+                  value={savedGrade}
+                  onChange={(e) => handleSaveGrade(e.target.value)}
+                  className="sn-input !h-10 text-[13px] flex-1 font-semibold"
+                >
+                  <option value="prep1">{ar ? "الصف الأول الإعدادي" : "1st Prep"}</option>
+                  <option value="prep2">{ar ? "الصف الثاني الإعدادي" : "2nd Prep"}</option>
+                  <option value="prep3">{ar ? "الصف الثالث الإعدادي (الشهادة الإعدادية)" : "3rd Prep"}</option>
+                  <option value="sec1">{ar ? "الصف الأول الثانوي" : "1st Secondary"}</option>
+                  <option value="sec2">{ar ? "الصف الثاني الثانوي" : "2nd Secondary"}</option>
+                  <option value="sec3">{ar ? "الصف الثالث الثانوي (الثانوية العامة)" : "3rd Secondary"}</option>
+                  <option value="stem">{ar ? "مدارس المتفوقين في العلوم والتكنولوجيا (STEM)" : "STEM High School"}</option>
+                </select>
+              </div>
+              {gradeSavedNotice && (
+                <div className="p-2.5 rounded-xl bg-emerald-50 text-emerald-800 text-[11px] font-semibold border border-emerald-200">
+                  ✓ {ar ? "تم حفظ وتحديث صفك الدراسي بنجاح! تم تحديث المناهج المرتبطة بك." : "Grade updated successfully!"}
+                </div>
+              )}
+            </div>
+          </SectionCard>
+
           {/* Language */}
           <SectionCard
             title={ar ? 'اللغة والمظهر' : 'Language & appearance'}
@@ -133,13 +172,26 @@ export const SettingsPage: React.FC = () => {
                   {ar ? 'تتغير اتجاهات الواجهة تلقائيًا.' : 'Layout direction updates automatically.'}
                 </div>
               </div>
-              <div className="sn-segmented w-fit">
-                <button type="button" onClick={() => setLanguage('ar')} className={`sn-segment ${ar ? 'active' : ''}`}>
-                  العربية
-                </button>
-                <button type="button" onClick={() => setLanguage('en')} className={`sn-segment ${!ar ? 'active' : ''}`}>
-                  English
-                </button>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  { code: "ar" as const, label: "العربية 🇪🇬" },
+                  { code: "en" as const, label: "English 🇬🇧" },
+                  { code: "fr" as const, label: "Français 🇫🇷" },
+                  { code: "de" as const, label: "Deutsch 🇩🇪" },
+                ].map((l) => (
+                  <button
+                    key={l.code}
+                    type="button"
+                    onClick={() => setLanguage(l.code)}
+                    className={`px-3 py-1.5 rounded-xl text-[12px] font-semibold transition-all ${
+                      language === l.code
+                        ? "bg-[#0a0a0a] text-white shadow-xs"
+                        : "bg-[#fafafa] border border-[#e5e5e5] text-[#737373] hover:text-[#0a0a0a] hover:bg-[#f0f0f0]"
+                    }`}
+                  >
+                    {l.label}
+                  </button>
+                ))}
               </div>
             </div>
 

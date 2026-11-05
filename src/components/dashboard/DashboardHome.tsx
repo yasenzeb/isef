@@ -1,3 +1,5 @@
+import { checkStudentLink, updateAndGetRealStreak, calculateStudentLevel } from '../../data/schoolEnrollment';
+import { AlertCircle, UserCheck, Lock } from 'lucide-react';
 import React, { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
@@ -49,6 +51,12 @@ export const DashboardHome: React.FC = () => {
   const navigate = useNavigate();
   const ar = language === 'ar';
   const completed = useMemo(readCompleted, []);
+  // Real Enrollment & Streak
+  const studentQuadName = localStorage.getItem('scinexa_user_fullname') || user?.name || '';
+  const linkedStudent = useMemo(() => checkStudentLink(studentQuadName, user?.email), [studentQuadName, user]);
+  const realStreak = useMemo(() => updateAndGetRealStreak(), []);
+  const xp = parseInt(localStorage.getItem('scinexa_user_xp') || '450', 10);
+  const levelInfo = useMemo(() => calculateStudentLevel(xp), [xp]);
 
   const firstName = user?.name?.trim().split(/\s+/)[0] || (ar ? 'بطلنا' : 'there');
   const hour = new Date().getHours();
@@ -123,6 +131,50 @@ export const DashboardHome: React.FC = () => {
           </>
         }
       />
+
+      {/* Teacher Enrollment Banner if student is not linked */}
+      {!linkedStudent && role === 'student' && (
+        <div className="mb-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3.5 rounded-2xl border border-amber-500/25 bg-amber-50/80 p-4 shadow-sm">
+          <div className="flex items-start gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-500/15 text-amber-600 mt-0.5">
+              <AlertCircle size={20} strokeWidth={2} />
+            </span>
+            <div>
+              <div className="text-[13px] font-bold text-amber-900">
+                {ar ? 'أنت غير مربوط بأي فصل أو معلم حالياً' : 'You are not linked to a classroom or teacher yet'}
+              </div>
+              <p className="text-[12px] text-amber-800/90 leading-relaxed mt-0.5 max-w-[85ch]">
+                {ar
+                  ? `يرجى إبلاغ معلمك في المدرسة باسمك الرباعي المسجل: "${studentQuadName || 'الطالب'}" ليقوم بإضافتك إلى فصله الدراسي وإرسال التقييمات والواجبات المعتمدة لك. يمكنك في هذه الأثناء استكشاف جميع المعامل ثلاثية الأبعاد بحرية!`
+                  : `Please provide your teacher with your 4-part name: "${studentQuadName || 'Student'}" so they can link you to their class and assign evaluations. In the meantime, feel free to explore all 3D labs!`}
+              </p>
+            </div>
+          </div>
+          <Link to="/app/settings" className="sn-btn sn-btn-outline sn-btn-sm shrink-0 border-amber-600/30 text-amber-900 hover:bg-amber-100">
+            {ar ? 'مراجعة بياناتك' : 'Review Profile'}
+          </Link>
+        </div>
+      )}
+
+      {linkedStudent && role === 'student' && (
+        <div className="mb-5 flex items-center justify-between gap-3 rounded-2xl border border-emerald-500/20 bg-emerald-50/70 p-3.5 shadow-sm">
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-600">
+              <UserCheck size={16} strokeWidth={2} />
+            </span>
+            <div className="text-[12px] text-emerald-950">
+              <span>{ar ? 'فصلك الدراسي: ' : 'Your Class: '}</span>
+              <strong className="font-semibold text-emerald-900">{linkedStudent.classNameAr}</strong>
+              <span className="mx-1.5 text-emerald-600">·</span>
+              <span>{ar ? 'المعلم المشرف: ' : 'Supervisor: '}</span>
+              <strong className="font-semibold text-emerald-900">{linkedStudent.teacherNameAr}</strong>
+            </div>
+          </div>
+          <span className="sn-badge sn-badge-green !text-[10px]">
+            {ar ? 'حساب متصل' : 'Connected'}
+          </span>
+        </div>
+      )}
 
       <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
         {stats.map((stat) => (

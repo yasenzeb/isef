@@ -42,12 +42,12 @@ const SectionLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 const LandingHeader: React.FC<{ ar: boolean; signedIn: boolean }> = ({ ar, signedIn }) => {
  const { language, setLanguage } = useLanguage();
  const [open, setOpen] = React.useState(false);
- const links = [
- { href: '#labs', en: 'Labs', ar: 'المعامل' },
- { href: '#curriculum', en: 'Curriculum', ar: 'المناهج' },
- { href: '#roles', en: 'For schools', ar: 'للمدارس' },
- { href: '#offline', en: 'Offline', ar: 'بدون إنترنت' },
- ];
+  const links = [
+    { href: '#labs', en: 'Labs', ar: 'المعامل', fr: 'Laboratoires', de: 'Labore' },
+    { href: '#curriculum', en: 'Curriculum', ar: 'المناهج', fr: 'Programmes', de: 'Lehrplan' },
+    { href: '#roles', en: 'For schools', ar: 'للمدارس', fr: 'Pour les écoles', de: 'Für Schulen' },
+    { href: '#offline', en: 'Offline', ar: 'بدون إنترنت', fr: 'Hors ligne', de: 'Offline' },
+  ];
 
  return (
  <header className="sticky top-0 z-40 border-b border-[#e5e5e5] bg-white/85 backdrop-blur-xl">
@@ -63,7 +63,7 @@ const LandingHeader: React.FC<{ ar: boolean; signedIn: boolean }> = ({ ar, signe
  href={link.href}
  className="text-[13px] font-medium text-[#737373] transition-colors hover:text-[#0a0a0a]"
  >
- {ar ? link.ar : link.en}
+ {language === 'fr' ? link.fr : language === 'de' ? link.de : ar ? link.ar : link.en}
  </a>
  ))}
  </nav>

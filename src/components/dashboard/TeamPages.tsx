@@ -1,8 +1,20 @@
+import {
+  getEnrolledStudents,
+  addStudentToClassByTeacher,
+  getAssignments,
+  addAssignment,
+  INITIAL_CLASSES,
+  TEACHERS,
+  type EnrolledStudent,
+  type AssignmentItem
+} from '../../data/schoolEnrollment';
+import { EGYPT_GOVERNORATES } from '../../data/egyptLocationData';
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import { PageHeader, StatCard, SectionCard } from './ui';
 import {
+  X,
   Users,
   GraduationCap,
   ClipboardList,
@@ -145,15 +157,156 @@ export const ClassesPage: React.FC = () => {
 };
 
 /* ── Students ─────────────────────────────────────────────────────────────── */
+/* ── Modal to Add Student by 4-Part Name ── */
+const AddStudentModal: React.FC<{
+  isOpen: boolean;
+  onClose: () => void;
+  onAdded: (s: EnrolledStudent) => void;
+  ar: boolean;
+}> = ({ isOpen, onClose, onAdded, ar }) => {
+  const [quadName, setQuadName] = useState('');
+  const [classId, setClassId] = useState('2a');
+  const [schoolName, setSchoolName] = useState('');
+  const [governorateId, setGovernorateId] = useState('cairo');
+  const [adminId, setAdminId] = useState('');
+  const [gradeLevel, setGradeLevel] = useState('sec2');
+  const [error, setError] = useState<string | null>(null);
+
+  if (!isOpen) return null;
+
+  const selectedGov = EGYPT_GOVERNORATES.find((g) => g.id === governorateId) || EGYPT_GOVERNORATES[0];
+  const admins = selectedGov.administrations || [];
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const words = quadName.trim().split(/\s+/).filter(Boolean);
+    if (words.length < 4) {
+      setError(ar ? 'يرجى إدخال الاسم الرباعي كاملاً (٤ مقاطع على الأقل: اسم الطالب، الأب، الجد، اللقب).' : 'Please enter full 4-part name.');
+      return;
+    }
+    if (!schoolName.trim()) {
+      setError(ar ? 'يرجى إدخال اسم المدرسة.' : 'Please enter school name.');
+      return;
+    }
+
+    const newStudent = addStudentToClassByTeacher({
+      quadName: quadName.trim(),
+      classId,
+      schoolName: schoolName.trim(),
+      governorateId,
+      administrationId: adminId || admins[0]?.id || 'default',
+      gradeLevel,
+    });
+
+    onAdded(newStudent);
+    onClose();
+  };
+
+  return (
+    <div role="dialog" aria-modal="true" dir={ar ? 'rtl' : 'ltr'} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <div className="relative w-full max-w-[500px] overflow-hidden rounded-[22px] bg-white border border-[#e5e5e5] p-6 shadow-2xl">
+        <div className="flex items-center justify-between border-b border-[#f0f0f0] pb-4 mb-4">
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-[#1d4ed8]">
+              <UserCog size={18} />
+            </span>
+            <div>
+              <h3 className="text-[16px] font-bold text-[#0a0a0a]">{ar ? 'إضافة طالب بالاسم الرباعي' : 'Add Student by Quad Name'}</h3>
+              <p className="text-[11px] text-[#737373]">{ar ? 'سيتم ربط حساب الطالب تلقائياً عند تسجيل دخوله' : 'Student will be linked automatically upon sign-in'}</p>
+            </div>
+          </div>
+          <button type="button" onClick={onClose} className="sn-btn sn-btn-quiet sn-btn-icon">
+            <X size={16} />
+          </button>
+        </div>
+
+        {error && (
+          <div className="mb-3.5 p-3 rounded-xl bg-red-50 text-red-700 text-[12px] border border-red-200">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-3.5">
+          <div>
+            <label className="block text-[12px] font-semibold text-[#171717] mb-1">
+              {ar ? 'الاسم الرباعي للطالب *' : 'Student 4-Part Full Name *'}
+            </label>
+            <input
+              required
+              value={quadName}
+              onChange={(e) => setQuadName(e.target.value)}
+              placeholder={ar ? 'مثال: ياسين محمد إبراهيم زيد' : 'e.g. Yaseen Mohamed Ibrahim Zed'}
+              className="sn-input !h-10 text-[13px]"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-[12px] font-semibold text-[#171717] mb-1">{ar ? 'الفصل الدراسي *' : 'Class *'}</label>
+              <select value={classId} onChange={(e) => setClassId(e.target.value)} className="sn-input !h-10 text-[12px]">
+                {INITIAL_CLASSES.map((c) => (
+                  <option key={c.id} value={c.id}>{ar ? c.nameAr : c.nameEn}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-[12px] font-semibold text-[#171717] mb-1">{ar ? 'المحافظة *' : 'Governorate *'}</label>
+              <select value={governorateId} onChange={(e) => setGovernorateId(e.target.value)} className="sn-input !h-10 text-[12px]">
+                {EGYPT_GOVERNORATES.map((g) => (
+                  <option key={g.id} value={g.id}>{ar ? g.nameAr : g.nameEn}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[12px] font-semibold text-[#171717] mb-1">{ar ? 'اسم المدرسة الحالية *' : 'School Name *'}</label>
+            <input
+              required
+              value={schoolName}
+              onChange={(e) => setSchoolName(e.target.value)}
+              placeholder={ar ? 'مثال: مدرسة المتفوقين STEM' : 'e.g. STEM High School'}
+              className="sn-input !h-10 text-[13px]"
+            />
+          </div>
+
+          <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#f0f0f0]">
+            <button type="button" onClick={onClose} className="sn-btn sn-btn-outline sn-btn-sm">{ar ? 'إلغاء' : 'Cancel'}</button>
+            <button type="submit" className="sn-btn sn-btn-primary sn-btn-sm">{ar ? 'تأكيد وإضافة الطالب' : 'Confirm & Add'}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 export const StudentsPage: React.FC = () => {
   const { language } = useLanguage();
   const ar = language === 'ar';
   const [query, setQuery] = useState('');
   const [onlyReview, setOnlyReview] = useState(false);
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [customList, setCustomList] = useState<EnrolledStudent[]>(() => getEnrolledStudents());
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return STUDENTS.filter((student) => {
+    // Combine custom enrolled students + mock students
+    const customMapped = customList.map((s) => ({
+      nameEn: s.quadName,
+      nameAr: s.quadName,
+      code: s.id.slice(-6).toUpperCase(),
+      classEn: s.classNameAr,
+      classAr: s.classNameAr,
+      mastery: s.mastery,
+      lastEn: 'Active today',
+      lastAr: 'نشط اليوم',
+      status: 'active',
+      isCustom: true,
+    }));
+
+    const all = [...customMapped, ...STUDENTS];
+    return all.filter((student) => {
       const matches =
         !q ||
         student.nameEn.toLowerCase().includes(q) ||
@@ -162,7 +315,13 @@ export const StudentsPage: React.FC = () => {
         student.classEn.toLowerCase().includes(q);
       return matches && (!onlyReview || student.status !== 'active');
     });
-  }, [query, onlyReview]);
+  }, [query, onlyReview, customList]);
+
+  const handleStudentAdded = (newS: EnrolledStudent) => {
+    setCustomList(getEnrolledStudents());
+    setSuccessMsg(ar ? `تمت إضافة الطالب "${newS.quadName}" إلى فصل ${newS.classNameAr} بنجاح!` : `Student ${newS.quadName} enrolled successfully!`);
+    setTimeout(() => setSuccessMsg(null), 5000);
+  };
 
   return (
     <div>
@@ -197,6 +356,20 @@ export const StudentsPage: React.FC = () => {
           {ar ? 'يحتاجون متابعة' : 'Needs review'}
         </button>
       </div>
+
+      {successMsg && (
+        <div className="mb-4 p-3.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-[13px] flex items-center justify-between">
+          <span>✓ {successMsg}</span>
+          <button type="button" onClick={() => setSuccessMsg(null)} className="text-emerald-700">✕</button>
+        </div>
+      )}
+
+      <AddStudentModal
+        isOpen={isAddOpen}
+        onClose={() => setIsAddOpen(false)}
+        onAdded={handleStudentAdded}
+        ar={ar}
+      />
 
       <SectionCard title={ar ? 'كل الطلاب' : 'All students'} action={<span className="sn-badge sn-badge-outline">{rows.length} {ar ? 'طالب' : 'students'}</span>} bodyClassName="p-0">
         <div className="overflow-x-auto">

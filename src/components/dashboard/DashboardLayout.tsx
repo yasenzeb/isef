@@ -37,76 +37,94 @@ type NavItem = {
   to: string;
   en: string;
   ar: string;
+  fr: string;
+  de: string;
   icon: React.ElementType;
   end?: boolean;
   roles?: AppRole[];
 };
 
-type NavGroup = { en: string; ar: string; items: NavItem[] };
+type NavGroup = { en: string; ar: string; fr: string; de: string; items: NavItem[] };
 
 const NAV: NavGroup[] = [
   {
     en: 'Workspace',
     ar: 'مساحة العمل',
+    fr: 'Espace de travail',
+    de: 'Arbeitsbereich',
     items: [
-      { to: '/app', en: 'Overview', ar: 'نظرة عامة', icon: LayoutDashboard, end: true },
-      { to: '/app/curriculum', en: 'Curriculum', ar: 'المناهج', icon: BookOpen },
-      { to: '/app/labs', en: 'Laboratories', ar: 'المعامل', icon: FlaskConical },
-      { to: '/app/classroom', en: 'Classroom', ar: 'السبورة', icon: Presentation },
-      { to: '/app/progress', en: 'Progress', ar: 'التقدّم', icon: BarChart3 },
-      { to: '/app/assistant', en: 'Assistant', ar: 'المساعد', icon: MessageSquareText },
+      { to: '/app', en: 'Overview', ar: 'نظرة عامة', fr: 'Vue d’ensemble', de: 'Übersicht', icon: LayoutDashboard, end: true },
+      { to: '/app/curriculum', en: 'Curriculum', ar: 'المناهج', fr: 'Programmes', de: 'Lehrplan', icon: BookOpen },
+      { to: '/app/labs', en: 'Laboratories', ar: 'المعامل', fr: 'Laboratoires', de: 'Labore', icon: FlaskConical },
+      { to: '/app/classroom', en: 'Classroom', ar: 'السبورة', fr: 'Tableau interactif', de: 'Klassenraum', icon: Presentation },
+      { to: '/app/progress', en: 'Progress', ar: 'التقدّم', fr: 'Progression', de: 'Fortschritt', icon: BarChart3 },
+      { to: '/app/assistant', en: 'Assistant', ar: 'المساعد', fr: 'Assistant IA', de: 'Assistent', icon: MessageSquareText },
     ],
   },
   {
     en: 'Teaching',
     ar: 'التعليم',
+    fr: 'Enseignement',
+    de: 'Unterricht',
     items: [
-      { to: '/app/classes', en: 'My classes', ar: 'فصولي', icon: GraduationCap, roles: ['teacher', 'admin'] },
-      { to: '/app/students', en: 'Students', ar: 'الطلاب', icon: Users, roles: ['teacher', 'admin'] },
-      { to: '/app/assignments', en: 'Assignments', ar: 'الواجبات', icon: ClipboardList, roles: ['teacher', 'admin'] },
+      { to: '/app/classes', en: 'My classes', ar: 'فصولي', fr: 'Mes classes', de: 'Meine Klassen', icon: GraduationCap, roles: ['teacher', 'admin'] },
+      { to: '/app/students', en: 'Students', ar: 'الطلاب', fr: 'Élèves', de: 'Schüler', icon: Users, roles: ['teacher', 'admin'] },
+      { to: '/app/assignments', en: 'Assignments', ar: 'الواجبات', fr: 'Devoirs', de: 'Aufgaben', icon: ClipboardList, roles: ['teacher', 'admin'] },
     ],
   },
   {
     en: 'Administration',
     ar: 'الإدارة',
+    fr: 'Administration',
+    de: 'Verwaltung',
     items: [
-      { to: '/app/institutions', en: 'Institutions', ar: 'المؤسسات', icon: Building2, roles: ['admin'] },
-      { to: '/app/users', en: 'Users & roles', ar: 'المستخدمون والأدوار', icon: ShieldCheck, roles: ['admin'] },
-      { to: '/app/analytics', en: 'Analytics', ar: 'التحليلات', icon: BarChart3, roles: ['admin', 'teacher'] },
+      { to: '/app/institutions', en: 'Institutions', ar: 'المؤسسات', fr: 'Établissements', de: 'Institutionen', icon: Building2, roles: ['admin'] },
+      { to: '/app/users', en: 'Users & roles', ar: 'المستخدمون والأدوار', fr: 'Utilisateurs & rôles', de: 'Benutzer & Rollen', icon: ShieldCheck, roles: ['admin'] },
+      { to: '/app/analytics', en: 'Analytics', ar: 'التحليلات', fr: 'Analytique', de: 'Analysen', icon: BarChart3, roles: ['admin', 'teacher'] },
     ],
   },
   {
     en: 'Account',
     ar: 'الحساب',
-    items: [{ to: '/app/settings', en: 'Settings', ar: 'الإعدادات', icon: Settings }],
+    fr: 'Compte',
+    de: 'Konto',
+    items: [{ to: '/app/settings', en: 'Settings', ar: 'الإعدادات', fr: 'Paramètres', de: 'Einstellungen', icon: Settings }],
   },
 ];
 
-const ROLE_LABEL: Record<AppRole, { en: string; ar: string; tone: string }> = {
-  student: { en: 'Student', ar: 'طالب', tone: 'sn-badge-blue' },
-  teacher: { en: 'Teacher', ar: 'معلم', tone: 'sn-badge-green' },
-  admin: { en: 'Administrator', ar: 'إدارة', tone: 'sn-badge-amber' },
+const ROLE_LABEL: Record<AppRole, { en: string; ar: string; fr: string; de: string; tone: string }> = {
+  student: { en: 'Student', ar: 'طالب', fr: 'Élève', de: 'Schüler', tone: 'sn-badge-blue' },
+  teacher: { en: 'Teacher', ar: 'معلم', fr: 'Enseignant', de: 'Lehrer', tone: 'sn-badge-green' },
+  admin: { en: 'Administrator', ar: 'إدارة', fr: 'Administrateur', de: 'Administrator', tone: 'sn-badge-amber' },
 };
 
-const pageTitle = (path: string, ar: boolean): string => {
-  const map: Record<string, [string, string]> = {
-    '/app': ['Overview', 'نظرة عامة'],
-    '/app/curriculum': ['Curriculum', 'المناهج'],
-    '/app/labs': ['Laboratories', 'المعامل'],
-    '/app/classroom': ['Classroom', 'السبورة'],
-    '/app/progress': ['Progress', 'التقدّم'],
-    '/app/assistant': ['Assistant', 'المساعد'],
-    '/app/classes': ['My classes', 'فصولي'],
-    '/app/students': ['Students', 'الطلاب'],
-    '/app/assignments': ['Assignments', 'الواجبات'],
-    '/app/institutions': ['Institutions', 'المؤسسات'],
-    '/app/users': ['Users & roles', 'المستخدمون والأدوار'],
-    '/app/analytics': ['Analytics', 'التحليلات'],
-    '/app/settings': ['Settings', 'الإعدادات'],
+const pageTitle = (path: string, lang: string): string => {
+  const map: Record<string, { en: string; ar: string; fr: string; de: string }> = {
+    '/app': { en: 'Overview', ar: 'نظرة عامة', fr: 'Vue d’ensemble', de: 'Übersicht' },
+    '/app/curriculum': { en: 'Curriculum', ar: 'المناهج', fr: 'Programmes', de: 'Lehrplan' },
+    '/app/labs': { en: 'Laboratories', ar: 'المعامل', fr: 'Laboratoires', de: 'Labore' },
+    '/app/classroom': { en: 'Classroom', ar: 'السبورة', fr: 'Tableau interactif', de: 'Klassenraum' },
+    '/app/progress': { en: 'Progress', ar: 'التقدّم', fr: 'Progression', de: 'Fortschritt' },
+    '/app/assistant': { en: 'Assistant', ar: 'المساعد', fr: 'Assistant IA', de: 'Assistent' },
+    '/app/classes': { en: 'My classes', ar: 'فصولي', fr: 'Mes classes', de: 'Meine Klassen' },
+    '/app/students': { en: 'Students', ar: 'الطلاب', fr: 'Élèves', de: 'Schüler' },
+    '/app/assignments': { en: 'Assignments', ar: 'الواجبات', fr: 'Devoirs', de: 'Aufgaben' },
+    '/app/institutions': { en: 'Institutions', ar: 'المؤسسات', fr: 'Établissements', de: 'Institutionen' },
+    '/app/users': { en: 'Users & roles', ar: 'المستخدمون والأدوار', fr: 'Utilisateurs & rôles', de: 'Benutzer & Rollen' },
+    '/app/analytics': { en: 'Analytics', ar: 'التحليلات', fr: 'Analytique', de: 'Analysen' },
+    '/app/settings': { en: 'Settings', ar: 'الإعدادات', fr: 'Paramètres', de: 'Einstellungen' },
   };
-  if (path.startsWith('/app/labs/')) return ar ? 'المعمل' : 'Laboratory';
-  const pair = map[path] ?? ['Overview', 'نظرة عامة'];
-  return ar ? pair[1] : pair[0];
+  if (path.startsWith('/app/labs/')) {
+    if (lang === 'fr') return 'Laboratoire 3D';
+    if (lang === 'de') return '3D-Labor';
+    if (lang === 'ar') return 'المعمل 3D';
+    return '3D Laboratory';
+  }
+  const item = map[path] ?? { en: 'Overview', ar: 'نظرة عامة', fr: 'Vue d’ensemble', de: 'Übersicht' };
+  if (lang === 'fr') return item.fr;
+  if (lang === 'de') return item.de;
+  if (lang === 'ar') return item.ar;
+  return item.en;
 };
 
 const Avatar: React.FC<{ name: string; url?: string; size?: number }> = ({ name, url, size = 30 }) => {
@@ -144,7 +162,7 @@ export const DashboardLayout: React.FC = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
 
-  const title = pageTitle(location.pathname, ar);
+  const title = pageTitle(location.pathname, language);
   const roleMeta = ROLE_LABEL[role];
 
   useEffect(() => {
@@ -221,7 +239,7 @@ export const DashboardLayout: React.FC = () => {
             <div className="truncate text-[12px] font-medium">SciNexa Academy</div>
             <div className="text-[10px] text-[#737373]">ISEF 2026 · Egypt</div>
           </div>
-          <span className={`sn-badge ${roleMeta.tone} !text-[9px]`}>{ar ? roleMeta.ar : roleMeta.en}</span>
+          <span className={`sn-badge ${roleMeta.tone} !text-[9px]`}>{language === 'fr' ? roleMeta.fr : language === 'de' ? roleMeta.de : ar ? roleMeta.ar : roleMeta.en}</span>
         </div>
       </div>
 
@@ -232,7 +250,7 @@ export const DashboardLayout: React.FC = () => {
           return (
             <div key={group.en} className="mb-5">
               <div className="mb-1.5 px-2 text-[10px] font-medium uppercase tracking-[0.12em] text-[#a3a3a3]">
-                {ar ? group.ar : group.en}
+                {language === 'fr' ? group.fr : language === 'de' ? group.de : ar ? group.ar : group.en}
               </div>
               <div className="space-y-0.5">
                 {items.map((item) => {
@@ -245,7 +263,7 @@ export const DashboardLayout: React.FC = () => {
                       className={({ isActive }) => `sn-navitem ${isActive ? 'active' : ''}`}
                     >
                       <Icon size={16} strokeWidth={1.7} className="shrink-0" />
-                      <span className="truncate">{ar ? item.ar : item.en}</span>
+                      <span className="truncate">{language === 'fr' ? item.fr : language === 'de' ? item.de : ar ? item.ar : item.en}</span>
                       <span className="sn-navdot" />
                     </NavLink>
                   );
