@@ -10,6 +10,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useSession } from '../../context/SessionContext';
 import { EGYPT_GOVERNORATES } from '../../data/egyptLocationData';
+import { getPersistedJSON, setPersistedJSON, setPersistedItem } from '../../lib/cookies';
 import {
  GraduationCap,
  Building2,
@@ -34,12 +35,7 @@ export interface StudentProfileData {
 const STORAGE_KEY = 'scinexa_student_profile';
 
 export const getStudentProfile = (): StudentProfileData | null => {
- try {
- const raw = localStorage.getItem(STORAGE_KEY);
- return raw ? JSON.parse(raw) : null;
- } catch {
- return null;
- }
+ return getPersistedJSON<StudentProfileData | null>(STORAGE_KEY, null);
 };
 
 export const isProfileComplete = (profile: StudentProfileData | null): boolean => {
@@ -143,12 +139,12 @@ export const StudentProfileOnboardingModal: React.FC = () => {
  };
 
  try {
- localStorage.setItem(STORAGE_KEY, JSON.stringify(profileData));
- localStorage.setItem('scinexa_user_fullname', profileData.quadName);
- localStorage.setItem('scinexa_school', profileData.schoolName);
- localStorage.setItem('scinexa_gov_id', profileData.governorateId);
- localStorage.setItem('scinexa_admin_id', profileData.administrationId);
- localStorage.setItem('scinexa_grade', profileData.gradeLevel);
+ setPersistedJSON(STORAGE_KEY, profileData);
+ setPersistedItem('scinexa_user_fullname', profileData.quadName);
+ setPersistedItem('scinexa_school', profileData.schoolName);
+ setPersistedItem('scinexa_gov_id', profileData.governorateId);
+ setPersistedItem('scinexa_admin_id', profileData.administrationId);
+ setPersistedItem('scinexa_grade', profileData.gradeLevel);
  setIsOpen(false);
  } catch {
  setError(ar ? 'تعذّر حفظ البيانات، يرجى المحاولة مرة أخرى.' : 'Failed to save, please try again.');

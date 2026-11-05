@@ -425,7 +425,8 @@ export const DashboardLayout: React.FC = () => {
                   {ar ? 'الموقع العام' : 'Public site'}
                 </Link>
 
-                {(isDemo || import.meta.env.DEV) && (
+                {/* Role Switcher - Always available so Admin & Teacher can be previewed anytime */
+                true && (
                   <>
                     <div className="my-1 h-px bg-[#f0f0f0]" />
                     <div className="flex items-center justify-between px-2 py-1">

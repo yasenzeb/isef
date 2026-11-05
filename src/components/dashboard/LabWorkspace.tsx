@@ -1,6 +1,6 @@
 /**
  * LabWorkspace.tsx — مساحة العمل التفاعلية للمعامل ثلاثية الأبعاد
- * تصميم مدمج وأنيق ينسجم 100% مع لوحة تحكم SciNexa دون فجوات أو إطارات نافرة.
+ * تصميم مدمج وأنيق ينسجم 100% مع لوحة تحكم SciNexa بألوانها ومقاييسها المعتمدة.
  *
  * © Islam & Yaseen — SciNexa ISEF 2026
  */
@@ -9,7 +9,7 @@ import React, { Suspense, lazy } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import { getLab, type LabId } from '../../data/labs';
-import { ArrowLeft, Activity, Maximize2, ShieldCheck, Sparkles, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Activity, Maximize2, ShieldCheck, Sparkles, RefreshCw, Compass } from 'lucide-react';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
 
 const AnatomyViewer = lazy(() => import('../AnatomyViewer').then((m) => ({ default: m.AnatomyViewer })));
@@ -29,9 +29,9 @@ const COMPONENTS: Record<LabId, React.LazyExoticComponent<React.ComponentType<Re
 };
 
 const LabLoading: React.FC<{ ar: boolean }> = ({ ar }) => (
-  <div className="flex h-full min-h-[500px] flex-col items-center justify-center gap-3 text-white/70">
-    <span className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-white" />
-    <span className="font-mono text-[11px] uppercase tracking-[0.2em]">
+  <div className="flex h-full min-h-[520px] flex-col items-center justify-center gap-3.5 rounded-2xl border border-[#e5e5e5] bg-white text-[#737373]">
+    <span className="h-8 w-8 animate-spin rounded-full border-2 border-[#e5e5e5] border-t-[#0a0a0a]" />
+    <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#737373]">
       {ar ? 'تهيئة محرك المحاكاة ثلاثي الأبعاد…' : 'Initializing 3D Simulation Engine…'}
     </span>
   </div>
@@ -59,7 +59,7 @@ export const LabWorkspace: React.FC = () => {
   };
 
   return (
-    <div dir={ar ? 'rtl' : 'ltr'} className="space-y-3">
+    <div dir={ar ? 'rtl' : 'ltr'} className="space-y-4">
       {/* Top Integrated Control Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-[#e5e5e5] bg-white p-3.5 shadow-xs">
         <div className="flex items-center gap-3">
@@ -89,6 +89,10 @@ export const LabWorkspace: React.FC = () => {
             <ShieldCheck size={12} strokeWidth={1.8} className="text-[#047857]" />
             WebGL 2.0
           </span>
+          <Link to="/app/curriculum" className="sn-btn sn-btn-outline sn-btn-sm hidden md:inline-flex">
+            <Compass size={13} strokeWidth={1.8} />
+            {ar ? 'دروس المنهج' : 'Curriculum'}
+          </Link>
           <button
             type="button"
             onClick={handleFullscreen}
@@ -100,43 +104,24 @@ export const LabWorkspace: React.FC = () => {
         </div>
       </div>
 
-      {/* Seamless Integrated 3D Viewport Stage */}
-      <div
-        id="lab-canvas-container"
-        className="sn-lab-stage relative w-full overflow-hidden rounded-[22px] border border-[#e5e5e5] bg-[#07090e] shadow-sm min-h-[640px] h-[calc(100vh-215px)] flex flex-col !p-0"
-      >
-        {/* Subtle Top Info Glass Bar inside Viewport */}
-        <div className="absolute top-0 inset-x-0 z-20 flex items-center justify-between border-b border-white/10 bg-[#07090e]/80 backdrop-blur-md px-4 py-2 text-white">
-          <div className="flex items-center gap-2 font-mono text-[11px] text-white/80">
-            <Activity size={13} className="text-cyan-400" />
-            <span>{ar ? lab.nameAr : lab.nameEn}</span>
-            <span className="text-white/30">|</span>
-            <span className="text-white/50 text-[10px]">{ar ? 'محرك SciNexa 3D' : 'SciNexa 3D Engine'}</span>
-          </div>
-          <div className="flex items-center gap-2 font-mono text-[10px] text-white/60">
-            <span>ISEF 2026 · Interactive Canvas</span>
-          </div>
-        </div>
-
-        {/* 3D Component Rendering Area */}
-        <div className="relative flex-1 w-full h-full pt-9">
-          <ErrorBoundary ar={ar} dark title={ar ? 'تعذّر تشغيل محرك 3D' : 'The 3D engine could not start'}>
-            <Suspense fallback={<LabLoading ar={ar} />}>
-              <Component />
-            </Suspense>
-          </ErrorBoundary>
-        </div>
+      {/* Seamless Integrated Lab Workspace Stage */}
+      <div id="lab-canvas-container" className="sn-lab-stage w-full">
+        <ErrorBoundary ar={ar} title={ar ? 'تعذّر تشغيل محرك 3D' : 'The 3D engine could not start'}>
+          <Suspense fallback={<LabLoading ar={ar} />}>
+            <Component />
+          </Suspense>
+        </ErrorBoundary>
       </div>
 
       {/* Footer Helper Note */}
-      <div className="flex items-center justify-between text-[11px] text-[#737373] px-1">
+      <div className="flex items-center justify-between text-[11px] text-[#737373] px-1 pt-1">
         <span>
           {ar
-            ? '💡 استخدم الماوس أو اللمس للتدوير والتكبير والتفاعل مع المجسم. تُحفظ حالتك تلقائياً.'
-            : '💡 Use mouse or touch to rotate, zoom, and interact with the 3D model. Progress saves automatically.'}
+            ? '💡 استخدم الماوس أو اللمس للتدوير والتكبير والتفاعل مع المجسم. تُحفظ حالتك تلقائياً في ملفات تعريف الارتباط.'
+            : '💡 Use mouse or touch to rotate, zoom, and interact with the 3D model. Progress saves automatically in cookies.'}
         </span>
         <span className="font-mono text-[10px] text-[#a3a3a3]">
-          WebGL · Hardware Accelerated
+          WebGL 2.0 · Zero-Idle Hardware Accelerated
         </span>
       </div>
     </div>

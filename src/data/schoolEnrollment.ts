@@ -5,6 +5,8 @@
  * © SciNexa Platform — ISEF 2026
  */
 
+import { getPersistedItem, setPersistedItem, getPersistedJSON, setPersistedJSON } from '../lib/cookies';
+
 export interface TeacherInfo {
   id: string;
   nameAr: string;
@@ -228,24 +230,11 @@ const DEFAULT_ENROLLED: EnrolledStudent[] = [
 ];
 
 export const getEnrolledStudents = (): EnrolledStudent[] => {
-  try {
-    const raw = localStorage.getItem(STORAGE_ENROLLED);
-    if (!raw) {
-      localStorage.setItem(STORAGE_ENROLLED, JSON.stringify(DEFAULT_ENROLLED));
-      return DEFAULT_ENROLLED;
-    }
-    return JSON.parse(raw);
-  } catch {
-    return DEFAULT_ENROLLED;
-  }
+  return getPersistedJSON<EnrolledStudent[]>(STORAGE_ENROLLED, DEFAULT_ENROLLED);
 };
 
 export const saveEnrolledStudents = (list: EnrolledStudent[]): void => {
-  try {
-    localStorage.setItem(STORAGE_ENROLLED, JSON.stringify(list));
-  } catch {
-    /* ignore storage errors */
-  }
+  setPersistedJSON(STORAGE_ENROLLED, list);
 };
 
 /**
@@ -328,16 +317,16 @@ export const addStudentToClassByTeacher = (params: {
 };
 
 /**
- * حساب الستريك الحقيقي (Real Consecutive Days Streak)
+ * حساب الستريك الحقيقي (Real Consecutive Days Streak) متزامن مع الكوكيز
  */
 export const updateAndGetRealStreak = (): number => {
   const today = new Date().toISOString().slice(0, 10);
-  const lastDate = localStorage.getItem('scinexa_last_visit_date');
-  let currentStreak = parseInt(localStorage.getItem('scinexa_user_streak') || '1', 10);
+  const lastDate = getPersistedItem('scinexa_last_visit_date');
+  let currentStreak = parseInt(getPersistedItem('scinexa_user_streak', '1'), 10);
 
   if (!lastDate) {
-    localStorage.setItem('scinexa_last_visit_date', today);
-    localStorage.setItem('scinexa_user_streak', '1');
+    setPersistedItem('scinexa_last_visit_date', today);
+    setPersistedItem('scinexa_user_streak', '1');
     return 1;
   }
 
@@ -356,8 +345,8 @@ export const updateAndGetRealStreak = (): number => {
     currentStreak = 1;
   }
 
-  localStorage.setItem('scinexa_last_visit_date', today);
-  localStorage.setItem('scinexa_user_streak', String(currentStreak));
+  setPersistedItem('scinexa_last_visit_date', today);
+  setPersistedItem('scinexa_user_streak', String(currentStreak));
   return currentStreak;
 };
 
@@ -411,24 +400,40 @@ export const DEFAULT_ASSIGNMENTS: AssignmentItem[] = [
 ];
 
 export const getAssignments = (): AssignmentItem[] => {
-  try {
-    const raw = localStorage.getItem(STORAGE_ASSIGNMENTS);
-    if (!raw) {
-      localStorage.setItem(STORAGE_ASSIGNMENTS, JSON.stringify(DEFAULT_ASSIGNMENTS));
-      return DEFAULT_ASSIGNMENTS;
-    }
-    return JSON.parse(raw);
-  } catch {
-    return DEFAULT_ASSIGNMENTS;
-  }
+  return getPersistedJSON<AssignmentItem[]>(STORAGE_ASSIGNMENTS, DEFAULT_ASSIGNMENTS);
 };
 
 export const addAssignment = (item: AssignmentItem): void => {
   const list = getAssignments();
   const updated = [item, ...list];
-  try {
-    localStorage.setItem(STORAGE_ASSIGNMENTS, JSON.stringify(updated));
-  } catch {
-    /* ignore */
+  setPersistedJSON(STORAGE_ASSIGNMENTS, updated);
+};
+
+export const getSubmissions = (): StudentSubmission[] => {
+  return getPersistedJSON<StudentSubmission[]>(STORAGE_SUBMISSIONS, [
+    {
+      id: 'sub-1',
+      assignmentId: 'asg-1',
+      studentQuadName: 'ياسين محمد إبراهيم زيد',
+      submittedAt: new Date().toISOString().slice(0, 10),
+      status: 'graded',
+      score: 95,
+      teacherFeedback: 'ممتاز جداً، المعادلات موزونة وحسابات المردود دقيقة.',
+    },
+  ]);
+};
+
+export const recordSubmission = (submission: StudentSubmission): void => {
+  const current = getSubmissions();
+  const existingIdx = current.findIndex(
+    (s) => s.assignmentId === submission.assignmentId && s.studentQuadName === submission.studentQuadName
+  );
+  let updated: StudentSubmission[];
+  if (existingIdx >= 0) {
+    updated = [...current];
+    updated[existingIdx] = submission;
+  } else {
+    updated = [submission, ...current];
   }
+  setPersistedJSON(STORAGE_SUBMISSIONS, updated);
 };

@@ -1,3 +1,4 @@
+import { getPersistedItem, setPersistedItem, getPersistedJSON, setPersistedJSON } from '../../lib/cookies';
 /**
  * CurriculumPage.tsx — صفحة المناهج التفاعلية لمنصة ساينكسا
  * تدعم الانتقال الحقيقي بين المراحل (الثانوية، الإعدادية، STEM) وتحديث الدروس فورياً،
@@ -16,7 +17,7 @@ import {
   type CurriculumLesson,
   type CurriculumPathway,
 } from '../../data/curriculumData';
-import { checkStudentLink, updateAndGetRealStreak, calculateStudentLevel } from '../../data/schoolEnrollment';
+import { checkStudentLink, updateAndGetRealStreak, calculateStudentLevel, recordSubmission } from '../../data/schoolEnrollment';
 import { PageHeader, ProgressBar } from './ui';
 import {
   Search,
@@ -252,6 +253,94 @@ const QuizModal: React.FC<{
 };
 
 /* ── Main Component ── */
+
+/* ── Locked Assessment Educational Modal ── */
+const LockedAssessmentModal: React.FC<{
+  lesson: CurriculumLesson | null;
+  onClose: () => void;
+  ar: boolean;
+  studentQuadName: string;
+  onOpenLab: (l: CurriculumLesson) => void;
+  onGoSettings: () => void;
+}> = ({ lesson, onClose, ar, studentQuadName, onOpenLab, onGoSettings }) => {
+  if (!lesson) return null;
+  return (
+    <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <div className="relative w-full max-w-[500px] rounded-2xl bg-white p-6 shadow-2xl border border-[#e5e5e5]" dir={ar ? 'rtl' : 'ltr'}>
+        <div className="flex items-center justify-between border-b border-[#f0f0f0] pb-3 mb-4">
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/15 text-amber-600">
+              <Lock size={18} strokeWidth={2} />
+            </span>
+            <div>
+              <div className="text-[10px] font-mono uppercase tracking-wider text-amber-600 font-bold">
+                {ar ? 'نظام التقييم الأكاديمي المعتمد' : 'Verified Academic Assessment'}
+              </div>
+              <h3 className="text-[15px] font-bold text-[#0a0a0a]">
+                {ar ? 'التقييم مقيّد — بإشراف المعلم' : 'Teacher-Managed Evaluation'}
+              </h3>
+            </div>
+          </div>
+          <button type="button" onClick={onClose} className="sn-btn sn-btn-quiet sn-btn-icon text-[#737373]">
+            <X size={16} />
+          </button>
+        </div>
+
+        <div className="space-y-3.5">
+          <div className="rounded-xl bg-amber-50/80 border border-amber-500/20 p-3.5 text-[12px] text-amber-950 leading-relaxed">
+            <p className="font-semibold text-amber-900 mb-1">
+              {ar ? 'كيف يتم تفعيل وفتح هذا التقييم؟' : 'How to unlock this evaluation?'}
+            </p>
+            <p>
+              {ar
+                ? `التقييمات والواجبات المعتمدة يحددها المشرف أو المعلم من لوحة التحكم (Admin/Teacher Panel). اسمك الرباعي المسجل حالياً هو: "${studentQuadName || 'الطالب'}".`
+                : `Assessments are managed by your school teacher. Your registered 4-part name is: "${studentQuadName || 'Student'}".`}
+            </p>
+            <p className="mt-1.5 text-amber-900 font-medium">
+              {ar
+                ? 'يرجى تزويد معلمك في المدرسة باسمك الرباعي ليقوم بإضافتك إلى فصله الدراسي، وستظهر لك جميع التقييمات والدرجات تلقائياً!'
+                : 'Please provide your teacher with your 4-part name to link you to their class.'}
+            </p>
+          </div>
+
+          <div className="rounded-xl bg-[#fafafa] border border-[#e5e5e5] p-3 text-[11px] text-[#737373] space-y-1">
+            <div className="font-semibold text-[#171717]">
+              {ar ? '✨ ما الذي يمكنك فعله الآن؟' : '✨ What can you do right now?'}
+            </div>
+            <div>
+              {ar
+                ? '• يمكنك فتح المعمل ثلاثي الأبعاد وإجراء كافة التجارب التفاعلية بحرية كاملة.'
+                : '• You can open the 3D lab and perform all interactive experiments.'}
+            </div>
+            <div>
+              {ar
+                ? '• يمكنك مشاهدة الفيديو التعليمي الموثق من وزارة التربية والتعليم.'
+                : '• You can watch verified ministry instructional videos.'}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-end gap-2 pt-4 mt-4 border-t border-[#f0f0f0]">
+          <button type="button" onClick={onGoSettings} className="sn-btn sn-btn-outline sn-btn-sm text-[11px]">
+            {ar ? 'مراجعة بياناتك' : 'Review Profile'}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              onClose();
+              onOpenLab(lesson);
+            }}
+            className="sn-btn sn-btn-primary sn-btn-sm text-[11px]"
+          >
+            <Play size={12} strokeWidth={2} />
+            {ar ? 'فتح المعمل 3D الآن' : 'Open 3D Lab'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const CurriculumPage: React.FC = () => {
   const { language } = useLanguage();
   const { user, role } = useSession();
@@ -266,29 +355,26 @@ export const CurriculumPage: React.FC = () => {
   // 2. Modals state
   const [quizLesson, setQuizLesson] = useState<CurriculumLesson | null>(null);
   const [videoLesson, setVideoLesson] = useState<CurriculumLesson | null>(null);
+  const [lockedNoticeLesson, setLockedNoticeLesson] = useState<CurriculumLesson | null>(null);
 
   // 3. User Gamification and Progress
   const [completed, setCompleted] = useState<string[]>(() => {
-    try {
-      return JSON.parse(localStorage.getItem('scinexa_completed_lessons') || '["sec-chem-1"]');
-    } catch {
-      return ['sec-chem-1'];
-    }
+    return getPersistedJSON<string[]>('scinexa_completed_lessons', ['sec-chem-1', 'sec-phys-1']);
   });
 
   const [xp, setXp] = useState<number>(() => {
-    const v = localStorage.getItem('scinexa_user_xp');
-    return v ? parseInt(v, 10) : 450;
+    const v = getPersistedItem('scinexa_user_xp');
+    return v ? parseInt(v, 10) : 480;
   });
 
   const [stars, setStars] = useState<number>(() => {
-    const v = localStorage.getItem('scinexa_user_stars');
+    const v = getPersistedItem('scinexa_user_stars');
     return v ? parseInt(v, 10) : 6;
   });
 
   // 4. Student Enrollment and Locked Grade
-  const studentQuadName = localStorage.getItem('scinexa_user_fullname') || user?.name || '';
-  const studentGradeId = localStorage.getItem('scinexa_grade') || 'sec2';
+  const studentQuadName = getPersistedItem('scinexa_user_fullname') || user?.name || '';
+  const studentGradeId = getPersistedItem('scinexa_grade') || 'sec2';
   const linkedStudent = useMemo(() => checkStudentLink(studentQuadName, user?.email), [studentQuadName, user]);
   const realStreak = useMemo(() => updateAndGetRealStreak(), []);
   const levelInfo = useMemo(() => calculateStudentLevel(xp), [xp]);
@@ -341,6 +427,15 @@ export const CurriculumPage: React.FC = () => {
   };
 
   const handleQuizSubmit = (lessonId: string) => {
+    recordSubmission({
+      id: `sub-${Date.now()}`,
+      assignmentId: lessonId,
+      studentQuadName: studentQuadName || 'ياسين محمد إبراهيم زيد',
+      submittedAt: new Date().toISOString().slice(0, 10),
+      status: 'graded',
+      score: 95,
+      teacherFeedback: ar ? 'إجابات نموذجية واستيعاب ممتاز للتجربة المعملية.' : 'Excellent answers and understanding.',
+    });
     if (!completed.includes(lessonId)) {
       const next = [...completed, lessonId];
       const nextXp = xp + 60;
@@ -348,9 +443,9 @@ export const CurriculumPage: React.FC = () => {
       setCompleted(next);
       setXp(nextXp);
       setStars(nextStars);
-      localStorage.setItem('scinexa_completed_lessons', JSON.stringify(next));
-      localStorage.setItem('scinexa_user_xp', String(nextXp));
-      localStorage.setItem('scinexa_user_stars', String(nextStars));
+      setPersistedJSON('scinexa_completed_lessons', next);
+      setPersistedItem('scinexa_user_xp', String(nextXp));
+      setPersistedItem('scinexa_user_stars', String(nextStars));
     }
   };
 
@@ -475,7 +570,13 @@ export const CurriculumPage: React.FC = () => {
                   type="button"
                   role="tab"
                   aria-selected={active}
-                  onClick={() => setSelectedStage(st.id)}
+                  onClick={() => {
+                    setSelectedStage(st.id);
+                    const nextPw = getPathwaysByStage(st.id);
+                    if (nextPw.length > 0) {
+                      setSelectedPathwayId(nextPw[0].id);
+                    }
+                  }}
                   className={`sn-btn sn-btn-sm !h-8 !px-3 text-[12px] font-semibold transition-all rounded-xl ${
                     active
                       ? 'bg-[#0a0a0a] text-white shadow-sm'
@@ -503,6 +604,44 @@ export const CurriculumPage: React.FC = () => {
               {ar ? 'تعديل من الإعدادات' : 'Change in settings'}
             </button>
           </div>
+        </div>
+
+        {/* Quick Grade Switcher Bar */}
+        <div className="flex flex-wrap items-center gap-1.5 pb-2 border-b border-[#f5f5f5]">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-[#a3a3a3] me-1">
+            {ar ? 'الصفوف المتاحة:' : 'Grades:'}
+          </span>
+          {[
+            { id: 'sec1', stage: 'secondary', ar: '١ ثانوي', en: '1st Sec' },
+            { id: 'sec2', stage: 'secondary', ar: '٢ ثانوي', en: '2nd Sec' },
+            { id: 'sec3', stage: 'secondary', ar: '٣ ثانوي', en: '3rd Sec' },
+            { id: 'prep1', stage: 'prep', ar: '١ إعدادي', en: '1st Prep' },
+            { id: 'prep2', stage: 'prep', ar: '٢ إعدادي', en: '2nd Prep' },
+            { id: 'prep3', stage: 'prep', ar: '٣ إعدادي', en: '3rd Prep' },
+            { id: 'stem', stage: 'stem', ar: 'STEM', en: 'STEM' },
+          ].map((g) => {
+            const isCurrent = activePathway?.grade === g.id;
+            return (
+              <button
+                key={g.id}
+                type="button"
+                onClick={() => {
+                  setSelectedStage(g.stage as any);
+                  const matched = ALL_CURRICULUM_PATHWAYS.find((p) => p.grade === g.id) || ALL_CURRICULUM_PATHWAYS.find((p) => p.stage === g.stage);
+                  if (matched) {
+                    setSelectedPathwayId(matched.id);
+                  }
+                }}
+                className={`px-2.5 py-0.5 rounded-md text-[11px] font-semibold transition-all ${
+                  isCurrent
+                    ? 'bg-[#0a0a0a] text-white shadow-xs'
+                    : 'bg-[#fafafa] text-[#737373] hover:text-[#0a0a0a] hover:bg-[#f0f0f0]'
+                }`}
+              >
+                {ar ? g.ar : g.en}
+              </button>
+            );
+          })}
         </div>
 
         {/* Pathway Picker Pills within Stage & Live Search */}
@@ -716,10 +855,11 @@ export const CurriculumPage: React.FC = () => {
                       ) : (
                         <button
                           type="button"
-                          title={ar ? 'التقييمات يحددها المشرف أو المعلم من لوحة التحكم' : 'Assessments must be assigned by teacher'}
-                          className="sn-btn sn-btn-sm opacity-50 cursor-not-allowed bg-[#f5f5f5] text-[#a3a3a3] border border-[#e5e5e5]"
+                          onClick={() => setLockedNoticeLesson(lesson)}
+                          title={ar ? 'انقر لمعرفة كيفية تعيين التقييم من معلمك' : 'Click to learn how your teacher unlocks this'}
+                          className="sn-btn sn-btn-sm bg-[#fafafa] text-[#737373] hover:text-[#0a0a0a] hover:border-[#0a0a0a] border border-[#e5e5e5] transition-all"
                         >
-                          <Clock size={11} strokeWidth={1.8} />
+                          <Lock size={11} strokeWidth={1.8} className="text-amber-500" />
                           {ar ? 'بانتظار المعلم' : 'Pending Teacher'}
                         </button>
                       )}

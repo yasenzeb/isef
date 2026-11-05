@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Language, translations, Translations } from '../i18n/translations';
+import { getPersistedItem, setPersistedItem } from '../lib/cookies';
 
 interface LanguageContextType {
   language: Language;
@@ -12,13 +13,13 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem('scinexa_language') as Language;
-    return saved && ['en', 'ar', 'fr', 'de'].includes(saved) ? saved : 'en';
+    const saved = getPersistedItem('scinexa_language', 'ar') as Language;
+    return saved && ['en', 'ar', 'fr', 'de'].includes(saved) ? saved : 'ar';
   });
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem('scinexa_language', lang);
+    setPersistedItem('scinexa_language', lang);
   };
 
   const isRTL = language === 'ar';

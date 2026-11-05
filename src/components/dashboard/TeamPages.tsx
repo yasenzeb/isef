@@ -424,59 +424,244 @@ export const StudentsPage: React.FC = () => {
 };
 
 /* ── Assignments ──────────────────────────────────────────────────────────── */
+
+/* ── Create Assignment Modal ── */
+const CreateAssignmentModal: React.FC<{
+  isOpen: boolean;
+  onClose: () => void;
+  onAdded: (item: AssignmentItem) => void;
+  ar: boolean;
+}> = ({ isOpen, onClose, onAdded, ar }) => {
+  const [titleAr, setTitleAr] = useState('');
+  const [classId, setClassId] = useState('2a');
+  const [linkedLab, setLinkedLab] = useState('chemistry');
+  const [dueDateAr, setDueDateAr] = useState('الخميس القادم · ١٠:٠٠ م');
+  const [descriptionAr, setDescriptionAr] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  if (!isOpen) return null;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!titleAr.trim()) {
+      setError(ar ? 'يرجى إدخال عنوان الواجب أو التكليف.' : 'Please enter assignment title.');
+      return;
+    }
+    const cls = INITIAL_CLASSES.find((c) => c.id === classId) || INITIAL_CLASSES[0];
+    const newAssignment: AssignmentItem = {
+      id: `asg-${Date.now()}`,
+      titleAr: titleAr.trim(),
+      titleEn: titleAr.trim(),
+      classId: cls.id,
+      classNameAr: cls.nameAr,
+      teacherId: cls.teacherId,
+      teacherNameAr: cls.teacherNameAr,
+      linkedLab,
+      dueDateAr,
+      dueDateEn: 'Next Thursday · 10:00 PM',
+      descriptionAr: descriptionAr.trim() || 'قم بفتح المعمل 3D وإجراء التجربة المطلوبة وتسجيل النتائج.',
+      descriptionEn: 'Open the 3D lab, conduct the experiment, and report findings.',
+      totalPoints: 100,
+      assignedAt: new Date().toISOString().slice(0, 10),
+    };
+    addAssignment(newAssignment);
+    onAdded(newAssignment);
+    onClose();
+  };
+
+  return (
+    <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <div className="relative w-full max-w-[540px] rounded-2xl bg-white p-6 shadow-2xl border border-[#e5e5e5]" dir={ar ? 'rtl' : 'ltr'}>
+        <div className="flex items-center justify-between border-b border-[#f0f0f0] pb-3 mb-4">
+          <div className="flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#eff6ff] text-[#1d4ed8]">
+              <ClipboardList size={18} />
+            </span>
+            <h3 className="text-[15px] font-bold text-[#0a0a0a]">
+              {ar ? 'إنشاء واجب أو تقييم معملي جديد' : 'Create New Assignment'}
+            </h3>
+          </div>
+          <button type="button" onClick={onClose} className="sn-btn sn-btn-quiet sn-btn-icon text-[#737373]">
+            <X size={16} />
+          </button>
+        </div>
+
+        {error && (
+          <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-[12px] text-red-700">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-3.5">
+          <div>
+            <label className="block text-[11px] font-semibold text-[#171717] mb-1">
+              {ar ? 'عنوان الواجب أو التجربة *' : 'Assignment Title *'}
+            </label>
+            <input
+              type="text"
+              value={titleAr}
+              onChange={(e) => setTitleAr(e.target.value)}
+              placeholder={ar ? 'مثال: تقرير تجربة اختزال أكسيد النحاس بالهيدروجين' : 'e.g. Hydrogen reduction report'}
+              className="h-9 w-full rounded-xl border border-[#e5e5e5] px-3 text-[12px] text-[#0a0a0a] outline-none focus:border-[#0a0a0a]"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-[11px] font-semibold text-[#171717] mb-1">
+                {ar ? 'الفصل الدراسي *' : 'Target Class *'}
+              </label>
+              <select
+                value={classId}
+                onChange={(e) => setClassId(e.target.value)}
+                className="h-9 w-full rounded-xl border border-[#e5e5e5] px-2 text-[12px] text-[#0a0a0a] outline-none focus:border-[#0a0a0a] bg-white"
+              >
+                {INITIAL_CLASSES.map((c) => (
+                  <option key={c.id} value={c.id}>{c.nameAr}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-semibold text-[#171717] mb-1">
+                {ar ? 'المعمل ثلاثي الأبعاد المرتبط *' : 'Linked 3D Lab *'}
+              </label>
+              <select
+                value={linkedLab}
+                onChange={(e) => setLinkedLab(e.target.value)}
+                className="h-9 w-full rounded-xl border border-[#e5e5e5] px-2 text-[12px] text-[#0a0a0a] outline-none focus:border-[#0a0a0a] bg-white"
+              >
+                <option value="chemistry">{ar ? 'معمل الكيمياء' : 'Chemistry Lab'}</option>
+                <option value="physics">{ar ? 'معمل الفيزياء' : 'Physics Lab'}</option>
+                <option value="anatomy">{ar ? 'أطلس التشريح' : 'Anatomy Lab'}</option>
+                <option value="biology">{ar ? 'معمل الأحياء والوراثة' : 'Biology Lab'}</option>
+                <option value="geology">{ar ? 'معمل الجيولوجيا' : 'Geology Lab'}</option>
+                <option value="astronomy">{ar ? 'معمل الفلك' : 'Astronomy Lab'}</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-semibold text-[#171717] mb-1">
+              {ar ? 'موعد التسليم' : 'Due Date'}
+            </label>
+            <input
+              type="text"
+              value={dueDateAr}
+              onChange={(e) => setDueDateAr(e.target.value)}
+              className="h-9 w-full rounded-xl border border-[#e5e5e5] px-3 text-[12px] text-[#0a0a0a] outline-none focus:border-[#0a0a0a]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-semibold text-[#171717] mb-1">
+              {ar ? 'تعليمات الواجب والتجربة' : 'Instructions'}
+            </label>
+            <textarea
+              rows={3}
+              value={descriptionAr}
+              onChange={(e) => setDescriptionAr(e.target.value)}
+              placeholder={ar ? 'اكتب تعليمات التجربة المعملية وكيفية تسجيل النتائج…' : 'Enter instructions…'}
+              className="w-full rounded-xl border border-[#e5e5e5] p-2.5 text-[12px] text-[#0a0a0a] outline-none focus:border-[#0a0a0a]"
+            />
+          </div>
+
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#f0f0f0]">
+            <button type="button" onClick={onClose} className="sn-btn sn-btn-outline sn-btn-sm">
+              {ar ? 'إلغاء' : 'Cancel'}
+            </button>
+            <button type="submit" className="sn-btn sn-btn-primary sn-btn-sm">
+              {ar ? 'حفظ وإرسال للطلاب' : 'Save & Assign'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 export const AssignmentsPage: React.FC = () => {
   const { language } = useLanguage();
   const ar = language === 'ar';
+  const [assignmentsList, setAssignmentsList] = useState<AssignmentItem[]>(() => getAssignments());
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
+  const handleAdded = (newAsg: AssignmentItem) => {
+    setAssignmentsList((prev) => [newAsg, ...prev]);
+    setSuccessMsg(ar ? `تم إنشاء الواجب "${newAsg.titleAr}" وتعيينه لطلاب ${newAsg.classNameAr} بنجاح!` : 'Assignment created successfully!');
+    setTimeout(() => setSuccessMsg(null), 5000);
+  };
+
   return (
     <div>
       <PageHeader
-        eyebrow={ar ? 'التعليم' : 'Teaching'}
-        title={ar ? 'الواجبات' : 'Assignments'}
-        subtitle={ar ? 'كل واجب مرتبط بدرس ومعمل. التسليمات تُحسب تلقائيًا.' : 'Every assignment is tied to a lesson and a lab. Submissions count themselves.'}
+        eyebrow={ar ? 'التعليم والواجبات' : 'Teaching & Assignments'}
+        title={ar ? 'الواجبات والتكليفات المعملية' : 'Lab Assignments'}
+        subtitle={ar ? 'كل واجب مرتبط بدرس وتجربة ثلاثية الأبعاد. التسليمات تُسجل وتُحسب تلقائيًا.' : 'Every assignment is tied to a lesson and a 3D lab.'}
         actions={
-          <button type="button" className="sn-btn sn-btn-primary">
+          <button type="button" onClick={() => setIsCreateOpen(true)} className="sn-btn sn-btn-primary">
             <ClipboardList size={15} strokeWidth={1.8} />
-            {ar ? 'إنشاء واجب' : 'Create assignment'}
+            {ar ? 'إنشاء واجب جديد' : 'Create assignment'}
           </button>
         }
       />
+
+      <CreateAssignmentModal
+        isOpen={isCreateOpen}
+        onClose={() => setIsCreateOpen(false)}
+        onAdded={handleAdded}
+        ar={ar}
+      />
+
+      {successMsg && (
+        <div className="mb-4 flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-500/30 p-3 text-[12px] font-medium text-emerald-800">
+          <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+          <span>{successMsg}</span>
+        </div>
+      )}
+
       <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard label={ar ? 'مفتوحة' : 'Open'} value="6" hint={ar ? 'واجبات' : 'assignments'} icon={ClipboardList} />
-        <StatCard label={ar ? 'تسليمات' : 'Submissions'} value="87" trend="+14" hint={ar ? 'هذا الأسبوع' : 'this week'} icon={FileCheck2} />
+        <StatCard label={ar ? 'واجبات نشطة' : 'Open'} value={String(assignmentsList.length)} hint={ar ? 'واجبات معتمدة' : 'assignments'} icon={ClipboardList} />
+        <StatCard label={ar ? 'تسليمات مسجلة' : 'Submissions'} value="87" trend="+14" hint={ar ? 'هذا الأسبوع' : 'this week'} icon={FileCheck2} />
         <StatCard label={ar ? 'بانتظار المراجعة' : 'To review'} value="23" hint={ar ? 'تسليم' : 'items'} icon={Clock} />
-        <StatCard label={ar ? 'متوسط الدرجة' : 'Avg. score'} value="81%" trend="+3%" hint={ar ? 'كل الفصول' : 'all classes'} icon={TrendingUp} />
+        <StatCard label={ar ? 'متوسط الدرجة' : 'Avg. score'} value="85%" trend="+4%" hint={ar ? 'كل الفصول' : 'all classes'} icon={TrendingUp} />
       </div>
+
       <div className="space-y-2.5">
-        {ASSIGNMENTS.map((item) => {
-          const pct = Math.round((item.submitted / item.total) * 100);
+        {assignmentsList.map((item) => {
+          const accent = item.linkedLab || 'chemistry';
           return (
-            <div key={item.titleEn} className={`sn-${item.accent} sn-card p-4`}>
+            <div key={item.id} className={`sn-${accent} sn-card p-4`}>
               <div className="flex flex-col gap-4 md:flex-row md:items-center">
                 <span className="sn-icon-tile">
                   <ClipboardList size={17} strokeWidth={1.7} />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <div className="text-[13px] font-semibold">{ar ? item.titleAr : item.titleEn}</div>
-                  <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-[#737373]">
-                    <span>{ar ? item.classAr : item.classEn}</span>
+                  <div className="text-[13px] font-semibold text-[#0a0a0a]">{ar ? item.titleAr : item.titleEn}</div>
+                  <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-[#737373]">
+                    <span className="font-medium text-[#171717]">{item.classNameAr}</span>
                     <span>·</span>
                     <span className="inline-flex items-center gap-1">
-                      <CalendarDays size={10} strokeWidth={1.8} />
-                      {ar ? item.dueAr : item.dueEn}
+                      <CalendarDays size={11} strokeWidth={1.8} />
+                      {ar ? item.dueDateAr : item.dueDateEn}
                     </span>
+                    <span>·</span>
+                    <span>{ar ? `المشرف: ${item.teacherNameAr}` : item.teacherNameAr}</span>
                   </div>
+                  <p className="mt-1 text-[11px] text-[#737373] line-clamp-1">{item.descriptionAr}</p>
                 </div>
-                <div className="w-full md:w-[200px]">
-                  <div className="mb-1.5 flex items-center justify-between text-[10px] text-[#737373]">
-                    <span>{item.submitted}/{item.total} {ar ? 'تسليم' : 'submitted'}</span>
-                    <span className="font-mono">{pct}%</span>
+                <div className="w-full md:w-[160px]">
+                  <div className="mb-1 flex items-center justify-between text-[10px] text-[#737373]">
+                    <span>{ar ? 'حالة الفصل' : 'Status'}</span>
+                    <span className="font-mono text-[#047857] font-semibold">{ar ? 'نشط' : 'Active'}</span>
                   </div>
                   <div className="h-1.5 overflow-hidden rounded-full bg-[#f0f0f0]">
-                    <div className="h-full rounded-full sn-accent-line" style={{ width: `${pct}%` }} />
+                    <div className="h-full rounded-full sn-accent-line" style={{ width: '85%' }} />
                   </div>
                 </div>
                 <button type="button" className="sn-btn sn-btn-outline sn-btn-sm shrink-0">
-                  {ar ? 'مراجعة' : 'Review'}
+                  {ar ? 'مراجعة التسليمات' : 'Review'}
                   <ArrowRight size={12} strokeWidth={1.8} className={ar ? 'rotate-180' : ''} />
                 </button>
               </div>

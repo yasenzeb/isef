@@ -1,3 +1,4 @@
+import { getPersistedItem, getPersistedJSON, setPersistedItem } from '../../lib/cookies';
 import { checkStudentLink, updateAndGetRealStreak, calculateStudentLevel } from '../../data/schoolEnrollment';
 import { AlertCircle, UserCheck, Lock } from 'lucide-react';
 import React, { useMemo } from 'react';
@@ -38,11 +39,7 @@ const ICONS: Record<string, React.ComponentType<{ size?: number; strokeWidth?: n
 };
 
 const readCompleted = (): string[] => {
-  try {
-    return JSON.parse(localStorage.getItem('scinexa_completed_lessons') || '["sec2-lesson-1"]');
-  } catch {
-    return ['sec2-lesson-1'];
-  }
+  return getPersistedJSON<string[]>('scinexa_completed_lessons', ['sec_chem_inorganic', 'sec_physics_waves']);
 };
 
 export const DashboardHome: React.FC = () => {
@@ -52,10 +49,11 @@ export const DashboardHome: React.FC = () => {
   const ar = language === 'ar';
   const completed = useMemo(readCompleted, []);
   // Real Enrollment & Streak
-  const studentQuadName = localStorage.getItem('scinexa_user_fullname') || user?.name || '';
+  const studentQuadName = getPersistedItem('scinexa_user_fullname') || user?.name || '';
   const linkedStudent = useMemo(() => checkStudentLink(studentQuadName, user?.email), [studentQuadName, user]);
   const realStreak = useMemo(() => updateAndGetRealStreak(), []);
-  const xp = parseInt(localStorage.getItem('scinexa_user_xp') || '450', 10);
+  const xp = parseInt(getPersistedItem('scinexa_user_xp', '480'), 10);
+  const progressPercent = Math.min(100, Math.round((completed.length / 24) * 100));
   const levelInfo = useMemo(() => calculateStudentLevel(xp), [xp]);
 
   const firstName = user?.name?.trim().split(/\s+/)[0] || (ar ? 'بطلنا' : 'there');
@@ -76,10 +74,10 @@ export const DashboardHome: React.FC = () => {
   const stats =
     role === 'student'
       ? [
-          { label: ar ? 'تقدّم المنهج' : 'Curriculum', value: '68%', trend: '+6%', hint: ar ? 'هذا الأسبوع' : 'this week', icon: BookOpen },
-          { label: ar ? 'دروس مكتملة' : 'Lessons', value: String(completed.length + 11), hint: ar ? 'من ٢٤ درسًا' : 'of 24', icon: CheckCircle2 },
-          { label: ar ? 'نقاط الخبرة' : 'Experience', value: '480', trend: '+50', hint: 'XP', icon: TrendingUp },
-          { label: ar ? 'أيام متتالية' : 'Streak', value: '3', hint: ar ? 'أيام' : 'days', icon: Activity },
+          { label: ar ? 'تقدّم المنهج' : 'Curriculum', value: `${progressPercent}%`, trend: '+6%', hint: ar ? 'هذا الأسبوع' : 'this week', icon: BookOpen },
+          { label: ar ? 'دروس مكتملة' : 'Lessons', value: String(completed.length), hint: ar ? 'من ٢٤ درسًا' : 'of 24', icon: CheckCircle2 },
+          { label: ar ? 'نقاط الخبرة' : 'Experience', value: String(xp), trend: '+50', hint: 'XP', icon: TrendingUp },
+          { label: ar ? 'أيام متتالية' : 'Streak', value: String(realStreak), hint: ar ? 'أيام متواصلة' : 'consecutive days', icon: Activity },
         ]
       : role === 'teacher'
         ? [

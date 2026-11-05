@@ -9,6 +9,8 @@ import React, {
 import { useAuth as useClerkAuth, useUser } from '@clerk/clerk-react';
 import { isClerkConfigured } from '../lib/clerkConfig';
 
+import { getPersistedItem, setPersistedItem, removePersistedItem } from '../lib/cookies';
+
 export type AppRole = 'student' | 'teacher' | 'admin';
 
 export interface SessionUser {
@@ -52,9 +54,8 @@ const normalizeRole = (value: unknown): AppRole => {
 
 /* ── Clerk-backed session ─────────────────────────────────────────────────── */
 const readDevRole = (): AppRole | null => {
-  if (!import.meta.env.DEV) return null;
   try {
-    const value = localStorage.getItem('scinexa_dev_role');
+    const value = getPersistedItem('scinexa_dev_role') || getPersistedItem('scinexa_user_role');
     return value === 'student' || value === 'teacher' || value === 'admin' ? value : null;
   } catch {
     return null;
@@ -102,9 +103,9 @@ const ClerkSessionProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         throw new Error('Demo sign-in is unavailable while Clerk is configured.');
       },
       switchDemoRole: (role: AppRole) => {
-        if (!import.meta.env.DEV) return;
         try {
-          localStorage.setItem('scinexa_dev_role', role);
+          setPersistedItem('scinexa_dev_role', role);
+          setPersistedItem('scinexa_user_role', role);
         } catch {
           /* ignore */
         }
@@ -112,7 +113,8 @@ const ClerkSessionProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       },
       clearRolePreview: () => {
         try {
-          localStorage.removeItem('scinexa_dev_role');
+          removePersistedItem('scinexa_dev_role');
+          removePersistedItem('scinexa_user_role');
         } catch {
           /* ignore */
         }
