@@ -57,7 +57,7 @@ const NAV: NavGroup[] = [
       { to: '/app/curriculum', en: 'Curriculum', ar: 'المناهج', fr: 'Programmes', de: 'Lehrplan', icon: BookOpen },
       { to: '/app/labs', en: 'Laboratories', ar: 'المعامل', fr: 'Laboratoires', de: 'Labore', icon: FlaskConical },
       { to: '/app/classroom', en: 'Classroom', ar: 'السبورة', fr: 'Tableau interactif', de: 'Klassenraum', icon: Presentation },
-      { to: '/app/progress', en: 'Progress', ar: 'التقدّم', fr: 'Progression', de: 'Fortschritt', icon: BarChart3 },
+      { to: '/app/progress', en: 'Progress', ar: 'التقدّم', fr: 'Progression', de: 'Fortschritt', icon: BarChart3, roles: ['student'] },
       { to: '/app/assistant', en: 'Assistant', ar: 'المساعد', fr: 'Assistant IA', de: 'Assistent', icon: MessageSquareText },
     ],
   },
@@ -127,7 +127,7 @@ const pageTitle = (path: string, lang: string): string => {
   return item.en;
 };
 
-const Avatar: React.FC<{ name: string; url?: string; size?: number }> = ({ name, url, size = 30 }) => {
+const Avatar: React.FC<{ name?: string; url?: string; size?: number }> = ({ name = '', url, size = 30 }) => {
   if (url) {
     return (
       <img
@@ -145,7 +145,7 @@ const Avatar: React.FC<{ name: string; url?: string; size?: number }> = ({ name,
       className="inline-flex items-center justify-center rounded-full bg-[#0a0a0a] font-medium text-white"
       style={{ width: size, height: size, fontSize: size * 0.4 }}
     >
-      {name.trim().charAt(0).toUpperCase() || 'S'}
+      {(name || '').trim().charAt(0).toUpperCase() || 'S'}
     </span>
   );
 };
@@ -188,7 +188,7 @@ export const DashboardLayout: React.FC = () => {
   }, []);
 
   const searchResults = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = (query || "").trim().toLowerCase();
     const labs = LAB_MODULES.filter(
       (lab) =>
         !q ||

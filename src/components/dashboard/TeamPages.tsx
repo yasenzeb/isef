@@ -38,9 +38,9 @@ import {
   BarChart3,
 } from 'lucide-react';
 
-const Avatar: React.FC<{ name: string; tone?: string }> = ({ name, tone = 'bg-[#f5f5f5] text-[#171717]' }) => (
+const Avatar: React.FC<{ name?: string; tone?: string }> = ({ name = '', tone = 'bg-[#f5f5f5] text-[#171717]' }) => (
   <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11px] font-medium ${tone}`}>
-    {name.trim().charAt(0).toUpperCase()}
+    {(name || '').trim().charAt(0).toUpperCase() || 'S'}
   </span>
 );
 
@@ -320,13 +320,13 @@ export const StudentsPage: React.FC = () => {
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
     // Combine custom enrolled students + mock students
-    const customMapped = customList.map((s) => ({
-      nameEn: s.quadName,
-      nameAr: s.quadName,
-      code: s.id.slice(-6).toUpperCase(),
-      classEn: s.classNameAr,
-      classAr: s.classNameAr,
-      mastery: s.mastery,
+    const customMapped = (customList || []).map((s) => ({
+      nameEn: s.quadName || 'Student',
+      nameAr: s.quadName || 'طالب مسجل',
+      code: (s.id || '2026').slice(-6).toUpperCase(),
+      classEn: s.classNameAr || 'General',
+      classAr: s.classNameAr || 'فصل عام',
+      mastery: s.mastery ?? 0,
       lastEn: 'Active today',
       lastAr: 'نشط اليوم',
       status: 'active',
@@ -335,12 +335,16 @@ export const StudentsPage: React.FC = () => {
 
     const all = customMapped;
     return all.filter((student) => {
+      const sNameEn = student.nameEn || '';
+      const sNameAr = student.nameAr || '';
+      const sCode = student.code || '';
+      const sClassEn = student.classEn || '';
       const matches =
         !q ||
-        student.nameEn.toLowerCase().includes(q) ||
-        student.nameAr.includes(q) ||
-        student.code.includes(q) ||
-        student.classEn.toLowerCase().includes(q);
+        sNameEn.toLowerCase().includes(q) ||
+        sNameAr.includes(q) ||
+        sCode.includes(q) ||
+        sClassEn.toLowerCase().includes(q);
       return matches && (!onlyReview || student.status !== 'active');
     });
   }, [query, onlyReview, customList]);

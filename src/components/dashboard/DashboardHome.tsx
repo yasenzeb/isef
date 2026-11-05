@@ -1,5 +1,5 @@
 import { getPersistedItem, getPersistedJSON, setPersistedItem } from '../../lib/cookies';
-import { checkStudentLink, updateAndGetRealStreak, calculateStudentLevel } from '../../data/schoolEnrollment';
+import { checkStudentLink, updateAndGetRealStreak, calculateStudentLevel, getEnrolledStudents, getAssignments, INITIAL_CLASSES, fetchAndSyncEnrollment } from '../../data/schoolEnrollment';
 import { AlertCircle, UserCheck, Lock } from 'lucide-react';
 import React, { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -56,6 +56,22 @@ export const DashboardHome: React.FC = () => {
   const progressPercent = completed.length > 0 ? Math.min(100, Math.round((completed.length / 24) * 100)) : 0;
   const levelInfo = useMemo(() => calculateStudentLevel(xp), [xp]);
 
+  const [enrolledStudents, setEnrolledStudents] = React.useState(() => getEnrolledStudents());
+  const [assignments, setAssignments] = React.useState(() => getAssignments());
+
+  React.useEffect(() => {
+    void fetchAndSyncEnrollment().then((res) => {
+      if (res && res.length > 0) setEnrolledStudents(res);
+    });
+  }, []);
+
+  const teacherClassesCount = INITIAL_CLASSES.length;
+  const teacherStudentsCount = enrolledStudents.length;
+  const teacherAvgMastery = teacherStudentsCount > 0
+    ? Math.round(enrolledStudents.reduce((acc, s) => acc + (s.mastery || 0), 0) / teacherStudentsCount)
+    : 0;
+  const teacherOpenAssignments = assignments.length;
+
   const firstName = user?.name?.trim().split(/\s+/)[0] || (ar ? 'بطلنا' : 'there');
   const hour = new Date().getHours();
   const greeting =
@@ -81,10 +97,10 @@ export const DashboardHome: React.FC = () => {
         ]
       : role === 'teacher'
         ? [
-            { label: ar ? 'الفصول' : 'Classes', value: '4', hint: ar ? 'نشطة' : 'active', icon: GraduationCap },
-            { label: ar ? 'الطلاب' : 'Students', value: '128', trend: '+12', hint: ar ? 'هذا الشهر' : 'this month', icon: Users },
-            { label: ar ? 'متوسط الإنجاز' : 'Avg. completion', value: '74%', trend: '+4%', hint: ar ? 'الفصل أ' : 'Class A', icon: TrendingUp },
-            { label: ar ? 'واجبات مفتوحة' : 'Open work', value: '6', hint: ar ? 'تسليمات' : 'submissions', icon: FileCheck2 },
+            { label: ar ? 'الفصول' : 'Classes', value: String(teacherClassesCount), hint: ar ? 'معتمدة' : 'approved', icon: GraduationCap },
+            { label: ar ? 'الطلاب' : 'Students', value: String(teacherStudentsCount), hint: ar ? 'بيانات حقيقية' : 'live data', icon: Users },
+            { label: ar ? 'متوسط الإنجاز' : 'Avg. completion', value: `${teacherAvgMastery}%`, hint: ar ? 'تقييم فعلي' : 'real mastery', icon: TrendingUp },
+            { label: ar ? 'واجبات منشورة' : 'Assignments', value: String(teacherOpenAssignments), hint: ar ? 'تكليفات' : 'tasks', icon: FileCheck2 },
           ]
         : [
             { label: ar ? 'المؤسسات' : 'Institutions', value: '12', hint: ar ? 'مدرسة' : 'schools', icon: Building2 },
@@ -96,8 +112,8 @@ export const DashboardHome: React.FC = () => {
   const roleMessage =
     role === 'teacher'
       ? ar
-        ? 'لديك ٦ واجبات بانتظار المراجعة، وفصلان بدآ وحدة الكيمياء العضوية هذا الأسبوع.'
-        : 'Six assignments are waiting for review, and two classes started the organic chemistry unit this week.'
+        ? `لديك ${teacherClassesCount} فصول و ${teacherStudentsCount} طالب مسجل، و ${teacherOpenAssignments} واجب منشور للطلاب.`
+        : `You have ${teacherClassesCount} classes, ${teacherStudentsCount} enrolled students, and ${teacherOpenAssignments} active assignments.`
       : role === 'admin'
         ? ar
           ? 'استخدام المنصة ارتفع ١٨٪ خلال ٣٠ يومًا، مع ١٢ مدرسة متصلة.'
@@ -195,39 +211,31 @@ export const DashboardHome: React.FC = () => {
 
             <h2 className="mt-5 max-w-[26ch] text-[22px] font-semibold leading-[1.25] tracking-[-0.03em] text-white md:text-[26px]">
               {role === 'student'
-                ? ar
-                  ? 'اختزال أكاسيد الفلزات بالهيدروجين'
-                  : 'Hydrogen reduction of metal oxides'
+                ? completed.length > 0
+                  ? (ar ? 'تابع مسارك الدراسي المعتمد' : 'Continue your curriculum')
+                  : (ar ? 'استكشف المعامل والتجارب التفاعلية' : 'Explore Interactive 3D Labs')
                 : role === 'teacher'
-                  ? ar
-                    ? 'الفصل ٢أ · وحدة الكيمياء العضوية'
-                    : 'Class 2A · Organic chemistry unit'
-                  : ar
-                    ? 'تقرير استخدام المنصة · أكتوبر'
-                    : 'Platform usage report · October'}
+                  ? (ar ? 'فصولك المدرسية والتكليفات' : 'Classrooms & Assignments')
+                  : (ar ? 'إدارة المنصة والمعامل المدرسية' : 'Platform & School Lab Overview')}
             </h2>
 
             <p className="mt-2 max-w-[52ch] text-[12px] leading-relaxed text-white/50">
               {role === 'student'
-                ? ar
-                  ? 'تجربة موجهة في معمل الكيمياء، مع تقييم أسبوعي من كراسة الوزارة.'
-                  : 'A guided chemistry lab, followed by the Ministry weekly assessment.'
+                ? completed.length > 0
+                  ? (ar ? `أكملت ${completed.length} درساً حتى الآن. اضغط لمتابعة بقية المنهج.` : `You completed ${completed.length} lessons. Click to continue.`)
+                  : (ar ? 'لم تبدأ أي دروس بعد. توجه للمنهج الدراسي أو افتح أحد المعامل الستة للبدء.' : 'No lessons completed yet. Head to the curriculum or open any 3D lab.')
                 : role === 'teacher'
-                  ? ar
-                    ? '٨٢٪ من الطلاب أكملوا التجربة الأولى. الواجب القادم يوم الخميس.'
-                    : '82% completed the first experiment. Next assignment due Thursday.'
-                  : ar
-                    ? '١٢ مدرسة، ٢٬٤٨٠ مستخدمًا نشطًا، وأعلى استخدام في معمل التشريح.'
-                    : '12 schools, 2,480 active users, highest usage in the anatomy lab.'}
+                  ? (ar ? `لديك ${teacherStudentsCount} طالب مسجل في فصولك الدراسية، مع ${teacherOpenAssignments} واجبات معتمدة.` : `${teacherStudentsCount} enrolled students across your classes, with ${teacherOpenAssignments} active assignments.`)
+                  : (ar ? 'متابعة مباشرة لنشاط المدارس والفصول وسجلات الطلاب وقاعدة بيانات سوبابيز.' : 'Real-time overview of connected schools, classes, students and Supabase records.')}
             </p>
 
             <div className="mt-5 max-w-[320px]">
               <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/45">
-                <span>{ar ? 'التقدّم' : 'Progress'}</span>
-                <span className="font-mono">{role === 'student' ? '72%' : '64%'}</span>
+                <span>{ar ? 'التقدّم الفعلي' : 'Real Progress'}</span>
+                <span className="font-mono">{role === 'student' ? `${progressPercent}%` : `${teacherAvgMastery}%`}</span>
               </div>
               <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
-                <div className="h-full rounded-full bg-white" style={{ width: role === 'student' ? '72%' : '64%' }} />
+                <div className="h-full rounded-full bg-white" style={{ width: `${role === 'student' ? progressPercent : teacherAvgMastery}%` }} />
               </div>
             </div>
 

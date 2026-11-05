@@ -1717,10 +1717,10 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
       )}
 
       {/* Main Workspace Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className={`grid grid-cols-1 ${isPresentationMode ? "" : "lg:grid-cols-4"} gap-6`}>
         
         {/* 3D Canvas Viewport (Takes 3 columns) */}
-        <div className="lg:col-span-3 sci-card overflow-hidden relative flex flex-col h-[520px] sm:h-[620px] lg:h-[700px]">
+        <div className={`${isPresentationMode ? "w-full h-full min-h-[580px]" : "lg:col-span-3 h-[520px] sm:h-[620px] lg:h-[700px]"} sci-card overflow-hidden relative flex flex-col`}>
           
           {/* Top Layer Toggles Toolbar with responsive chevron scroll navigation */}
           <div className="bg-slate-950/95 px-2 sm:px-4 py-2 border-b border-sky-500/15 flex items-center z-10 relative">

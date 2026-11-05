@@ -179,7 +179,25 @@ const STORAGE_SUBMISSIONS = 'scinexa_student_submissions';
 const DEFAULT_ENROLLED: EnrolledStudent[] = [];
 
 export const getEnrolledStudents = (): EnrolledStudent[] => {
-  return getPersistedJSON<EnrolledStudent[]>(STORAGE_ENROLLED, DEFAULT_ENROLLED);
+  const rawList = getPersistedJSON<any[]>(STORAGE_ENROLLED, DEFAULT_ENROLLED);
+  if (!Array.isArray(rawList)) return [];
+  return rawList.map((r: any) => ({
+    id: String(r.id || `st_${Math.random().toString(36).slice(2, 9)}`),
+    quadName: String(r.quadName || r.quad_name || r.name || 'طالب مسجل'),
+    email: r.email ? String(r.email) : undefined,
+    schoolName: String(r.schoolName || r.school_name || 'المدرسة المسجلة'),
+    governorateId: String(r.governorateId || r.governorate_id || 'cairo'),
+    administrationId: String(r.administrationId || r.administration_id || ''),
+    gradeLevel: String(r.gradeLevel || r.grade_level || 'sec2'),
+    classId: String(r.classId || r.class_id || '2a'),
+    classNameAr: String(r.classNameAr || r.class_name_ar || 'كيمياء ٢أ'),
+    teacherId: String(r.teacherId || r.teacher_id || 't-mona'),
+    teacherNameAr: String(r.teacherNameAr || r.teacher_name_ar || 'أ. منى فتحي'),
+    enrolledAt: String(r.enrolledAt || r.enrolled_at || new Date().toISOString().slice(0, 10)),
+    mastery: typeof r.mastery === 'number' ? r.mastery : 0,
+    streak: typeof r.streak === 'number' ? r.streak : 0,
+    lastActiveDate: String(r.lastActiveDate || r.last_active_date || new Date().toISOString().slice(0, 10)),
+  }));
 };
 
 export const saveEnrolledStudents = (list: EnrolledStudent[]): void => {
@@ -196,8 +214,8 @@ export const checkStudentLink = (
   if (!userQuadName && !userEmail) return null;
   const list = getEnrolledStudents();
 
-  const normalize = (s: string) =>
-    s
+  const normalize = (s?: string | null) =>
+    (s || '')
       .trim()
       .toLowerCase()
       .replace(/[أإآ]/g, 'ا')
@@ -206,7 +224,7 @@ export const checkStudentLink = (
       .replace(/\s+/g, ' ');
 
   const targetQuad = userQuadName ? normalize(userQuadName) : '';
-  const targetEmail = userEmail ? userEmail.trim().toLowerCase() : '';
+  const targetEmail = userEmail ? (userEmail || '').trim().toLowerCase() : '';
 
   // 1. Check exact or fuzzy quadName
   if (targetQuad) {
@@ -331,7 +349,24 @@ export const calculateStudentLevel = (xp: number) => {
 export const DEFAULT_ASSIGNMENTS: AssignmentItem[] = [];
 
 export const getAssignments = (): AssignmentItem[] => {
-  return getPersistedJSON<AssignmentItem[]>(STORAGE_ASSIGNMENTS, DEFAULT_ASSIGNMENTS);
+  const raw = getPersistedJSON<any[]>(STORAGE_ASSIGNMENTS, DEFAULT_ASSIGNMENTS);
+  if (!Array.isArray(raw)) return [];
+  return raw.map((a: any) => ({
+    id: String(a.id || `as_${Math.random().toString(36).slice(2, 9)}`),
+    titleAr: String(a.titleAr || a.title_ar || ''),
+    titleEn: String(a.titleEn || a.title_en || a.titleAr || a.title_ar || ''),
+    classId: String(a.classId || a.class_id || ''),
+    classNameAr: String(a.classNameAr || a.class_name_ar || ''),
+    teacherId: String(a.teacherId || a.teacher_id || ''),
+    teacherNameAr: String(a.teacherNameAr || a.teacher_name_ar || ''),
+    linkedLab: String(a.linkedLab || a.linked_lab || 'chemistry'),
+    dueDateAr: String(a.dueDateAr || a.due_date_ar || 'الخميس'),
+    dueDateEn: String(a.dueDateEn || a.due_date_en || 'Thursday'),
+    descriptionAr: String(a.descriptionAr || a.description_ar || ''),
+    descriptionEn: String(a.descriptionEn || a.description_en || ''),
+    totalPoints: typeof a.totalPoints === 'number' ? a.totalPoints : (typeof a.total_points === 'number' ? a.total_points : 100),
+    assignedAt: String(a.assignedAt || a.assigned_at || new Date().toISOString().slice(0, 10)),
+  }));
 };
 
 export const addAssignment = (item: AssignmentItem): void => {

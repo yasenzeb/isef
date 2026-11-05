@@ -150,9 +150,9 @@ const DemoSessionProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signInDemo = useCallback((input: { name: string; email: string; role: AppRole }) => {
     setUser({
       id: `demo_${Date.now().toString(36)}`,
-      name: input.name.trim() || 'SciNexa Student',
-      email: input.email.trim() || 'demo@scinexa.school',
-      role: input.role,
+      name: (input?.name || '').trim() || 'SciNexa Student',
+      email: (input?.email || '').trim() || 'demo@scinexa.school',
+      role: input?.role || 'student',
       isDemo: true,
     });
   }, []);

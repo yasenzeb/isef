@@ -51,7 +51,7 @@ export const ClassroomMode: React.FC<ClassroomModeProps> = ({ onExit }) => {
     <div
       id="classroom-stage-root"
       dir={isRTL ? 'rtl' : 'ltr'}
-      className="flex flex-col w-full h-[calc(100vh-210px)] min-h-[640px] rounded-[22px] overflow-hidden border border-[#e5e5e5] bg-white shadow-xs"
+      className="flex flex-col w-full h-[calc(100vh-130px)] min-h-[640px] rounded-[22px] overflow-hidden border border-[#e5e5e5] bg-white shadow-xs"
     >
       {/* Top Integrated Clean White Control Bar matching site design */}
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-[#f0f0f0] bg-white px-4 py-3 z-30 shrink-0">
@@ -108,7 +108,7 @@ export const ClassroomMode: React.FC<ClassroomModeProps> = ({ onExit }) => {
           <button
             type="button"
             onClick={onExit}
-            className="sn-btn sn-btn-outline sn-btn-sm !h-8 !px-3 hover:bg-red-50 hover:text-red-700 hover:border-red-300 transition-colors"
+            className="sn-btn sn-btn-outline sn-btn-sm !h-8 !px-3 hover:bg-[#f5f5f5] text-[#171717] transition-colors"
           >
             <X size={14} />
             <span className="hidden sm:inline text-[11px]">{ar ? 'خروج' : 'Exit'}</span>

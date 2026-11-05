@@ -94,7 +94,14 @@ const AppRoutes: React.FC = () => (
       <Route path="labs" element={<LabsPage />} />
       <Route path="labs/:labId" element={<LabWorkspace />} />
       <Route path="classroom" element={<ClassroomPage />} />
-      <Route path="progress" element={<ProgressPage />} />
+      <Route
+        path="progress"
+        element={
+          <RoleGate roles={['student']}>
+            <ProgressPage />
+          </RoleGate>
+        }
+      />
       <Route path="assistant" element={<AssistantPage />} />
       <Route
         path="classes"
