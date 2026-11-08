@@ -8,11 +8,18 @@ import React, {
 } from 'react';
 import { useAuth as useClerkAuth, useUser } from '@clerk/clerk-react';
 import { isClerkConfigured } from '../lib/clerkConfig';
-
-import { getPersistedItem, setPersistedItem, removePersistedItem } from '../lib/cookies';
 import { dbUpsertProfile } from '../lib/supabase';
 
 export type AppRole = 'student' | 'teacher' | 'admin';
+
+export interface EducatorAuth {
+  name: string;
+  nationalId: string;
+  role: 'teacher' | 'admin';
+  schoolName?: string;
+  schoolCode?: string;
+  verifiedAt: number;
+}
 
 export interface SessionUser {
   id: string;
@@ -31,6 +38,9 @@ interface SessionValue {
   role: AppRole;
   isDemo: boolean;
   isRolePreview: boolean;
+  educator: EducatorAuth | null;
+  loginEducator: (auth: EducatorAuth) => void;
+  logoutEducator: () => void;
   signOut: () => Promise<void>;
   signInDemo: (input: { name: string; email: string; role: AppRole }) => void;
   switchDemoRole: (role: AppRole) => void;
@@ -40,6 +50,7 @@ interface SessionValue {
 const SessionContext = createContext<SessionValue | null>(null);
 
 const DEMO_KEY = 'scinexa_demo_session';
+export const EDUCATOR_AUTH_KEY = 'scinexa_educator_auth';
 
 export function useSession(): SessionValue {
   const ctx = useContext(SessionContext);
@@ -47,41 +58,39 @@ export function useSession(): SessionValue {
   return ctx;
 }
 
-const normalizeRole = (value: unknown): AppRole => {
-  const role = String(value ?? '').toLowerCase();
-  if (role === 'teacher' || role === 'admin') return role;
-  return 'student';
+export const readEducatorSession = (): EducatorAuth | null => {
+  try {
+    const raw = localStorage.getItem(EDUCATOR_AUTH_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (parsed && (parsed.role === 'teacher' || parsed.role === 'admin') && parsed.name) {
+      return parsed as EducatorAuth;
+    }
+  } catch {
+    /* ignore */
+  }
+  return null;
 };
 
 /* ── Clerk-backed session ─────────────────────────────────────────────────── */
-const readDevRole = (): AppRole | null => {
-  try {
-    const value = getPersistedItem('scinexa_dev_role') || getPersistedItem('scinexa_user_role');
-    return value === 'student' || value === 'teacher' || value === 'admin' ? value : null;
-  } catch {
-    return null;
-  }
-};
-
 const ClerkSessionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, isLoaded } = useUser();
   const { signOut } = useClerkAuth();
-  const [previewRole, setPreviewRole] = useState<AppRole | null>(readDevRole);
+  const [educator, setEducator] = useState<EducatorAuth | null>(readEducatorSession);
 
+  // في منصة الطلاب /app: المستخدم دائماً طالب (Student) ولا يملك صلاحية تغيير دوره
   const normalized: SessionUser | null = useMemo(() => {
     if (!user) return null;
     return {
       id: user.id,
       name: user.fullName || user.username || user.primaryEmailAddress?.emailAddress.split('@')[0] || 'Student',
       email: user.primaryEmailAddress?.emailAddress ?? '',
-      role: normalizeRole((user.publicMetadata as Record<string, unknown> | undefined)?.role),
+      role: 'student',
       avatarUrl: user.imageUrl,
       isDemo: false,
       grade: String((user.publicMetadata as Record<string, unknown> | undefined)?.grade ?? '') || undefined,
     };
   }, [user]);
-
-  const effectiveRole = previewRole ?? normalized?.role ?? 'student';
 
   useEffect(() => {
     if (normalized?.email) {
@@ -89,51 +98,63 @@ const ClerkSessionProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         id: normalized.id,
         email: normalized.email,
         display_name: normalized.name,
-        role: normalized.role,
+        role: 'student',
       });
     }
-  }, [normalized?.id, normalized?.email, normalized?.name, normalized?.role]);
+  }, [normalized?.id, normalized?.email, normalized?.name]);
+
+  const loginEducator = useCallback((auth: EducatorAuth) => {
+    try {
+      localStorage.setItem(EDUCATOR_AUTH_KEY, JSON.stringify(auth));
+    } catch {
+      /* ignore */
+    }
+    setEducator(auth);
+  }, []);
+
+  const logoutEducator = useCallback(() => {
+    try {
+      localStorage.removeItem(EDUCATOR_AUTH_KEY);
+      localStorage.removeItem('scinexa_user_role');
+      localStorage.removeItem('scinexa_dev_role');
+    } catch {
+      /* ignore */
+    }
+    setEducator(null);
+  }, []);
 
   const value = useMemo<SessionValue>(
     () => ({
       user: normalized,
       isLoaded,
       isSignedIn: Boolean(normalized),
-      role: effectiveRole,
+      role: 'student', // منصة الطلاب الرئيسية مقصورة على الطالب
       isDemo: false,
-      isRolePreview: Boolean(previewRole),
+      isRolePreview: false,
+      educator,
+      loginEducator,
+      logoutEducator,
       signOut: async () => {
         try {
           localStorage.removeItem('scinexa_dev_role');
+          localStorage.removeItem(EDUCATOR_AUTH_KEY);
         } catch {
           /* ignore */
         }
-        setPreviewRole(null);
+        setEducator(null);
         await signOut({ redirectUrl: '/' });
       },
       signInDemo: () => {
         throw new Error('Demo sign-in is unavailable while Clerk is configured.');
       },
-      switchDemoRole: (role: AppRole) => {
-        try {
-          setPersistedItem('scinexa_dev_role', role);
-          setPersistedItem('scinexa_user_role', role);
-        } catch {
-          /* ignore */
-        }
-        setPreviewRole(role);
+      switchDemoRole: () => {
+        // Disabled completely: students cannot change role
       },
       clearRolePreview: () => {
-        try {
-          removePersistedItem('scinexa_dev_role');
-          removePersistedItem('scinexa_user_role');
-        } catch {
-          /* ignore */
-        }
-        setPreviewRole(null);
+        // Disabled
       },
     }),
-    [normalized, isLoaded, signOut, effectiveRole, previewRole]
+    [normalized, isLoaded, educator, loginEducator, logoutEducator, signOut]
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
@@ -150,6 +171,8 @@ const DemoSessionProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   });
 
+  const [educator, setEducator] = useState<EducatorAuth | null>(readEducatorSession);
+
   useEffect(() => {
     try {
       if (user) localStorage.setItem(DEMO_KEY, JSON.stringify(user));
@@ -164,13 +187,27 @@ const DemoSessionProvider: React.FC<{ children: React.ReactNode }> = ({ children
       id: `demo_${Date.now().toString(36)}`,
       name: (input?.name || '').trim() || 'SciNexa Student',
       email: (input?.email || '').trim() || 'demo@scinexa.school',
-      role: input?.role || 'student',
+      role: 'student',
       isDemo: true,
     });
   }, []);
 
-  const switchDemoRole = useCallback((role: AppRole) => {
-    setUser((current) => (current ? { ...current, role } : current));
+  const loginEducator = useCallback((auth: EducatorAuth) => {
+    try {
+      localStorage.setItem(EDUCATOR_AUTH_KEY, JSON.stringify(auth));
+    } catch {
+      /* ignore */
+    }
+    setEducator(auth);
+  }, []);
+
+  const logoutEducator = useCallback(() => {
+    try {
+      localStorage.removeItem(EDUCATOR_AUTH_KEY);
+    } catch {
+      /* ignore */
+    }
+    setEducator(null);
   }, []);
 
   const value = useMemo<SessionValue>(
@@ -178,15 +215,21 @@ const DemoSessionProvider: React.FC<{ children: React.ReactNode }> = ({ children
       user,
       isLoaded: true,
       isSignedIn: Boolean(user),
-      role: user?.role ?? 'student',
+      role: 'student',
       isDemo: true,
       isRolePreview: false,
-      signOut: async () => setUser(null),
+      educator,
+      loginEducator,
+      logoutEducator,
+      signOut: async () => {
+        setUser(null);
+        logoutEducator();
+      },
       signInDemo,
-      switchDemoRole,
+      switchDemoRole: () => {},
       clearRolePreview: () => {},
     }),
-    [user, signInDemo, switchDemoRole]
+    [user, educator, loginEducator, logoutEducator, signInDemo]
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

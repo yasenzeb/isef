@@ -3,7 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from
 import { AuthenticateWithRedirectCallback, ClerkProvider } from '@clerk/clerk-react';
 import { CLERK_PUBLISHABLE_KEY, clerkAppearance, isClerkConfigured } from './lib/clerkConfig';
 import { LanguageProvider } from './context/LanguageContext';
-import { SessionProvider, useSession, type AppRole } from './context/SessionContext';
+import { SessionProvider, useSession } from './context/SessionContext';
 import { LandingPage } from './components/site/LandingPage';
 import { AuthPage } from './components/auth/AuthPage';
 import { DashboardLayout } from './components/dashboard/DashboardLayout';
@@ -25,8 +25,8 @@ import {
 } from './components/dashboard/TeamPages';
 import { BrandMark } from './components/ui/Brand';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
-import { TeacherPortalLogin } from './components/auth/TeacherPortalLogin';
-import { AdminPortalLogin } from './components/auth/AdminPortalLogin';
+import { EducatorPortalLogin } from './components/portal/EducatorPortalLogin';
+import { EducatorLayout } from './components/portal/EducatorLayout';
 
 const SsoCallback: React.FC = () => {
   if (!isClerkConfigured) return <Navigate to="/" replace />;
@@ -58,29 +58,45 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   return <>{children}</>;
 };
 
-const RoleGate: React.FC<{ roles: AppRole[]; children: React.ReactNode }> = ({ roles, children }) => {
-  const { role } = useSession();
-  if (!roles.includes(role)) {
-    if (roles.includes('admin')) return <Navigate to="/portal/admin" replace />;
-    if (roles.includes('teacher')) return <Navigate to="/portal/teacher" replace />;
-    return <Navigate to="/app" replace />;
-  }
-  return <>{children}</>;
-};
-
 const AppRoutes: React.FC = () => (
   <Routes>
+    {/* Public and Auth */}
     <Route path="/" element={<LandingPage />} />
     <Route path="/sign-in/*" element={<AuthPage mode="signin" />} />
     <Route path="/sign-up/*" element={<AuthPage mode="signup" />} />
-    <Route path="/portal/teacher" element={<TeacherPortalLogin />} />
-    <Route path="/teacher/login" element={<TeacherPortalLogin />} />
-    <Route path="/portal/admin" element={<AdminPortalLogin />} />
-    <Route path="/admin/login" element={<AdminPortalLogin />} />
     <Route path="/sso-callback" element={<SsoCallback />} />
     <Route path="/sign-in/sso-callback" element={<SsoCallback />} />
     <Route path="/sign-up/sso-callback" element={<SsoCallback />} />
 
+    {/* ── Separate Dedicated Educator & Admin Portal ── */}
+    <Route path="/portal/login" element={<EducatorPortalLogin />} />
+    <Route path="/admin/login" element={<EducatorPortalLogin />} />
+    <Route path="/portal/teacher" element={<EducatorPortalLogin />} />
+    <Route path="/portal/admin" element={<EducatorPortalLogin />} />
+    <Route path="/teacher/login" element={<EducatorPortalLogin />} />
+
+    {/* Educator Portal Workspace */}
+    <Route path="/portal" element={<EducatorLayout />}>
+      <Route index element={<ClassesPage />} />
+      <Route path="classes" element={<ClassesPage />} />
+      <Route path="students" element={<StudentsPage />} />
+      <Route path="assignments" element={<AssignmentsPage />} />
+      <Route path="institutions" element={<InstitutionsPage />} />
+      <Route path="users" element={<UsersPage />} />
+      <Route path="analytics" element={<AnalyticsPage />} />
+    </Route>
+
+    <Route path="/admin" element={<EducatorLayout />}>
+      <Route index element={<InstitutionsPage />} />
+      <Route path="classes" element={<ClassesPage />} />
+      <Route path="students" element={<StudentsPage />} />
+      <Route path="assignments" element={<AssignmentsPage />} />
+      <Route path="institutions" element={<InstitutionsPage />} />
+      <Route path="users" element={<UsersPage />} />
+      <Route path="analytics" element={<AnalyticsPage />} />
+    </Route>
+
+    {/* ── Main Student Platform (/app) — Strictly for students ── */}
     <Route
       path="/app"
       element={
@@ -94,64 +110,17 @@ const AppRoutes: React.FC = () => (
       <Route path="labs" element={<LabsPage />} />
       <Route path="labs/:labId" element={<LabWorkspace />} />
       <Route path="classroom" element={<ClassroomPage />} />
-      <Route
-        path="progress"
-        element={
-          <RoleGate roles={['student']}>
-            <ProgressPage />
-          </RoleGate>
-        }
-      />
+      <Route path="progress" element={<ProgressPage />} />
       <Route path="assistant" element={<AssistantPage />} />
-      <Route
-        path="classes"
-        element={
-          <RoleGate roles={['teacher', 'admin']}>
-            <ClassesPage />
-          </RoleGate>
-        }
-      />
-      <Route
-        path="students"
-        element={
-          <RoleGate roles={['teacher', 'admin']}>
-            <StudentsPage />
-          </RoleGate>
-        }
-      />
-      <Route
-        path="assignments"
-        element={
-          <RoleGate roles={['teacher', 'admin']}>
-            <AssignmentsPage />
-          </RoleGate>
-        }
-      />
-      <Route
-        path="institutions"
-        element={
-          <RoleGate roles={['admin']}>
-            <InstitutionsPage />
-          </RoleGate>
-        }
-      />
-      <Route
-        path="users"
-        element={
-          <RoleGate roles={['admin']}>
-            <UsersPage />
-          </RoleGate>
-        }
-      />
-      <Route
-        path="analytics"
-        element={
-          <RoleGate roles={['teacher', 'admin']}>
-            <AnalyticsPage />
-          </RoleGate>
-        }
-      />
       <Route path="settings" element={<SettingsPage />} />
+
+      {/* Redirect old educator URLs from /app directly to the dedicated portal */}
+      <Route path="classes" element={<Navigate to="/portal/classes" replace />} />
+      <Route path="students" element={<Navigate to="/portal/students" replace />} />
+      <Route path="assignments" element={<Navigate to="/portal/assignments" replace />} />
+      <Route path="institutions" element={<Navigate to="/portal/institutions" replace />} />
+      <Route path="users" element={<Navigate to="/portal/users" replace />} />
+      <Route path="analytics" element={<Navigate to="/portal/analytics" replace />} />
     </Route>
 
     <Route path="*" element={<Navigate to="/" replace />} />

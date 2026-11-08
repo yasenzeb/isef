@@ -258,24 +258,18 @@ export const SettingsPage: React.FC = () => {
 
             <div className="mt-4 pt-3 border-t border-[#f0f0f0] flex flex-col gap-2">
               <span className="text-[10px] uppercase tracking-[0.08em] text-[#a3a3a3] font-semibold">
-                {ar ? 'بوابات الدخول المعتمدة والتحقق الأمني' : 'Official Verified Portals'}
+                {ar ? 'بوابة المعلمين والإدارة المدرسية المعتمدة' : 'Official Educator Portal'}
               </span>
-              <div className="grid grid-cols-2 gap-2">
-                <a
-                  href="/portal/teacher"
-                  className="rounded-xl border border-[#e5e5e5] bg-[#fafafa] hover:bg-white hover:border-[#0a0a0a] p-2.5 text-[11px] font-semibold text-[#047857] flex items-center justify-between transition-all"
-                >
-                  <span>{ar ? 'بوابة المعلمين المشرفين' : 'Teacher Portal'}</span>
-                  <span>➔</span>
-                </a>
-                <a
-                  href="/portal/admin"
-                  className="rounded-xl border border-[#e5e5e5] bg-[#fafafa] hover:bg-white hover:border-[#0a0a0a] p-2.5 text-[11px] font-semibold text-amber-700 flex items-center justify-between transition-all"
-                >
-                  <span>{ar ? 'بوابة الإدارة المدرسية' : 'Admin Portal'}</span>
-                  <span>➔</span>
-                </a>
-              </div>
+              <a
+                href="/portal/login"
+                className="rounded-xl border border-[#e5e5e5] bg-[#fafafa] hover:bg-white hover:border-[#0284c7] p-3 text-[12px] font-bold text-[#0284c7] flex items-center justify-between transition-all"
+              >
+                <div className="flex items-center gap-2">
+                  <ShieldCheck size={16} />
+                  <span>{ar ? 'دخول بوابة المعلمين والإدارة (محمية بكلمة مرور)' : 'Educator & Admin Login (Secured)'}</span>
+                </div>
+                <span>➔</span>
+              </a>
             </div>
           </SectionCard>
 

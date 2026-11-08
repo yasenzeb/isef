@@ -167,7 +167,7 @@ const FALLBACK: LocalReply = {
   suggestionsAr: ['افتح معمل التشريح', 'كيف يعمل المنهج؟', 'اعرض تقدمي'],
 };
 
-export function answerLocally(prompt: string, ar: boolean): LocalReply {
+export function answerLocally(prompt: string, ar: boolean = false): LocalReply {
   const q = prompt.trim().toLowerCase();
   if (!q) return FALLBACK;
   const rule = RULES.find((item) => item.keys.some((key) => q.includes(key.toLowerCase())));

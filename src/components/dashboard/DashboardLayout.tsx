@@ -62,28 +62,6 @@ const NAV: NavGroup[] = [
     ],
   },
   {
-    en: 'Teaching',
-    ar: 'التعليم',
-    fr: 'Enseignement',
-    de: 'Unterricht',
-    items: [
-      { to: '/app/classes', en: 'My classes', ar: 'فصولي', fr: 'Mes classes', de: 'Meine Klassen', icon: GraduationCap, roles: ['teacher', 'admin'] },
-      { to: '/app/students', en: 'Students', ar: 'الطلاب', fr: 'Élèves', de: 'Schüler', icon: Users, roles: ['teacher', 'admin'] },
-      { to: '/app/assignments', en: 'Assignments', ar: 'الواجبات', fr: 'Devoirs', de: 'Aufgaben', icon: ClipboardList, roles: ['teacher', 'admin'] },
-    ],
-  },
-  {
-    en: 'Administration',
-    ar: 'الإدارة',
-    fr: 'Administration',
-    de: 'Verwaltung',
-    items: [
-      { to: '/app/institutions', en: 'Institutions', ar: 'المؤسسات', fr: 'Établissements', de: 'Institutionen', icon: Building2, roles: ['admin'] },
-      { to: '/app/users', en: 'Users & roles', ar: 'المستخدمون والأدوار', fr: 'Utilisateurs & rôles', de: 'Benutzer & Rollen', icon: ShieldCheck, roles: ['admin'] },
-      { to: '/app/analytics', en: 'Analytics', ar: 'التحليلات', fr: 'Analytique', de: 'Analysen', icon: BarChart3, roles: ['admin', 'teacher'] },
-    ],
-  },
-  {
     en: 'Account',
     ar: 'الحساب',
     fr: 'Compte',
@@ -424,23 +402,6 @@ export const DashboardLayout: React.FC = () => {
                   <ArrowRight size={14} strokeWidth={1.7} className={ar ? 'rotate-180' : ''} />
                   {ar ? 'الموقع العام' : 'Public site'}
                 </Link>
-
-                {/* Portals Access Link only for authorized educators */}
-                {(role === 'teacher' || role === 'admin') && (
-                  <>
-                    <div className="my-1 h-px bg-[#f0f0f0]" />
-                    <Link to="/portal/teacher" className="sn-navitem !h-8 !text-[12px] text-[#047857]">
-                      <GraduationCap size={14} strokeWidth={1.7} />
-                      {ar ? 'بوابة المعلمين المشرفين' : 'Teacher Portal'}
-                    </Link>
-                  </>
-                )}
-                {role === 'admin' && (
-                  <Link to="/portal/admin" className="sn-navitem !h-8 !text-[12px] text-amber-700">
-                    <Building2 size={14} strokeWidth={1.7} />
-                    {ar ? 'بوابة الإدارة المدرسية' : 'Admin Portal'}
-                  </Link>
-                )}
 
                 <div className="my-1 h-px bg-[#f0f0f0]" />
                 <button

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
-import { useSession } from '../../context/SessionContext';
 import { answerLocally, STARTERS, type LocalReply } from '../../lib/localAI';
 import { PageHeader } from './ui';
 import {
@@ -16,8 +15,12 @@ import {
   BookOpen,
   User,
   Bot,
-  Radio,
-  ExternalLink,
+  Compass,
+  Atom,
+  Dna,
+  Globe2,
+  Activity,
+  Layers
 } from 'lucide-react';
 
 interface Message {
@@ -25,414 +28,297 @@ interface Message {
   role: 'user' | 'assistant';
   text: string;
   link?: NonNullable<LocalReply['link']>;
+  suggestions?: string[];
 }
 
 export const AssistantPage: React.FC = () => {
   const { language } = useLanguage();
-  const { user } = useSession();
   const navigate = useNavigate();
   const ar = language === 'ar';
 
-  const [activeTab, setActiveTab] = useState<'fish' | 'local'>('fish');
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const endRef = useRef<HTMLDivElement>(null);
-  const fishContainerRef = useRef<HTMLDivElement>(null);
 
-  // Mount Fish Audio element dynamically if not yet attached
+  // Initialize welcome message in current language
   useEffect(() => {
-    if (activeTab !== 'fish' || !fishContainerRef.current) return;
+    const welcomeText = ar
+      ? 'أهلاً بك يا بطل! أنا داروين • مرشدك العلمي الذكي المباشر في منصة SciNexa. أعمل محلياً بالكامل ومتاح حتى دون اتصال بالإنترنت. اسألني عن أي تجربة معملية، أو قانون فيزيائي، أو تفاعل كيميائي، أو تركيب تشريحي.'
+      : language === 'fr'
+        ? 'Bienvenue! Je suis Darwin, votre assistant scientifique local dans SciNexa. Entièrement hors ligne. Posez-moi des questions sur les laboratoires ou les leçons.'
+        : language === 'de'
+          ? 'Willkommen! Ich bin Darwin, Ihr lokaler wissenschaftlicher Assistent in SciNexa. Funktioniert vollständig offline. Fragen Sie mich nach Laboren oder Formeln.'
+          : 'Welcome! I am Darwin, your local scientific AI guide in SciNexa. Operating completely offline and locally. Ask me about any 3D lab, formula, or curriculum experiment.';
 
-    // Load widget script if not already present
-    if (!document.querySelector('script[src*="agent-widget-embed"]')) {
-      const script = document.createElement('script');
-      script.src = 'https://unpkg.com/@fishaudio/agent-widget-embed';
-      script.async = true;
-      document.body.appendChild(script);
-    }
-
-    // Mount fish-agent custom element
-    const container = fishContainerRef.current;
-    if (!container.querySelector('fish-agent')) {
-      const el = document.createElement('fish-agent');
-      el.setAttribute('agent-id', '929a1bf391db4185b03ae62f05a49207');
-      el.setAttribute('language', ar ? 'ar' : 'en');
-      el.setAttribute(
-        'greeting',
-        ar
-          ? 'أهلاً بك يا بطل! أنا داروين مرشدك العلمي في منصة SciNexa، جاهز للإجابة عن أسئلتك ومساعدتك في المعامل.'
-          : 'Welcome! I am Darwin, your science guide in SciNexa. Ready to answer your questions and assist you across all labs.'
-      );
-      el.style.width = '100%';
-      el.style.minHeight = '480px';
-      el.style.display = 'block';
-      container.appendChild(el);
-    }
-  }, [activeTab, ar]);
-
-  useEffect(() => {
     setMessages([
       {
         id: 'welcome',
         role: 'assistant',
-        text: ar
-          ? 'أهلًا بك في وضع الاختبار المحلي. أجيبي مكتوبة مسبقًا وتعمل حتى دون اتصال بالشبكة. اسألني عن أي معمل أو تجربة.'
-          : 'Welcome to local test mode. My answers are pre-written and work without network connectivity. Ask me about any lab or lesson.',
+        text: welcomeText,
+        suggestions: ar
+          ? ['ما هو قانون أوم؟', 'كيف يعمل أطلس التشريح؟', 'ما هي مكونات الخلية النباتية؟', 'اشرح انكسار الضوء وقانون سنيل']
+          : ['Explain Ohm’s law', 'How does the Anatomy Atlas work?', 'Plant cell organelles', 'Explain light refraction'],
       },
     ]);
-  }, [ar]);
+  }, [language, ar]);
 
   useEffect(() => {
-    if (activeTab === 'local') {
-      endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    }
-  }, [messages, typing, activeTab]);
+    endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }, [messages, typing]);
 
   const send = (text: string) => {
     const value = text.trim();
     if (!value || typing) return;
     setInput('');
-    setMessages((prev) => [
-      ...prev,
-      { id: `u_${Date.now()}`, role: 'user', text: value },
-    ]);
+
+    const userMsg: Message = { id: `u_${Date.now()}`, role: 'user', text: value };
+    setMessages((prev) => [...prev, userMsg]);
     setTyping(true);
 
-    window.setTimeout(() => {
+    setTimeout(() => {
       const reply = answerLocally(value, ar);
+      const replyText = ar
+        ? reply.textAr
+        : language === 'fr'
+          ? reply.textEn // localAI fallback to clean English
+          : reply.textEn;
+
+      const replySuggestions = ar ? reply.suggestionsAr : reply.suggestionsEn;
+
       setMessages((prev) => [
         ...prev,
         {
           id: `a_${Date.now()}`,
           role: 'assistant',
-          text: ar ? reply.textAr : reply.textEn,
+          text: replyText,
           link: reply.link,
+          suggestions: replySuggestions,
         },
       ]);
       setTyping(false);
-    }, 420);
+    }, 280);
   };
 
-  const clear = () => {
-    setMessages([
-      {
-        id: `welcome_${Date.now()}`,
-        role: 'assistant',
-        text: ar
-          ? 'تم مسح المحادثة المحلية. اسألني عن أي معمل أو درس.'
-          : 'Local conversation cleared. Ask me about any lab or lesson.',
-      },
-    ]);
+  const clearChat = () => {
+    const welcomeText = ar
+      ? 'تم مسح المحادثة. أنا جاهز لأي استفسار علمي جديد!'
+      : 'Chat cleared. Ready for your next scientific inquiry!';
+    setMessages([{ id: `w_${Date.now()}`, role: 'assistant', text: welcomeText }]);
   };
 
   return (
-    <div>
+    <div dir={ar ? 'rtl' : 'ltr'}>
       <PageHeader
-        eyebrow={ar ? 'المرشد العلمي' : 'Science Assistant'}
-        title={ar ? 'داروين · وكيل الذكاء الاصطناعي العلمي.' : 'Darwin · Science AI Agent.'}
+        eyebrow={ar ? 'المرشد العلمي الذكي' : 'Local Science Assistant'}
+        title={ar ? 'داروين • المساعد العلمي المحلي الذكي' : 'Darwin • Local AI Science Guide'}
         subtitle={
           ar
-            ? 'تحدث صوتيًا مع داروين المدعوم بمحرك Fish Audio المتصل بمعامل المنصة، أو استخدم المساعد المحلي دون شبكة.'
-            : 'Speak with Darwin powered by Fish Audio, or use the local text assistant offline.'
+            ? 'مساعد علمي مدمج يعمل محلياً في متصفحك دون اتصال بالإنترنت، يقدم شروحات معملية فورية ويوجهك للتجارب المناسبة.'
+            : 'Built-in local scientific assistant working 100% offline without network calls. Instant explanations for all 6 laboratories.'
         }
         actions={
           <div className="flex items-center gap-2">
-            <div className="sn-segmented">
-              <button
-                type="button"
-                onClick={() => setActiveTab('fish')}
-                className={`sn-segment ${activeTab === 'fish' ? 'active' : ''}`}
-              >
-                <Radio size={12} strokeWidth={2} className="inline me-1" />
-                {ar ? 'وكيل Fish Audio' : 'Fish Audio Agent'}
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab('local')}
-                className={`sn-segment ${activeTab === 'local' ? 'active' : ''}`}
-              >
-                <WifiOff size={12} strokeWidth={2} className="inline me-1" />
-                {ar ? 'المساعد المحلي' : 'Offline Local'}
-              </button>
-            </div>
+            <span className="sn-badge sn-badge-green flex items-center gap-1.5 !text-[11px]">
+              <WifiOff size={12} />
+              <span>{ar ? 'يعمل دون إنترنت (Offline)' : 'Offline Ready'}</span>
+            </span>
+            <button
+              type="button"
+              onClick={clearChat}
+              className="sn-btn sn-btn-outline sn-btn-sm text-[11px]"
+              title={ar ? 'مسح المحادثة' : 'Clear chat'}
+            >
+              <Trash2 size={13} />
+              <span className="hidden sm:inline">{ar ? 'مسح' : 'Clear'}</span>
+            </button>
           </div>
         }
       />
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_300px]">
-        {/* Main Panel */}
-        {activeTab === 'fish' ? (
-          <section className="sn-card flex min-h-[560px] flex-col overflow-hidden">
-            <div className="flex items-center justify-between gap-3 border-b border-[#f0f0f0] px-5 py-3.5">
-              <div className="flex items-center gap-2.5">
-                <span className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-[#eff6ff] text-[#1d4ed8]">
-                  <Bot size={16} strokeWidth={1.8} />
-                </span>
-                <div>
-                  <div className="text-[13px] font-semibold">داروين | Fish Audio Agent</div>
-                  <div className="text-[10px] text-[#737373]">
-                    {ar ? 'وكيل صوتي ذكي مباشر للعلوم والمعامل' : 'Live interactive science voice agent'}
-                  </div>
+      <div className="grid gap-5 lg:grid-cols-[1fr_310px]">
+        {/* ── Main Chat Window ── */}
+        <div className="flex flex-col h-[600px] rounded-3xl border border-[#e2e8f0] bg-white shadow-sm overflow-hidden">
+          {/* Chat Header Status */}
+          <div className="flex items-center justify-between border-b border-[#f1f5f9] px-5 py-3.5 bg-[#f8fafc]">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0284c7]/10 text-[#0284c7]">
+                <Bot size={18} strokeWidth={2} />
+              </span>
+              <div>
+                <div className="text-[12px] font-bold text-[#0f172a] leading-none">
+                  {ar ? 'داروين • مرشد العلوم' : 'Darwin AI Guide'}
+                </div>
+                <div className="text-[10px] text-emerald-600 font-medium mt-0.5 flex items-center gap-1">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>{ar ? 'جاهز للاستجابة الفورية' : 'Active & ready locally'}</span>
                 </div>
               </div>
-              <span className="sn-badge sn-badge-green !text-[10px]">
-                <span className="sn-live-dot h-1.5 w-1.5 rounded-full bg-[#047857]" />
-                {ar ? 'متصل' : 'Online'}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-mono text-[#94a3b8] uppercase tracking-wider">
+                ISEF 2026 Engine
               </span>
             </div>
+          </div>
 
-            {/* Fish Audio Element Stage */}
-            <div className="flex flex-1 flex-col items-center justify-center p-4 sm:p-6 bg-[#0a0a0a] text-white rounded-b-[18px]">
-              <div className="mb-4 w-full flex items-center justify-between border-b border-white/10 pb-3 text-[11px] text-white/60">
-                <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-[#38bdf8] animate-ping" />
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-[#38bdf8]">
-                    Fish Audio Engine 929a1bf3
+          {/* Messages Scroll Area */}
+          <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
+            {messages.map((m) => {
+              const isUser = m.role === 'user';
+              return (
+                <div
+                  key={m.id}
+                  className={`flex items-start gap-3 ${isUser ? 'flex-row-reverse' : ''}`}
+                >
+                  <span
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-[12px] ${
+                      isUser
+                        ? 'bg-[#0f172a] text-white'
+                        : 'bg-[#0284c7]/10 text-[#0284c7]'
+                    }`}
+                  >
+                    {isUser ? <User size={15} /> : <Bot size={16} />}
                   </span>
-                </div>
-                <span className="text-[10px] text-white/40">ISEF 2026 · SciNexa</span>
-              </div>
 
-              {/* Custom Fish Audio Container */}
-              <div
-                ref={fishContainerRef}
-                className="w-full flex-1 min-h-[460px] flex flex-col items-center justify-center rounded-2xl bg-[#12141c]/90 border border-white/10 p-4 shadow-2xl relative"
-              />
-
-              <p className="mt-4 text-center text-[11px] text-white/50">
-                {ar
-                  ? 'يمكنك التحدث صوتيًا مع داروين وسؤاله عن أي ظاهرة فيزيائية أو تفاعل كيميائي أو تركيب تشريحي.'
-                  : 'You can talk with Darwin directly and ask about physics formulas, reactions, or anatomy.'}
-              </p>
-            </div>
-          </section>
-        ) : (
-          /* Local Text Chat */
-          <section className="sn-card flex min-h-[560px] flex-col overflow-hidden">
-            <div className="flex items-center justify-between gap-3 border-b border-[#f0f0f0] px-5 py-3.5">
-              <div className="flex items-center gap-2.5">
-                <span className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-[#f5f5f5] text-[#0a0a0a]">
-                  <Sparkles size={15} strokeWidth={1.8} />
-                </span>
-                <div>
-                  <div className="text-[13px] font-semibold">SciNexa Local Assistant</div>
-                  <div className="text-[10px] text-[#737373]">
-                    {ar ? 'إجابات محلية دون إنترنت' : 'Offline local answers'}
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="sn-badge sn-badge-soft !text-[10px]">
-                  <WifiOff size={10} strokeWidth={1.8} />
-                  {ar ? 'بدون شبكة' : 'Offline'}
-                </span>
-                <button type="button" onClick={clear} className="sn-btn sn-btn-outline sn-btn-sm !h-7 !px-2">
-                  <Trash2 size={12} strokeWidth={1.8} />
-                  {ar ? 'مسح' : 'Clear'}
-                </button>
-              </div>
-            </div>
-
-            <div className="flex-1 space-y-4 overflow-y-auto px-4 py-5 sm:px-5">
-              {messages.map((message) => {
-                const mine = message.role === 'user';
-                return (
-                  <div key={message.id} className={`flex items-start gap-2.5 ${mine ? 'justify-end' : 'justify-start'}`}>
-                    {!mine && (
-                      <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#0a0a0a] text-white">
-                        <Sparkles size={12} strokeWidth={1.9} />
-                      </span>
-                    )}
-
-                    <div className={`max-w-[82%] ${mine ? 'order-first' : ''}`}>
-                      <div
-                        className={`rounded-[14px] px-3.5 py-2.5 text-[12.5px] leading-[1.65] ${
-                          mine
-                            ? 'bg-[#0a0a0a] text-white'
-                            : 'border border-[#e5e5e5] bg-[#fafafa] text-[#171717]'
-                        }`}
-                      >
-                        {message.text}
-                      </div>
-
-                      {message.link && (
-                        <button
-                          type="button"
-                          onClick={() => navigate(message.link!.to)}
-                          className="sn-link mt-2 !text-[11px]"
-                        >
-                          {ar ? message.link.labelAr : message.link.labelEn}
-                          <ArrowRight size={12} strokeWidth={1.8} className={ar ? 'rotate-180' : ''} />
-                        </button>
-                      )}
-
-                      <div className={`mt-1 text-[9px] text-[#a3a3a3] ${mine ? 'text-end' : ''}`}>
-                        {mine ? (ar ? 'أنت' : 'You') : ar ? 'مساعد محلي' : 'Local assistant'}
-                      </div>
+                  <div className={`max-w-[85%] sm:max-w-[78%] space-y-2`}>
+                    <div
+                      className={`p-3.5 rounded-2xl text-[12.5px] leading-relaxed ${
+                        isUser
+                          ? 'bg-[#0f172a] text-white rounded-se-none'
+                          : 'bg-[#f1f5f9] text-[#1e293b] rounded-ss-none border border-[#e2e8f0]'
+                      }`}
+                    >
+                      {m.text}
                     </div>
 
-                    {mine && (
-                      <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#e5e5e5] bg-white text-[#737373]">
-                        <User size={12} strokeWidth={1.9} />
-                      </span>
+                    {/* Lab Link if provided */}
+                    {m.link && (
+                      <button
+                        type="button"
+                        onClick={() => navigate(m.link!.to)}
+                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#e0f2fe] hover:bg-[#bae6fd] text-[#0369a1] text-[11px] font-bold transition-colors border border-[#bae6fd]"
+                      >
+                        <Compass size={13} />
+                        <span>{ar ? m.link.labelAr : m.link.labelEn}</span>
+                        <ArrowRight size={12} className={ar ? 'rotate-180' : ''} />
+                      </button>
+                    )}
+
+                    {/* Suggestions Chips */}
+                    {m.suggestions && m.suggestions.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                        {m.suggestions.map((s) => (
+                          <button
+                            key={s}
+                            type="button"
+                            onClick={() => send(s)}
+                            className="px-2.5 py-1 rounded-lg bg-white border border-[#cbd5e1] hover:border-[#0284c7] hover:text-[#0284c7] text-[#475569] text-[10.5px] font-medium transition-colors"
+                          >
+                            {s}
+                          </button>
+                        ))}
+                      </div>
                     )}
                   </div>
+                </div>
+              );
+            })}
+
+            {typing && (
+              <div className="flex items-center gap-3">
+                <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0284c7]/10 text-[#0284c7]">
+                  <Bot size={16} />
+                </span>
+                <div className="p-3 rounded-2xl bg-[#f1f5f9] text-[#64748b] text-[11px] flex items-center gap-1.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#0284c7] animate-bounce" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#0284c7] animate-bounce [animation-delay:150ms]" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#0284c7] animate-bounce [animation-delay:300ms]" />
+                  <span className="ms-1.5">{ar ? 'داروين يكتب الإجابة...' : 'Darwin is preparing answer...'}</span>
+                </div>
+              </div>
+            )}
+            <div ref={endRef} />
+          </div>
+
+          {/* Input Bar */}
+          <div className="border-t border-[#e2e8f0] p-3 bg-white">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                send(input);
+              }}
+              className="flex items-center gap-2"
+            >
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder={
+                  ar
+                    ? 'اكتب سؤالك العلمي هنا (مثال: اشرح قانون أوم، أو كيف تعمل الخلية)...'
+                    : 'Ask any science question (e.g., Explain Ohm law, or how cells work)...'
+                }
+                className="h-11 flex-1 rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 text-[13px] text-[#0f172a] outline-none transition-colors focus:border-[#0284c7] focus:bg-white"
+              />
+              <button
+                type="submit"
+                disabled={!input.trim() || typing}
+                className="h-11 px-4 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white font-bold text-[12px] transition-colors flex items-center justify-center gap-1.5 disabled:opacity-40"
+              >
+                <span>{ar ? 'إرسال' : 'Send'}</span>
+                <Send size={14} className={ar ? 'rotate-180' : ''} />
+              </button>
+            </form>
+          </div>
+        </div>
+
+        {/* ── Sidebar Quick Starters ── */}
+        <aside className="space-y-4">
+          <div className="rounded-3xl border border-[#e2e8f0] bg-white p-5 shadow-sm">
+            <div className="flex items-center gap-2 text-[12px] font-bold text-[#0f172a] mb-3">
+              <Sparkles size={16} className="text-amber-500" />
+              <span>{ar ? 'استفسارات علمية جاهزة' : 'Quick Scientific Inquiries'}</span>
+            </div>
+            <div className="space-y-2">
+              {[
+                { labelAr: 'قانون أوم والدوائر الكهربائية', labelEn: 'Ohm’s law and DC circuits', icon: Atom },
+                { labelAr: 'أطلس التشريح البشري والأجهزة', labelEn: 'Human Anatomy 3D Atlas', icon: Activity },
+                { labelAr: 'الجدول الدوري وعناصر IUPAC', labelEn: 'IUPAC Periodic Table', icon: FlaskConical },
+                { labelAr: 'الخلية النباتية والميتوكوندريا', labelEn: 'Plant cell and mitochondria', icon: Dna },
+                { labelAr: 'الموجات الزلزالية وطبقات الأرض', labelEn: 'Seismic waves and Earth crust', icon: Globe2 },
+                { labelAr: 'مدارات الكواكب والمجموعة الشمسية', labelEn: 'Kepler orbits & solar system', icon: Compass },
+              ].map((q) => {
+                const Icon = q.icon;
+                return (
+                  <button
+                    key={q.labelEn}
+                    type="button"
+                    onClick={() => send(ar ? q.labelAr : q.labelEn)}
+                    className="w-full p-2.5 rounded-xl border border-[#f1f5f9] bg-[#f8fafc] hover:bg-[#e0f2fe] hover:border-[#bae6fd] text-start transition-all flex items-center gap-2.5 text-[11.5px] font-medium text-[#334155] hover:text-[#0369a1]"
+                  >
+                    <Icon size={14} className="shrink-0 text-[#0284c7]" />
+                    <span className="truncate">{ar ? q.labelAr : q.labelEn}</span>
+                  </button>
                 );
               })}
-
-              {typing && (
-                <div className="flex items-start gap-2.5">
-                  <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#0a0a0a] text-white">
-                    <Sparkles size={12} strokeWidth={1.9} />
-                  </span>
-                  <div className="flex items-center gap-1 rounded-[14px] border border-[#e5e5e5] bg-[#fafafa] px-3.5 py-3">
-                    {[0, 1, 2].map((dot) => (
-                      <span
-                        key={dot}
-                        className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#a3a3a3]"
-                        style={{ animationDelay: `${dot * 120}ms` }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div ref={endRef} />
-            </div>
-
-            <div className="border-t border-[#f0f0f0] p-3 sm:p-4">
-              <div className="mb-2.5 flex flex-wrap gap-1.5">
-                {(ar ? STARTERS.map((s) => s.ar) : STARTERS.map((s) => s.en)).map((starter) => (
-                  <button
-                    key={starter}
-                    type="button"
-                    onClick={() => send(starter)}
-                    className="rounded-full border border-[#e5e5e5] bg-white px-2.5 py-1 text-[10px] font-medium text-[#737373] transition-colors hover:border-[#0a0a0a] hover:text-[#0a0a0a]"
-                  >
-                    {starter}
-                  </button>
-                ))}
-              </div>
-
-              <form
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  send(input);
-                }}
-                className="flex items-center gap-2"
-              >
-                <input
-                  value={input}
-                  onChange={(event) => setInput(event.target.value)}
-                  placeholder={
-                    ar ? 'اكتب سؤالًا عن معمل أو درس…' : 'Ask about a lab or a lesson…'
-                  }
-                  aria-label={ar ? 'رسالة المساعد' : 'Assistant message'}
-                  className="sn-input !h-10 flex-1"
-                />
-                <button
-                  type="submit"
-                  disabled={!input.trim() || typing}
-                  className="sn-btn sn-btn-primary sn-btn-icon !h-10 !w-10"
-                  aria-label={ar ? 'إرسال' : 'Send'}
-                >
-                  <Send size={15} strokeWidth={1.9} className={ar ? 'rotate-180' : ''} />
-                </button>
-              </form>
-            </div>
-          </section>
-        )}
-
-        {/* Side Panel */}
-        <aside className="space-y-3">
-          <div className="sn-card p-4">
-            <div className="mb-2 flex items-center gap-2">
-              <ShieldCheck size={14} strokeWidth={1.8} className="text-[#047857]" />
-              <span className="text-[12px] font-semibold">{ar ? 'معلومات الوكيل' : 'Agent details'}</span>
-            </div>
-            <ul className="space-y-2.5 text-[11px] leading-relaxed text-[#737373]">
-              {(ar
-                ? [
-                    'داروين مدعوم بوكيل Fish Audio الرسمي.',
-                    'يتعرف على أسئلتك العلمية فورًا بالصوت أو النص.',
-                    'يعمل كمرشد تفاعلي لجميع معامل المنصة الستة.',
-                  ]
-                : [
-                    'Darwin is powered by official Fish Audio agent.',
-                    'Understands scientific voice and text questions in real time.',
-                    'Acts as an interactive mentor across all 6 platform labs.',
-                  ]
-              ).map((line) => (
-                <li key={line} className="flex items-start gap-2">
-                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#0a0a0a]" />
-                  {line}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="sn-card p-4">
-            <div className="mb-2 flex items-center gap-2">
-              <MessageSquare size={14} strokeWidth={1.8} className="text-[#737373]" />
-              <span className="text-[12px] font-semibold">{ar ? 'أسئلة مقترحة لداروين' : 'Try asking'}</span>
-            </div>
-            <div className="space-y-1">
-              {(ar
-                ? ['ما هي مكونات الهيكل العظمي؟', 'كيف يتم اختزال أكاسيد النحاس بالهيدروجين؟', 'اشرح قانون أوم بالتفصيل', 'ما هي قوانين كبلر لحركة الكواكب؟']
-                : ['What makes up the skeletal system?', 'How is copper oxide reduced by hydrogen?', 'Explain Ohm law in detail', 'What are Kepler laws of planetary motion?']
-              ).map((line) => (
-                <button
-                  key={line}
-                  type="button"
-                  onClick={() => {
-                    setActiveTab('local');
-                    send(line);
-                  }}
-                  className="flex w-full items-center justify-between gap-2 rounded-[8px] px-2 py-1.5 text-start text-[11px] text-[#737373] hover:bg-[#fafafa] hover:text-[#0a0a0a]"
-                >
-                  <span>{line}</span>
-                  <ArrowRight size={11} strokeWidth={1.8} className={ar ? 'rotate-180' : ''} />
-                </button>
-              ))}
             </div>
           </div>
 
-          <div className="sn-card p-4">
-            <div className="mb-2 flex items-center gap-2">
-              <FlaskConical size={14} strokeWidth={1.8} className="text-[#737373]" />
-              <span className="text-[12px] font-semibold">{ar ? 'حالة النظام' : 'System status'}</span>
+          <div className="rounded-3xl border border-[#e2e8f0] bg-white p-5 shadow-sm text-[11px] text-[#64748b] space-y-2">
+            <div className="font-bold text-[#0f172a] flex items-center gap-1.5">
+              <ShieldCheck size={14} className="text-emerald-600" />
+              <span>{ar ? 'معايير النزاهة العلمية' : 'Scientific Standards'}</span>
             </div>
-            <div className="space-y-2 text-[11px]">
-              <div className="flex items-center justify-between">
-                <span className="text-[#737373]">{ar ? 'المحرك الصوتي' : 'Voice engine'}</span>
-                <span className="font-mono text-[#047857]">Fish Audio Agent</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#737373]">{ar ? 'الوضع النشط' : 'Active mode'}</span>
-                <span className="sn-badge sn-badge-soft !text-[9px]">
-                  {activeTab === 'fish' ? 'FISH AUDIO' : 'OFFLINE LOCAL'}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#737373]">{ar ? 'المستخدم' : 'User'}</span>
-                <span className="max-w-[120px] truncate font-medium">{user?.name}</span>
-              </div>
-            </div>
+            <p className="leading-relaxed">
+              {ar
+                ? 'جميع الإجابات مستندة إلى مراجع IUPAC والكتب المعتمدة لوزارة التربية والتعليم المصرية وأطلس Z-Anatomy.'
+                : 'All answers verified according to IUPAC, Egyptian Ministry curricula, and Z-Anatomy standards.'}
+            </p>
           </div>
-
-          <button
-            type="button"
-            onClick={() => navigate('/app/labs')}
-            className="sn-btn sn-btn-outline w-full sn-btn-sm"
-          >
-            <BookOpen size={13} strokeWidth={1.8} />
-            {ar ? 'تصفح المعامل' : 'Browse labs'}
-          </button>
         </aside>
       </div>
     </div>
   );
 };
-
-export default AssistantPage;
