@@ -111,7 +111,7 @@ export const AssistantPage: React.FC = () => {
 
     const lower = text.toLowerCase();
 
-    // 1. Strict Security & Moral Check: If student asks to add classes or access educator records
+    // 1. Strict Security Check: If student asks to add classes or access educator records
     if (
       role === 'student' &&
       (lower.includes('أضف فصل') ||
@@ -125,14 +125,15 @@ export const AssistantPage: React.FC = () => {
         lower.includes('admin portal'))
     ) {
       setTimeout(() => {
+        const studentName = (localStorage.getItem('scinexa_user_fullname') || '').trim().split(/\s+/)[0] || user?.name?.trim().split(/\s+/)[0] || (ar ? 'طالب' : 'Student');
         const reprimandText = ar
-          ? 'يا بني، هذا الإجراء محصور بالمعلم وإدارة المدرسة فقط، وليس من حق الطالب التدخل في سجلات الإدارة. قال الله تعالى: ﴿وَقُلِ اعْمَلُوا فَسَيَرَى اللَّهُ عَمَلَكُمْ وَرَسُولُهُ وَالْمُؤْمِنُونَ﴾، والأمانة العلمية والأخلاقية تقتضي الالتزام بحدود الصلاحيات والتركيز في تحصيل العلم والتفوق فيه. دعنا نركز على استكشاف معامل الكيمياء والفيزياء.'
+          ? `يا ${studentName}، أنت ممنوع تعمل كدا ومينفعش، والأمر ده مش هنفذه لأنك طالب مش معلم، وإدارة الفصول وصلاحيات المدرسة محصورة بالمعلم والمدير فقط.`
           : tLang(language, {
-              ar: 'هذا الإجراء مخصص للمعلمين فقط.',
-              en: 'Unauthorized action. As a registered student, class administration and grading are strictly reserved for verified teachers. Please focus your efforts on mastering your 3D scientific laboratories.',
-              fr: 'Action non autorisée. En tant qu’élève, l’administration des classes est strictement réservée aux enseignants.',
-              de: 'Nicht autorisierte Aktion. Die Klassenverwaltung ist ausschließlich verifizierten Lehrern vorbehalten.',
-              ja: '権限がありません。生徒によるクラスの作成や成績の変更は制限されています。3D科学実験の学習に専念してください。',
+              ar: `يا ${studentName}، أنت ممنوع تعمل كدا ومينفعش، والأمر ده مش هنفذه لأنك طالب مش معلم، وإدارة الفصول وصلاحيات المدرسة محصورة بالمعلم والمدير فقط.`,
+              en: `Notice: You are not allowed to perform this action. I will not execute this command because you are a student, not a teacher. Class and school management is restricted to educators and administrators only.`,
+              fr: `Action non autorisée. Vous êtes élève et n'avez pas accès à la gestion des classes.`,
+              de: `Nicht autorisiert. Sie sind Schüler und haben keinen Zugriff auf die Klassenverwaltung.`,
+              ja: `権限がありません。生徒によるクラスの管理や変更は制限されています。`,
             });
 
         setMessages((prev) => [
@@ -148,6 +149,49 @@ export const AssistantPage: React.FC = () => {
         setTyping(false);
         speakText(reprimandText);
       }, 350);
+      return;
+    }
+
+    // If student asks for an invalid or unknown lab/section
+    if (
+      (lower.includes('انقلني') || lower.includes('وديني') || lower.includes('افتح معمل')) &&
+      !lower.includes('كيمياء') &&
+      !lower.includes('chemistry') &&
+      !lower.includes('فيزياء') &&
+      !lower.includes('physics') &&
+      !lower.includes('تشريح') &&
+      !lower.includes('anatomy') &&
+      !lower.includes('فلك') &&
+      !lower.includes('كبلر') &&
+      !lower.includes('astronomy') &&
+      !lower.includes('أحياء') &&
+      !lower.includes('biology') &&
+      !lower.includes('جيولوجيا') &&
+      !lower.includes('أرض') &&
+      !lower.includes('geology') &&
+      !lower.includes('سبورة') &&
+      !lower.includes('smartboard') &&
+      !lower.includes('curriculum') &&
+      !lower.includes('منهج') &&
+      !lower.includes('إعدادات') &&
+      !lower.includes('settings')
+    ) {
+      setTimeout(() => {
+        const reply = ar
+          ? `لم أستطع تنفيذ أمرك "${text}"، والسبب أن هذا المعمل أو القسم غير متوفر في المنصة. المعامل الستة المتاحة هي: معمل الكيمياء، الفيزياء، أطلس التشريح 3D، مرصد كبلر الفلكي، مختبر الأحياء، ومعمل الجيولوجيا.`
+          : `Could not execute "${text}" because this lab or section does not exist on SciNexa. Available labs are: Chemistry, Physics, Anatomy, Astronomy, Biology, and Geology.`;
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: `a_${Date.now()}`,
+            role: 'assistant',
+            text: reply,
+            suggestions: ar ? ['معمل الكيمياء', 'معمل الفيزياء', 'أطلس التشريح', 'مرصد كبلر'] : ['Chemistry Lab', 'Physics Lab', 'Anatomy Atlas', 'Kepler Observatory'],
+          },
+        ]);
+        setTyping(false);
+        speakText(reply);
+      }, 300);
       return;
     }
 

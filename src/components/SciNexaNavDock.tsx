@@ -134,7 +134,7 @@ const DOCK_ITEMS: DockItem[] = [
 
 export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ className = '' }) => {
   const { language } = useLanguage();
-  const { role, educator } = useSession();
+  const { role, educator, user } = useSession();
   const navigate = useNavigate();
   const location = useLocation();
   const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -197,15 +197,12 @@ export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ className = '' }
     if (isAdminOrClassCommand) {
       const isEducator = role === 'teacher' || role === 'admin' || Boolean(educator);
       if (!isEducator) {
-        // عقاب وتنبيه ديني وأخلاقي فوري للطالب
-        const reprimand =
-          'عفواً يا بني، هذا ليس من حقك كطالب. إدارة الفصول وتعديل البيانات مسؤولية المعلم والإدارة المدرسية وحدها.\n' +
-          'قال الله تعالى: ﴿إِنَّ خَيْرَ مَنِ اسْتَأْجَرْتَ الْقَوِيُّ الْأَمِينُ﴾ [القصص: 26]، وقال جل وعلا: ﴿وَلَا تَقْفُ مَا لَيْسَ لَكَ بِهِ عِلْمٌ إِنَّ السَّمْعَ وَالْبَصَرَ وَالْفُؤَادَ كُلُّ أُولَئِكَ كَانَ عَنْهُ مَسْئُولًا﴾ [الإسراء: 36].\n' +
-          'الأمانة العلمية تقتضي احترام الأدوار وحدود الصلاحيات، فركز في طلب العلم والتحصيل ودع إدارة الفصول لأصحابها بارك الله فيك.';
+        const studentName = (localStorage.getItem('scinexa_user_fullname') || '').trim().split(/\s+/)[0] || user?.name?.trim().split(/\s+/)[0] || (ar ? 'طالب' : 'Student');
+        const reprimand = ar
+          ? `يا ${studentName}، أنت ممنوع تعمل كدا ومينفعش، والأمر ده مش هنفذه لأنك طالب مش معلم، وإدارة الفصول وصلاحيات المدرسة محصورة بالمعلم والمدير فقط.`
+          : `Notice: You are not allowed to perform this action. I will not execute this command because you are a student, not a teacher. Class and school management is restricted to educators and administrators only.`;
         setWarningReprimand(reprimand);
-        speakText(
-          'عفواً يا بني، هذا ليس من حقك كطالب. إدارة الفصول وتعديل البيانات مسؤولية المعلم والإدارة المدرسية وحدها. قال الله تعالى: إن خير من استأجرت القوي الأمين. فركز في طلب العلم ودع الإدارة لأصحابها.'
-        );
+        speakText(reprimand);
         return;
       } else {
         // المعلم أو الإدارة
@@ -219,38 +216,86 @@ export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ className = '' }
       }
     }
 
-    // 2. أوامر التنقل بالمعامل والمناهج
+    // 2. أوامر التنقل بالمعامل والمناهج مع توضيح السبب بدقة
     setWarningReprimand(null);
     if (clean.includes('كيمياء') || clean.includes('تفاعل') || clean.includes('chemistry')) {
-      speakText(ar ? 'أهلاً بك! جاري نقلك إلى معمل الكيمياء والتفاعلات الآن...' : 'Launching Chemistry Lab...');
+      if (location.pathname === '/app/labs/chemistry') {
+        const msg = ar ? 'لم أنقلك لأنك موجود بالفعل داخل معمل الكيمياء والتفاعلات الآن.' : 'You are already inside the Chemistry Lab.';
+        speakText(msg);
+        setWarningReprimand(msg);
+        return;
+      }
+      speakText(ar ? 'حاضر، جاري نقلك إلى معمل الكيمياء والتفاعلات الآن...' : 'Launching Chemistry Lab...');
       setTimeout(() => { setIsVoiceOpen(false); navigate('/app/labs/chemistry'); }, 900);
     } else if (clean.includes('فيزياء') || clean.includes('كهربا') || clean.includes('physics')) {
-      speakText(ar ? 'حاضر! جاري فتح معمل الفيزياء والدوائر الكهربائية...' : 'Opening Physics Lab...');
+      if (location.pathname === '/app/labs/physics') {
+        const msg = ar ? 'لم أنقلك لأنك موجود بالفعل داخل معمل الفيزياء والدوائر.' : 'You are already inside the Physics Lab.';
+        speakText(msg);
+        setWarningReprimand(msg);
+        return;
+      }
+      speakText(ar ? 'حاضر، جاري فتح معمل الفيزياء والدوائر الكهربائية...' : 'Opening Physics Lab...');
       setTimeout(() => { setIsVoiceOpen(false); navigate('/app/labs/physics'); }, 900);
     } else if (clean.includes('تشريح') || clean.includes('عظام') || clean.includes('anatomy')) {
-      speakText(ar ? 'جاري فتح أطلس التشريح الطبي ثلاثي الأبعاد...' : 'Opening Anatomy Atlas...');
+      if (location.pathname === '/app/labs/anatomy') {
+        const msg = ar ? 'لم أنقلك لأنك تتصفح بالفعل أطلس التشريح الطبي 3D الآن.' : 'You are already inside the 3D Anatomy Atlas.';
+        speakText(msg);
+        setWarningReprimand(msg);
+        return;
+      }
+      speakText(ar ? 'حاضر، جاري فتح أطلس التشريح الطبي ثلاثي الأبعاد...' : 'Opening Anatomy Atlas...');
       setTimeout(() => { setIsVoiceOpen(false); navigate('/app/labs/anatomy'); }, 900);
     } else if (clean.includes('فلك') || clean.includes('كواكب') || clean.includes('نجوم') || clean.includes('astronomy')) {
-      speakText(ar ? 'جاري توجيه التلسكوب إلى مرصد الفلك ومدارات كبلر...' : 'Opening Kepler Observatory...');
+      if (location.pathname === '/app/labs/astronomy') {
+        const msg = ar ? 'لم أنقلك لأنك تتواجد بالفعل داخل مرصد كبلر الفلكي.' : 'You are already inside Kepler Observatory.';
+        speakText(msg);
+        setWarningReprimand(msg);
+        return;
+      }
+      speakText(ar ? 'حاضر، جاري توجيه التلسكوب إلى مرصد الفلك ومدارات كبلر...' : 'Opening Kepler Observatory...');
       setTimeout(() => { setIsVoiceOpen(false); navigate('/app/labs/astronomy'); }, 900);
     } else if (clean.includes('أرض') || clean.includes('زلزال') || clean.includes('geology')) {
-      speakText(ar ? 'جاري فتح معمل علوم الأرض ورصد الزلازل...' : 'Opening Geology Lab...');
+      if (location.pathname === '/app/labs/geology') {
+        const msg = ar ? 'لم أنقلك لأنك موجود بالفعل داخل معمل علوم الأرض ورصد الزلازل.' : 'You are already inside Geology Lab.';
+        speakText(msg);
+        setWarningReprimand(msg);
+        return;
+      }
+      speakText(ar ? 'حاضر، جاري فتح معمل علوم الأرض ورصد الزلازل...' : 'Opening Geology Lab...');
       setTimeout(() => { setIsVoiceOpen(false); navigate('/app/labs/geology'); }, 900);
     } else if (clean.includes('أحياء') || clean.includes('خلية') || clean.includes('biology')) {
-      speakText(ar ? 'جاري فتح مختبر الأحياء وفحص الخلية الحية...' : 'Opening Biology Lab...');
+      if (location.pathname === '/app/labs/biology') {
+        const msg = ar ? 'لم أنقلك لأنك موجود بالفعل داخل مختبر الأحياء وفحص الخلية.' : 'You are already inside Biology Lab.';
+        speakText(msg);
+        setWarningReprimand(msg);
+        return;
+      }
+      speakText(ar ? 'حاضر، جاري فتح مختبر الأحياء وفحص الخلية الحية...' : 'Opening Biology Lab...');
       setTimeout(() => { setIsVoiceOpen(false); navigate('/app/labs/biology'); }, 900);
     } else if (clean.includes('منهج') || clean.includes('دروس') || clean.includes('curriculum')) {
-      speakText(ar ? 'جاري فتح المناهج الدراسية والتقييمات...' : 'Opening Curriculum...');
+      if (location.pathname === '/app/curriculum') {
+        const msg = ar ? 'لم أنقلك لأنك تتصفح بالفعل المناهج والدروس حالياً.' : 'You are already in Curriculum section.';
+        speakText(msg);
+        setWarningReprimand(msg);
+        return;
+      }
+      speakText(ar ? 'حاضر، جاري فتح المناهج الدراسية والتقييمات...' : 'Opening Curriculum...');
       setTimeout(() => { setIsVoiceOpen(false); navigate('/app/curriculum'); }, 900);
     } else if (clean.includes('رئيسية') || clean.includes('لوحة') || clean.includes('home')) {
+      if (location.pathname === '/app') {
+        const msg = ar ? 'أنت موجود بالفعل في لوحة التحكم الرئيسية.' : 'You are already on the Overview page.';
+        speakText(msg);
+        setWarningReprimand(msg);
+        return;
+      }
       speakText(ar ? 'جاري العودة للوحة التحكم العامة...' : 'Opening Overview...');
       setTimeout(() => { setIsVoiceOpen(false); navigate('/app'); }, 900);
     } else {
-      speakText(
-        ar
-          ? `أنا داروين، أراقب شاشتك في "${getCurrentScreenName()}" ومستعد لنقلك لأي معمل أو الإجابة عن أي استفسار علمي.`
-          : 'I am Darwin, monitoring your screen and ready to assist with any science experiment.'
-      );
+      const msg = ar
+        ? `لم أستطع تنفيذ أمرك "${cmd}"، والسبب أن هذا المعمل أو القسم غير موجود في المنصة. الأقسام المتاحة هي: معمل الكيمياء، الفيزياء، التشريح، الفلك، الأحياء، والجيولوجيا.`
+        : `Could not execute "${cmd}" because this section does not exist on SciNexa. Available labs are: Chemistry, Physics, Anatomy, Astronomy, Biology, and Geology.`;
+      speakText(msg);
+      setWarningReprimand(msg);
     }
   };
 
@@ -307,9 +352,9 @@ export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ className = '' }
     // Load Fish Audio widget script if not already present
     if (!document.querySelector('script[src*="agent-widget-embed"]')) {
       const script = document.createElement('script');
-      script.src = 'https://unpkg.com/@fishaudio/agent-widget-embed';
+      script.src = 'https://unpkg.com/@fishaudio/agent-widget-embed@0.3.0/dist/index.js';
       script.async = true;
-      document.body.appendChild(script);
+      document.head.appendChild(script);
     }
 
     const container = voiceContainerRef.current;
@@ -317,14 +362,17 @@ export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ className = '' }
       const el = document.createElement('fish-agent');
       el.setAttribute('agent-id', '929a1bf391db4185b03ae62f05a49207');
       el.setAttribute('language', ar ? 'ar' : 'en');
+      el.setAttribute('text-input', 'true');
+      el.setAttribute('transcript', 'true');
+      el.setAttribute('agent-name', ar ? 'داروين • مرشد العلوم' : 'Darwin AI');
       el.setAttribute(
         'greeting',
         ar
-          ? 'أهلاً بك يا بطل! أنا داروين مرشدك العلمي الصوتي في منصة SciNexa. تحدث معي بصوتك واسألني عن أي تجربة معملية وسأجيبك فوراً.'
-          : 'Welcome! I am Darwin, your science AI voice guide in SciNexa. Speak with me directly about any laboratory or experiment.'
+          ? 'مرحباً بك! أنا داروين مرشدك العلمي الصوتي في منصة SciNexa. تحدث معي بصوتك أو اكتب وسأساعدك فوراً.'
+          : 'Welcome! I am Darwin, your science AI voice guide in SciNexa. Speak or chat with me about any lab.'
       );
       el.style.width = '100%';
-      el.style.minHeight = '360px';
+      el.style.minHeight = '420px';
       el.style.display = 'block';
       container.appendChild(el);
     }
@@ -495,43 +543,16 @@ export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ className = '' }
               </form>
             </div>
 
-            {/* Interactive Audio Waveform & Agent Activity Container */}
-            <div className="p-5 bg-gradient-to-b from-[#0a0c12] to-[#06070a] min-h-[280px] flex flex-col items-center justify-center border-t border-white/5">
-              {/* Dynamic Sound Wave Sphere */}
-              <div className="relative flex items-center justify-center my-3">
-                <div className={`h-24 w-24 rounded-full flex items-center justify-center border transition-all duration-300 ${
-                  isListening
-                    ? 'bg-red-500/20 border-red-500/50 shadow-[0_0_40px_rgba(239,68,68,0.4)]'
-                    : 'bg-cyan-500/10 border-cyan-500/30 shadow-[0_0_30px_rgba(6,182,212,0.25)]'
-                }`}>
-                  <Mic size={36} className={isListening ? 'text-red-400 animate-pulse' : 'text-cyan-400'} />
-                </div>
-                {/* Orbital pulse rings */}
-                <div className="absolute inset-0 rounded-full border border-cyan-500/20 animate-ping pointer-events-none" />
-              </div>
-
-              {/* Sound Wave Frequency Bars */}
-              <div className="flex items-center gap-1.5 h-6 mb-3">
-                {[35, 70, 50, 95, 60, 85, 45, 90, 65, 55, 80, 40].map((h, i) => (
-                  <span
-                    key={i}
-                    className={`w-1 rounded-full transition-all duration-150 ${
-                      isListening ? 'bg-cyan-400 animate-pulse' : 'bg-white/20'
-                    }`}
-                    style={{ height: isListening ? `${h}%` : `${h * 0.35}%` }}
-                  />
-                ))}
-              </div>
-
-              <div className="text-center text-[12px] text-white/80 font-medium max-w-md px-4 leading-relaxed">
-                {isListening
-                  ? (ar ? '🎙️ يستمع داروين إلى صوتك الآن... تحدث وسينفذ أمرك فوراً!' : '🎙️ Darwin is listening... Speak your command!')
-                  : (ar ? 'داروين جاهز للاستماع والتنقل الفوري بين المعامل والسبورة وشرح التجارب.' : 'Darwin is ready for instant voice navigation and science explanations.')}
-              </div>
-
-              <div className="mt-3 flex items-center gap-2 text-[10px] font-mono text-cyan-400 uppercase tracking-wider bg-white/5 px-3 py-1 rounded-full border border-white/10">
-                <Radio size={10} className="animate-pulse" />
-                <span>Fish Audio Real-time Voice Engine 929A1BF3</span>
+            {/* Standard Official Fish Audio Agent Widget Container */}
+            <div className="p-4 bg-[#08090d] min-h-[440px] flex flex-col justify-center items-center border-t border-white/5">
+              <div ref={voiceContainerRef} className="w-full flex justify-center" />
+              <div className="mt-3 text-center text-[11px] text-white/50 flex items-center justify-center gap-2">
+                <Volume2 size={13} className="text-cyan-400" />
+                <span>
+                  {ar
+                    ? 'مودل فيش أوديو الصوتي المباشر · داروين المرشد العلمي'
+                    : 'Fish Audio Real-time Voice Agent · Darwin AI'}
+                </span>
               </div>
             </div>
           </div>
