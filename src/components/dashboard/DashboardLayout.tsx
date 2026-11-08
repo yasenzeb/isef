@@ -2,6 +2,7 @@ import { SciNexaNavDock } from '../SciNexaNavDock';
 import { LanguageSelector } from '../ui/LanguageSelector';
 import { StudentProfileOnboardingModal } from '../auth/StudentProfileOnboardingModal';
 import { analyzeSearchWithGemini, type GeminiSearchResult } from '../../lib/geminiAI';
+import { getPersistedItem } from '../../lib/cookies';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
@@ -159,8 +160,29 @@ export const DashboardLayout: React.FC = () => {
     return () => clearTimeout(timer);
   }, [query, language]);
 
+  const [studentQuadName, setStudentQuadName] = useState(() => getPersistedItem('scinexa_user_fullname') || '');
+  const [savedGrade, setSavedGrade] = useState(() => getPersistedItem('scinexa_grade', 'sec2'));
+
+  useEffect(() => {
+    const handleProfileUpdate = () => {
+      setStudentQuadName(getPersistedItem('scinexa_user_fullname') || '');
+      setSavedGrade(getPersistedItem('scinexa_grade', 'sec2'));
+    };
+    window.addEventListener('scinexa_profile_updated', handleProfileUpdate);
+    window.addEventListener('storage', handleProfileUpdate);
+    return () => {
+      window.removeEventListener('scinexa_profile_updated', handleProfileUpdate);
+      window.removeEventListener('storage', handleProfileUpdate);
+    };
+  }, []);
+
+  const isResearcher = savedGrade === 'university' || savedGrade === 'researcher';
+  const effectiveName = studentQuadName || user?.name || (ar ? 'الباحث العلمي' : 'Researcher');
+
   const title = pageTitle(location.pathname, language);
-  const roleMeta = ROLE_LABEL[role];
+  const roleMeta = isResearcher
+    ? { en: 'Researcher', ar: 'باحث علمي حر', fr: 'Chercheur', de: 'Forscher', ja: '独立研究員', tone: 'sn-badge-green' }
+    : ROLE_LABEL[role];
 
   useEffect(() => {
     setMobileOpen(false);
@@ -244,7 +266,10 @@ export const DashboardLayout: React.FC = () => {
 
       <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label={ar ? 'تنقل لوحة التحكم' : 'Dashboard navigation'}>
         {NAV.map((group) => {
-          const items = group.items.filter((item) => !item.roles || item.roles.includes(role));
+          const items = group.items.filter((item) => {
+            if (isResearcher && item.to === '/app/curriculum') return false;
+            return !item.roles || item.roles.includes(role);
+          });
           if (items.length === 0) return null;
           return (
             <div key={group.en} className="mb-5">
@@ -275,9 +300,9 @@ export const DashboardLayout: React.FC = () => {
 
       <div className="border-t border-[#e5e5e5] p-3">
         <div className="flex items-center gap-2.5 rounded-[10px] px-2 py-2">
-          <Avatar name={user?.name ?? 'Student'} url={user?.avatarUrl} size={30} />
+          <Avatar name={effectiveName} url={user?.avatarUrl} size={30} />
           <div className="min-w-0 flex-1">
-            <div className="truncate text-[12px] font-medium text-[#0a0a0a]">{user?.name}</div>
+            <div className="truncate text-[12px] font-medium text-[#0a0a0a]">{effectiveName}</div>
             <div className="truncate text-[10px] text-[#737373]">{user?.email}</div>
           </div>
           <button
@@ -398,9 +423,9 @@ export const DashboardLayout: React.FC = () => {
               aria-label={ar ? 'حساب المستخدم' : 'User menu'}
               aria-expanded={userMenu}
             >
-              <Avatar name={user?.name ?? 'Student'} url={user?.avatarUrl} size={26} />
-              <span className="hidden max-w-[100px] truncate text-[12px] font-medium md:block">
-                {user?.name?.split(' ')[0]}
+              <Avatar name={effectiveName} url={user?.avatarUrl} size={26} />
+              <span className="hidden max-w-[140px] truncate text-[12px] font-medium md:block">
+                {effectiveName.split(' ')[0]}
               </span>
               <ChevronDown size={13} strokeWidth={1.8} className="text-[#737373]" />
             </button>
@@ -408,9 +433,9 @@ export const DashboardLayout: React.FC = () => {
             {userMenu && (
               <div className="absolute end-0 top-11 z-40 w-[268px] rounded-[16px] border border-[#e5e5e5] bg-white p-2 shadow-[0_18px_50px_-20px_rgba(10,10,10,0.3)]">
                 <div className="flex items-center gap-2.5 px-2 py-2">
-                  <Avatar name={user?.name ?? 'Student'} url={user?.avatarUrl} size={34} />
+                  <Avatar name={effectiveName} url={user?.avatarUrl} size={34} />
                   <div className="min-w-0">
-                    <div className="truncate text-[12px] font-medium">{user?.name}</div>
+                    <div className="truncate text-[12px] font-medium">{effectiveName}</div>
                     <div className="truncate text-[10px] text-[#737373]">{user?.email}</div>
                   </div>
                 </div>

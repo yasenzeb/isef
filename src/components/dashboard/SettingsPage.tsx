@@ -3,6 +3,8 @@ import { useClerk } from '@clerk/clerk-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useSession, type AppRole } from '../../context/SessionContext';
 import { isClerkConfigured } from '../../lib/clerkConfig';
+import { getPersistedItem, setPersistedItem, setPersistedJSON } from '../../lib/cookies';
+import { dbUpsertProfile } from '../../lib/supabase';
 import { PageHeader, SectionCard } from './ui';
 import {
   User,
@@ -13,10 +15,13 @@ import {
   LogOut,
   Check,
   ExternalLink,
-  UserCog,
   Laptop,
   WifiOff,
   KeyRound,
+  RotateCcw,
+  Save,
+  Phone,
+  Compass,
 } from 'lucide-react';
 
 const ROLE_META: Record<AppRole, { en: string; ar: string; badge: string }> = {
@@ -60,16 +65,89 @@ const Toggle: React.FC<{ on: boolean; onChange: () => void; label: string }> = (
 
 export const SettingsPage: React.FC = () => {
   const { language, setLanguage } = useLanguage();
-  const { user, role, isDemo, isRolePreview, switchDemoRole, clearRolePreview, signOut } = useSession();
-  const [savedGrade, setSavedGrade] = useState(() => localStorage.getItem('scinexa_grade') || 'sec2');
+  const { user, role, signOut } = useSession();
+  const ar = language === 'ar';
+
+  // Persistent student name & phone
+  const [fullName, setFullName] = useState(() => getPersistedItem('scinexa_user_fullname') || user?.name || '');
+  const [parentPhone, setParentPhone] = useState(() => getPersistedItem('scinexa_parent_phone') || '');
+  const [nameSaveMsg, setNameSaveMsg] = useState<string | null>(null);
+
+  // Grade
+  const [savedGrade, setSavedGrade] = useState(() => getPersistedItem('scinexa_grade', 'sec2'));
   const [gradeSavedNotice, setGradeSavedNotice] = useState(false);
+  const [resetMsg, setResetMsg] = useState<string | null>(null);
+
+  const isResearcher = savedGrade === 'university' || savedGrade === 'researcher';
+
+  const handleSaveNameAndPhone = async () => {
+    const cleanName = fullName.trim();
+    const cleanPhone = parentPhone.trim().replace(/\D/g, '');
+    if (!cleanName) return;
+
+    setPersistedItem('scinexa_user_fullname', cleanName);
+    if (cleanPhone) {
+      setPersistedItem('scinexa_parent_phone', cleanPhone);
+    }
+
+    try {
+      await dbUpsertProfile({
+        id: user?.id || ('st_' + Date.now()),
+        email: user?.email,
+        display_name: cleanName,
+        quad_name: cleanName,
+        parent_phone: cleanPhone,
+        grade_level: savedGrade,
+        role: 'student',
+      });
+      window.dispatchEvent(new CustomEvent('scinexa_profile_updated', {
+        detail: { quadName: cleanName, parentPhone: cleanPhone, gradeLevel: savedGrade }
+      }));
+    } catch {
+      /* ignore */
+    }
+
+    setNameSaveMsg(
+      ar
+        ? '✓ تم حفظ الاسم الرباعي ورقم الهاتف بنجاح وتحديثهما عبر كامل المنصة.'
+        : '✓ Official name and phone number saved successfully across the platform.'
+    );
+    setTimeout(() => setNameSaveMsg(null), 4000);
+  };
+
   const handleSaveGrade = (newG: string) => {
     setSavedGrade(newG);
-    localStorage.setItem('scinexa_grade', newG);
+    setPersistedItem('scinexa_grade', newG);
     setGradeSavedNotice(true);
+    try {
+      window.dispatchEvent(new CustomEvent('scinexa_profile_updated', {
+        detail: { gradeLevel: newG }
+      }));
+    } catch {
+      /* ignore */
+    }
     setTimeout(() => setGradeSavedNotice(false), 4000);
   };
-  const ar = language === 'ar';
+
+  const handleResetProgress = () => {
+    const confirmMsg = ar
+      ? 'هل أنت متأكد من رغبتك في تصفير سجل التقدم المعملي ونقاط XP والبدء من الصفر (0%)؟'
+      : 'Are you sure you want to reset all lab progress, completed lessons and XP to 0?';
+    if (!window.confirm(confirmMsg)) return;
+
+    setPersistedJSON('scinexa_completed_lessons', []);
+    setPersistedItem('scinexa_user_xp', '0');
+    setPersistedItem('scinexa_user_streak', '0');
+    setPersistedItem('scinexa_user_stars', '0');
+
+    setResetMsg(ar ? '✓ تم تصفير سجل الدروس ونقاط XP بنجاح (0 دروس، 0 XP).' : '✓ Lab progress reset to zero (0 lessons, 0 XP).');
+    try {
+      window.dispatchEvent(new Event('scinexa_progress_reset'));
+    } catch {
+      /* ignore */
+    }
+    setTimeout(() => setResetMsg(null), 4000);
+  };
 
   const [notifications, setNotifications] = useState({
     assessments: true,
@@ -77,7 +155,9 @@ export const SettingsPage: React.FC = () => {
     product: false,
   });
 
-  const roleMeta = ROLE_META[role];
+  const roleMeta = isResearcher
+    ? { en: 'Researcher', ar: 'باحث علمي حر', badge: 'sn-badge-green' }
+    : ROLE_META[role];
 
   return (
     <div>
@@ -86,56 +166,112 @@ export const SettingsPage: React.FC = () => {
         title={ar ? 'الإعدادات' : 'Settings'}
         subtitle={
           ar
-            ? 'بيانات الحساب، اللغة، الإشعارات، والوصول. كل شيء في مكان واحد.'
-            : 'Profile, language, notifications and access. Everything in one place.'
+            ? 'بيانات الحساب، الاسم الرسمي، اللغة، الإشعارات، والوصول. كل شيء في مكان واحد.'
+            : 'Profile, official name, language, notifications and access. Everything in one place.'
         }
       />
 
       <div className="grid gap-4 lg:grid-cols-[1.35fr_1fr]">
         <div className="space-y-4">
-          {/* Profile */}
-          <SectionCard title={ar ? 'الملف الشخصي' : 'Profile'}>
+          {/* Profile & Official Name Editor */}
+          <SectionCard title={ar ? 'الملف الشخصي والاسم الرسمي' : 'Official Profile & Name'}>
             <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
               {user?.avatarUrl ? (
                 <img src={user.avatarUrl} alt="" className="h-14 w-14 rounded-full object-cover" />
               ) : (
                 <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#0a0a0a] text-[20px] font-medium text-white">
-                  {(user?.name ?? 'S').charAt(0).toUpperCase()}
+                  {(fullName || user?.name || 'S').charAt(0).toUpperCase()}
                 </span>
               )}
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-[16px] font-semibold tracking-[-0.02em]">{user?.name}</h2>
+                  <h2 className="text-[16px] font-semibold tracking-[-0.02em]">{fullName || user?.name}</h2>
                   <span className={`sn-badge ${roleMeta.badge} !text-[10px]`}>{ar ? roleMeta.ar : roleMeta.en}</span>
                 </div>
                 <div dir="ltr" className="mt-1 flex items-center gap-1.5 font-mono text-[11px] text-[#737373]">
                   <Mail size={12} strokeWidth={1.8} />
                   {user?.email}
                 </div>
-                {user?.grade && <div className="mt-1 text-[11px] text-[#737373]">{user.grade}</div>}
+                {savedGrade && (
+                  <div className="mt-1 text-[11px] text-[#737373]">
+                    {isResearcher ? (ar ? 'مسار البحث العلمي' : 'Scientific Research Path') : savedGrade}
+                  </div>
+                )}
               </div>
               {isClerkConfigured && <ManageClerkAccount ar={ar} />}
             </div>
 
             <div className="mt-5 grid gap-3 border-t border-[#f0f0f0] pt-4 sm:grid-cols-2">
               <div>
-                <label className="sn-label" htmlFor="settings-name">{ar ? 'الاسم' : 'Display name'}</label>
-                <input id="settings-name" className="sn-input" defaultValue={user?.name} readOnly={!isDemo} />
+                <label className="sn-label" htmlFor="settings-name">
+                  {isResearcher
+                    ? (ar ? 'الاسم الرباعي الرسمي للباحث' : 'Researcher Full Name')
+                    : (ar ? 'الاسم الرباعي الرسمي للطالب' : 'Official Full Name')}
+                </label>
+                <input
+                  id="settings-name"
+                  className="sn-input font-medium"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder={ar ? 'اكتب اسمك الرباعي الرسمي هنا...' : 'Enter your full quad name...'}
+                />
               </div>
+
               <div>
-                <label className="sn-label" htmlFor="settings-email">{ar ? 'البريد' : 'Email'}</label>
+                <label className="sn-label" htmlFor="settings-phone">
+                  {isResearcher
+                    ? (ar ? 'رقم الهاتف الشخصي (للتواصل العلمي)' : 'Personal Mobile Phone')
+                    : (ar ? 'رقم هاتف ولي الأمر (للمتابعة)' : 'Parent Mobile Phone')}
+                </label>
+                <div className="relative">
+                  <input
+                    id="settings-phone"
+                    dir="ltr"
+                    className="sn-input font-mono text-[12px] pe-8"
+                    value={parentPhone}
+                    onChange={(e) => setParentPhone(e.target.value)}
+                    placeholder="010XXXXXXXX"
+                  />
+                  <Phone size={13} className="absolute end-2.5 top-1/2 -translate-y-1/2 text-[#737373]" />
+                </div>
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="sn-label" htmlFor="settings-email">{ar ? 'البريد الإلكتروني المسجل' : 'Registered Email'}</label>
                 <input id="settings-email" dir="ltr" className="sn-input font-mono text-[12px]" defaultValue={user?.email} readOnly />
               </div>
             </div>
+
+            <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-t border-[#f0f0f0] pt-3">
+              <p className="text-[11px] text-[#737373]">
+                {ar
+                  ? 'يظهر هذا الاسم في لوحة التحكم، تقارير المعامل، وشهادات الإنجاز بدلاً من اسم حساب جوجل.'
+                  : 'This official name appears on dashboard greetings, lab reports and certificates.'}
+              </p>
+              <button
+                type="button"
+                onClick={handleSaveNameAndPhone}
+                className="sn-btn sn-btn-primary sn-btn-sm shrink-0 flex items-center gap-1.5"
+              >
+                <Save size={13} strokeWidth={2} />
+                <span>{ar ? 'حفظ البيانات الرسمية' : 'Save Details'}</span>
+              </button>
+            </div>
+
+            {nameSaveMsg && (
+              <div className="mt-3 p-2.5 rounded-xl bg-emerald-50 text-emerald-800 text-[11px] font-semibold border border-emerald-200">
+                {nameSaveMsg}
+              </div>
+            )}
           </SectionCard>
 
           {/* Grade Locking & Management Section */}
-          <SectionCard title={ar ? "الصف الدراسي والمرحلة التعليمية" : "Educational Grade & Stage"}>
+          <SectionCard title={ar ? "الصف الدراسي أو المسار البحثي" : "Educational Grade or Research Path"}>
             <div className="flex flex-col gap-3">
               <p className="text-[12px] text-[#737373] leading-relaxed">
                 {ar
-                  ? "الصف الدراسي يحدد المناهج والتجارب الافتراضية المرتبطة بك في المنصة. لا يمكن تغيير الصف إلا من خلال هذه الصفحة لضمان دقة السجل الأكاديمي."
-                  : "Your assigned grade defines default curriculum pathways and lab exercises. It can only be modified here."}
+                  ? "الصف أو المسار يحدد المناهج والتجارب الافتراضية المرتبطة بك في المنصة. باحثو المرحلة الجامعية والبحث العلمي الحر تتاح لهم كامل المعامل وأدوات البحث دون قيود المناهج المدرسية."
+                  : "Your academic stage defines available curriculum pathways and experiments. University students and independent researchers get full access to 3D labs without school curriculum restrictions."}
               </p>
               <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2">
                 <select
@@ -150,11 +286,13 @@ export const SettingsPage: React.FC = () => {
                   <option value="sec2">{ar ? "الصف الثاني الثانوي" : "2nd Secondary"}</option>
                   <option value="sec3">{ar ? "الصف الثالث الثانوي (الثانوية العامة)" : "3rd Secondary"}</option>
                   <option value="stem">{ar ? "مدارس المتفوقين في العلوم والتكنولوجيا (STEM)" : "STEM High School"}</option>
+                  <option value="university">{ar ? "المرحلة الجامعية (طالب جامعي / أكاديمي)" : "University Student"}</option>
+                  <option value="researcher">{ar ? "باحث علمي حر (أكاديمي مستقل)" : "Independent Scientific Researcher"}</option>
                 </select>
               </div>
               {gradeSavedNotice && (
                 <div className="p-2.5 rounded-xl bg-emerald-50 text-emerald-800 text-[11px] font-semibold border border-emerald-200">
-                  ✓ {ar ? "تم حفظ وتحديث صفك الدراسي بنجاح! تم تحديث المناهج المرتبطة بك." : "Grade updated successfully!"}
+                  ✓ {ar ? "تم حفظ وتحديث مسارك الدراسي بنجاح! تم تحديث واجهة المنصة والمعامل." : "Academic stage updated successfully!"}
                 </div>
               )}
             </div>
@@ -167,9 +305,9 @@ export const SettingsPage: React.FC = () => {
           >
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
               <div>
-                <div className="text-[12px] font-medium">{ar ? 'لغة الواجهة' : 'Interface language'}</div>
+                <div className="text-[12px] font-medium">{ar ? 'لغة الواجهة (٥ لغات معتمدة)' : 'Interface language (5 supported languages)'}</div>
                 <div className="mt-0.5 text-[11px] text-[#737373]">
-                  {ar ? 'تتغير اتجاهات الواجهة تلقائيًا.' : 'Layout direction updates automatically.'}
+                  {ar ? 'تتغير اتجاهات الواجهة والنصوص بالكامل تلقائيًا.' : 'Layout direction and all copy update automatically.'}
                 </div>
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -178,6 +316,7 @@ export const SettingsPage: React.FC = () => {
                   { code: "en" as const, label: "English 🇬🇧" },
                   { code: "fr" as const, label: "Français 🇫🇷" },
                   { code: "de" as const, label: "Deutsch 🇩🇪" },
+                  { code: "ja" as const, label: "日本語 🇯🇵" },
                 ].map((l) => (
                   <button
                     key={l.code}
@@ -210,6 +349,34 @@ export const SettingsPage: React.FC = () => {
                   {ar ? 'داكن قريبًا' : 'Dark soon'}
                 </span>
               </div>
+            </div>
+          </SectionCard>
+
+          {/* Lab Progress & XP Reset Tool */}
+          <SectionCard
+            title={ar ? 'إدارة سجل التقدم المعملي ونقاط XP' : 'Lab Progress & XP Management'}
+            action={<RotateCcw size={14} strokeWidth={1.7} className="text-[#a3a3a3]" />}
+          >
+            <div className="space-y-3">
+              <p className="text-[12px] text-[#737373] leading-relaxed">
+                {ar
+                  ? 'إذا كنت تريد بدء تدريبك المعملي من الصفر التام وبدقة واقعية (0 دروس مكتملة و 0 XP)، يمكنك تصفير السجل بضغطة واحدة.'
+                  : 'If you want to restart your lab training from scratch with strictly real statistics (0 lessons, 0 XP), you can reset it here.'}
+              </p>
+              <button
+                type="button"
+                onClick={handleResetProgress}
+                className="sn-btn sn-btn-outline sn-btn-sm text-amber-700 hover:bg-amber-50 hover:border-amber-400"
+              >
+                <RotateCcw size={13} strokeWidth={2} />
+                <span>{ar ? 'تصفير السجل والبدء من الصفر (0 XP و 0 دروس)' : 'Reset Progress to Zero (0 XP, 0 Lessons)'}</span>
+              </button>
+
+              {resetMsg && (
+                <div className="p-2.5 rounded-xl bg-amber-50 text-amber-900 text-[11px] font-semibold border border-amber-200">
+                  {resetMsg}
+                </div>
+              )}
             </div>
           </SectionCard>
 
