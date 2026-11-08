@@ -84,6 +84,12 @@ export const EducatorLayout: React.FC = () => {
     const lower = text.toLowerCase();
 
     if (lower.includes('فصل') || lower.includes('classes') || lower.includes('فصول')) {
+      if (location.pathname === '/portal/classes') {
+        const rep = ar ? 'أنت بالفعل داخل صفحة إدارة الفصول المدرسية حالياً.' : 'You are already inside the Classes management section.';
+        setVoiceReply(rep);
+        speakEducator(rep);
+        return;
+      }
       const rep = ar
         ? 'حاضر يا أستاذنا، أنقلك الآن إلى إدارة الفصول المدرسية لإضافة فصول جديدة أو تعديلها.'
         : 'Navigating to Classes management to create or configure school classes.';
@@ -98,6 +104,12 @@ export const EducatorLayout: React.FC = () => {
     }
 
     if (lower.includes('طالب') || lower.includes('طلاب') || lower.includes('students') || lower.includes('أولياء')) {
+      if (location.pathname === '/portal/students') {
+        const rep = ar ? 'أنت بالفعل داخل صفحة سجلات الطلاب وأولياء الأمور حالياً.' : 'You are already on the Student Records page.';
+        setVoiceReply(rep);
+        speakEducator(rep);
+        return;
+      }
       const rep = ar
         ? 'بالتأكيد، أنقلك إلى سجلات الطلاب وأولياء الأمور للربط بالاسم الرباعي والمتابعة عبر واتساب.'
         : 'Opening Student & Parent Records for Quad Name linking and WhatsApp contact.';
@@ -112,6 +124,12 @@ export const EducatorLayout: React.FC = () => {
     }
 
     if (lower.includes('واجب') || lower.includes('واجبات') || lower.includes('assignments') || lower.includes('تاسك')) {
+      if (location.pathname === '/portal/assignments') {
+        const rep = ar ? 'أنت بالفعل في قسم الواجبات والتكليفات المعملية حالياً.' : 'You are already in the Assignments section.';
+        setVoiceReply(rep);
+        speakEducator(rep);
+        return;
+      }
       const rep = ar
         ? 'حاضر، أنقلك لقسم الواجبات والتكليفات المعملية لإنشاء واجب جديد وتحديد موعد التسليم.'
         : 'Navigating to Assignments to assign new laboratory tasks and homework.';
@@ -126,6 +144,12 @@ export const EducatorLayout: React.FC = () => {
     }
 
     if (lower.includes('مؤسس') || lower.includes('مدارس') || lower.includes('institutions') || lower.includes('مدرسة')) {
+      if (location.pathname === '/portal/institutions') {
+        const rep = ar ? 'أنت بالفعل داخل دليل المؤسسات والمدارس حالياً.' : 'You are already inside Institutions directory.';
+        setVoiceReply(rep);
+        speakEducator(rep);
+        return;
+      }
       const rep = ar
         ? 'جارٍ توجيهك إلى إدارة المؤسسات والمدارس وقواعد البيانات.'
         : 'Opening Institutions & Schools directory.';
@@ -140,6 +164,12 @@ export const EducatorLayout: React.FC = () => {
     }
 
     if (lower.includes('تحليل') || lower.includes('analytics') || lower.includes('إحصائيات')) {
+      if (location.pathname === '/portal/analytics') {
+        const rep = ar ? 'أنت بالفعل تشاهد صفحة التحليلات الحية ونسب الإنجاز حالياً.' : 'You are already viewing Live Analytics.';
+        setVoiceReply(rep);
+        speakEducator(rep);
+        return;
+      }
       const rep = ar
         ? 'أنقلك الآن للتحليلات الحية ومتابعة نسب إنجاز الطلاب ومتوسط الدرجات.'
         : 'Opening Live Analytics to inspect student performance and mastery levels.';
