@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { updateChemistryState } from '../lib/scinexaLiveContext';
 import {
   WORKBENCH_REAGENTS,
   WorkbenchReagent,
@@ -65,7 +66,22 @@ export const PraxiReactionSimulator: React.FC = () => {
     setIsReacting(false);
     setReactionProgress(0);
     setReactionCompleted(false);
-    setTemperature(bunsenBurnerActive ? 120 : 25);
+    const temp = bunsenBurnerActive ? 120 : 25;
+    setTemperature(temp);
+
+    // Update global live context for Darwin AI inspection
+    const names = selectedReagentIds.map(id => {
+      const r = WORKBENCH_REAGENTS.find(item => item.id === id);
+      return r ? `${r.nameAr} (${r.formula})` : id;
+    });
+    updateChemistryState({
+      selectedReagents: selectedReagentIds,
+      reagentNamesAr: names,
+      reactionEquation: matched?.equation,
+      reactionNameAr: matched?.typeAr || matched?.categoryAr,
+      flameActive: bunsenBurnerActive,
+      temperature: temp,
+    });
   }, [selectedReagentIds, bunsenBurnerActive]);
 
   // Handle mixing / ignition

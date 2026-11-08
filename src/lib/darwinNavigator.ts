@@ -5,6 +5,8 @@
  * © Islam & Yaseen — SciNexa ISEF 2026
  */
 
+import { getFormattedLiveContextArabic } from './scinexaLiveContext';
+
 export interface NavDestination {
   path: string;
   nameAr: string;
@@ -224,6 +226,24 @@ export function initDarwinAgentWatcher(navigateFn: (path: string) => void): () =
 
   const handleTextFound = (text: string) => {
     if (!text || text === lastCheckedText) return;
+
+    // Check inspection queries (Physics circuit, Chemistry beaker, Anatomy parts)
+    const lower = text.toLowerCase();
+    const isInspection = [
+      'افحص', 'افحصلي', 'افحص لي', 'شوف الدورق', 'ايه اللي في الدورق', 'محتويات الدورق',
+      'حالة الدايرة', 'حالة الدائرة', 'قانون اوم', 'الدائرة الكهربائية', 'العظمة المحددة', 'العضو المحدد',
+      'الجزء المحدد', 'ما هذا العضو', 'ما هذه العظمة', 'اشرح اللي ضغطت عليه'
+    ].some((k) => lower.includes(k));
+
+    if (isInspection) {
+      lastCheckedText = text;
+      const liveReport = getFormattedLiveContextArabic();
+      console.log('[DarwinNavigator] Live Inspection Triggered:', liveReport);
+      window.dispatchEvent(
+        new CustomEvent('scinexa:live_inspection_result', { detail: { report: liveReport } })
+      );
+    }
+
     const dest = analyzeNavigationIntent(text);
     if (dest) {
       lastCheckedText = text;

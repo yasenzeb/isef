@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
 import { OrbitControls, GLTFLoader, DRACOLoader } from 'three-stdlib';
 import { useLanguage } from '../context/LanguageContext';
+import { updateAnatomyState } from '../lib/scinexaLiveContext';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
 import { 
   RotateCcw, 
@@ -1374,6 +1375,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
         const worldHitPos = new THREE.Vector3();
         hit.getWorldPosition(worldHitPos);
 
+        updateAnatomyState({ nameAr: nameAr || cleanName, nameEn: cleanName || sysConfig.labelEn, descriptionAr: descAr || descEn, systemLayer: sysConfig.labelAr });
         setSelectedStructure({
           nameEn: cleanName || sysConfig.labelEn,
           nameAr: nameAr,

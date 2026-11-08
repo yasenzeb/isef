@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { updatePhysicsState } from '../lib/scinexaLiveContext';
 import { REAL_SCIENTISTS } from '../data/scientistsData';
 import { saveState, loadState } from '../utils/persistence';
 import { 
@@ -299,6 +300,16 @@ export const PhysicsLab: React.FC = () => {
       if (e.data && e.data.type === 'SCINEXA_CIRCUIT_AUTOSAVE' && e.data.payload) {
         const payload = e.data.payload;
         setSavedCircuit(payload);
+        updatePhysicsState({
+          activeModule: 'circuits',
+          componentCount: payload.count,
+          hasCurrent: !!payload.hasCurrent,
+          switchClosed: !!payload.hasCurrent,
+          voltage: (payload.batteries || 1) * 9,
+          resistance: (payload.resistors || 1) * 10,
+          current: payload.hasCurrent ? Number(((payload.batteries || 1) * 9 / ((payload.resistors || 1) * 10)).toFixed(2)) : 0,
+          isShortCircuit: payload.batteries > 0 && payload.resistors === 0 && !!payload.hasCurrent
+        });
         saveState('saved_circuit', payload);
 
         // Context bridge: broadcast circuit state for optional external controllers
