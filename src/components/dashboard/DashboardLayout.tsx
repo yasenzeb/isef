@@ -3,6 +3,7 @@ import { LanguageSelector } from '../ui/LanguageSelector';
 import { StudentProfileOnboardingModal } from '../auth/StudentProfileOnboardingModal';
 import { analyzeSearchWithGemini, type GeminiSearchResult } from '../../lib/geminiAI';
 import { getPersistedItem } from '../../lib/cookies';
+import { initDarwinAgentWatcher } from '../../lib/darwinNavigator';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
@@ -147,6 +148,13 @@ export const DashboardLayout: React.FC = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [geminiResult, setGeminiResult] = useState<GeminiSearchResult | null>(null);
+
+  // ── Darwin Fish Audio Navigator ──────────────────────────────────────────
+  // يراقب ردود داروين الصوتي وينفذ التنقل الفعلي فور الكشف عن نية التنقل
+  useEffect(() => {
+    const cleanup = initDarwinAgentWatcher((path) => navigate(path));
+    return cleanup;
+  }, [navigate]);
 
   useEffect(() => {
     if (!query.trim() || query.trim().length < 2) {

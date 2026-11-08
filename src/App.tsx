@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { AuthenticateWithRedirectCallback, ClerkProvider } from '@clerk/clerk-react';
 import { CLERK_PUBLISHABLE_KEY, clerkAppearance, isClerkConfigured } from './lib/clerkConfig';
 import { LanguageProvider } from './context/LanguageContext';
 import { SessionProvider, useSession } from './context/SessionContext';
+import { initDarwinAgentWatcher } from './lib/darwinNavigator';
 import { LandingPage } from './components/site/LandingPage';
 import { AuthPage } from './components/auth/AuthPage';
 import { DashboardLayout } from './components/dashboard/DashboardLayout';
@@ -130,6 +131,12 @@ const AppRoutes: React.FC = () => (
 
 const ClerkWithRouter: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navigate = useNavigate();
+
+  // تفعيل المراقبة اللحظية الشاملة لداروين للتنقل بين كل صفحات المنصة
+  useEffect(() => {
+    const cleanup = initDarwinAgentWatcher((path) => navigate(path));
+    return cleanup;
+  }, [navigate]);
 
   if (!isClerkConfigured) return <>{children}</>;
 
