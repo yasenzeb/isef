@@ -290,6 +290,26 @@ export const PhysicsLab: React.FC = () => {
   const [savedCircuit, setSavedCircuit] = useState<SavedCircuitData | null>(() =>
     loadState<SavedCircuitData | null>('saved_circuit', null)
   );
+  // Initial sync of saved circuit to Darwin
+  useEffect(() => {
+    if (savedCircuit && savedCircuit.count > 0) {
+      const totalR = (savedCircuit.resistors || 0) + (savedCircuit.lightBulbs || 0);
+      const r = totalR > 0 ? totalR * 10 : 0.1;
+      const v = (savedCircuit.batteries || 1) * 9;
+      const i = savedCircuit.hasCurrent ? Number((v / r).toFixed(2)) : 0;
+      updatePhysicsState({
+        activeModule: 'circuits',
+        componentCount: savedCircuit.count,
+        hasCurrent: !!savedCircuit.hasCurrent,
+        switchClosed: !!savedCircuit.hasCurrent,
+        voltage: v,
+        resistance: r,
+        current: i,
+        isShortCircuit: savedCircuit.batteries > 0 && totalR === 0 && !!savedCircuit.hasCurrent
+      });
+    }
+  }, [savedCircuit]);
+
   const [isSidePinned, setIsSidePinned] = useState<boolean>(false);
   const [previewModalOpen, setPreviewModalOpen] = useState<boolean>(false);
   const [saveSuccessNotification, setSaveSuccessNotification] = useState<boolean>(false);
@@ -300,15 +320,21 @@ export const PhysicsLab: React.FC = () => {
       if (e.data && e.data.type === 'SCINEXA_CIRCUIT_AUTOSAVE' && e.data.payload) {
         const payload = e.data.payload;
         setSavedCircuit(payload);
+        const totalResistors = (payload.resistors || 0) + (payload.lightBulbs || 0);
+        const calcR = totalResistors > 0 ? totalResistors * 10 : 0.1;
+        const calcV = (payload.batteries || 1) * 9;
+        const calcI = payload.hasCurrent ? Number((calcV / calcR).toFixed(2)) : 0;
+        const isShort = payload.batteries > 0 && totalResistors === 0 && !!payload.hasCurrent;
+
         updatePhysicsState({
           activeModule: 'circuits',
           componentCount: payload.count,
           hasCurrent: !!payload.hasCurrent,
           switchClosed: !!payload.hasCurrent,
-          voltage: (payload.batteries || 1) * 9,
-          resistance: (payload.resistors || 1) * 10,
-          current: payload.hasCurrent ? Number(((payload.batteries || 1) * 9 / ((payload.resistors || 1) * 10)).toFixed(2)) : 0,
-          isShortCircuit: payload.batteries > 0 && payload.resistors === 0 && !!payload.hasCurrent
+          voltage: calcV,
+          resistance: calcR,
+          current: calcI,
+          isShortCircuit: isShort
         });
         saveState('saved_circuit', payload);
 
