@@ -9,7 +9,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useSession } from '../context/SessionContext';
-import { SciNexaAIModal } from './SciNexaAIModal';
 import {
   Home,
   Activity,
@@ -154,13 +153,50 @@ export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ className = '' }
   };
 
   const handleToggleDarwin = () => {
-    setIsVoiceOpen((prev) => !prev);
+    let agent = document.querySelector('fish-agent') as HTMLElement | null;
+    if (!agent) {
+      agent = document.createElement('fish-agent');
+      agent.setAttribute('id', 'fish-agent-darwin');
+      agent.setAttribute('agent-id', '929a1bf391db4185b03ae62f05a49207');
+      agent.setAttribute('language', ar ? 'ar' : 'en');
+      agent.setAttribute('agent-name', ar ? 'داروين • مرشد العلوم' : 'Darwin AI');
+      agent.setAttribute(
+        'greeting',
+        ar
+          ? 'أهلاً بك يا بطل! أنا داروين مرشدك العلمي في منصة SciNexa، جاهز للإجابة عن أسئلتك ومساعدتك في المعامل.'
+          : 'Welcome! I am Darwin, your science guide in SciNexa. Ready to answer your questions and assist you across all labs.'
+      );
+      agent.setAttribute('text-input', 'true');
+      agent.setAttribute('transcript', 'true');
+      agent.setAttribute('mic-muting', 'true');
+      document.body.appendChild(agent);
+    }
+
+    // Toggle: if open minimize, if closed expand immediately
+    if (agent && agent.shadowRoot) {
+      const panel = agent.shadowRoot.querySelector('.fa-panel');
+      if (panel) {
+        const minBtn = agent.shadowRoot.querySelector('.fa-header-actions button') as HTMLButtonElement | null;
+        if (minBtn) {
+          minBtn.click();
+          setIsVoiceOpen(false);
+          return;
+        }
+      }
+      const fabBtn = agent.shadowRoot.querySelector('.fa-fab') as HTMLButtonElement | null;
+      if (fabBtn) {
+        fabBtn.click();
+        setIsVoiceOpen(true);
+        return;
+      }
+    }
+
+    document.dispatchEvent(new CustomEvent('fish-agent:expand'));
+    setIsVoiceOpen(true);
   };
 
   return (
     <>
-      {/* ── UNIFIED SCI-NEXA AI & DARWIN MODAL (Chat, Call & Fish Audio) ── */}
-      <SciNexaAIModal isOpen={isVoiceOpen} onClose={() => setIsVoiceOpen(false)} />
 
       {/* ── BOTTOM DOCK TASKBAR ── */}
       <aside
