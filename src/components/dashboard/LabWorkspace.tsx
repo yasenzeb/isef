@@ -8,7 +8,9 @@
 import React, { Suspense, lazy } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
+import { useSession } from '../../context/SessionContext';
 import { getLab, type LabId } from '../../data/labs';
+import { useLabActiveTracker } from '../../lib/labTracker';
 import { ArrowLeft, Activity, Maximize2, ShieldCheck, Sparkles, RefreshCw, Compass } from 'lucide-react';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
 
@@ -40,8 +42,12 @@ const LabLoading: React.FC<{ ar: boolean }> = ({ ar }) => (
 export const LabWorkspace: React.FC = () => {
   const { labId } = useParams();
   const { language } = useLanguage();
+  const { user } = useSession();
   const ar = language === 'ar';
   const lab = getLab(labId);
+
+  // Active Real Exploration Tracking (Zero Fake Data)
+  useLabActiveTracker(lab?.id, user?.email);
 
   if (!lab) return <Navigate to="/app/labs" replace />;
 

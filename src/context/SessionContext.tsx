@@ -8,7 +8,9 @@ import React, {
 } from 'react';
 import { useAuth as useClerkAuth, useUser } from '@clerk/clerk-react';
 import { isClerkConfigured } from '../lib/clerkConfig';
-import { dbUpsertProfile } from '../lib/supabase';
+import { dbUpsertProfile, dbFetchProfileByEmail } from '../lib/supabase';
+import { clearActiveSessionKeys, getScopedUserProfile, saveScopedUserProfile } from '../lib/userStorage';
+import { setPersistedItem } from '../lib/cookies';
 
 export type AppRole = 'student' | 'teacher' | 'admin';
 
@@ -93,15 +95,61 @@ const ClerkSessionProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [user]);
 
   useEffect(() => {
-    if (normalized?.email) {
+    if (!normalized?.email) return;
+
+    const email = normalized.email;
+    const activeEmail = typeof localStorage !== 'undefined' ? localStorage.getItem('scinexa_active_user_email') : null;
+    if (activeEmail && activeEmail !== email) {
+      clearActiveSessionKeys();
+    }
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('scinexa_active_user_email', email);
+    }
+
+    void (async () => {
+      const dbProf = await dbFetchProfileByEmail(email);
+      const scoped = getScopedUserProfile(email);
+
+      const effectiveQuadName = dbProf?.quad_name || dbProf?.display_name || scoped?.quadName || '';
+      const effectivePhone = dbProf?.parent_phone || scoped?.parentPhone || '';
+      const effectiveGrade = dbProf?.grade_level || scoped?.gradeLevel || 'sec2';
+      const effectiveSchool = dbProf?.school_name || dbProf?.school_code || scoped?.schoolName || '';
+
+      if (effectiveQuadName) {
+        setPersistedItem('scinexa_user_fullname', effectiveQuadName);
+      }
+      if (effectivePhone) {
+        setPersistedItem('scinexa_parent_phone', effectivePhone);
+      }
+      if (effectiveGrade) {
+        setPersistedItem('scinexa_grade', effectiveGrade);
+      }
+      if (effectiveSchool) {
+        setPersistedItem('scinexa_school', effectiveSchool);
+      }
+
+      saveScopedUserProfile(email, {
+        quadName: effectiveQuadName,
+        parentPhone: effectivePhone,
+        gradeLevel: effectiveGrade,
+        schoolName: effectiveSchool,
+      });
+
       void dbUpsertProfile({
         id: normalized.id,
         email: normalized.email,
-        display_name: normalized.name,
+        display_name: effectiveQuadName || normalized.name,
+        quad_name: effectiveQuadName || undefined,
+        parent_phone: effectivePhone || undefined,
+        grade_level: effectiveGrade,
         role: 'student',
       });
-    }
-  }, [normalized?.id, normalized?.email, normalized?.name]);
+
+      window.dispatchEvent(new CustomEvent('scinexa_profile_updated', {
+        detail: { quadName: effectiveQuadName, email }
+      }));
+    })();
+  }, [normalized?.id, normalized?.email]);
 
   const loginEducator = useCallback((auth: EducatorAuth) => {
     try {
@@ -136,6 +184,7 @@ const ClerkSessionProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       logoutEducator,
       signOut: async () => {
         try {
+          clearActiveSessionKeys();
           localStorage.removeItem('scinexa_dev_role');
           localStorage.removeItem(EDUCATOR_AUTH_KEY);
         } catch {

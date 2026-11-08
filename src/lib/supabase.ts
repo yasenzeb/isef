@@ -130,9 +130,13 @@ export async function dbUpsertProfile(profile: Partial<DbProfile> & { id: string
       const payload: Record<string, any> = {
         id: targetId,
         display_name: profile.display_name || profile.quad_name || 'مستخدم',
+        quad_name: profile.quad_name || profile.display_name || undefined,
         role: profile.role || 'student',
         email: profile.email || undefined,
-        school_code: profile.school_code || undefined,
+        school_code: profile.school_code || profile.school_name || undefined,
+        school_name: profile.school_name || profile.school_code || undefined,
+        parent_phone: profile.parent_phone || undefined,
+        grade_level: profile.grade_level || undefined,
         student_code: profile.student_code || profile.national_id || undefined,
       };
 
@@ -141,7 +145,11 @@ export async function dbUpsertProfile(profile: Partial<DbProfile> & { id: string
         // Fallback: update by email if UUID primary key prevents inserting non-UUID id
         await supabase.from('profiles').update({
           display_name: payload.display_name,
+          quad_name: payload.quad_name,
           school_code: payload.school_code,
+          school_name: payload.school_name,
+          parent_phone: payload.parent_phone,
+          grade_level: payload.grade_level,
           student_code: payload.student_code,
         }).eq('email', profile.email);
       }
@@ -149,6 +157,42 @@ export async function dbUpsertProfile(profile: Partial<DbProfile> & { id: string
       console.warn('Supabase upsert profile error', e);
     }
   }
+}
+
+/**
+ * جلب ملف المستخدم من Supabase بالبريد الإلكتروني
+ */
+export async function dbFetchProfileByEmail(email: string): Promise<DbProfile | null> {
+  if (isSupabaseConfigured && supabase && email) {
+    try {
+      const clean = email.trim().toLowerCase();
+      const { data, error } = await supabase.from('profiles').select('*').eq('email', clean).maybeSingle();
+      if (!error && data) return data as DbProfile;
+    } catch (e) {
+      console.warn('Supabase fetch profile by email error', e);
+    }
+  }
+  return null;
+}
+
+/**
+ * حذف الحساب نهائياً من قاعدة بيانات Supabase
+ */
+export async function dbDeleteAccount(email?: string | null, id?: string | null): Promise<boolean> {
+  if (isSupabaseConfigured && supabase) {
+    try {
+      if (email) {
+        await supabase.from('profiles').delete().eq('email', email.trim().toLowerCase());
+      }
+      if (id) {
+        await supabase.from('profiles').delete().eq('id', id);
+      }
+      return true;
+    } catch (e) {
+      console.warn('Supabase delete account error', e);
+    }
+  }
+  return false;
 }
 
 /**

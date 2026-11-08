@@ -495,16 +495,43 @@ export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ className = '' }
               </form>
             </div>
 
-            {/* Fish Agent Canvas Container */}
-            <div className="p-4 bg-[#08090d] min-h-[360px] flex flex-col justify-center">
-              <div ref={voiceContainerRef} className="w-full flex justify-center" />
-              <div className="mt-3 text-center text-[11px] text-white/50 flex items-center justify-center gap-2">
-                <Volume2 size={13} className="text-cyan-400" />
-                <span>
-                  {ar
-                    ? 'داروين يستمع لك عبر Fish Audio ومستعد لنقلك وشرح أي تجربة أمامك.'
-                    : 'Darwin is listening via Fish Audio and ready to guide your screen.'}
-                </span>
+            {/* Interactive Audio Waveform & Agent Activity Container */}
+            <div className="p-5 bg-gradient-to-b from-[#0a0c12] to-[#06070a] min-h-[280px] flex flex-col items-center justify-center border-t border-white/5">
+              {/* Dynamic Sound Wave Sphere */}
+              <div className="relative flex items-center justify-center my-3">
+                <div className={`h-24 w-24 rounded-full flex items-center justify-center border transition-all duration-300 ${
+                  isListening
+                    ? 'bg-red-500/20 border-red-500/50 shadow-[0_0_40px_rgba(239,68,68,0.4)]'
+                    : 'bg-cyan-500/10 border-cyan-500/30 shadow-[0_0_30px_rgba(6,182,212,0.25)]'
+                }`}>
+                  <Mic size={36} className={isListening ? 'text-red-400 animate-pulse' : 'text-cyan-400'} />
+                </div>
+                {/* Orbital pulse rings */}
+                <div className="absolute inset-0 rounded-full border border-cyan-500/20 animate-ping pointer-events-none" />
+              </div>
+
+              {/* Sound Wave Frequency Bars */}
+              <div className="flex items-center gap-1.5 h-6 mb-3">
+                {[35, 70, 50, 95, 60, 85, 45, 90, 65, 55, 80, 40].map((h, i) => (
+                  <span
+                    key={i}
+                    className={`w-1 rounded-full transition-all duration-150 ${
+                      isListening ? 'bg-cyan-400 animate-pulse' : 'bg-white/20'
+                    }`}
+                    style={{ height: isListening ? `${h}%` : `${h * 0.35}%` }}
+                  />
+                ))}
+              </div>
+
+              <div className="text-center text-[12px] text-white/80 font-medium max-w-md px-4 leading-relaxed">
+                {isListening
+                  ? (ar ? '🎙️ يستمع داروين إلى صوتك الآن... تحدث وسينفذ أمرك فوراً!' : '🎙️ Darwin is listening... Speak your command!')
+                  : (ar ? 'داروين جاهز للاستماع والتنقل الفوري بين المعامل والسبورة وشرح التجارب.' : 'Darwin is ready for instant voice navigation and science explanations.')}
+              </div>
+
+              <div className="mt-3 flex items-center gap-2 text-[10px] font-mono text-cyan-400 uppercase tracking-wider bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                <Radio size={10} className="animate-pulse" />
+                <span>Fish Audio Real-time Voice Engine 929A1BF3</span>
               </div>
             </div>
           </div>

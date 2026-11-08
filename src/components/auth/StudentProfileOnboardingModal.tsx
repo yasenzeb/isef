@@ -10,8 +10,9 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useSession } from '../../context/SessionContext';
 import { EGYPT_GOVERNORATES } from '../../data/egyptLocationData';
-import { getPersistedJSON, setPersistedJSON, setPersistedItem } from '../../lib/cookies';
+import { getPersistedJSON, setPersistedJSON, setPersistedItem, getPersistedItem } from '../../lib/cookies';
 import { dbUpsertProfile } from '../../lib/supabase';
+import { getScopedUserProfile, saveScopedUserProfile } from '../../lib/userStorage';
 import {
   GraduationCap,
   Building2,
@@ -84,18 +85,27 @@ export const StudentProfileOnboardingModal: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isSignedIn) {
+    if (!isSignedIn || !user) {
       setIsOpen(false);
       return;
     }
-    const existing = getStudentProfile();
-    if (!isProfileComplete(existing)) {
+    const email = user.email;
+    const scoped = email ? getScopedUserProfile(email) : null;
+
+    // Use strictly user-scoped profile to prevent account cross-contamination
+    const effectiveName = scoped?.quadName || '';
+    const effectivePhone = scoped?.parentPhone || '';
+
+    const hasQuad = effectiveName.trim().split(/\s+/).filter(Boolean).length >= 4;
+    const hasPhone = /^01[0125][0-9]{8}$/.test(effectivePhone.replace(/\D/g, ''));
+
+    if (!hasQuad || !hasPhone) {
       setIsOpen(true);
-      if (user?.name) {
-        setQuadName(user.name);
+      if (effectiveName) {
+        setQuadName(effectiveName);
       }
-      if (existing?.parentPhone) {
-        setParentPhone(existing.parentPhone);
+      if (effectivePhone) {
+        setParentPhone(effectivePhone);
       }
     } else {
       setIsOpen(false);
@@ -170,6 +180,17 @@ export const StudentProfileOnboardingModal: React.FC = () => {
     };
 
     try {
+      if (user?.email) {
+        saveScopedUserProfile(user.email, {
+          quadName: profileData.quadName,
+          parentPhone: cleanPhone,
+          gradeLevel: profileData.gradeLevel,
+          schoolName: profileData.schoolName,
+          governorateId: profileData.governorateId,
+          administrationId: profileData.administrationId,
+        });
+      }
+
       setPersistedJSON(STORAGE_KEY, profileData);
       setPersistedItem('scinexa_user_fullname', profileData.quadName);
       setPersistedItem('scinexa_parent_phone', cleanPhone);

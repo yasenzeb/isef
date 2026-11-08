@@ -13,6 +13,7 @@ import { useSession } from '../../context/SessionContext';
 import { LanguageSelector } from '../ui/LanguageSelector';
 import { BrandMark } from '../ui/Brand';
 import { analyzeSearchWithGemini, type GeminiSearchResult } from '../../lib/geminiAI';
+import { tLang } from '../../i18n/langHelpers';
 import {
   GraduationCap,
   Users,
@@ -31,6 +32,13 @@ import {
   Search,
   Sparkles,
   Command,
+  Mic,
+  Radio,
+  Volume2,
+  Bot,
+  Send,
+  FlaskConical,
+  Atom,
 } from 'lucide-react';
 
 export const EducatorLayout: React.FC = () => {
@@ -45,6 +53,163 @@ export const EducatorLayout: React.FC = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [geminiResult, setGeminiResult] = useState<GeminiSearchResult | null>(null);
+
+  // Educator Fish Audio Voice Assistant State
+  const [isVoiceOpen, setIsVoiceOpen] = useState(false);
+  const [voiceCommandText, setVoiceCommandText] = useState('');
+  const [isListening, setIsListening] = useState(false);
+  const [voiceReply, setVoiceReply] = useState<string | null>(null);
+  const [voiceLink, setVoiceLink] = useState<{ to: string; label: string } | null>(null);
+
+  const speakEducator = (text: string) => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      if (language === 'ar') utterance.lang = 'ar-EG';
+      else if (language === 'ja') utterance.lang = 'ja-JP';
+      else if (language === 'fr') utterance.lang = 'fr-FR';
+      else if (language === 'de') utterance.lang = 'de-DE';
+      else utterance.lang = 'en-US';
+      utterance.rate = 1.05;
+      window.speechSynthesis.speak(utterance);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const executeEducatorVoiceCommand = (rawText: string) => {
+    const text = rawText.trim();
+    if (!text) return;
+    const lower = text.toLowerCase();
+
+    if (lower.includes('فصل') || lower.includes('classes') || lower.includes('فصول')) {
+      const rep = ar
+        ? 'حاضر يا أستاذنا، أنقلك الآن إلى إدارة الفصول المدرسية لإضافة فصول جديدة أو تعديلها.'
+        : 'Navigating to Classes management to create or configure school classes.';
+      setVoiceReply(rep);
+      setVoiceLink({ to: '/portal/classes', label: ar ? 'فتح فصولي المدرسية' : 'Open Classes' });
+      speakEducator(rep);
+      setTimeout(() => {
+        navigate('/portal/classes');
+        setIsVoiceOpen(false);
+      }, 1400);
+      return;
+    }
+
+    if (lower.includes('طالب') || lower.includes('طلاب') || lower.includes('students') || lower.includes('أولياء')) {
+      const rep = ar
+        ? 'بالتأكيد، أنقلك إلى سجلات الطلاب وأولياء الأمور للربط بالاسم الرباعي والمتابعة عبر واتساب.'
+        : 'Opening Student & Parent Records for Quad Name linking and WhatsApp contact.';
+      setVoiceReply(rep);
+      setVoiceLink({ to: '/portal/students', label: ar ? 'فتح سجلات الطلاب' : 'Open Student Records' });
+      speakEducator(rep);
+      setTimeout(() => {
+        navigate('/portal/students');
+        setIsVoiceOpen(false);
+      }, 1400);
+      return;
+    }
+
+    if (lower.includes('واجب') || lower.includes('واجبات') || lower.includes('assignments') || lower.includes('تاسك')) {
+      const rep = ar
+        ? 'حاضر، أنقلك لقسم الواجبات والتكليفات المعملية لإنشاء واجب جديد وتحديد موعد التسليم.'
+        : 'Navigating to Assignments to assign new laboratory tasks and homework.';
+      setVoiceReply(rep);
+      setVoiceLink({ to: '/portal/assignments', label: ar ? 'فتح الواجبات' : 'Open Assignments' });
+      speakEducator(rep);
+      setTimeout(() => {
+        navigate('/portal/assignments');
+        setIsVoiceOpen(false);
+      }, 1400);
+      return;
+    }
+
+    if (lower.includes('مؤسس') || lower.includes('مدارس') || lower.includes('institutions') || lower.includes('مدرسة')) {
+      const rep = ar
+        ? 'جارٍ توجيهك إلى إدارة المؤسسات والمدارس وقواعد البيانات.'
+        : 'Opening Institutions & Schools directory.';
+      setVoiceReply(rep);
+      setVoiceLink({ to: '/portal/institutions', label: ar ? 'فتح المؤسسات' : 'Open Institutions' });
+      speakEducator(rep);
+      setTimeout(() => {
+        navigate('/portal/institutions');
+        setIsVoiceOpen(false);
+      }, 1400);
+      return;
+    }
+
+    if (lower.includes('تحليل') || lower.includes('analytics') || lower.includes('إحصائيات')) {
+      const rep = ar
+        ? 'أنقلك الآن للتحليلات الحية ومتابعة نسب إنجاز الطلاب ومتوسط الدرجات.'
+        : 'Opening Live Analytics to inspect student performance and mastery levels.';
+      setVoiceReply(rep);
+      setVoiceLink({ to: '/portal/analytics', label: ar ? 'عرض التحليلات' : 'Open Analytics' });
+      speakEducator(rep);
+      setTimeout(() => {
+        navigate('/portal/analytics');
+        setIsVoiceOpen(false);
+      }, 1400);
+      return;
+    }
+
+    if (lower.includes('كيمياء') || lower.includes('معمل الكيمياء')) {
+      const rep = ar
+        ? 'حاضر يا أستاذ، أفتح لك معمل الكيمياء الافتراضي ثلاثي الأبعاد في تبويب مستقل للشرح العملي.'
+        : 'Launching 3D Chemistry virtual lab for interactive teaching.';
+      setVoiceReply(rep);
+      setVoiceLink({ to: '/app/labs/chemistry', label: ar ? 'فتح معمل الكيمياء 3D' : 'Open Chemistry Lab' });
+      speakEducator(rep);
+      setTimeout(() => {
+        window.open('/app/labs/chemistry', '_blank');
+        setIsVoiceOpen(false);
+      }, 1400);
+      return;
+    }
+
+    // Default intelligent guidance
+    const defaultRep = ar
+      ? `أهلاً بك يا أستاذ ${educator?.name || ''}! يمكنك ربط الطلاب عبر الاسم الرباعي الرسمي، أو إنشاء فصل جديد من قسم "فصولي المدرسية"، أو إضافة واجب معملي في دقائق. كيف يمكنني مساعدتك الآن؟`
+      : `Welcome Educator ${educator?.name || ''}! You can link students via official Quad Names, create classes, or dispatch 3D lab assignments. How may I assist you today?`;
+    setVoiceReply(defaultRep);
+    speakEducator(defaultRep);
+  };
+
+  const toggleEducatorMic = () => {
+    if (typeof window === 'undefined') return;
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert(ar ? 'المتصفح لا يدعم الميكروفون المباشر.' : 'Speech recognition not supported.');
+      return;
+    }
+
+    if (isListening) {
+      setIsListening(false);
+      return;
+    }
+
+    try {
+      const rec = new SpeechRecognition();
+      rec.lang = ar ? 'ar-EG' : language === 'ja' ? 'ja-JP' : language === 'fr' ? 'fr-FR' : language === 'de' ? 'de-DE' : 'en-US';
+      rec.interimResults = false;
+      rec.maxAlternatives = 1;
+
+      rec.onstart = () => setIsListening(true);
+      rec.onresult = (e: any) => {
+        const transcript = e.results?.[0]?.[0]?.transcript || '';
+        if (transcript) {
+          setVoiceCommandText(transcript);
+          executeEducatorVoiceCommand(transcript);
+        }
+        setIsListening(false);
+      };
+      rec.onerror = () => setIsListening(false);
+      rec.onend = () => setIsListening(false);
+      rec.start();
+    } catch {
+      setIsListening(false);
+    }
+  };
 
   useEffect(() => {
     setMobileOpen(false);
@@ -386,6 +551,25 @@ export const EducatorLayout: React.FC = () => {
             {/* Language Selector */}
             <LanguageSelector compact />
 
+            {/* Darwin AI Educator Voice Assistant Trigger */}
+            <button
+              type="button"
+              onClick={() => setIsVoiceOpen(true)}
+              className="sn-btn sn-btn-sm !h-8 px-2.5 rounded-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-[11px] flex items-center gap-1.5 shadow-xs transition-all"
+              title={ar ? 'مساعد داروين الصوتي للمعلمين والإدارة' : 'Darwin AI Voice Assistant'}
+            >
+              <Mic size={13} className="animate-pulse" />
+              <span className="hidden sm:inline">
+                {tLang(language, {
+                  ar: 'المساعد الصوتي',
+                  en: 'Voice Guide',
+                  fr: 'Guide vocal',
+                  de: 'Sprachassistent',
+                  ja: '音声AIガイド',
+                })}
+              </span>
+            </button>
+
             {/* Link to public student app */}
             <Link
               to="/app"
@@ -528,6 +712,174 @@ export const EducatorLayout: React.FC = () => {
                   </button>
                 ))}
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── EDUCATOR FISH AUDIO VOICE CONTROLLER MODAL ── */}
+      {isVoiceOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          dir={ar ? 'rtl' : 'ltr'}
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150"
+        >
+          <div className="relative w-full max-w-[560px] rounded-[24px] bg-[#0c0e14] text-white shadow-2xl border border-white/15 overflow-hidden animate-in zoom-in-95 duration-150">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-white/10 px-5 py-3.5 bg-gradient-to-r from-cyan-950/60 to-transparent">
+              <div className="flex items-center gap-3">
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-cyan-500/20 text-cyan-400">
+                  <Mic size={18} strokeWidth={2.2} />
+                </span>
+                <div>
+                  <div className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-wider text-cyan-400 font-bold">
+                    <Radio size={11} className="animate-pulse" />
+                    <span>Fish Audio Voice Engine · داروين الموجه الصوتي للمعلمين</span>
+                  </div>
+                  <h3 className="text-[14px] font-bold text-white">
+                    {tLang(language, {
+                      ar: 'المساعد الصوتي لإدارة الفصول والمعامل',
+                      en: 'Educator Voice Assistant & Class Controller',
+                      fr: 'Assistant vocal pour enseignants',
+                      de: 'Sprachassistent für Lehrkräfte',
+                      ja: '教員・管理者向け音声アシスタント',
+                    })}
+                  </h3>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsVoiceOpen(false)}
+                className="h-8 w-8 rounded-lg bg-white/10 hover:bg-white/20 text-white/80 hover:text-white flex items-center justify-center transition-colors"
+              >
+                <X size={16} strokeWidth={2} />
+              </button>
+            </div>
+
+            {/* Educator Context Ribbon */}
+            <div className="px-5 py-2.5 bg-white/5 border-b border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+              <div className="flex items-center gap-2 text-cyan-300">
+                <span className="font-mono text-[10px] text-white/60">
+                  {ar ? 'المعلم المشرف:' : 'Educator:'}
+                </span>
+                <strong className="text-white font-medium">{educator?.name}</strong>
+              </div>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                {educator?.role === 'admin' ? (ar ? 'مدير نظام معتمد' : 'Admin') : (ar ? 'معلم مشرف معتمد' : 'Teacher')}
+              </span>
+            </div>
+
+            {/* Animated Equalizer Waveform */}
+            <div className="px-5 pt-4 pb-2 flex items-center justify-between">
+              <div className="text-[11px] text-cyan-400 font-semibold flex items-center gap-2">
+                <Volume2 size={14} />
+                <span>
+                  {isListening
+                    ? (ar ? 'جارٍ الاستماع لصوتك الآن...' : 'Listening...')
+                    : (ar ? 'تحدث بأمرك أو اختر من الإجراءات السريعة:' : 'Speak command or select action:')}
+                </span>
+              </div>
+              <div className="flex items-center gap-1 h-5">
+                {[30, 70, 50, 90, 60, 80, 40, 95, 65, 55].map((h, i) => (
+                  <span
+                    key={i}
+                    className={`w-0.5 rounded-full transition-all duration-200 ${
+                      isListening ? 'bg-cyan-400 animate-pulse' : 'bg-white/30'
+                    }`}
+                    style={{ height: isListening ? `${h}%` : `${h * 0.35}%` }}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Action Voice Chips for Educators */}
+            <div className="px-5 py-2">
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  { label: '🏫 إدارة الفصول الدراسية', cmd: 'انقلني للفصول' },
+                  { label: '👥 سجلات الطلاب وأولياء الأمور', cmd: 'افتح سجلات الطلاب' },
+                  { label: '📋 إنشاء واجب وتكليف معملي', cmd: 'افتح قسم الواجبات' },
+                  { label: '🧪 فتح معمل الكيمياء 3D للشرح', cmd: 'افتح معمل الكيمياء' },
+                  { label: '📊 عرض التحليلات الحية والنتائج', cmd: 'افتح التحليلات' },
+                  { label: '🏫 بيانات المدارس والمؤسسات', cmd: 'المؤسسات المدرسية' },
+                ].map((chip) => (
+                  <button
+                    key={chip.cmd}
+                    type="button"
+                    onClick={() => executeEducatorVoiceCommand(chip.cmd)}
+                    className="px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-white/90 hover:text-white text-[11px] font-medium transition-colors"
+                  >
+                    {chip.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Response Display Box */}
+            {voiceReply && (
+              <div className="mx-5 my-3 p-3.5 rounded-2xl bg-cyan-950/40 border border-cyan-500/30 text-cyan-100 text-[12px] leading-relaxed">
+                <div className="font-bold text-cyan-300 text-[11px] mb-1 flex items-center gap-1.5">
+                  <Bot size={13} />
+                  <span>{ar ? 'توجيه داروين للمعلم:' : 'Darwin Educator Guidance:'}</span>
+                </div>
+                <div>{voiceReply}</div>
+                {voiceLink && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigate(voiceLink.to);
+                      setIsVoiceOpen(false);
+                    }}
+                    className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black text-[11px] font-bold transition-colors"
+                  >
+                    <span>{voiceLink.label}</span>
+                    <ArrowRight size={11} className={ar ? 'rotate-180' : ''} />
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Voice & Text Input Bar */}
+            <div className="p-4 bg-black/40 border-t border-white/10">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (voiceCommandText.trim()) executeEducatorVoiceCommand(voiceCommandText);
+                }}
+                className="flex items-center gap-2"
+              >
+                <button
+                  type="button"
+                  onClick={toggleEducatorMic}
+                  className={`h-10 w-10 rounded-xl flex items-center justify-center transition-all ${
+                    isListening
+                      ? 'bg-red-500 text-white animate-pulse'
+                      : 'bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30'
+                  }`}
+                  title={ar ? 'تحدث بالميكروفون' : 'Voice Input'}
+                >
+                  <Mic size={17} />
+                </button>
+                <input
+                  type="text"
+                  value={voiceCommandText}
+                  onChange={(e) => setVoiceCommandText(e.target.value)}
+                  placeholder={
+                    isListening
+                      ? (ar ? 'جارٍ الاستماع لصوتك الآن...' : 'Listening...')
+                      : (ar ? 'قل أمرك أو اكتب (مثال: أضف فصل جديد، افتح معمل الكيمياء)...' : 'Speak or type command for Darwin...')
+                  }
+                  className="flex-1 h-10 px-3 rounded-xl bg-white/5 border border-white/15 text-[12px] text-white placeholder:text-white/40 outline-none focus:border-cyan-500"
+                />
+                <button
+                  type="submit"
+                  className="h-10 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-[12px] font-bold flex items-center gap-1.5 transition-colors"
+                >
+                  <Send size={13} />
+                  <span>{tLang(language, { ar: 'تنفيذ', en: 'Run', fr: 'Exécuter', de: 'Starten', ja: '実行' })}</span>
+                </button>
+              </form>
             </div>
           </div>
         </div>
