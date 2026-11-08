@@ -33,6 +33,7 @@ import {
   dbDeleteProfile,
   dbFetchInstitutions,
   dbCreateInstitution,
+  dbUpdateInstitution,
   dbDeleteInstitution,
   type DbProfile,
   type DbClass,
@@ -61,6 +62,9 @@ import {
   Trash2,
   Plus,
   AlertCircle,
+  MessageSquare,
+  Pencil,
+  Phone,
 } from 'lucide-react';
 
 const Avatar: React.FC<{ name?: string; tone?: string }> = ({ name = '', tone = 'bg-[#f5f5f5] text-[#171717]' }) => (
@@ -379,6 +383,7 @@ const AddStudentModal: React.FC<{
 }> = ({ isOpen, onClose, onAdded, classes, ar }) => {
   const [quadName, setQuadName] = useState('');
   const [nationalId, setNationalId] = useState('');
+  const [parentPhone, setParentPhone] = useState('');
   const [classId, setClassId] = useState('');
   const [schoolName, setSchoolName] = useState('');
   const [governorateId, setGovernorateId] = useState('cairo');
@@ -409,6 +414,12 @@ const AddStudentModal: React.FC<{
       return;
     }
 
+    const cleanPhone = parentPhone.trim().replace(/\D/g, '');
+    if (cleanPhone && !/^01[0125][0-9]{8}$/.test(cleanPhone)) {
+      setError(ar ? 'رقم هاتف ولي الأمر يجب أن يكون رقماً مصرياً صحيحاً (١١ رقماً يبدأ بـ 010 أو 011 أو 012 أو 015).' : 'Parent phone must be a valid 11-digit Egyptian mobile number.');
+      return;
+    }
+
     const cleanNat = nationalId.trim();
     if (cleanNat && !/^\d{14}$/.test(cleanNat)) {
       setError(ar ? 'الرقم القومي يجب أن يتكون من ١٤ رقماً مصرياً صحيحاً.' : 'National ID must be 14 digits.');
@@ -420,6 +431,7 @@ const AddStudentModal: React.FC<{
     const newStudent = addStudentToClassByTeacher({
       quadName: quadName.trim(),
       nationalId: cleanNat || undefined,
+      parentPhone: cleanPhone || undefined,
       classId: classId || (classes[0]?.id || 'default'),
       classNameAr: selectedCls?.name_ar,
       teacherId: selectedCls?.teacher_id,
@@ -482,6 +494,20 @@ const AddStudentModal: React.FC<{
               value={nationalId}
               onChange={(e) => setNationalId(e.target.value.replace(/\D/g, ''))}
               placeholder={ar ? 'مثال: 30801011234567' : '14-digit Egyptian National ID'}
+              className="sn-input !h-10 text-[13px] font-mono"
+            />
+          </div>
+
+          <div>
+            <label className="block text-[12px] font-semibold text-[#171717] mb-1">
+              {ar ? 'رقم هاتف ولي الأمر (واتساب للمتابعة)' : 'Parent Mobile Number (WhatsApp)'}
+            </label>
+            <input
+              type="tel"
+              dir="ltr"
+              value={parentPhone}
+              onChange={(e) => setParentPhone(e.target.value)}
+              placeholder="010XXXXXXXX / 011... / 012..."
               className="sn-input !h-10 text-[13px] font-mono"
             />
           </div>
@@ -574,6 +600,7 @@ export const StudentsPage: React.FC = () => {
       code: s.nationalId ? `ID: ${s.nationalId.slice(-4)}` : (s.id || '2026').slice(-6).toUpperCase(),
       classEn: s.classNameAr || 'General',
       classAr: s.classNameAr || 'فصل عام',
+      parentPhone: s.parentPhone || (s as any).parent_phone || '',
       mastery: s.mastery ?? 0,
       lastEn: s.lastActiveDate || 'Today',
       lastAr: s.lastActiveDate || 'اليوم',
@@ -678,6 +705,7 @@ export const StudentsPage: React.FC = () => {
                 <tr className="border-b border-[#f0f0f0] text-[10px] uppercase tracking-[0.08em] text-[#a3a3a3]">
                   <th className="px-5 py-2.5 text-start font-medium">{ar ? 'الطالب' : 'Student'}</th>
                   <th className="px-3 py-2.5 text-start font-medium">{ar ? 'الفصل' : 'Class'}</th>
+                  <th className="px-3 py-2.5 text-start font-medium">{ar ? 'ولي الأمر وواتساب' : 'Parent & WhatsApp'}</th>
                   <th className="px-3 py-2.5 text-start font-medium">{ar ? 'الإتقان' : 'Mastery'}</th>
                   <th className="px-3 py-2.5 text-start font-medium">{ar ? 'آخر نشاط' : 'Last active'}</th>
                   <th className="px-5 py-2.5 text-start font-medium">{ar ? 'الحالة' : 'Status'}</th>
@@ -697,6 +725,24 @@ export const StudentsPage: React.FC = () => {
                       </div>
                     </td>
                     <td className="px-3 py-3 text-[#737373]">{ar ? student.classAr : student.classEn}</td>
+                    <td className="px-3 py-3">
+                      {student.parentPhone ? (
+                        <a
+                          href={`https://wa.me/20${student.parentPhone.replace(/\D/g, '').replace(/^0/, '')}?text=${encodeURIComponent(
+                            `السلام عليكم ورحمة الله، تحية طيبة لولي أمر الطالب (${student.nameAr}) المحترم.\nنحيطكم علماً بتقرير أدائه وتفاعله في منصة SciNexa للعلوم، حيث بلغت نسبة إتقانه المعملي ${student.mastery}%. نسعد بتواصلكم ومتابعتكم المستمرة.`
+                          )}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 text-[11px] font-bold transition-all shadow-xs"
+                          title={ar ? 'مراسلة عبر واتساب' : 'Chat via WhatsApp'}
+                        >
+                          <MessageSquare size={12} className="text-emerald-600" />
+                          <span className="font-mono">{student.parentPhone}</span>
+                        </a>
+                      ) : (
+                        <span className="text-[11px] text-[#a3a3a3] italic">{ar ? 'لم يُسجل' : 'None'}</span>
+                      )}
+                    </td>
                     <td className="px-3 py-3">
                       <div className="flex items-center gap-2">
                         <div className="h-1.5 w-16 overflow-hidden rounded-full bg-[#f0f0f0]">
@@ -1208,12 +1254,96 @@ const AddInstitutionModal: React.FC<{
   );
 };
 
+/* ── Edit Institution Modal ──────────────────────────────────────────────── */
+const EditInstitutionModal: React.FC<{
+  isOpen: boolean;
+  onClose: () => void;
+  institution: DbInstitution | null;
+  onUpdated: (updated: DbInstitution) => void;
+  ar: boolean;
+}> = ({ isOpen, onClose, institution, onUpdated, ar }) => {
+  const [nameAr, setNameAr] = useState('');
+  const [cityAr, setCityAr] = useState('القاهرة');
+  const [status, setStatus] = useState<'active' | 'trial'>('active');
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (institution) {
+      setNameAr(institution.name_ar);
+      setCityAr(institution.city_ar);
+      setStatus(institution.status);
+    }
+  }, [institution]);
+
+  if (!isOpen || !institution) return null;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nameAr.trim()) return;
+    setLoading(true);
+    const updated: DbInstitution = {
+      ...institution,
+      name_ar: nameAr.trim(),
+      city_ar: cityAr,
+      city_en: cityAr === 'القاهرة' ? 'Cairo' : cityAr === 'الإسكندرية' ? 'Alexandria' : cityAr,
+      status,
+    };
+    await dbUpdateInstitution(institution.id, {
+      name_ar: nameAr.trim(),
+      city_ar: cityAr,
+      status,
+    });
+    setLoading(false);
+    onUpdated(updated);
+    onClose();
+  };
+
+  return (
+    <div role="dialog" aria-modal="true" dir={ar ? 'rtl' : 'ltr'} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <div className="relative w-full max-w-[460px] overflow-hidden rounded-[22px] bg-white border border-[#e5e5e5] p-6 shadow-2xl">
+        <div className="flex items-center justify-between border-b border-[#f0f0f0] pb-4 mb-4">
+          <h3 className="text-[16px] font-bold text-[#0a0a0a]">{ar ? 'تعديل بيانات المؤسسة' : 'Edit Institution'}</h3>
+          <button type="button" onClick={onClose} className="sn-btn sn-btn-quiet sn-btn-icon"><X size={16} /></button>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-3.5">
+          <div>
+            <label className="block text-[12px] font-semibold text-[#171717] mb-1">{ar ? 'اسم المؤسسة / المدرسة *' : 'School Name *'}</label>
+            <input required value={nameAr} onChange={(e) => setNameAr(e.target.value)} className="sn-input !h-10 text-[13px]" />
+          </div>
+          <div>
+            <label className="block text-[12px] font-semibold text-[#171717] mb-1">{ar ? 'المدينة / المحافظة' : 'City / Governorate'}</label>
+            <select value={cityAr} onChange={(e) => setCityAr(e.target.value)} className="sn-input !h-10 text-[12px]">
+              {EGYPT_GOVERNORATES.map((g) => (
+                <option key={g.id} value={g.nameAr}>{g.nameAr}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-[12px] font-semibold text-[#171717] mb-1">{ar ? 'حالة الاشتراك' : 'Status'}</label>
+            <select value={status} onChange={(e) => setStatus(e.target.value as any)} className="sn-input !h-10 text-[12px]">
+              <option value="active">{ar ? 'نشط ومعتمد' : 'Active'}</option>
+              <option value="trial">{ar ? 'فترة تجريبية' : 'Trial'}</option>
+            </select>
+          </div>
+          <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#f0f0f0]">
+            <button type="button" onClick={onClose} className="sn-btn sn-btn-outline sn-btn-sm">{ar ? 'إلغاء' : 'Cancel'}</button>
+            <button type="submit" disabled={loading} className="sn-btn sn-btn-primary sn-btn-sm">
+              {loading ? (ar ? 'جارٍ الحفظ…' : 'Saving…') : ar ? 'حفظ التعديلات' : 'Save Changes'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 /* ── Institutions Page ────────────────────────────────────────────────────── */
 export const InstitutionsPage: React.FC = () => {
   const { language } = useLanguage();
   const ar = language === 'ar';
   const [institutions, setInstitutions] = useState<DbInstitution[]>([]);
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [editingInst, setEditingInst] = useState<DbInstitution | null>(null);
   const [loading, setLoading] = useState(true);
 
   const loadData = async () => {
@@ -1256,6 +1386,16 @@ export const InstitutionsPage: React.FC = () => {
         isOpen={isAddOpen}
         onClose={() => setIsAddOpen(false)}
         onCreated={(newInst) => setInstitutions((prev) => [newInst, ...prev])}
+        ar={ar}
+      />
+
+      <EditInstitutionModal
+        isOpen={Boolean(editingInst)}
+        institution={editingInst}
+        onClose={() => setEditingInst(null)}
+        onUpdated={(updated) =>
+          setInstitutions((prev) => prev.map((i) => (i.id === updated.id ? updated : i)))
+        }
         ar={ar}
       />
 
@@ -1320,6 +1460,14 @@ export const InstitutionsPage: React.FC = () => {
                       </span>
                     </td>
                     <td className="px-5 py-3 text-end">
+                      <button
+                        type="button"
+                        onClick={() => setEditingInst(item)}
+                        className="text-[#737373] hover:text-[#0a0a0a] p-1 rounded-lg hover:bg-[#f5f5f5] transition-colors me-1"
+                        title={ar ? 'تعديل بيانات المؤسسة' : 'Edit Institution'}
+                      >
+                        <Pencil size={14} />
+                      </button>
                       <button
                         type="button"
                         onClick={() => handleDelete(item.id, item.name_ar)}

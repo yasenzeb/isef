@@ -26,6 +26,7 @@ import {
   type CurriculumPathway,
 } from '../../data/curriculumData';
 import { updateAndGetRealStreak, calculateStudentLevel, recordSubmission } from '../../data/schoolEnrollment';
+import { analyzeSearchWithGemini, type GeminiSearchResult } from '../../lib/geminiAI';
 import { PageHeader, ProgressBar } from './ui';
 import {
   Search,
@@ -316,6 +317,19 @@ export const CurriculumPage: React.FC = () => {
   const [selectedGrade, setSelectedGrade] = useState<string>('all');
   const [selectedSubject, setSelectedSubject] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [geminiResult, setGeminiResult] = useState<GeminiSearchResult | null>(null);
+
+  useEffect(() => {
+    if (!searchQuery.trim() || searchQuery.trim().length < 2) {
+      setGeminiResult(null);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      const res = await analyzeSearchWithGemini(searchQuery, language);
+      setGeminiResult(res);
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [searchQuery, language]);
 
   const [quizLesson, setQuizLesson] = useState<CurriculumLesson | null>(null);
   const [videoLesson, setVideoLesson] = useState<CurriculumLesson | null>(null);
@@ -534,6 +548,37 @@ export const CurriculumPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* ── Gemini AI Smart Intent Match (Curriculum) ── */}
+      {geminiResult && (
+        <div className="mb-6 rounded-2xl border border-cyan-500/30 bg-gradient-to-r from-cyan-500/10 via-blue-500/5 to-transparent p-4 sm:p-5 shadow-xs animate-in fade-in duration-200">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2 text-[12px] font-bold text-cyan-700">
+              <Sparkles size={16} className="text-cyan-500 animate-pulse" />
+              <span>{ar ? 'تحليل ذكي بواسطة Gemini AI' : 'Gemini AI Smart Intent Analysis'}</span>
+            </div>
+            <span className="sn-badge sn-badge-blue !text-[10px]">
+              {geminiResult.matchedLab.badgeText}
+            </span>
+          </div>
+          <h4 className="text-[14px] font-bold text-[#0f172a] mb-1">
+            {ar ? geminiResult.intentAr : geminiResult.intentEn}
+          </h4>
+          <p className="text-[12px] text-[#475569] leading-relaxed mb-3">
+            {ar ? geminiResult.explanationAr : geminiResult.explanationEn}
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => navigate(geminiResult.matchedLab.path)}
+              className="sn-btn sn-btn-primary sn-btn-sm text-[12px] font-bold flex items-center gap-1.5"
+            >
+              <span>{ar ? `فتح ${geminiResult.matchedLab.titleAr} فوراً` : `Open ${geminiResult.matchedLab.titleEn}`}</span>
+              <ArrowRight size={13} className={ar ? 'rotate-180' : ''} />
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ── Progress Status Bar ── */}
       <div className="mb-6 rounded-2xl bg-white border border-[#e2e8f0] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">

@@ -14,7 +14,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
     const saved = getPersistedItem('scinexa_language', 'ar') as Language;
-    return saved && ['en', 'ar', 'fr', 'de'].includes(saved) ? saved : 'ar';
+    return saved && ['en', 'ar', 'fr', 'de', 'ja'].includes(saved) ? saved : 'ar';
   });
 
   const setLanguage = (lang: Language) => {

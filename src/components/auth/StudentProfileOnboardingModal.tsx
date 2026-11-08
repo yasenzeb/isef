@@ -20,10 +20,12 @@ import {
  ArrowRight,
  ShieldAlert,
  Sparkles,
+ Phone,
 } from 'lucide-react';
 
 export interface StudentProfileData {
  quadName: string;
+ parentPhone: string;
  governorateId: string;
  governorateNameAr: string;
  administrationId: string;
@@ -42,8 +44,11 @@ export const getStudentProfile = (): StudentProfileData | null => {
 export const isProfileComplete = (profile: StudentProfileData | null): boolean => {
  if (!profile) return false;
  const words = (profile.quadName || '').trim().split(/\s+/).filter(Boolean);
+ const cleanPhone = (profile.parentPhone || '').replace(/\D/g, '');
+ const isPhoneValid = /^01[0125][0-9]{8}$/.test(cleanPhone);
  return (
  words.length >= 4 &&
+ isPhoneValid &&
  Boolean(profile.schoolName?.trim()) &&
  Boolean(profile.gradeLevel?.trim()) &&
  Boolean(profile.governorateId?.trim()) &&
@@ -69,6 +74,7 @@ export const StudentProfileOnboardingModal: React.FC = () => {
 
  const [isOpen, setIsOpen] = useState(false);
  const [quadName, setQuadName] = useState('');
+ const [parentPhone, setParentPhone] = useState('');
  const [governorateId, setGovernorateId] = useState('cairo');
  const [adminId, setAdminId] = useState('');
  const [schoolName, setSchoolName] = useState('');
@@ -85,6 +91,9 @@ export const StudentProfileOnboardingModal: React.FC = () => {
  setIsOpen(true);
  if (user?.name) {
  setQuadName(user.name);
+ }
+ if (existing?.parentPhone) {
+ setParentPhone(existing.parentPhone);
  }
  } else {
  setIsOpen(false);
@@ -116,6 +125,16 @@ export const StudentProfileOnboardingModal: React.FC = () => {
  return;
  }
 
+ const cleanPhone = parentPhone.trim().replace(/\D/g, '');
+ if (!cleanPhone || !/^01[0125][0-9]{8}$/.test(cleanPhone)) {
+ setError(
+ ar
+ ? 'رقم هاتف ولي الأمر إجباري للمتابعة، ويجب أن يكون رقماً مصرياً صحيحاً مكوناً من ١١ رقماً يبدأ بـ 010 أو 011 أو 012 أو 015.'
+ : 'Parent mobile number is mandatory (valid 11-digit Egyptian mobile starting with 010, 011, 012, or 015).'
+ );
+ return;
+ }
+
  if (!schoolName.trim() || schoolName.trim().length < 3) {
  setError(ar ? 'يرجى إدخال اسم مدرستك الحالية.' : 'Please enter your school name.');
  return;
@@ -130,6 +149,7 @@ export const StudentProfileOnboardingModal: React.FC = () => {
 
  const profileData: StudentProfileData = {
  quadName: quadName.trim(),
+ parentPhone: cleanPhone,
  governorateId: selectedGov.id,
  governorateNameAr: selectedGov.nameAr,
  administrationId: adminId,
@@ -142,6 +162,7 @@ export const StudentProfileOnboardingModal: React.FC = () => {
  try {
  setPersistedJSON(STORAGE_KEY, profileData);
  setPersistedItem('scinexa_user_fullname', profileData.quadName);
+ setPersistedItem('scinexa_parent_phone', cleanPhone);
  setPersistedItem('scinexa_school', profileData.schoolName);
  setPersistedItem('scinexa_gov_id', profileData.governorateId);
  setPersistedItem('scinexa_admin_id', profileData.administrationId);
@@ -152,6 +173,7 @@ export const StudentProfileOnboardingModal: React.FC = () => {
    email: user?.email,
    display_name: profileData.quadName,
    quad_name: profileData.quadName,
+   parent_phone: cleanPhone,
    school_code: profileData.schoolName,
    school_name: profileData.schoolName,
    governorate_id: profileData.governorateId,
@@ -223,6 +245,30 @@ export const StudentProfileOnboardingModal: React.FC = () => {
  </div>
  <p className="text-[10px] text-[#737373] mt-1">
  {ar ? 'يجب ألا يقل عن أربعة أسماء رسمية.' : 'Must contain at least 4 name segments.'}
+ </p>
+ </div>
+
+ {/* Mandatory Parent Phone */}
+ <div>
+ <label className="block text-[12px] font-semibold text-[#171717] mb-1.5" htmlFor="parent-phone">
+ {ar ? 'رقم هاتف ولي الأمر (إجباري للتواصل والمتابعة الأكاديمية)' : 'Parent / Guardian Mobile Phone'}
+ <span className="text-red-500 ms-1">*</span>
+ </label>
+ <div className="relative">
+ <input
+ id="parent-phone"
+ required
+ type="tel"
+ dir="ltr"
+ value={parentPhone}
+ onChange={(e) => setParentPhone(e.target.value)}
+ placeholder="010XXXXXXXX / 011... / 012... / 015..."
+ className="w-full h-11 px-3.5 pe-10 rounded-xl border border-[#e5e5e5] bg-[#fafafa] text-[13px] text-[#0a0a0a] outline-none focus:border-[#1d4ed8] transition-all font-mono"
+ />
+ <Phone size={16} className="absolute end-3.5 top-1/2 -translate-y-1/2 text-[#737373]" />
+ </div>
+ <p className="text-[10px] text-[#059669] mt-1 font-medium">
+ {ar ? 'يتم ربط الرقم مباشرة بالمعلم للتواصل الفوري عبر واتساب.' : 'Linked directly to teacher for WhatsApp progress reports.'}
  </p>
  </div>
 

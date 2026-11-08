@@ -27,6 +27,7 @@ import { BrandMark } from './components/ui/Brand';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { EducatorPortalLogin } from './components/portal/EducatorPortalLogin';
 import { EducatorLayout } from './components/portal/EducatorLayout';
+import { EducatorOverview } from './components/portal/EducatorOverview';
 
 const SsoCallback: React.FC = () => {
   if (!isClerkConfigured) return <Navigate to="/" replace />;
@@ -77,7 +78,7 @@ const AppRoutes: React.FC = () => (
 
     {/* Educator Portal Workspace */}
     <Route path="/portal" element={<EducatorLayout />}>
-      <Route index element={<ClassesPage />} />
+      <Route index element={<EducatorOverview />} />
       <Route path="classes" element={<ClassesPage />} />
       <Route path="students" element={<StudentsPage />} />
       <Route path="assignments" element={<AssignmentsPage />} />

@@ -4,10 +4,11 @@ import { Language } from '../../i18n/translations';
 import { Globe, ChevronDown, Check } from 'lucide-react';
 
 const LANGUAGES: { code: Language; name: string; nativeName: string; flag: string }[] = [
- { code: 'ar', name: 'Arabic', nativeName: 'العربية', flag: '🇪🇬' },
- { code: 'en', name: 'English', nativeName: 'English', flag: '🇬🇧' },
- { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷' },
- { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪' },
+  { code: 'ar', name: 'Arabic', nativeName: 'العربية', flag: '🇪🇬' },
+  { code: 'en', name: 'English', nativeName: 'English', flag: '🇬🇧' },
+  { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷' },
+  { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪' },
+  { code: 'ja', name: 'Japanese', nativeName: '日本語', flag: '🇯🇵' },
 ];
 
 export const LanguageSelector: React.FC<{ compact?: boolean }> = ({ compact = false }) => {

@@ -1,6 +1,7 @@
 import { SciNexaNavDock } from '../SciNexaNavDock';
 import { LanguageSelector } from '../ui/LanguageSelector';
 import { StudentProfileOnboardingModal } from '../auth/StudentProfileOnboardingModal';
+import { analyzeSearchWithGemini, type GeminiSearchResult } from '../../lib/geminiAI';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
@@ -39,12 +40,13 @@ type NavItem = {
   ar: string;
   fr: string;
   de: string;
+  ja: string;
   icon: React.ElementType;
   end?: boolean;
   roles?: AppRole[];
 };
 
-type NavGroup = { en: string; ar: string; fr: string; de: string; items: NavItem[] };
+type NavGroup = { en: string; ar: string; fr: string; de: string; ja: string; items: NavItem[] };
 
 const NAV: NavGroup[] = [
   {
@@ -52,13 +54,14 @@ const NAV: NavGroup[] = [
     ar: 'مساحة العمل',
     fr: 'Espace de travail',
     de: 'Arbeitsbereich',
+    ja: 'ワークスペース',
     items: [
-      { to: '/app', en: 'Overview', ar: 'نظرة عامة', fr: 'Vue d’ensemble', de: 'Übersicht', icon: LayoutDashboard, end: true },
-      { to: '/app/curriculum', en: 'Curriculum', ar: 'المناهج', fr: 'Programmes', de: 'Lehrplan', icon: BookOpen },
-      { to: '/app/labs', en: 'Laboratories', ar: 'المعامل', fr: 'Laboratoires', de: 'Labore', icon: FlaskConical },
-      { to: '/app/classroom', en: 'Classroom', ar: 'السبورة', fr: 'Tableau interactif', de: 'Klassenraum', icon: Presentation },
-      { to: '/app/progress', en: 'Progress', ar: 'التقدّم', fr: 'Progression', de: 'Fortschritt', icon: BarChart3, roles: ['student'] },
-      { to: '/app/assistant', en: 'Assistant', ar: 'المساعد', fr: 'Assistant IA', de: 'Assistent', icon: MessageSquareText },
+      { to: '/app', en: 'Overview', ar: 'نظرة عامة', fr: 'Vue d’ensemble', de: 'Übersicht', ja: '概要', icon: LayoutDashboard, end: true },
+      { to: '/app/curriculum', en: 'Curriculum', ar: 'المناهج', fr: 'Programmes', de: 'Lehrplan', ja: 'カリキュラム', icon: BookOpen },
+      { to: '/app/labs', en: 'Laboratories', ar: 'المعامل', fr: 'Laboratoires', de: 'Labore', ja: '実験室', icon: FlaskConical },
+      { to: '/app/classroom', en: 'Classroom', ar: 'السبورة', fr: 'Tableau interactif', de: 'Klassenraum', ja: 'スマート黒板', icon: Presentation },
+      { to: '/app/progress', en: 'Progress', ar: 'التقدّم', fr: 'Progression', de: 'Fortschritt', ja: '学習進捗', icon: BarChart3, roles: ['student'] },
+      { to: '/app/assistant', en: 'Assistant', ar: 'المساعد', fr: 'Assistant IA', de: 'Assistent', ja: 'AI科学助手', icon: MessageSquareText },
     ],
   },
   {
@@ -66,39 +69,42 @@ const NAV: NavGroup[] = [
     ar: 'الحساب',
     fr: 'Compte',
     de: 'Konto',
-    items: [{ to: '/app/settings', en: 'Settings', ar: 'الإعدادات', fr: 'Paramètres', de: 'Einstellungen', icon: Settings }],
+    ja: 'アカウント',
+    items: [{ to: '/app/settings', en: 'Settings', ar: 'الإعدادات', fr: 'Paramètres', de: 'Einstellungen', ja: '設定', icon: Settings }],
   },
 ];
 
-const ROLE_LABEL: Record<AppRole, { en: string; ar: string; fr: string; de: string; tone: string }> = {
-  student: { en: 'Student', ar: 'طالب', fr: 'Élève', de: 'Schüler', tone: 'sn-badge-blue' },
-  teacher: { en: 'Teacher', ar: 'معلم', fr: 'Enseignant', de: 'Lehrer', tone: 'sn-badge-green' },
-  admin: { en: 'Administrator', ar: 'إدارة', fr: 'Administrateur', de: 'Administrator', tone: 'sn-badge-amber' },
+const ROLE_LABEL: Record<AppRole, { en: string; ar: string; fr: string; de: string; ja: string; tone: string }> = {
+  student: { en: 'Student', ar: 'طالب', fr: 'Élève', de: 'Schüler', ja: '生徒', tone: 'sn-badge-blue' },
+  teacher: { en: 'Teacher', ar: 'معلم', fr: 'Enseignant', de: 'Lehrer', ja: '教員', tone: 'sn-badge-green' },
+  admin: { en: 'Administrator', ar: 'إدارة', fr: 'Administrateur', de: 'Administrator', ja: '管理者', tone: 'sn-badge-amber' },
 };
 
 const pageTitle = (path: string, lang: string): string => {
-  const map: Record<string, { en: string; ar: string; fr: string; de: string }> = {
-    '/app': { en: 'Overview', ar: 'نظرة عامة', fr: 'Vue d’ensemble', de: 'Übersicht' },
-    '/app/curriculum': { en: 'Curriculum', ar: 'المناهج', fr: 'Programmes', de: 'Lehrplan' },
-    '/app/labs': { en: 'Laboratories', ar: 'المعامل', fr: 'Laboratoires', de: 'Labore' },
-    '/app/classroom': { en: 'Classroom', ar: 'السبورة', fr: 'Tableau interactif', de: 'Klassenraum' },
-    '/app/progress': { en: 'Progress', ar: 'التقدّم', fr: 'Progression', de: 'Fortschritt' },
-    '/app/assistant': { en: 'Assistant', ar: 'المساعد', fr: 'Assistant IA', de: 'Assistent' },
-    '/app/classes': { en: 'My classes', ar: 'فصولي', fr: 'Mes classes', de: 'Meine Klassen' },
-    '/app/students': { en: 'Students', ar: 'الطلاب', fr: 'Élèves', de: 'Schüler' },
-    '/app/assignments': { en: 'Assignments', ar: 'الواجبات', fr: 'Devoirs', de: 'Aufgaben' },
-    '/app/institutions': { en: 'Institutions', ar: 'المؤسسات', fr: 'Établissements', de: 'Institutionen' },
-    '/app/users': { en: 'Users & roles', ar: 'المستخدمون والأدوار', fr: 'Utilisateurs & rôles', de: 'Benutzer & Rollen' },
-    '/app/analytics': { en: 'Analytics', ar: 'التحليلات', fr: 'Analytique', de: 'Analysen' },
-    '/app/settings': { en: 'Settings', ar: 'الإعدادات', fr: 'Paramètres', de: 'Einstellungen' },
+  const map: Record<string, { en: string; ar: string; fr: string; de: string; ja: string }> = {
+    '/app': { en: 'Overview', ar: 'نظرة عامة', fr: 'Vue d’ensemble', de: 'Übersicht', ja: '概要' },
+    '/app/curriculum': { en: 'Curriculum', ar: 'المناهج', fr: 'Programmes', de: 'Lehrplan', ja: 'カリキュラム' },
+    '/app/labs': { en: 'Laboratories', ar: 'المعامل', fr: 'Laboratoires', de: 'Labore', ja: '実験室' },
+    '/app/classroom': { en: 'Classroom', ar: 'السبورة', fr: 'Tableau interactif', de: 'Klassenraum', ja: 'スマート黒板' },
+    '/app/progress': { en: 'Progress', ar: 'التقدّم', fr: 'Progression', de: 'Fortschritt', ja: '学習進捗' },
+    '/app/assistant': { en: 'Assistant', ar: 'المساعد', fr: 'Assistant IA', de: 'Assistent', ja: 'AI科学助手' },
+    '/app/classes': { en: 'My classes', ar: 'فصولي', fr: 'Mes classes', de: 'Meine Klassen', ja: '担当クラス' },
+    '/app/students': { en: 'Students', ar: 'الطلاب', fr: 'Élèves', de: 'Schüler', ja: '生徒名簿' },
+    '/app/assignments': { en: 'Assignments', ar: 'الواجبات', fr: 'Devoirs', de: 'Aufgaben', ja: '課題・提出物' },
+    '/app/institutions': { en: 'Institutions', ar: 'المؤسسات', fr: 'Établissements', de: 'Institutionen', ja: '教育機関' },
+    '/app/users': { en: 'Users & roles', ar: 'المستخدمون والأدوار', fr: 'Utilisateurs & rôles', de: 'Benutzer & Rollen', ja: 'ユーザーと権限' },
+    '/app/analytics': { en: 'Analytics', ar: 'التحليلات', fr: 'Analytique', de: 'Analysen', ja: '学習分析' },
+    '/app/settings': { en: 'Settings', ar: 'الإعدادات', fr: 'Paramètres', de: 'Einstellungen', ja: '設定' },
   };
   if (path.startsWith('/app/labs/')) {
+    if (lang === 'ja') return '3Dバーチャル実験室';
     if (lang === 'fr') return 'Laboratoire 3D';
     if (lang === 'de') return '3D-Labor';
     if (lang === 'ar') return 'المعمل 3D';
     return '3D Laboratory';
   }
-  const item = map[path] ?? { en: 'Overview', ar: 'نظرة عامة', fr: 'Vue d’ensemble', de: 'Übersicht' };
+  const item = map[path] ?? { en: 'Overview', ar: 'نظرة عامة', fr: 'Vue d’ensemble', de: 'Übersicht', ja: '概要' };
+  if (lang === 'ja') return item.ja;
   if (lang === 'fr') return item.fr;
   if (lang === 'de') return item.de;
   if (lang === 'ar') return item.ar;
@@ -139,6 +145,19 @@ export const DashboardLayout: React.FC = () => {
   const [notifications, setNotifications] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
+  const [geminiResult, setGeminiResult] = useState<GeminiSearchResult | null>(null);
+
+  useEffect(() => {
+    if (!query.trim() || query.trim().length < 2) {
+      setGeminiResult(null);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      const res = await analyzeSearchWithGemini(query, language);
+      setGeminiResult(res);
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [query, language]);
 
   const title = pageTitle(location.pathname, language);
   const roleMeta = ROLE_LABEL[role];
@@ -217,7 +236,9 @@ export const DashboardLayout: React.FC = () => {
             <div className="truncate text-[12px] font-medium">SciNexa Academy</div>
             <div className="text-[10px] text-[#737373]">ISEF 2026 · Egypt</div>
           </div>
-          <span className={`sn-badge ${roleMeta.tone} !text-[9px]`}>{language === 'fr' ? roleMeta.fr : language === 'de' ? roleMeta.de : ar ? roleMeta.ar : roleMeta.en}</span>
+          <span className={`sn-badge ${roleMeta.tone} !text-[9px]`}>
+            {language === 'ja' ? roleMeta.ja : language === 'fr' ? roleMeta.fr : language === 'de' ? roleMeta.de : ar ? roleMeta.ar : roleMeta.en}
+          </span>
         </div>
       </div>
 
@@ -228,7 +249,7 @@ export const DashboardLayout: React.FC = () => {
           return (
             <div key={group.en} className="mb-5">
               <div className="mb-1.5 px-2 text-[10px] font-medium uppercase tracking-[0.12em] text-[#a3a3a3]">
-                {language === 'fr' ? group.fr : language === 'de' ? group.de : ar ? group.ar : group.en}
+                {language === 'ja' ? group.ja : language === 'fr' ? group.fr : language === 'de' ? group.de : ar ? group.ar : group.en}
               </div>
               <div className="space-y-0.5">
                 {items.map((item) => {
@@ -241,7 +262,7 @@ export const DashboardLayout: React.FC = () => {
                       className={({ isActive }) => `sn-navitem ${isActive ? 'active' : ''}`}
                     >
                       <Icon size={16} strokeWidth={1.7} className="shrink-0" />
-                      <span className="truncate">{language === 'fr' ? item.fr : language === 'de' ? item.de : ar ? item.ar : item.en}</span>
+                      <span className="truncate">{language === 'ja' ? item.ja : language === 'fr' ? item.fr : language === 'de' ? item.de : ar ? item.ar : item.en}</span>
                       <span className="sn-navdot" />
                     </NavLink>
                   );
@@ -458,6 +479,45 @@ export const DashboardLayout: React.FC = () => {
             </div>
 
             <div className="max-h-[50vh] overflow-y-auto p-2">
+              {/* Gemini AI Smart Intent Analysis */}
+              {geminiResult && (
+                <div className="mb-3 rounded-[14px] border border-cyan-500/30 bg-gradient-to-br from-cyan-500/5 via-blue-500/5 to-transparent p-3 shadow-xs">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-cyan-700">
+                      <Sparkles size={13} className="text-cyan-500" />
+                      <span>{ar ? 'تحليل ذكي بواسطة Gemini AI' : language === 'ja' ? 'Gemini AI による意図解析' : 'Gemini AI Intent Analysis'}</span>
+                    </div>
+                    <span className="sn-badge sn-badge-blue !text-[9px]">
+                      {geminiResult.matchedLab.badgeText}
+                    </span>
+                  </div>
+                  <div className="text-[12px] font-semibold text-[#0a0a0a] mb-1">
+                    {language === 'ja' ? geminiResult.intentJa : ar ? geminiResult.intentAr : geminiResult.intentEn}
+                  </div>
+                  <p className="text-[11px] text-[#525252] leading-relaxed mb-2.5">
+                    {language === 'ja' ? geminiResult.explanationJa : ar ? geminiResult.explanationAr : geminiResult.explanationEn}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigate(geminiResult.matchedLab.path);
+                      setSearchOpen(false);
+                      setQuery('');
+                    }}
+                    className="sn-btn sn-btn-primary sn-btn-sm !h-7 !text-[11px] w-full flex items-center justify-center gap-1.5"
+                  >
+                    <span>
+                      {ar
+                        ? `فتح ${geminiResult.matchedLab.titleAr} فوراً`
+                        : language === 'ja'
+                        ? `${geminiResult.matchedLab.titleJa} を起動`
+                        : `Launch ${geminiResult.matchedLab.titleEn}`}
+                    </span>
+                    <ArrowRight size={12} className={ar ? 'rotate-180' : ''} />
+                  </button>
+                </div>
+              )}
+
               {searchResults.labs.length > 0 && (
                 <div className="mb-2">
                   <div className="px-2 py-1.5 text-[10px] uppercase tracking-[0.1em] text-[#a3a3a3]">

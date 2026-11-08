@@ -49,6 +49,7 @@ export interface EnrolledStudent {
   quadName: string;
   nationalId?: string;
   email?: string;
+  parentPhone?: string;
   schoolName: string;
   governorateId: string;
   administrationId: string;
@@ -183,6 +184,7 @@ export const addStudentToClassByTeacher = (params: {
   gradeLevel: string;
   email?: string;
   nationalId?: string;
+  parentPhone?: string;
   classNameAr?: string;
   teacherId?: string;
   teacherNameAr?: string;
@@ -200,6 +202,7 @@ export const addStudentToClassByTeacher = (params: {
     id: `std-${Date.now()}`,
     quadName: params.quadName.trim(),
     nationalId: params.nationalId?.trim() || undefined,
+    parentPhone: params.parentPhone?.trim() || undefined,
     email: params.email?.trim() || `${params.quadName.trim().split(/\s+/)[0].toLowerCase()}@scinexa.school`,
     schoolName: params.schoolName.trim() || 'المدرسة المسجلة',
     governorateId: params.governorateId || 'cairo',
@@ -221,6 +224,7 @@ export const addStudentToClassByTeacher = (params: {
     id: newStudent.id,
     quad_name: newStudent.quadName,
     national_id: newStudent.nationalId,
+    parent_phone: newStudent.parentPhone,
     email: newStudent.email,
     school_name: newStudent.schoolName,
     governorate_id: newStudent.governorateId,
@@ -393,6 +397,7 @@ export const fetchAndSyncEnrollment = async (): Promise<EnrolledStudent[]> => {
       quadName: r.quad_name,
       nationalId: r.national_id,
       email: r.email,
+      parentPhone: r.parent_phone || r.parentPhone || undefined,
       schoolName: r.school_name,
       governorateId: r.governorate_id,
       administrationId: r.administration_id,
