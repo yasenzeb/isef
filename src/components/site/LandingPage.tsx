@@ -172,14 +172,14 @@ const InteractiveLabsShowcase: React.FC<{ onOpenLab: (id: string) => void }> = (
 
   const badgeText =
     language === 'ja'
-      ? '6実験室が稼働中'
+      ? '7実験室が稼働中'
       : language === 'fr'
-        ? '6 LABOS EN DIRECT'
+        ? '7 LABOS EN DIRECT'
         : language === 'de'
-          ? '6 LABORE LIVE'
+          ? '7 LABORE LIVE'
           : ar
-            ? '٦ معامل مباشرة'
-            : '6 LABS LIVE';
+            ? '٧ معامل مباشرة'
+            : '7 LABS LIVE';
 
   const assistantNotice =
     language === 'ja'
@@ -199,6 +199,7 @@ const InteractiveLabsShowcase: React.FC<{ onOpenLab: (id: string) => void }> = (
     { id: 'biology', nameAr: 'الأحياء والخلية', nameEn: 'Biology & Cells', nameJa: '細胞生物学', count: '4K', unitAr: 'مجاهر رقمية', unitEn: 'microscopy', unitJa: 'デジタル顕微鏡', accent: '#059669' },
     { id: 'geology', nameAr: 'الزلازل وعلوم الأرض', nameEn: 'Earth & Seismic', nameJa: '地球と耐震工学', count: 'M9.0', unitAr: 'محاكي انهيار', unitEn: 'seismograph', unitJa: '免震シミュレータ', accent: '#7c3aed' },
     { id: 'astronomy', nameAr: 'الفلك ومدارات كبلر', nameEn: 'Kepler Orbits', nameJa: 'ケプラー軌道と天文学', count: '8', unitAr: 'كواكب وفضاء', unitEn: 'orbits', unitJa: '惑星軌道', accent: '#0284c7' },
+    { id: 'math', nameAr: 'معمل الرياضيات والهندسة', nameEn: 'Math & Geometry', nameJa: '数学・幾何学', count: '5', unitAr: 'أدوات تفاعلية', unitEn: 'tools', unitJa: 'ツール', accent: '#6366f1' },
   ];
 
   return (
@@ -224,7 +225,7 @@ const InteractiveLabsShowcase: React.FC<{ onOpenLab: (id: string) => void }> = (
           </div>
         </div>
 
-        {/* Grid of 6 Labs */}
+        {/* Grid of 7 Labs */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
           {LAB_SHOWCASE_ITEMS.map((item) => {
             const labTitle = language === 'ja' ? item.nameJa : ar ? item.nameAr : item.nameEn;
@@ -325,7 +326,7 @@ export const LandingPage: React.FC = () => {
           guest: 'ゲスト利用可能',
           curriculum: '公式シラバス準拠',
           stats: [
-            { v: '6', l: '専門バーチャル実験室' },
+            { v: '7', l: '専門バーチャル実験室' },
             { v: '2,821', l: '精密解剖学3D構造' },
             { v: '118', l: '元素と化学反応' },
             { v: '100%', l: '文部省シラバス準拠' },
@@ -370,7 +371,7 @@ export const LandingPage: React.FC = () => {
           guest: 'Mode invité disponible',
           curriculum: 'Aligné sur les programmes',
           stats: [
-            { v: '6', l: 'laboratoires spécialisés' },
+            { v: '7', l: 'laboratoires spécialisés' },
             { v: '2 821', l: 'structures anatomiques' },
             { v: '118', l: 'éléments chimiques' },
             { v: '100%', l: 'conformes aux programmes' },
@@ -415,7 +416,7 @@ export const LandingPage: React.FC = () => {
           guest: 'Gastmodus verfügbar',
           curriculum: 'Lehrplankonform',
           stats: [
-            { v: '6', l: 'Fachlabore' },
+            { v: '7', l: 'Fachlabore' },
             { v: '2.821', l: 'anatomische Strukturen' },
             { v: '118', l: 'chemische Elemente' },
             { v: '100%', l: 'lehrplankonform' },
@@ -460,7 +461,7 @@ export const LandingPage: React.FC = () => {
           guest: 'وضع الزائر متاح',
           curriculum: 'مطابق للمنهج',
           stats: [
-            { v: '٦', l: 'معامل تخصصية' },
+            { v: '٧', l: 'معامل تخصصية' },
             { v: '٢٬٨٢١', l: 'بنية تشريحية' },
             { v: '١١٨', l: 'عنصرًا كيميائيًا' },
             { v: '١٠٠٪', l: 'مطابقة للمنهج' },
@@ -505,7 +506,7 @@ export const LandingPage: React.FC = () => {
           guest: 'Guest mode available',
           curriculum: 'Curriculum-mapped',
           stats: [
-            { v: '6', l: 'specialist labs' },
+            { v: '7', l: 'specialist labs' },
             { v: '2,821', l: 'anatomical structures' },
             { v: '118', l: 'chemical elements' },
             { v: '100%', l: 'curriculum-mapped' },
@@ -595,6 +596,7 @@ export const LandingPage: React.FC = () => {
                   {copy.start}
                   <ArrowRight size={16} strokeWidth={1.8} className={ar ? 'rotate-180' : ''} />
                 </Link>
+                {!isSignedIn && (
                 <button
                   type="button"
                   onClick={() => {
@@ -606,6 +608,7 @@ export const LandingPage: React.FC = () => {
                   <Sparkles size={16} strokeWidth={2} className="text-cyan-600" />
                   <span>{ar ? 'دخول المنصة كزائر' : 'Enter as Guest'}</span>
                 </button>
+                )}
                 <a href="#labs" className="sn-btn sn-btn-ghost sn-btn-lg">
                   {copy.explore}
                 </a>

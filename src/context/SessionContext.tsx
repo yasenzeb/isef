@@ -171,13 +171,24 @@ const ClerkSessionProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setEducator(null);
   }, []);
 
+  const [guestUser, setGuestUser] = useState<SessionUser | null>(() => {
+    try {
+      const raw = localStorage.getItem(DEMO_KEY);
+      return raw ? (JSON.parse(raw) as SessionUser) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const effectiveUser = normalized || guestUser;
+
   const value = useMemo<SessionValue>(
     () => ({
-      user: normalized,
+      user: effectiveUser,
       isLoaded,
-      isSignedIn: Boolean(normalized),
+      isSignedIn: Boolean(effectiveUser),
       role: 'student', // منصة الطلاب الرئيسية مقصورة على الطالب
-      isDemo: false,
+      isDemo: Boolean(guestUser && !normalized),
       isRolePreview: false,
       educator,
       loginEducator,
@@ -187,14 +198,28 @@ const ClerkSessionProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           clearActiveSessionKeys();
           localStorage.removeItem('scinexa_dev_role');
           localStorage.removeItem(EDUCATOR_AUTH_KEY);
+          localStorage.removeItem(DEMO_KEY);
         } catch {
           /* ignore */
         }
         setEducator(null);
+        setGuestUser(null);
         await signOut({ redirectUrl: '/' });
       },
-      signInDemo: () => {
-        throw new Error('Demo sign-in is unavailable while Clerk is configured.');
+      signInDemo: (input) => {
+        const g: SessionUser = {
+          id: 'guest_' + Date.now().toString(36),
+          name: (input?.name || '').trim() || 'Guest',
+          email: (input?.email || '').trim() || 'guest@scinexa.school',
+          role: 'student',
+          isDemo: true,
+        };
+        try {
+          localStorage.setItem(DEMO_KEY, JSON.stringify(g));
+        } catch {
+          /* ignore */
+        }
+        setGuestUser(g);
       },
       switchDemoRole: () => {
         // Disabled completely: students cannot change role
@@ -203,7 +228,7 @@ const ClerkSessionProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         // Disabled
       },
     }),
-    [normalized, isLoaded, educator, loginEducator, logoutEducator, signOut]
+    [effectiveUser, normalized, guestUser, isLoaded, educator, loginEducator, logoutEducator, signOut]
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

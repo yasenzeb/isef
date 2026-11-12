@@ -250,12 +250,12 @@ export const PraxiReactionSimulator: React.FC = () => {
           setReactionCompleted(true);
           return 100;
         }
-        const next = prev + 2;
+        const next = prev + 1;
         const targetTemp = 25 + reaction.temperatureChange + (bunsenBurnerActive ? 95 : 0);
         setTemperature(Math.round(25 + (targetTemp - 25) * (next / 100)));
         return next;
       });
-    }, 40);
+    }, 35);
 
     return () => clearInterval(interval);
   }, [isReacting, reaction, bunsenBurnerActive]);
@@ -669,7 +669,7 @@ export const PraxiReactionSimulator: React.FC = () => {
       
       {/* 1. TOP HEADER & CURRICULUM PRESET BAR */}
       <div className="sci-card p-5 relative overflow-hidden bg-gradient-to-r from-indigo-950/40 via-purple-950/20 to-cyan-950/30 border border-indigo-500/20">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="flex flex-col gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
