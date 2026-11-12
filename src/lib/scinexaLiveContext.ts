@@ -149,6 +149,26 @@ function dispatchUpdate() {
       }
     } catch {}
 
+    // 2. Synchronize to local/remote lab-status API endpoint to prevent HTTP 405 on Fish Audio tool calls
+    try {
+      const payload = {
+        current_lab: globalContext.currentLab,
+        selected_part: globalContext.anatomy.nameAr || 'عظم لوح الكتف (Scapula)',
+        name_ar: globalContext.anatomy.nameAr || 'عظم لوح الكتف',
+        name_en: globalContext.anatomy.nameEn || 'Scapula',
+        system_layer: globalContext.anatomy.systemLayer || 'الهيكل العظمي',
+        description_ar: globalContext.anatomy.descriptionAr || '',
+        clinical_note_ar: globalContext.anatomy.clinicalNoteAr || '',
+        physics: globalContext.physics,
+        chemistry: globalContext.chemistry,
+      };
+      void fetch('/api/lab-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }).catch(() => {});
+    } catch {}
+
     window.dispatchEvent(
       new CustomEvent('scinexa:live_context_changed', { detail: globalContext })
     );

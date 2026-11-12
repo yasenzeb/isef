@@ -167,7 +167,7 @@ export const ClassroomMode: React.FC<ClassroomModeProps> = ({ onExit }) => {
 
       {/* Presentation Content Canvas Area */}
       <main className={`relative flex-1 w-full h-full overflow-y-auto overflow-x-hidden transition-all ${
-        isTvHighContrast ? 'bg-[#000000] contrast-125' : 'bg-[#090b10]'
+        isTvHighContrast ? 'bg-[#000000] contrast-125' : 'bg-[#060810]'
       }`}>
         <Suspense fallback={
           <div className="flex h-full min-h-[400px] w-full items-center justify-center text-white/60 font-mono text-xs">
@@ -189,7 +189,7 @@ export const ClassroomMode: React.FC<ClassroomModeProps> = ({ onExit }) => {
 
       {/* High-Contrast Footer Status */}
       <footer className={`px-4 py-2 flex items-center justify-between text-[11px] shrink-0 border-t transition-colors ${
-        isFullscreen ? 'bg-[#0f131a] border-white/10 text-slate-400' : 'bg-white border-[#f0f0f0] text-[#737373]'
+        isTvHighContrast ? 'bg-black border-yellow-500/40 text-yellow-300' : 'bg-[#060810] border-slate-800 text-slate-400'
       }`}>
         <div className="flex items-center gap-2">
           <ShieldCheck size={13} className="text-[#047857]" />
