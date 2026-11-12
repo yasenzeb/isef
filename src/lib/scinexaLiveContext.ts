@@ -5,6 +5,8 @@
  * © Islam & Yaseen — SciNexa ISEF 2026
  */
 
+import { getRegisteredStudentInfo } from './userStorage';
+
 export interface PhysicsLiveState {
   activeModule: 'circuits' | 'forces' | 'projectiles' | 'optics' | 'waves';
   voltage?: number;
@@ -140,10 +142,14 @@ function dispatchUpdate() {
           itemDetails = globalContext.anatomy.descriptionAr || '';
         }
 
+        const studentInfo = getRegisteredStudentInfo();
         const vars = {
           current_lab: currentLabName,
           selected_item: selectedItem,
           item_details: itemDetails,
+          student_name: studentInfo.realName,
+          student_grade: studentInfo.gradeArabic,
+          student_greeting: studentInfo.greetingPhraseAr,
         };
         agent.setAttribute('dynamic-variables', JSON.stringify(vars));
       }
@@ -151,6 +157,7 @@ function dispatchUpdate() {
 
     // 2. Synchronize to local/remote lab-status API endpoint to prevent HTTP 405 on Fish Audio tool calls
     try {
+      const studentInfo = getRegisteredStudentInfo();
       const payload = {
         current_lab: globalContext.currentLab,
         selected_part: globalContext.anatomy.nameAr || 'عظم لوح الكتف (Scapula)',
@@ -159,6 +166,9 @@ function dispatchUpdate() {
         system_layer: globalContext.anatomy.systemLayer || 'الهيكل العظمي',
         description_ar: globalContext.anatomy.descriptionAr || '',
         clinical_note_ar: globalContext.anatomy.clinicalNoteAr || '',
+        student_name: studentInfo.realName,
+        student_grade: studentInfo.gradeArabic,
+        greeting: studentInfo.greetingPhraseAr,
         physics: globalContext.physics,
         chemistry: globalContext.chemistry,
       };

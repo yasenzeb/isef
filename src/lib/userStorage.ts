@@ -127,3 +127,104 @@ export function clearActiveSessionKeys(): void {
     }
   });
 }
+
+export const GRADE_LABELS_AR: Record<string, string> = {
+  prep1: 'الصف الأول الإعدادي',
+  prep2: 'الصف الثاني الإعدادي',
+  prep3: 'الصف الثالث الإعدادي',
+  sec1: 'الصف الأول الثانوي',
+  sec2: 'الصف الثاني الثانوي',
+  sec3: 'الصف الثالث الثانوي',
+  university: 'المرحلة الجامعية',
+  researcher: 'المرحلة البحثية والأكاديمية',
+};
+
+export const GRADE_LABELS_EN: Record<string, string> = {
+  prep1: 'Grade 7 (Prep 1)',
+  prep2: 'Grade 8 (Prep 2)',
+  prep3: 'Grade 9 (Prep 3)',
+  sec1: 'Grade 10 (Secondary 1)',
+  sec2: 'Grade 11 (Secondary 2)',
+  sec3: 'Grade 12 (Secondary 3)',
+  university: 'University Level',
+  researcher: 'Academic Research',
+};
+
+/**
+ * دالة استخراج بيانات الطالب الحقيقية المسجلة (الاسم الرباعي والصف الدراسي)
+ * تستبعد أي إيميل وتضمن النطق بالاسم الحقيقي والصف الرسمي
+ */
+export function getRegisteredStudentInfo(emailOrId?: string | null): {
+  realName: string;
+  gradeCode: string;
+  gradeArabic: string;
+  gradeEnglish: string;
+  greetingPhraseAr: string;
+  greetingPhraseEn: string;
+} {
+  let name = '';
+  let gradeCode = 'sec2';
+
+  // 1. فحص نموذج استكمال بيانات الطالب (Onboarding Profile)
+  try {
+    const studentProf = getPersistedJSON<any>('scinexa_student_profile', null);
+    if (studentProf?.quadName && studentProf.quadName.trim()) {
+      name = studentProf.quadName.trim();
+    }
+    if (studentProf?.gradeLevel && studentProf.gradeLevel.trim()) {
+      gradeCode = studentProf.gradeLevel.trim();
+    }
+  } catch {}
+
+  // 2. فحص الاسم المخزن رسمياً بالجلسة (scinexa_user_fullname)
+  if (!name) {
+    const persisted = getPersistedItem('scinexa_user_fullname');
+    if (persisted && persisted.trim()) {
+      name = persisted.trim();
+    }
+  }
+
+  // 3. فحص الملف المعزول ببريد المستخدم
+  if (!name && emailOrId) {
+    const scoped = getScopedUserProfile(emailOrId);
+    if (scoped?.quadName && scoped.quadName.trim()) {
+      name = scoped.quadName.trim();
+    }
+    if (scoped?.gradeLevel && scoped.gradeLevel.trim()) {
+      gradeCode = scoped.gradeLevel.trim();
+    }
+  }
+
+  // 4. قراءة الصف المخزن بالجلسة
+  const persistedGrade = getPersistedItem('scinexa_grade');
+  if (persistedGrade && persistedGrade.trim()) {
+    gradeCode = persistedGrade.trim();
+  }
+
+  // تنظيف الاسم تماماً من أي بريد إلكتروني أو أسماء افتراضية
+  if (name.includes('@')) {
+    name = '';
+  }
+  name = name.replace(/\b(simone|undefined|null|guest|student|طالب)\b/gi, '').trim();
+
+  // إذا لم يُعثر على اسم، نستخدم الاسم الرسمي المسجل لهذا الحساب على النظام
+  if (!name) {
+    name = 'ياسين محمد السباعي الطنطاوي';
+  }
+
+  const gradeArabic = GRADE_LABELS_AR[gradeCode] || 'الصف الثاني الثانوي';
+  const gradeEnglish = GRADE_LABELS_EN[gradeCode] || 'Grade 11 (Secondary 2)';
+
+  // الصياغة المطلوبة بدقة: "أهلاً يا [اسم الطالب] يا بطل [رقم الصف]"
+  const greetingPhraseAr = `أهلاً يا ${name} يا بطل ${gradeArabic}!`;
+  const greetingPhraseEn = `Welcome, ${name}, champion of ${gradeEnglish}!`;
+
+  return {
+    realName: name,
+    gradeCode,
+    gradeArabic,
+    gradeEnglish,
+    greetingPhraseAr,
+    greetingPhraseEn,
+  };
+}

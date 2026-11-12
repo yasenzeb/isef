@@ -5,6 +5,7 @@ import { CLERK_PUBLISHABLE_KEY, clerkAppearance, isClerkConfigured } from './lib
 import { LanguageProvider } from './context/LanguageContext';
 import { SessionProvider, useSession } from './context/SessionContext';
 import { initDarwinAgentWatcher } from './lib/darwinNavigator';
+import { getRegisteredStudentInfo } from './lib/userStorage';
 import { LandingPage } from './components/site/LandingPage';
 import { AuthPage } from './components/auth/AuthPage';
 import { DashboardLayout } from './components/dashboard/DashboardLayout';
@@ -135,7 +136,22 @@ const ClerkWithRouter: React.FC<{ children: React.ReactNode }> = ({ children }) 
   // تفعيل المراقبة اللحظية الشاملة لداروين للتنقل بين كل صفحات المنصة
   useEffect(() => {
     const cleanup = initDarwinAgentWatcher((path) => navigate(path));
-    return cleanup;
+
+    // تحديث عبارة ترحيب داروين فورياً باسم الطالب والصف الحقيقي
+    const syncDarwinGreeting = () => {
+      const studentInfo = getRegisteredStudentInfo();
+      const agent = document.getElementById('fish-agent-darwin');
+      if (agent) {
+        agent.setAttribute('greeting', studentInfo.greetingPhraseAr);
+      }
+    };
+    syncDarwinGreeting();
+    window.addEventListener('scinexa_profile_updated', syncDarwinGreeting);
+
+    return () => {
+      cleanup();
+      window.removeEventListener('scinexa_profile_updated', syncDarwinGreeting);
+    };
   }, [navigate]);
 
   if (!isClerkConfigured) return <>{children}</>;

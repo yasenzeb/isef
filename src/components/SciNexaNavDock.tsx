@@ -23,6 +23,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
+import { getRegisteredStudentInfo } from '../lib/userStorage';
 
 interface SciNexaNavDockProps {
   className?: string;
@@ -174,7 +175,8 @@ export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ className = '' }
     }
   };
 
-  const studentName = user?.name || (user?.email ? user.email.split('@')[0] : (ar ? 'عبد الرحمن' : 'Student'));
+  const studentInfo = getRegisteredStudentInfo(user?.email);
+  const greetingText = ar ? studentInfo.greetingPhraseAr : studentInfo.greetingPhraseEn;
 
   const handleToggleDarwin = () => {
     let agent = document.querySelector('fish-agent') as HTMLElement | null;
@@ -184,23 +186,24 @@ export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ className = '' }
       agent.setAttribute('agent-id', '929a1bf391db4185b03ae62f05a49207');
       agent.setAttribute('language', ar ? 'ar' : 'en');
       agent.setAttribute('agent-name', ar ? 'داروين • مرشد العلوم' : 'Darwin AI');
-      agent.setAttribute(
-        'greeting',
-        ar
-          ? `أهلاً بك يا ${studentName}! أنا داروين مرشدك العلمي في منصة SciNexa، جاهز لمساعدتك في كل المعامل وفحص التجارب معك.`
-          : `Welcome, ${studentName}! I am Darwin, your science guide in SciNexa. Ready to assist you across all labs.`
-      );
+      agent.setAttribute('greeting', greetingText);
       agent.setAttribute('text-input', 'true');
       agent.setAttribute('transcript', 'true');
       agent.setAttribute('mic-muting', 'true');
       document.body.appendChild(agent);
     } else {
-      agent.setAttribute(
-        'greeting',
-        ar
-          ? `أهلاً بك يا ${studentName}! أنا داروين مرشدك العلمي في منصة SciNexa، جاهز لمساعدتك في كل المعامل وفحص التجارب معك.`
-          : `Welcome, ${studentName}! I am Darwin, your science guide in SciNexa. Ready to assist you across all labs.`
-      );
+      agent.setAttribute('greeting', greetingText);
+    }
+
+    // نطق الترحيب فوراً بالاسم الحقيقي والصف بصوت داروين
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(greetingText);
+        utterance.lang = ar ? 'ar-EG' : 'en-US';
+        utterance.rate = 1.0;
+        window.speechSynthesis.speak(utterance);
+      } catch {}
     }
 
     // Toggle: if open minimize, if closed expand immediately
@@ -355,7 +358,7 @@ export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ className = '' }
                   boxShadow: '0 8px 24px rgba(6, 182, 212, 0.45)',
                 }}
               >
-                {ar ? `داروين | مرحباً بك يا ${studentName}` : `Darwin AI | Hello ${studentName}`}
+                {ar ? `داروين | أهلاً يا ${studentInfo.realName}` : `Darwin AI | Welcome ${studentInfo.realName}`}
               </div>
             )}
 

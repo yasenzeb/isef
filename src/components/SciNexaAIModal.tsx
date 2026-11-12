@@ -36,6 +36,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { getGlobalLiveContext, getFormattedLiveContextArabic } from '../lib/scinexaLiveContext';
+import { getRegisteredStudentInfo } from '../lib/userStorage';
 
 export interface SciNexaAIModalProps {
   isOpen: boolean;
@@ -330,14 +331,11 @@ export const SciNexaAIModal: React.FC<SciNexaAIModalProps> = ({
   const currentLabId = getCurrentLabId();
   const labContext = LAB_CONTEXTS[currentLabId] || LAB_CONTEXTS.home;
 
-  // Clean student first name (avoiding "Simone")
+  const studentInfo = getRegisteredStudentInfo(user?.email);
+
+  // Clean student real name (e.g., ياسين محمد السباعي الطنطاوي)
   const getCleanStudentName = () => {
-    const rawQuad = localStorage.getItem('scinexa_user_fullname') || '';
-    const namePart = rawQuad.trim().split(/\s+/).filter((n) => !n.toLowerCase().includes('simone'))[0];
-    if (namePart) return namePart;
-    const userNamePart = user?.name?.trim().split(/\s+/).filter((n) => !n.toLowerCase().includes('simone'))[0];
-    if (userNamePart) return userNamePart;
-    return ar ? 'طالب' : 'Student';
+    return studentInfo.realName;
   };
 
   // Mount Fish Audio widget if tab selected
@@ -364,8 +362,8 @@ export const SciNexaAIModal: React.FC<SciNexaAIModalProps> = ({
   // Initialize fresh lab welcome message
   useEffect(() => {
     const welcome = ar
-      ? `أهلاً بك يا بطل! أنا "SciNexa AI" باحث ومعلم العلوم الذكي المعتمد لمنظومة ساينكسا.\n\nأنت الآن في **${labContext.ar}**.\n${labContext.descriptionAr}\n\nاسألني عن أي تجربة أو قانون علمي، وسأشرحه لك بالصوت والصورة، أو انتقل إلى وضع المكالمة الصوتية المباشرة مع داروين!`
-      : `Welcome scholar! I am SciNexa AI, your certified scientific intelligence assistant.\n\nYou are in **${labContext.en}**.\nAsk me any scientific principle or launch a real-time voice call with Darwin!`;
+      ? `${studentInfo.greetingPhraseAr}\nأنا **SciNexa AI** باحث ومعلم العلوم الذكي المعتمد لمنظومة ساينكسا.\n\nأنت الآن في **${labContext.ar}**.\n${labContext.descriptionAr}\n\nاسألني عن أي تجربة أو قانون علمي، وسأشرحه لك بالصوت والصورة، أو انتقل إلى وضع المكالمة الصوتية المباشرة مع داروين!`
+      : `${studentInfo.greetingPhraseEn}\nI am SciNexa AI, your certified scientific intelligence assistant.\n\nYou are in **${labContext.en}**.\nAsk me any scientific principle or launch a real-time voice call with Darwin!`;
 
     const initialMsg: Message = {
       id: `welcome-${currentLabId}-${Date.now()}`,
@@ -590,9 +588,15 @@ export const SciNexaAIModal: React.FC<SciNexaAIModalProps> = ({
   const startVoiceCall = () => {
     stopSpeaking();
     setIsCallActive(true);
-    setCallStatus('listening');
+    setCallStatus('speaking');
     setCallTranscript('');
     setActiveTabMode('call');
+
+    // نطق الترحيب المخصص فوراً بصوت داروين
+    const spokenGreeting = ar
+      ? `${studentInfo.greetingPhraseAr} أنا داروين، تفضل بسؤالي وسأشرحه لك بالصوت والصورة.`
+      : `${studentInfo.greetingPhraseEn} I am Darwin, how can I assist you today?`;
+    speakText(spokenGreeting);
 
     const recognition = getSpeechRecognition();
     if (!recognition) {
@@ -1187,9 +1191,7 @@ export const SciNexaAIModal: React.FC<SciNexaAIModalProps> = ({
                   className="flex-1 rounded-2xl border border-white/10 bg-slate-950/90 overflow-hidden flex flex-col items-center justify-center p-3 min-h-[360px] relative shadow-2xl"
                   dangerouslySetInnerHTML={{
                     __html: `<fish-agent agent-id="929a1bf391db4185b03ae62f05a49207" language="${ar ? 'ar' : 'en'}" text-input="true" transcript="true" agent-name="${ar ? 'داروين • مرشد العلوم' : 'Darwin AI'}" greeting="${
-                      ar
-                        ? `أهلاً بك يا ${user?.name || 'عبد الرحمن'}! أنا داروين مرشدك العلمي في منصة SciNexa، جاهز لمساعدتك في كل المعامل وفحص التجارب معك.`
-                        : `Welcome, ${user?.name || 'Student'}! I am Darwin, your science guide in SciNexa. Ready to assist across all labs.`
+                      ar ? studentInfo.greetingPhraseAr : studentInfo.greetingPhraseEn
                     }"></fish-agent>`
                   }}
                 />
