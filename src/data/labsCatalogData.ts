@@ -4,9 +4,9 @@
  */
 
 export interface LabCatalogItem {
-  id: 'anatomy' | 'physics' | 'chemistry' | 'biology' | 'geology' | 'astronomy';
+  id: 'anatomy' | 'physics' | 'chemistry' | 'biology' | 'geology' | 'astronomy' | 'math';
   index: string;
-  accent: 'anatomy' | 'physics' | 'chemistry' | 'biology' | 'geology' | 'astronomy';
+  accent: 'anatomy' | 'physics' | 'chemistry' | 'biology' | 'geology' | 'astronomy' | 'math';
   nameEn: string;
   nameAr: string;
   categoryEn: string;
@@ -130,5 +130,23 @@ export const LABS_CATALOG: LabCatalogItem[] = [
     statValue: '8',
     statLabelEn: 'planets',
     statLabelAr: 'كواكب ومدارات'
+  },
+  {
+    id: 'math',
+    index: '07',
+    accent: 'math',
+    nameEn: 'Mathematics Lab',
+    nameAr: 'معمل الرياضيات والهندسة',
+    categoryEn: 'Mathematical science',
+    categoryAr: 'العلوم الرياضية',
+    taglineEn: 'Plot it. Measure it. Prove it.',
+    taglineAr: 'ارسم، قِس، وأثبت القانون بنفسك.',
+    descriptionEn: 'Function tables, coordinate-plane geometry, Pythagoras and Euclid proofs, slope laws and a step-by-step calculator.',
+    descriptionAr: 'جداول الدوال، الهندسة على المستوى الإحداثي، فيثاغورس وإقليدس، قوانين الميل وآلة حاسبة بالخطوات.',
+    featuresEn: ['Coordinate grid', 'Geometry laws', 'Step-by-step solver'],
+    featuresAr: ['المستوى الإحداثي', 'قوانين الهندسة', 'حل بالخطوات'],
+    statValue: '5',
+    statLabelEn: 'interactive tools',
+    statLabelAr: 'أدوات تفاعلية'
   }
 ];

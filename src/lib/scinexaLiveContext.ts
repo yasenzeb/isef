@@ -45,7 +45,7 @@ export interface AnatomyLiveState {
 }
 
 export interface ScinexaGlobalLiveContext {
-  currentLab: 'physics' | 'chemistry' | 'anatomy' | 'astronomy' | 'geology' | 'biology' | 'classroom' | 'dashboard' | 'other';
+  currentLab: 'physics' | 'chemistry' | 'anatomy' | 'astronomy' | 'geology' | 'biology' | 'math' | 'classroom' | 'dashboard' | 'other';
   physics: PhysicsLiveState;
   chemistry: ChemistryLiveState;
   anatomy: AnatomyLiveState;
@@ -194,5 +194,9 @@ export function getFormattedLiveContextArabic(): string {
     return `فحص أطلس التشريح الطبي 3D: العضو أو العظمة المحددة حالياً على الشاشة هي [${part}]. الوصف التشريحي والوظيفي: ${desc}`;
   }
 
+
+  if (path.includes('/labs/math') || c.currentLab === 'math') {
+    return `فحص معمل الرياضيات والهندسة: المستوى الإحداثي التفاعلي، جداول الدوال، قوانين الميل، وبراهين فيثاغورس وإقليدس جاهزة للتطبيق والحساب المباشر بالخطوات.`;
+  }
   return `المنصة تعمل حالياً في وضع الاستكشاف العام. افتح أي معمل لاختبار التفاعلات والدوائر والأعضاء وسأقوم بفحصها لك لحظة بلحظة!`;
 }

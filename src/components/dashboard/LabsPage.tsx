@@ -10,6 +10,7 @@ import {
   Dna,
   Globe2,
   Sparkles,
+  Sigma,
   ArrowUpRight,
   WifiOff,
   ShieldCheck,
@@ -23,6 +24,7 @@ const ICONS: Record<string, React.ComponentType<{ size?: number; strokeWidth?: n
   biology: Dna,
   geology: Globe2,
   astronomy: Sparkles,
+  math: Sigma,
 };
 
 type Filter = 'all' | 'life' | 'physical' | 'earth';
@@ -30,7 +32,7 @@ type Filter = 'all' | 'life' | 'physical' | 'earth';
 const FILTERS: Record<Filter, string[]> = {
   all: [],
   life: ['anatomy', 'biology'],
-  physical: ['physics', 'chemistry'],
+  physical: ['physics', 'chemistry', 'math'],
   earth: ['geology', 'astronomy'],
 };
 

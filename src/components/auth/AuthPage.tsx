@@ -221,8 +221,9 @@ const DemoAuthForm: React.FC<{ mode: 'signin' | 'signup'; ar: boolean }> = ({ mo
 
 export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
   const { language } = useLanguage();
-  const { isSignedIn } = useSession();
+  const { isSignedIn, signInDemo } = useSession();
   const location = useLocation();
+  const navigate = useNavigate();
   const ar = language === 'ar';
   const insecureContext =
     typeof window !== 'undefined' &&
@@ -278,6 +279,21 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
                     appearance={clerkAppearance}
                   />
                 )}
+
+                {/* Direct Guest Access Button Under Clerk */}
+                <div className="mt-4 pt-3 border-t border-[#e5e5e5]">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      signInDemo({ name: ar ? 'زائر' : 'Guest', email: 'guest@scinexa.school', role: 'student' });
+                      navigate('/app');
+                    }}
+                    className="sn-btn sn-btn-outline w-full !border-cyan-600/30 !bg-cyan-50/40 hover:!bg-cyan-100/60 !text-cyan-900 font-bold text-[13px] py-2.5 shadow-xs cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <Sparkles size={15} strokeWidth={2} className="text-cyan-600" />
+                    <span>{ar ? 'الدخول السريع للمنصة كزائر' : 'Instant Access as Guest'}</span>
+                  </button>
+                </div>
               </div>
             ) : (
               <DemoAuthForm mode={mode} ar={ar} />

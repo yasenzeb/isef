@@ -20,6 +20,7 @@ const ChemistryLab = lazy(() => import('../ChemistryLab').then((m) => ({ default
 const BiologyLab = lazy(() => import('../BiologyLab').then((m) => ({ default: m.BiologyLab })));
 const GeologyLab = lazy(() => import('../GeologyLab').then((m) => ({ default: m.GeologyLab })));
 const AstronomyLab = lazy(() => import('../AstronomyLab').then((m) => ({ default: m.AstronomyLab })));
+const MathLab = lazy(() => import('../MathLab').then((m) => ({ default: m.MathLab })));
 
 const COMPONENTS: Record<LabId, React.LazyExoticComponent<React.ComponentType<Record<string, never>>>> = {
   anatomy: AnatomyViewer as unknown as React.LazyExoticComponent<React.ComponentType<Record<string, never>>>,
@@ -28,6 +29,7 @@ const COMPONENTS: Record<LabId, React.LazyExoticComponent<React.ComponentType<Re
   biology: BiologyLab,
   geology: GeologyLab,
   astronomy: AstronomyLab,
+  math: MathLab,
 };
 
 const LabLoading: React.FC<{ ar: boolean }> = ({ ar }) => (

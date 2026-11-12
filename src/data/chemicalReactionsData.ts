@@ -1,3 +1,5 @@
+import { EXTRA_REACTIONS, EXTRA_REAGENTS, REACTION_TYPE_CATEGORY, type ReactionTypeFilter } from './reactionTypesExtra';
+
 export type ReactionCategory = 
   | 'synthesis' 
   | 'single_replacement' 
@@ -1002,47 +1004,47 @@ export const CHEMICAL_REACTIONS_DB: ChemicalReaction[] = [
 
 ];
 
+// Merge the extra reagents/reactions (reaction-type selector additions)
+WORKBENCH_REAGENTS.push(...EXTRA_REAGENTS);
+CHEMICAL_REACTIONS_DB.push(...EXTRA_REACTIONS);
+
 // -------------------------------------------------------------
 // Helper Query Function for Reactant Matching
+// typeFilter limits matching to one of the four basic reaction types ('all' = no limit).
 // -------------------------------------------------------------
-export function findMatchingReaction(selectedIds: string[], bunsenHeatActive: boolean = false): ChemicalReaction | null {
+export function findMatchingReaction(
+  selectedIds: string[],
+  bunsenHeatActive: boolean = false,
+  typeFilter: ReactionTypeFilter = 'all'
+): ChemicalReaction | null {
   if (selectedIds.length === 0) return null;
+  const wantedCategory = typeFilter === 'all' ? null : REACTION_TYPE_CATEGORY[typeFilter];
+  const allowed = (rx: ChemicalReaction) => wantedCategory === null || rx.category === wantedCategory;
+  const usable = (rx: ChemicalReaction | undefined) =>
+    rx && (!rx.requiresHeat || bunsenHeatActive) ? rx : null;
 
-  // Single reactant check (thermal decomposition)
-  if (selectedIds.length === 1) {
-    const rId = selectedIds[0];
-    const match = CHEMICAL_REACTIONS_DB.find(rx => 
-      rx.category === 'thermal_decomposition' && 
-      rx.reactants.length === 1 && 
+  // Single-compound decomposition: one selected id (or either id when decomposition is chosen)
+  const singleCandidates = selectedIds.length === 1 || typeFilter === 'decomposition' ? selectedIds : [];
+  for (const rId of singleCandidates) {
+    const match = CHEMICAL_REACTIONS_DB.find(rx =>
+      allowed(rx) &&
+      rx.category === 'thermal_decomposition' &&
+      rx.reactants.length === 1 &&
       rx.reactants[0] === rId
     );
-    if (match) {
-      if (match.requiresHeat && !bunsenHeatActive) {
-        return null; // needs bunsen heat
-      }
-      return match;
-    }
-    return null;
+    if (match) return usable(match);
   }
 
   // Two reactants check
   if (selectedIds.length === 2) {
-    const idA = selectedIds[0];
-    const idB = selectedIds[1];
-
-    const match = CHEMICAL_REACTIONS_DB.find(rx => {
-      if (rx.reactants.length !== 2) return false;
-      const hasA = rx.reactants.includes(idA);
-      const hasB = rx.reactants.includes(idB);
-      return hasA && hasB;
-    });
-
-    if (match) {
-      if (match.requiresHeat && !bunsenHeatActive) {
-        return null;
-      }
-      return match;
-    }
+    const [idA, idB] = selectedIds;
+    const match = CHEMICAL_REACTIONS_DB.find(rx =>
+      allowed(rx) &&
+      rx.reactants.length === 2 &&
+      rx.reactants.includes(idA) &&
+      rx.reactants.includes(idB)
+    );
+    if (match) return usable(match);
   }
 
   return null;

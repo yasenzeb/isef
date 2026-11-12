@@ -1,6 +1,7 @@
 /**
  * SciNexaNavDock.tsx — شريط التنقل الكبسولي المتطور لمنصة ساينكسا
- * كبسولة زجاجية داكنة فخمة تضم المعامل الستة والأوفر فيو وزر داروين الصوتي المباشر
+ * كبسولة زجاجية داكنة فخمة تضم المعامل السبعة والأوفر فيو وزر داروين الصوتي المباشر
+ * مع إمكانية إخفاء الشريط وتنزيله لأسفل بالكامل وإظهاره بضغطة زر
  *
  * © Islam & Yaseen — SciNexa ISEF 2026
  */
@@ -17,15 +18,10 @@ import {
   Dna,
   Globe2,
   Sparkles,
+  Sigma,
   Mic,
-  X,
-  Radio,
-  Volume2,
-  Eye,
-  ShieldAlert,
-  Send,
-  Navigation,
-  Lock,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 
 interface SciNexaNavDockProps {
@@ -46,6 +42,18 @@ interface DockItem {
 }
 
 const DOCK_ITEMS: DockItem[] = [
+  {
+    id: 'math',
+    to: '/app/labs/math',
+    labelAr: 'معمل الرياضيات والهندسة',
+    labelEn: 'Mathematics & Geometry Lab',
+    labelFr: 'Mathématiques & Géométrie',
+    labelDe: 'Mathematik & Geometrie',
+    labelJa: '数学・幾何学実験室',
+    icon: Sigma,
+    bgGradient: 'linear-gradient(135deg, #6366f1, #4f46e5)',
+    glow: 'rgba(99, 102, 241, 0.5)',
+  },
   {
     id: 'astronomy',
     to: '/app/labs/astronomy',
@@ -134,13 +142,27 @@ const DOCK_ITEMS: DockItem[] = [
 
 export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ className = '' }) => {
   const { language } = useLanguage();
-  const { role, educator, user } = useSession();
+  const { user } = useSession();
   const navigate = useNavigate();
   const location = useLocation();
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [isVoiceOpen, setIsVoiceOpen] = useState(false);
+  const [isDockHidden, setIsDockHidden] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('scinexa_dock_hidden') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
   const ar = language === 'ar';
-  const ja = language === 'ja';
+
+  const toggleDockHidden = (hidden: boolean) => {
+    setIsDockHidden(hidden);
+    try {
+      localStorage.setItem('scinexa_dock_hidden', hidden ? 'true' : 'false');
+    } catch {}
+  };
 
   const getLabel = (item: DockItem) => {
     switch (language) {
@@ -151,6 +173,8 @@ export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ className = '' }
       default: return item.labelAr;
     }
   };
+
+  const studentName = user?.name || (user?.email ? user.email.split('@')[0] : (ar ? 'عبد الرحمن' : 'Student'));
 
   const handleToggleDarwin = () => {
     let agent = document.querySelector('fish-agent') as HTMLElement | null;
@@ -163,13 +187,20 @@ export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ className = '' }
       agent.setAttribute(
         'greeting',
         ar
-          ? 'أهلاً بك يا بطل! أنا داروين مرشدك العلمي في منصة SciNexa، جاهز للإجابة عن أسئلتك ومساعدتك في المعامل.'
-          : 'Welcome! I am Darwin, your science guide in SciNexa. Ready to answer your questions and assist you across all labs.'
+          ? `أهلاً بك يا ${studentName}! أنا داروين مرشدك العلمي في منصة SciNexa، جاهز لمساعدتك في كل المعامل وفحص التجارب معك.`
+          : `Welcome, ${studentName}! I am Darwin, your science guide in SciNexa. Ready to assist you across all labs.`
       );
       agent.setAttribute('text-input', 'true');
       agent.setAttribute('transcript', 'true');
       agent.setAttribute('mic-muting', 'true');
       document.body.appendChild(agent);
+    } else {
+      agent.setAttribute(
+        'greeting',
+        ar
+          ? `أهلاً بك يا ${studentName}! أنا داروين مرشدك العلمي في منصة SciNexa، جاهز لمساعدتك في كل المعامل وفحص التجارب معك.`
+          : `Welcome, ${studentName}! I am Darwin, your science guide in SciNexa. Ready to assist you across all labs.`
+      );
     }
 
     // Toggle: if open minimize, if closed expand immediately
@@ -197,17 +228,55 @@ export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ className = '' }
 
   return (
     <>
+      {/* ── COLLAPSED FLOATING PILL BUTTON (SHOWN WHEN DOCK IS HIDDEN) ── */}
+      {isDockHidden && (
+        <div className="fixed bottom-3 inset-x-0 z-40 flex justify-center pointer-events-none animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <button
+            type="button"
+            onClick={() => toggleDockHidden(false)}
+            title={ar ? 'إظهار شريط المعامل السفلي' : 'Show Navigation Dock'}
+            className="pointer-events-auto flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#141518]/95 border border-white/20 text-white text-[11px] font-semibold backdrop-blur-2xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:bg-[#20232b] hover:border-cyan-400/40 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          >
+            <ChevronUp size={15} className="text-cyan-400 animate-bounce" />
+            <span>{ar ? 'إظهار شريط المعامل' : 'Show Labs Dock'}</span>
+          </button>
+        </div>
+      )}
 
       {/* ── BOTTOM DOCK TASKBAR ── */}
       <aside
         aria-label="SciNexa Dock Taskbar"
-        className={`fixed bottom-4 inset-x-0 z-40 flex justify-center items-end pointer-events-none px-3 ${className}`}
-        style={{ paddingBottom: 'max(6px, env(safe-area-inset-bottom, 6px))' }}
+        className={`fixed bottom-3 inset-x-0 z-40 flex justify-center items-end pointer-events-none px-3 transition-all duration-300 ease-out ${
+          isDockHidden ? 'translate-y-28 opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'
+        } ${className}`}
+        style={{ paddingBottom: 'max(4px, env(safe-area-inset-bottom, 4px))' }}
       >
         <nav
           dir="ltr"
-          className="pointer-events-auto flex items-center justify-center gap-2 sm:gap-2.5 px-3 py-2.5 rounded-[24px] bg-[#141518]/95 border border-white/15 backdrop-blur-2xl shadow-[0_18px_60px_-10px_rgba(0,0,0,0.65)] transition-all duration-300"
+          className="pointer-events-auto relative flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-2 rounded-[24px] bg-[#141518]/95 border border-white/15 backdrop-blur-2xl shadow-[0_18px_60px_-10px_rgba(0,0,0,0.7)] transition-all duration-300"
         >
+          {/* Hide / Minimize Dock Down Button */}
+          <button
+            type="button"
+            onClick={() => toggleDockHidden(true)}
+            onMouseEnter={() => setHoveredId('collapse')}
+            onMouseLeave={() => setHoveredId(null)}
+            title={ar ? 'إخفاء شريط المعامل للأسفل' : 'Hide dock'}
+            aria-label={ar ? 'إخفاء الشريط' : 'Hide dock'}
+            className="w-7 h-9 rounded-[10px] flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer me-0.5 shrink-0"
+          >
+            <ChevronDown size={16} />
+            {hoveredId === 'collapse' && (
+              <div
+                className="absolute bottom-full mb-3 px-2.5 py-1 rounded-lg text-white text-[10px] font-medium whitespace-nowrap pointer-events-none shadow-xl z-50 bg-slate-900/95 border border-white/15"
+              >
+                {ar ? 'إخفاء الشريط لأسفل' : 'Hide dock down'}
+              </div>
+            )}
+          </button>
+
+          <div className="h-6 w-px bg-white/10 me-1 shrink-0" />
+
           {DOCK_ITEMS.map((item) => {
             const Icon = item.icon;
             const isActive =
@@ -241,7 +310,7 @@ export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ className = '' }
                   onMouseEnter={() => setHoveredId(item.id)}
                   onMouseLeave={() => setHoveredId(null)}
                   aria-label={label}
-                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-[14px] flex items-center justify-center transition-all duration-200 cursor-pointer select-none active:scale-95 shrink-0 relative overflow-hidden"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-[13px] flex items-center justify-center transition-all duration-200 cursor-pointer select-none active:scale-95 shrink-0 relative overflow-hidden"
                   style={{
                     background: item.bgGradient,
                     transform: isHovered
@@ -256,7 +325,7 @@ export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ className = '' }
                         : '0 2px 8px rgba(0, 0, 0, 0.3)',
                   }}
                 >
-                  <Icon size={19} strokeWidth={2.1} className="text-white drop-shadow" />
+                  <Icon size={18} strokeWidth={2.1} className="text-white drop-shadow" />
                 </button>
 
                 {/* Glowing Active Indicator Dot */}
@@ -286,7 +355,7 @@ export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ className = '' }
                   boxShadow: '0 8px 24px rgba(6, 182, 212, 0.45)',
                 }}
               >
-                {ar ? 'داروين | وكيل الذكاء الصوتي (Fish Audio)' : 'Darwin | AI Voice Assistant'}
+                {ar ? `داروين | مرحباً بك يا ${studentName}` : `Darwin AI | Hello ${studentName}`}
               </div>
             )}
 
@@ -296,14 +365,14 @@ export const SciNexaNavDock: React.FC<SciNexaNavDockProps> = ({ className = '' }
               onMouseEnter={() => setHoveredId('darwin')}
               onMouseLeave={() => setHoveredId(null)}
               aria-label="Darwin AI Voice Assistant"
-              className="w-10 h-10 sm:w-11 sm:h-11 rounded-[14px] flex items-center justify-center transition-all duration-200 cursor-pointer select-none active:scale-95 shrink-0 relative overflow-hidden"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-[13px] flex items-center justify-center transition-all duration-200 cursor-pointer select-none active:scale-95 shrink-0 relative overflow-hidden"
               style={{
                 background: 'linear-gradient(135deg, #06b6d4, #0284c7)',
                 transform: hoveredId === 'darwin' || isVoiceOpen ? 'scale(1.12) translateY(-3px)' : 'scale(1)',
                 boxShadow: isVoiceOpen ? '0 0 0 2.5px #ffffff, 0 0 25px #22d3ee' : '0 4px 16px rgba(6, 182, 212, 0.45)',
               }}
             >
-              <span className="absolute inset-0 rounded-[14px] bg-cyan-300 opacity-20 animate-ping" />
+              <span className="absolute inset-0 rounded-[13px] bg-cyan-300 opacity-20 animate-ping" />
               <Mic size={18} strokeWidth={2.2} className="text-white relative z-10" />
             </button>
 

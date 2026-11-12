@@ -493,6 +493,19 @@ export const SciNexaAIModal: React.FC<SciNexaAIModalProps> = ({
       return;
     }
 
+    if ((lower.includes('رياضيات') || lower.includes('رياضه') || lower.includes('هندسة') || lower.includes('math')) && (lower.includes('انقلني') || lower.includes('افتح') || lower.includes('معمل') || lower.includes('take me'))) {
+      if (location.pathname === '/app/labs/math') {
+        const msg = ar ? 'لم أنقلك لأنك موجود بالفعل داخل معمل الرياضيات والهندسة الآن.' : 'You are already inside the Math Lab.';
+        speakText(msg);
+        setMessages((prev) => [...prev, { id: `nav-${Date.now()}`, sender: 'ai', text: msg, timestamp: Date.now() }]);
+        return;
+      }
+      const msg = ar ? 'جاري نقلك فوراً إلى معمل الرياضيات والهندسة...' : 'Launching Math & Geometry Lab...';
+      speakText(msg);
+      setTimeout(() => { if (!isEmbedded) onClose(); navigate('/app/labs/math'); }, 900);
+      return;
+    }
+
     // 3. REGULAR SCIENTIFIC QUERY
     const userMsg: Message = {
       id: `u-${Date.now()}`,
@@ -1126,8 +1139,8 @@ export const SciNexaAIModal: React.FC<SciNexaAIModalProps> = ({
                   dangerouslySetInnerHTML={{
                     __html: `<fish-agent agent-id="929a1bf391db4185b03ae62f05a49207" language="${ar ? 'ar' : 'en'}" text-input="true" transcript="true" agent-name="${ar ? 'داروين • مرشد العلوم' : 'Darwin AI'}" greeting="${
                       ar
-                        ? 'أهلاً بك يا بطل! أنا داروين مرشدك العلمي في منصة SciNexa، جاهز للإجابة عن أسئلتك ومساعدتك في المعامل.'
-                        : 'Welcome! I am Darwin, your science guide in SciNexa. Ready to assist across all labs.'
+                        ? `أهلاً بك يا ${user?.name || 'عبد الرحمن'}! أنا داروين مرشدك العلمي في منصة SciNexa، جاهز لمساعدتك في كل المعامل وفحص التجارب معك.`
+                        : `Welcome, ${user?.name || 'Student'}! I am Darwin, your science guide in SciNexa. Ready to assist across all labs.`
                     }"></fish-agent>`
                   }}
                 />

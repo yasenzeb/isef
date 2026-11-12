@@ -10,6 +10,13 @@ import {
   ReactionCategory
 } from '../data/chemicalReactionsData';
 import {
+  REACTION_TYPE_INFO,
+  REACTION_TYPE_KEYS,
+  REACTION_SOURCES,
+  typeKeyOfCategory,
+  type ReactionTypeFilter
+} from '../data/reactionTypesExtra';
+import {
   Flame,
   RotateCcw,
   Thermometer,
@@ -29,6 +36,7 @@ export const PraxiReactionSimulator: React.FC = () => {
   const [selectedReagentIds, setSelectedReagentIds] = useState<string[]>(['Zn', 'HCl']);
   const [bunsenBurnerActive, setBunsenBurnerActive] = useState<boolean>(false);
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('all');
+  const [reactionType, setReactionType] = useState<ReactionTypeFilter>('all');
   const [reagentCategoryFilter, setReagentCategoryFilter] = useState<string>('all');
   const [isDraggingOverVessel, setIsDraggingOverVessel] = useState<boolean>(false);
   const [draggedReagentId, setDraggedReagentId] = useState<string | null>(null);
@@ -61,7 +69,7 @@ export const PraxiReactionSimulator: React.FC = () => {
 
   // Sync reaction whenever selected reagents or Bunsen heat changes
   useEffect(() => {
-    const matched = findMatchingReaction(selectedReagentIds, bunsenBurnerActive);
+    const matched = findMatchingReaction(selectedReagentIds, bunsenBurnerActive, reactionType);
     setReaction(matched);
     setIsReacting(false);
     setReactionProgress(0);
@@ -82,7 +90,7 @@ export const PraxiReactionSimulator: React.FC = () => {
       flameActive: bunsenBurnerActive,
       temperature: temp,
     });
-  }, [selectedReagentIds, bunsenBurnerActive]);
+  }, [selectedReagentIds, bunsenBurnerActive, reactionType]);
 
   // Handle mixing / ignition
   const handleStartReaction = () => {
@@ -644,6 +652,18 @@ export const PraxiReactionSimulator: React.FC = () => {
     };
   }, [selectedReagentIds, reaction, isReacting, reactionProgress, reactionCompleted, bunsenBurnerActive]);
 
+  // When the chosen reaction type gives no result, check whether the pair reacts by another type.
+  const otherTypeMatch = (() => {
+    if (reactionType === 'all' || selectedReagentIds.length === 0) return null;
+    for (const k of REACTION_TYPE_KEYS) {
+      if (k === reactionType) continue;
+      const m = findMatchingReaction(selectedReagentIds, true, k);
+      if (m) return { key: k, reaction: m };
+    }
+    return null;
+  })();
+  const reactionTypeKey = reaction ? typeKeyOfCategory(reaction.category) : null;
+
   return (
     <div className="space-y-6">
       
@@ -877,6 +897,29 @@ export const PraxiReactionSimulator: React.FC = () => {
                 <RotateCcw className="w-4 h-4" />
               </button>
             </div>
+          </div>
+
+          {/* Reaction Type Selector */}
+          <div className="sci-card p-4 space-y-2">
+            <div className="flex flex-wrap gap-1.5 text-[11px] font-mono">
+              {([{ id: 'all' as ReactionTypeFilter, ar: 'كل الأنواع', en: 'All types' }, ...REACTION_TYPE_KEYS.map(k => ({ id: k as ReactionTypeFilter, ar: REACTION_TYPE_INFO[k].ar, en: REACTION_TYPE_INFO[k].en }))]).map(t => (
+                <button
+                  key={t.id}
+                  onClick={() => setReactionType(t.id)}
+                  className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
+                    reactionType === t.id ? 'bg-emerald-400 text-black' : 'bg-white/5 text-slate-300 hover:bg-white/10'
+                  }`}
+                >
+                  {ar ? t.ar : t.en}
+                </button>
+              ))}
+            </div>
+            {reactionType !== 'all' && (
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-300">
+                <span>{ar ? REACTION_TYPE_INFO[reactionType].descAr : REACTION_TYPE_INFO[reactionType].descEn}</span>
+                <span dir="ltr" className="font-mono font-black text-emerald-300">{REACTION_TYPE_INFO[reactionType].form}</span>
+              </div>
+            )}
           </div>
 
           {/* Reagent Rack Shelf */}
@@ -1128,6 +1171,22 @@ export const PraxiReactionSimulator: React.FC = () => {
                 </p>
               </div>
 
+              {/* Sources (shown for the four basic reaction types) */}
+              {reactionTypeKey && (
+                <div className="p-3 rounded-xl bg-slate-950/60 border border-white/10 space-y-1">
+                  <span className="text-[11px] font-bold text-slate-300 block">{ar ? 'المصادر العلمية:' : 'Sources:'}</span>
+                  <ul className="space-y-0.5 list-disc ps-4">
+                    {REACTION_TYPE_INFO[reactionTypeKey].sources.map(i => (
+                      <li key={i} className="text-[11px] text-slate-400 break-words">
+                        <a href={REACTION_SOURCES[i].url} target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">
+                          {REACTION_SOURCES[i].title}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               {/* Safety Precautions */}
               <div className="flex items-center gap-2 p-2.5 rounded-xl bg-red-950/30 border border-red-500/40 text-red-200 text-xs">
                 <ShieldAlert className="w-4 h-4 shrink-0 text-red-400" />
@@ -1142,6 +1201,8 @@ export const PraxiReactionSimulator: React.FC = () => {
                   ? (ar ? 'الكأس فارغ — اختر المواد من الرف على اليسار لبدء التجربة' : 'Empty Vessel — Select reagents from the shelf on the left')
                   : selectedReagentIds.length === 1 && !bunsenBurnerActive
                   ? (ar ? 'أضف متفاعلاً ثانياً أو أشعل موقد بنزن لتجارب الانحلال الحراري' : 'Add a second reagent or turn on the Bunsen burner for thermal decomposition')
+                  : reactionType !== 'all' && selectedReagentIds.length >= 2
+                  ? (ar ? `لا يحدث تفاعل من نوع «${REACTION_TYPE_INFO[reactionType].ar}» بين هاتين المادتين` : `No ${REACTION_TYPE_INFO[reactionType].en.toLowerCase()} reaction between these two substances`)
                   : (ar ? 'لا يوجد تفاعل كيميائي مباشر معروف بين هذه المواد في هذه الظروف' : 'No Spontaneous Reaction Under Current Conditions')}
               </h4>
               <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
@@ -1149,6 +1210,13 @@ export const PraxiReactionSimulator: React.FC = () => {
                   ? 'جرب اختيار تجربة من الأزرار الجاهزة بالأعلى (مثل: Zn + HCl للإحلال البسيط، أو Pb(NO₃)₂ + KI لترسيب المطر الذهبي، أو HgO مع إشعال موقد بنزن للانحلال الحراري).'
                   : 'Try one of the quick curriculum presets above (e.g. Zn + HCl for single displacement, Pb(NO₃)₂ + KI for golden rain, or HgO with Bunsen heat for thermal decomposition).'}
               </p>
+              {otherTypeMatch && (
+                <p className="text-xs text-emerald-300 max-w-md mx-auto leading-relaxed">
+                  {ar ? 'لكنهما يتفاعلان بنوع: ' : 'But they do react by: '}
+                  <strong>{ar ? REACTION_TYPE_INFO[otherTypeMatch.key].ar : REACTION_TYPE_INFO[otherTypeMatch.key].en}</strong>
+                  {' — '}<span dir="ltr" className="font-mono">{otherTypeMatch.reaction.equation}</span>
+                </p>
+              )}
             </div>
           )}
 

@@ -77,6 +77,16 @@ export const DESTINATIONS: NavDestination[] = [
     ],
   },
   {
+    path: '/app/labs/math',
+    nameAr: 'معمل الرياضيات والهندسة',
+    nameEn: 'Mathematics & Geometry Lab',
+    keywords: [
+      'رياضيات', 'رياضه', 'رياضة', 'هندسة', 'مستوى إحداثي', 'المستوى الإحداثي', 'فيثاغورس',
+      'إقليدس', 'ميل الخط المستقيم', 'دوال', 'دالة', 'جدول الدوال', 'حاسبة', 'آلة حاسبة',
+      'math', 'mathematics', 'geometry'
+    ],
+  },
+  {
     path: '/app/classroom',
     nameAr: 'السبورة التفاعلية الذكية',
     nameEn: 'Smart Interactive Classroom',

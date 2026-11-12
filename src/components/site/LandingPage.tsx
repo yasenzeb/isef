@@ -11,6 +11,7 @@ import {
   Dna,
   Globe2,
   Sparkles,
+  Sigma,
   ArrowRight,
   ArrowUpRight,
   BookOpen,
@@ -31,6 +32,7 @@ const ICONS: Record<string, React.ComponentType<{ size?: number; strokeWidth?: n
   biology: Dna,
   geology: Globe2,
   astronomy: Sparkles,
+  math: Sigma,
 };
 
 const SectionLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -301,7 +303,7 @@ const LabCard: React.FC<{ lab: LabModule; onOpen: () => void }> = ({ lab, onOpen
 
 export const LandingPage: React.FC = () => {
   const { language } = useLanguage();
-  const { isSignedIn } = useSession();
+  const { isSignedIn, signInDemo } = useSession();
   const navigate = useNavigate();
   const ar = language === 'ar';
 
@@ -593,6 +595,17 @@ export const LandingPage: React.FC = () => {
                   {copy.start}
                   <ArrowRight size={16} strokeWidth={1.8} className={ar ? 'rotate-180' : ''} />
                 </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    signInDemo({ name: ar ? 'زائر' : 'Guest', email: 'guest@scinexa.school', role: 'student' });
+                    navigate('/app');
+                  }}
+                  className="sn-btn sn-btn-outline sn-btn-lg !border-cyan-600/40 !bg-cyan-50/50 hover:!bg-cyan-100/70 !text-cyan-900 font-bold shadow-xs cursor-pointer flex items-center gap-2"
+                >
+                  <Sparkles size={16} strokeWidth={2} className="text-cyan-600" />
+                  <span>{ar ? 'دخول المنصة كزائر' : 'Enter as Guest'}</span>
+                </button>
                 <a href="#labs" className="sn-btn sn-btn-ghost sn-btn-lg">
                   {copy.explore}
                 </a>
