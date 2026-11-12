@@ -8,9 +8,10 @@ import { getPersistedItem, setPersistedItem, getPersistedJSON, setPersistedJSON 
  *
  * كل درس يحتوي على:
  * 1. زر فوري لفتح المعمل ثلاثي الأبعاد 3D المرتبط بالتجربة
- * 2. تقييم أسبوعي تفاعلي متاح لجميع الطلاب لكسب نقاط XP والنجوم دون أقفال تعسفية
- * 3. فيديو تعليمي موثق
- * 4. دعم كامل للغات الأربع (عربي، إنجليزي، فرنسي، ألماني)
+ * 2. تقييم أسبوعي تفاعلي محكم (مغلق بعد أول محاولة منعاً للغش وفق اللائحة الرسمية)
+ * 3. خلط عشوائي كامل للخيارات لمنع ثبات الإجابة الصحيحة
+ * 4. قفل الصف الدراسي على صف قيد الطالب لمنع التشتت
+ * 5. ربط الستريك بالخطة الأسبوعية المعتمدة
  *
  * © Islam & Yaseen — SciNexa ISEF 2026
  */
@@ -21,7 +22,6 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useSession } from '../../context/SessionContext';
 import {
   ALL_CURRICULUM_PATHWAYS,
-  getPathwaysByStage,
   type CurriculumLesson,
   type CurriculumPathway,
 } from '../../data/curriculumData';
@@ -39,19 +39,14 @@ import {
   ArrowRight,
   BookOpen,
   CheckCircle2,
-  Circle,
   Play,
   FileCheck2,
   X,
   Trophy,
   Star,
-  Compass,
   Video,
-  ChevronRight,
-  GraduationCap,
-  Layers,
-  HelpCircle,
-  Sparkle
+  Lock,
+  Unlock,
 } from 'lucide-react';
 
 const LAB_ICONS: Record<string, React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>> = {
@@ -73,14 +68,14 @@ const ACCENT_COLORS: Record<string, { bg: string; border: string; text: string; 
 };
 
 const GRADE_FILTERS = [
-  { id: 'all', stage: 'all', ar: 'جميع الصفوف', en: 'All Grades', fr: 'Toutes les classes', de: 'Alle Klassen' },
-  { id: 'sec1', stage: 'secondary', ar: '١ ثانوي', en: '1st Secondary', fr: '1re Lycée', de: '10. Klasse' },
-  { id: 'sec2', stage: 'secondary', ar: '٢ ثانوي', en: '2nd Secondary', fr: '2e Lycée', de: '11. Klasse' },
-  { id: 'sec3', stage: 'secondary', ar: '٣ ثانوي (الثانوية العامة)', en: '3rd Secondary (Thanaweya)', fr: 'Terminale', de: '12. Klasse (Abitur)' },
-  { id: 'prep1', stage: 'prep', ar: '١ إعدادي', en: '1st Prep', fr: '1re Collège', de: '7. Klasse' },
-  { id: 'prep2', stage: 'prep', ar: '٢ إعدادي', en: '2nd Prep', fr: '2e Collège', de: '8. Klasse' },
-  { id: 'prep3', stage: 'prep', ar: '٣ إعدادي', en: '3rd Prep', fr: '3e Collège', de: '9. Klasse' },
-  { id: 'stem', stage: 'stem', ar: 'مدارس STEM', en: 'STEM Schools', fr: 'Écoles STEM', de: 'STEM Schulen' },
+  { id: 'all', stage: 'all', ar: 'جميع الصفوف', en: 'All Grades' },
+  { id: 'sec1', stage: 'secondary', ar: '١ ثانوي', en: '1st Secondary' },
+  { id: 'sec2', stage: 'secondary', ar: '٢ ثانوي', en: '2nd Secondary' },
+  { id: 'sec3', stage: 'secondary', ar: '٣ ثانوي (الثانوية العامة)', en: '3rd Secondary (Thanaweya)' },
+  { id: 'prep1', stage: 'prep', ar: '١ إعدادي', en: '1st Prep' },
+  { id: 'prep2', stage: 'prep', ar: '٢ إعدادي', en: '2nd Prep' },
+  { id: 'prep3', stage: 'prep', ar: '٣ إعدادي', en: '3rd Prep' },
+  { id: 'stem', stage: 'stem', ar: 'مدارس STEM', en: 'STEM Schools' },
 ];
 
 /* ── Interactive Video Modal ── */
@@ -139,19 +134,41 @@ const VideoModal: React.FC<{
   );
 };
 
-/* ── Interactive Quiz Modal (Always Unlocked & Instant Feedback) ── */
+/* ── Interactive Quiz Modal (Shuffle Options & Single-Attempt Enforced) ── */
 const QuizModal: React.FC<{
   lesson: CurriculumLesson | null;
   onClose: () => void;
   onSubmit: (lessonId: string, answers: Record<string, number>) => void;
   ar: boolean;
   language: string;
-}> = ({ lesson, onClose, onSubmit, ar, language }) => {
+  isReadOnly?: boolean;
+}> = ({ lesson, onClose, onSubmit, ar, language, isReadOnly = false }) => {
   const [answers, setAnswers] = useState<Record<string, number>>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState<boolean>(isReadOnly);
+
+  // Fisher-Yates shuffle options on each quiz session so correct answer is NOT fixed at top
+  const shuffledQuestions = useMemo(() => {
+    if (!lesson) return [];
+    return lesson.weeklyAssessment.questions.map((q) => {
+      const indices = q.optionsAr.map((_, i) => i);
+      // Shuffle indices array
+      for (let i = indices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+      }
+      return {
+        ...q,
+        optionsAr: indices.map((i) => q.optionsAr[i]),
+        optionsEn: indices.map((i) => q.optionsEn[i]),
+        optionsFr: indices.map((i) => (q.optionsFr ?? q.optionsEn)[i]),
+        optionsDe: indices.map((i) => (q.optionsDe ?? q.optionsEn)[i]),
+        correctAnswerIndex: indices.indexOf(q.correctAnswerIndex),
+      };
+    });
+  }, [lesson?.id]);
 
   if (!lesson) return null;
-  const questions = lesson.weeklyAssessment.questions;
+  const questions = shuffledQuestions;
 
   const handleSubmit = () => {
     setSubmitted(true);
@@ -184,14 +201,24 @@ const QuizModal: React.FC<{
       dir={ar ? 'rtl' : 'ltr'}
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/65 backdrop-blur-sm"
     >
-      <div className="relative w-full max-w-[640px] max-h-[88vh] flex flex-col overflow-hidden rounded-[24px] bg-white border border-[#e2e8f0] shadow-2xl">
+      <div className="relative w-full max-w-[680px] max-h-[88vh] flex flex-col overflow-hidden rounded-[24px] bg-white border border-[#e2e8f0] shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[#f1f5f9] px-6 py-4 bg-[#f8fafc]">
           <div>
-            <div className="text-[10px] font-mono text-[#0284c7] font-bold uppercase tracking-wider">
-              {ar ? 'التقييم والتدريب التفاعلي المباشر' : 'Interactive Assessment'}
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-mono text-[#0284c7] font-bold uppercase tracking-wider">
+                {isReadOnly
+                  ? (ar ? 'تقرير التقييم المعتمد (مغلق ومحفوظ في سجلك)' : 'Official Assessment Report (Locked)')
+                  : (ar ? 'التقييم الوزاري الأسبوعي الرسمي' : 'Official Ministry Weekly Assessment')}
+              </span>
+              {isReadOnly && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200">
+                  <Lock size={10} />
+                  <span>{ar ? 'محاولة واحدة فقط' : 'Single attempt'}</span>
+                </span>
+              )}
             </div>
-            <h3 className="text-[16px] font-bold text-[#0f172a] mt-0.5">
+            <h3 className="text-[15px] sm:text-[16px] font-bold text-[#0f172a] mt-0.5">
               {ar ? lesson.weeklyAssessment.titleAr : lesson.weeklyAssessment.titleEn}
             </h3>
           </div>
@@ -206,14 +233,33 @@ const QuizModal: React.FC<{
 
         {/* Questions Body */}
         <div className="overflow-y-auto p-5 sm:p-6 space-y-5">
-          {submitted && (
+          {/* ReadOnly Warning / Locked Notice */}
+          {isReadOnly && (
+            <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200/80 text-amber-950 flex items-start gap-3">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-500/20 text-amber-700">
+                <Lock size={16} strokeWidth={2.5} />
+              </span>
+              <div>
+                <div className="text-[13px] font-bold">
+                  {ar ? 'تم أداء هذا التقييم وتثبيت الدرجات في سجلك الأكاديمي' : 'Assessment Completed & Recorded'}
+                </div>
+                <p className="text-[11.5px] text-amber-800 leading-relaxed mt-0.5">
+                  {ar
+                    ? 'وفقاً للائحة الامتحانات ومنعاً لتكرار المحاولات، لا يمكن إعادة فتح الامتحان للحل مرة ثانية. الأسئلة المعروضة أدناه مع التفسيرات العلمية ونموذج الإجابة مخصصة للمراجعة فقط.'
+                    : 'Per Ministry regulations, re-taking assessments is restricted to ensure single-attempt authenticity. You may review the verified answers and explanations below.'}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {submitted && !isReadOnly && (
             <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex items-center justify-between">
               <div>
                 <div className="text-[14px] font-bold">
                   {ar ? '🎉 أحسنت! تم إتمام التقييم واحتساب درجات الإتقان' : '🎉 Assessment Completed!'}
                 </div>
                 <div className="text-[12px] text-emerald-700 mt-0.5">
-                  {ar ? `درجتك: ${scoreCount} من ${questions.length} أسئلة صحيحة (+60 XP)` : `Score: ${scoreCount}/${questions.length} (+60 XP)`}
+                  {ar ? `درجتك: ${scoreCount} من ${questions.length} أسئلة صحيحة (+60 XP) — تم قفل التقييم` : `Score: ${scoreCount}/${questions.length} (+60 XP) — Assessment Locked`}
                 </div>
               </div>
               <span className="sn-badge sn-badge-green !text-[12px] font-bold">
@@ -225,7 +271,6 @@ const QuizModal: React.FC<{
           {questions.map((q, idx) => {
             const options = getOptions(q);
             const userChoice = answers[q.id];
-            const isCorrect = userChoice === q.correctAnswerIndex;
 
             return (
               <div key={q.id} className="p-4 rounded-2xl border border-[#e2e8f0] bg-[#fafafa]">
@@ -239,14 +284,19 @@ const QuizModal: React.FC<{
                     const isSelected = userChoice === optIdx;
                     const isRightAnswer = q.correctAnswerIndex === optIdx;
 
-                    let btnClass = 'bg-white border-[#cbd5e1] text-[#475569] hover:border-[#0284c7]';
-                    if (isSelected && !submitted) {
-                      btnClass = 'bg-[#0284c7] text-white border-[#0284c7] shadow-sm';
-                    } else if (submitted) {
+                    let btnClass = 'bg-white border-[#cbd5e1] text-[#475569]';
+                    if (!isReadOnly && !submitted) {
+                      btnClass = isSelected
+                        ? 'bg-[#0284c7] text-white border-[#0284c7] shadow-sm'
+                        : 'bg-white border-[#cbd5e1] text-[#475569] hover:border-[#0284c7]';
+                    } else {
+                      // Review mode (submitted or read-only)
                       if (isRightAnswer) {
                         btnClass = 'bg-emerald-50 border-emerald-500 text-emerald-900 font-bold';
                       } else if (isSelected && !isRightAnswer) {
                         btnClass = 'bg-red-50 border-red-500 text-red-900 line-through';
+                      } else {
+                        btnClass = 'bg-white/60 border-[#e2e8f0] text-[#94a3b8]';
                       }
                     }
 
@@ -254,21 +304,28 @@ const QuizModal: React.FC<{
                       <button
                         key={opt}
                         type="button"
-                        disabled={submitted}
+                        disabled={submitted || isReadOnly}
                         onClick={() => setAnswers((prev) => ({ ...prev, [q.id]: optIdx }))}
                         className={`w-full flex items-center justify-between p-3 rounded-xl border text-start text-[12px] font-medium transition-all ${btnClass}`}
                       >
                         <span>{opt}</span>
-                        {isSelected && !submitted && <CheckCircle2 size={15} className="text-white shrink-0" />}
-                        {submitted && isRightAnswer && <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />}
+                        {!submitted && !isReadOnly && isSelected && (
+                          <CheckCircle2 size={15} className="text-white shrink-0" />
+                        )}
+                        {(submitted || isReadOnly) && isRightAnswer && (
+                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700">
+                            <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
+                            <span>{ar ? 'الإجابة النموذجية' : 'Correct'}</span>
+                          </span>
+                        )}
                       </button>
                     );
                   })}
                 </div>
 
-                {submitted && (
+                {(submitted || isReadOnly) && (
                   <div className="mt-3 p-3 rounded-xl bg-[#f0f9ff] border border-[#bae6fd] text-[11px] text-[#0369a1] leading-relaxed">
-                    <strong>{ar ? '💡 التفسير العلمي: ' : '💡 Scientific Explanation: '}</strong>
+                    <strong>{ar ? '💡 التفسير العلمي المعتمد: ' : '💡 Scientific Explanation: '}</strong>
                     {ar ? q.explanationAr : q.explanationEn}
                   </div>
                 )}
@@ -280,10 +337,12 @@ const QuizModal: React.FC<{
         {/* Footer */}
         <div className="flex items-center justify-between border-t border-[#f1f5f9] px-6 py-4 bg-[#f8fafc]">
           <span className="text-[11px] text-[#64748b]">
-            {totalAnswered} / {questions.length} {ar ? 'تمت الإجابة عليها' : 'answered'}
+            {isReadOnly
+              ? (ar ? `تم تثبيت الإجابات (${questions.length} أسئلة معتمدة)` : `${questions.length} verified questions`)
+              : `${totalAnswered} / ${questions.length} ${ar ? 'تمت الإجابة عليها' : 'answered'}`}
           </span>
 
-          {!submitted ? (
+          {!submitted && !isReadOnly ? (
             <button
               type="button"
               disabled={totalAnswered !== questions.length}
@@ -298,7 +357,7 @@ const QuizModal: React.FC<{
               onClick={onClose}
               className="sn-btn sn-btn-primary sn-btn-sm font-bold text-[12px] px-5"
             >
-              {ar ? 'تم وتثبيت النقاط' : 'Done & Close'}
+              {ar ? 'إغلاق المراجعة والتثبيت' : 'Close Review'}
             </button>
           )}
         </div>
@@ -314,7 +373,10 @@ export const CurriculumPage: React.FC = () => {
   const navigate = useNavigate();
   const ar = language === 'ar';
 
-  const [selectedGrade, setSelectedGrade] = useState<string>('all');
+  // Enrolled student grade (defaults to sec2 - 2nd secondary)
+  const enrolledGrade = user?.grade || getPersistedItem('scinexa_grade') || 'sec2';
+  const [selectedGrade, setSelectedGrade] = useState<string>(enrolledGrade);
+  const [isGradeLocked, setIsGradeLocked] = useState<boolean>(true);
   const [selectedSubject, setSelectedSubject] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [geminiResult, setGeminiResult] = useState<GeminiSearchResult | null>(null);
@@ -332,6 +394,7 @@ export const CurriculumPage: React.FC = () => {
   }, [searchQuery, language]);
 
   const [quizLesson, setQuizLesson] = useState<CurriculumLesson | null>(null);
+  const [isQuizReadOnly, setIsQuizReadOnly] = useState<boolean>(false);
   const [videoLesson, setVideoLesson] = useState<CurriculumLesson | null>(null);
 
   // Student gamification state
@@ -354,8 +417,9 @@ export const CurriculumPage: React.FC = () => {
 
   // Filter all pathways based on selected grade
   const filteredPathways = useMemo(() => {
+    const effectiveGrade = isGradeLocked ? enrolledGrade : selectedGrade;
     return ALL_CURRICULUM_PATHWAYS.filter((pw) => {
-      if (selectedGrade !== 'all' && pw.grade !== selectedGrade && pw.stage !== selectedGrade) {
+      if (effectiveGrade !== 'all' && pw.grade !== effectiveGrade) {
         return false;
       }
       if (selectedSubject !== 'all' && pw.accent !== selectedSubject) {
@@ -363,7 +427,21 @@ export const CurriculumPage: React.FC = () => {
       }
       return true;
     });
-  }, [selectedGrade, selectedSubject]);
+  }, [isGradeLocked, enrolledGrade, selectedGrade, selectedSubject]);
+
+  // Current week tracker: max week number among completed lessons
+  const currentWeek = useMemo(() => {
+    if (completed.length === 0) return 1;
+    let maxWeek = 1;
+    ALL_CURRICULUM_PATHWAYS.forEach((pw) => {
+      pw.lessons.forEach((l) => {
+        if (completed.includes(l.id)) {
+          maxWeek = Math.max(maxWeek, l.weeklyAssessment.weekNumber);
+        }
+      });
+    });
+    return maxWeek;
+  }, [completed]);
 
   // Flatten lessons from filtered pathways with search filter
   const allFilteredLessons = useMemo(() => {
@@ -416,7 +494,7 @@ export const CurriculumPage: React.FC = () => {
       submittedAt: new Date().toISOString().slice(0, 10),
       status: 'graded',
       score: 100,
-      teacherFeedback: ar ? 'إجابات ممتازة وتقييم معتمد.' : 'Excellent score.',
+      teacherFeedback: ar ? 'إجابات ممتازة وتقييم وزاري معتمد.' : 'Excellent score, Ministry assessment recorded.',
     });
 
     if (!completed.includes(lessonId)) {
@@ -436,11 +514,11 @@ export const CurriculumPage: React.FC = () => {
     <div dir={ar ? 'rtl' : 'ltr'}>
       {/* ── Page Header ── */}
       <PageHeader
-        eyebrow={ar ? 'المناهج المصرية التفاعلية المعتمدة' : 'Verified Egyptian STEM Curriculum'}
+        eyebrow={ar ? 'المناهج المصرية التفاعلية المعتمدة 2026' : 'Verified Egyptian STEM Curriculum 2026'}
         title={ar ? 'المناهج والعلوم التفاعلية خطوة بخطوة' : 'Interactive Science Curriculum, Step by Step'}
         subtitle={
           ar
-            ? 'تجارب تفاعلية موثقة من كتب وزارة التربية والتعليم، كل تجربة مرتبطة بمعمل ثلاثي الأبعاد وتقييم أسبوعي فوري.'
+            ? 'تجارب تفاعلية موثقة من كتب وزارة التربية والتعليم، كل تجربة مرتبطة بمعمل ثلاثي الأبعاد وتقييم أسبوعي محكم.'
             : 'Interactive experiments from Ministry textbooks, each linked to a 3D laboratory and assessment.'
         }
         actions={
@@ -458,40 +536,135 @@ export const CurriculumPage: React.FC = () => {
             <span className="sn-badge sn-badge-soft">
               🔥 {realStreak} {ar ? 'أيام متتالية' : 'days streak'}
             </span>
+            <span className="sn-badge sn-badge-soft flex items-center gap-1 text-sky-600 font-bold">
+              <BookOpen size={13} className="text-sky-500" />
+              <span>{ar ? `الأسبوع ${currentWeek}` : `Week ${currentWeek}`}</span>
+            </span>
           </div>
         }
       />
 
-      {/* ── Modern Stage & Grade Filter Bar ── */}
-      <div className="mb-6 rounded-3xl border border-[#e2e8f0] bg-white p-4 shadow-sm space-y-4">
-        {/* Grade Pills */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#f1f5f9] pb-3.5">
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono uppercase tracking-wider text-[#94a3b8] font-bold">
-              {ar ? 'الصف الدراسي:' : 'Grade Level:'}
-            </span>
+      {/* ── Official Ministry Week 1 Banner (2nd Secondary Focus) ── */}
+      <div className="mb-6 rounded-3xl border border-sky-500/20 bg-gradient-to-r from-sky-500/10 via-indigo-500/5 to-transparent p-5 shadow-xs">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="sn-badge sn-badge-blue !text-[10.5px] font-bold">
+                {ar ? '📅 الأسبوع الدراسي 1 · الفصل الدراسي الأول 2026' : '📅 Academic Week 1 · Term 1 2026'}
+              </span>
+              <span className="sn-badge sn-badge-amber !text-[10.5px] font-bold flex items-center gap-1">
+                <span>🔥</span>
+                <span>{realStreak} {ar ? 'أيام متتالية من التعلم' : 'day learning streak'}</span>
+              </span>
+              <span className="sn-badge sn-badge-green !text-[10.5px] font-bold">
+                {ar ? 'كتاب الوزارة المعتمد 2026' : 'Official MoE 2026 Textbook'}
+              </span>
+            </div>
+            <h3 className="text-[16px] font-bold text-[#0f172a]">
+              {ar
+                ? 'كيمياء الصف الثاني الثانوي — الأسبوع 1: الحساب الكيميائي، المول، والغازات في الظروف القياسية'
+                : '2nd Secondary Chemistry — Week 1: Stoichiometry, Mole Concept & Gas Volumes'}
+            </h3>
+            <p className="text-[12px] text-[#475569] leading-relaxed max-w-3xl">
+              {ar
+                ? 'الأداء المنزلي والتقييم الأسبوعي موثقان بالكامل من كتاب وزارة التربية والتعليم والتعليم الفني (مكتب تنمية مادة العلوم - إعداد أ. سامح منصور، أ. عبدالله عبدالواحد، مستشار العلوم د. عزيزة رجب، رئيس الإدارة المركزية د. هالة عبدالسلام). التجارب مرتبطة بالمعمل الافتراضي 3D.'
+                : 'Weekly homework & assessments verified directly from Egyptian Ministry of Education.'}
+            </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-1.5">
-            {GRADE_FILTERS.map((g) => {
-              const active = selectedGrade === g.id;
-              return (
-                <button
-                  key={g.id}
-                  type="button"
-                  onClick={() => setSelectedGrade(g.id)}
-                  className={`px-3 py-1.5 rounded-xl text-[11.5px] font-bold transition-all ${
-                    active
-                      ? 'bg-[#0f172a] text-white shadow-xs'
-                      : 'bg-[#f8fafc] text-[#64748b] hover:text-[#0f172a] hover:bg-[#f1f5f9]'
-                  }`}
-                >
-                  {ar ? g.ar : g.en}
-                </button>
-              );
-            })}
+          <div className="flex items-center gap-3 shrink-0 bg-white/90 p-3.5 rounded-2xl border border-sky-100 shadow-xs">
+            <div className="text-center px-2">
+              <div className="text-[18px] font-black text-[#0284c7] font-mono">{completedLessonsCount}/{totalLessonsCount}</div>
+              <div className="text-[10px] text-[#64748b] font-medium">{ar ? 'مهام الأسبوع 1' : 'Week 1 Tasks'}</div>
+            </div>
+            <div className="h-8 w-[1px] bg-slate-200" />
+            <div className="text-center px-2">
+              <div className="text-[18px] font-black text-amber-500 font-mono">+{xp}</div>
+              <div className="text-[10px] text-[#64748b] font-medium">{ar ? 'نقاط إتقان XP' : 'Total XP'}</div>
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* ── Modern Stage & Grade Filter Bar (Officially Locked by Default) ── */}
+      <div className="mb-6 rounded-3xl border border-[#e2e8f0] bg-white p-4 shadow-sm space-y-4">
+        {/* Grade Locked Bar / Switcher */}
+        {isGradeLocked ? (
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#f1f5f9] pb-3.5">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-sky-500/10 text-[#0284c7]">
+                <Lock size={16} strokeWidth={2.4} />
+              </span>
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[12px] font-bold text-[#0f172a]">
+                    {ar ? 'صفك الدراسي المعتمد رسمياً:' : 'Official Enrolled Grade:'}
+                  </span>
+                  <span className="sn-badge sn-badge-blue !text-[11px] font-bold">
+                    {ar ? 'الصف الثاني الثانوي (علمي) · 2026' : '2nd Secondary (Scientific) · 2026'}
+                  </span>
+                  <span className="text-[10px] font-mono text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                    {ar ? '🔒 مقيد رسمياً وفق قيدك المدرسي' : '🔒 Locked to Enrollment'}
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#64748b] mt-0.5">
+                  {ar
+                    ? 'المناهج والتقييمات الأسبوعية مخصصة ومطابقة لخطة وزارة التربية والتعليم لصفك الدراسي لمنع تشتت الطلاب.'
+                    : 'Curriculum & weekly assessments are locked to your enrolled grade per Ministry guidelines.'}
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsGradeLocked(false)}
+              className="text-[11px] text-[#64748b] hover:text-[#0284c7] font-semibold underline flex items-center gap-1 self-start sm:self-auto transition-colors cursor-pointer"
+            >
+              <Unlock size={12} />
+              <span>{ar ? 'استعراض صفوف أخرى (وضع المعلم)' : 'Browse other grades (Teacher)'}</span>
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#f1f5f9] pb-3.5">
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-[#94a3b8] font-bold">
+                {ar ? 'الصف الدراسي:' : 'Grade Level:'}
+              </span>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-1.5">
+              {GRADE_FILTERS.map((g) => {
+                const active = selectedGrade === g.id;
+                return (
+                  <button
+                    key={g.id}
+                    type="button"
+                    onClick={() => setSelectedGrade(g.id)}
+                    className={`px-3 py-1.5 rounded-xl text-[11.5px] font-bold transition-all ${
+                      active
+                        ? 'bg-[#0f172a] text-white shadow-xs'
+                        : 'bg-[#f8fafc] text-[#64748b] hover:text-[#0f172a] hover:bg-[#f1f5f9]'
+                    }`}
+                  >
+                    {ar ? g.ar : g.en}
+                  </button>
+                );
+              })}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedGrade(enrolledGrade);
+                  setIsGradeLocked(true);
+                }}
+                className="ms-2 px-2.5 py-1 text-[11px] font-bold text-sky-700 bg-sky-50 border border-sky-200 rounded-xl hover:bg-sky-100 flex items-center gap-1"
+              >
+                <Lock size={11} />
+                <span>{ar ? 'إعادة القفل على صفي (٢ ثانوي)' : 'Lock to my grade'}</span>
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Subjects Filter & Search */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -591,7 +764,7 @@ export const CurriculumPage: React.FC = () => {
               {ar ? 'معدل إنجاز الدروس والتجارب المعتمدة' : 'Curriculum Completion Rate'}
             </div>
             <div className="text-[11px] text-[#64748b] mt-0.5">
-              {completedLessonsCount} {ar ? 'دروس مكتملة من إجمالي' : 'completed of'} {totalLessonsCount} {ar ? 'درساً معتمداً' : 'lessons'}
+              {completedLessonsCount} {ar ? 'دروس مكتملة ومقيمة من إجمالي' : 'completed of'} {totalLessonsCount} {ar ? 'درساً معتمداً' : 'lessons'}
             </div>
           </div>
         </div>
@@ -653,7 +826,7 @@ export const CurriculumPage: React.FC = () => {
                     {isDone ? (
                       <span className="sn-badge sn-badge-green !text-[10px] shrink-0 flex items-center gap-1">
                         <CheckCircle2 size={11} strokeWidth={2.5} />
-                        <span>{ar ? 'مكتمل' : 'Completed'}</span>
+                        <span>{ar ? 'مكتمل ومغلق' : 'Completed · Locked'}</span>
                       </span>
                     ) : (
                       <span className="sn-badge sn-badge-outline !text-[10px] shrink-0">
@@ -692,14 +865,32 @@ export const CurriculumPage: React.FC = () => {
                       <span className="hidden sm:inline">{ar ? 'فيديو' : 'Video'}</span>
                     </button>
 
-                    <button
-                      type="button"
-                      onClick={() => setQuizLesson(lesson)}
-                      className="sn-btn sn-btn-outline sn-btn-sm text-[11px] font-bold flex items-center gap-1 text-[#0284c7] border-[#bae6fd] hover:bg-[#e0f2fe]"
-                    >
-                      <FileCheck2 size={13} />
-                      <span>{ar ? 'حل التقييم والأسئلة' : 'Assessment'}</span>
-                    </button>
+                    {isDone ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setQuizLesson(lesson);
+                          setIsQuizReadOnly(true);
+                        }}
+                        className="sn-btn sn-btn-outline sn-btn-sm text-[11px] font-bold flex items-center gap-1.5 text-emerald-700 border-emerald-300 bg-emerald-50/70 hover:bg-emerald-100"
+                        title={ar ? 'تم تسليم التقييم مسبقاً — عرض الإجابات للمراجعة' : 'Assessment completed — review answers'}
+                      >
+                        <CheckCircle2 size={13} className="text-emerald-600" />
+                        <span>{ar ? 'تم التقييم · مغلق' : 'Completed · Locked'}</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setQuizLesson(lesson);
+                          setIsQuizReadOnly(false);
+                        }}
+                        className="sn-btn sn-btn-outline sn-btn-sm text-[11px] font-bold flex items-center gap-1 text-[#0284c7] border-[#bae6fd] hover:bg-[#e0f2fe]"
+                      >
+                        <FileCheck2 size={13} />
+                        <span>{ar ? 'حل التقييم والأسئلة' : 'Assessment'}</span>
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -724,6 +915,7 @@ export const CurriculumPage: React.FC = () => {
           onSubmit={handleQuizSubmit}
           ar={ar}
           language={language}
+          isReadOnly={isQuizReadOnly}
         />
       )}
     </div>
