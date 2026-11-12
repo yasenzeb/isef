@@ -57,7 +57,7 @@ const FunctionGraph: React.FC<{ fn: MathFn; deg: boolean; lo: number; hi: number
   const yAxisX = lo <= 0 && hi >= 0 ? sx(0) : null;
 
   return (
-    <svg viewBox={`0 0 ${GW} ${GH}`} className="h-auto w-full rounded-xl bg-black/30" role="img" aria-label="graph">
+    <svg style={{ direction: 'ltr' }} viewBox={`0 0 ${GW} ${GH}`} className="h-auto w-full rounded-xl bg-black/30" role="img" aria-label="graph">
       <defs>
         <clipPath id="fx-clip"><rect x={PAD} y={PAD - 8} width={GW - 2 * PAD} height={GH - 2 * PAD + 16} /></clipPath>
       </defs>

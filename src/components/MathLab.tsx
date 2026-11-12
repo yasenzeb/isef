@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useState } from 'react';
-import { Activity, Compass, Layers, Orbit, Triangle } from 'lucide-react';
+import { Activity, Compass, Layers, Orbit, Sigma, Triangle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { mathStrings } from '../i18n/mathTranslations';
 import { saveState, loadState } from '../utils/persistence';
@@ -7,11 +7,12 @@ import { FunctionTable } from './math/FunctionTable';
 import { PythagorasPanel, EuclidPanel } from './math/GeometryLaws';
 import { CoordinateGrid } from './math/CoordinateGrid';
 import { SlopeLaws } from './math/SlopeLaws';
+import { QuadraticPanel, HeronPanel, StatsPanel } from './math/AlgebraStats';
 import { MathCalculator } from './math/MathCalculator';
 import { MATH_ACCENT } from './math/mathUi';
 
-type MathTab = 'functions' | 'pyth' | 'euclid' | 'grid' | 'slope';
-const TABS: MathTab[] = ['functions', 'pyth', 'euclid', 'grid', 'slope'];
+type MathTab = 'functions' | 'pyth' | 'euclid' | 'grid' | 'slope' | 'quad' | 'heron' | 'stats';
+const TABS: MathTab[] = ['functions', 'pyth', 'euclid', 'grid', 'slope', 'quad', 'heron', 'stats'];
 
 /** old saves used one 'geometry' tab with a sub-choice — map it to the new separate buttons */
 const normalizeTab = (saved: string): MathTab => {
@@ -48,6 +49,9 @@ export const MathLab: React.FC = () => {
     euclid: { label: s.geoEuclid, icon: <Compass className="h-3.5 w-3.5 shrink-0" /> },
     grid: { label: s.tabGrid, icon: <Layers className="h-3.5 w-3.5 shrink-0" /> },
     slope: { label: s.tabSlope, icon: <Orbit className="h-3.5 w-3.5 shrink-0" /> },
+    quad: { label: language === 'ar' ? 'المعادلة التربيعية' : 'Quadratic', icon: <Sigma className="h-3.5 w-3.5 shrink-0" /> },
+    heron: { label: language === 'ar' ? 'قانون هيرون' : 'Heron', icon: <Triangle className="h-3.5 w-3.5 shrink-0" /> },
+    stats: { label: language === 'ar' ? 'الإحصاء' : 'Statistics', icon: <Activity className="h-3.5 w-3.5 shrink-0" /> },
   };
 
   return (
@@ -61,13 +65,13 @@ export const MathLab: React.FC = () => {
 
       {/* Fixed navigation bar: stays on top while scrolling, calculator always one tap away */}
       <div
-        className="sticky top-0 z-30 -mx-2 rounded-xl px-2 py-2 backdrop-blur"
+        className="z-30 sm:sticky sm:top-0 -mx-2 rounded-xl px-2 py-2 backdrop-blur"
         style={{ background: 'rgba(6,8,12,0.92)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
       >
         <div className="flex items-center gap-2">
           {/* calculator lives outside the scrolling strip so its panel is never clipped */}
           <MathCalculator />
-          <div role="tablist" className="sci-surface flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto p-1.5 scrollbar-none">
+          <div role="tablist" className="sci-surface flex min-w-0 flex-1 flex-wrap items-center gap-1.5 p-1.5">
             {TABS.map((id) => (
               <button
                 key={id}
@@ -92,6 +96,9 @@ export const MathLab: React.FC = () => {
         {tab === 'euclid' && <EuclidPanel />}
         {tab === 'grid' && <CoordinateGrid />}
         {tab === 'slope' && <SlopeLaws />}
+        {tab === 'quad' && <QuadraticPanel />}
+        {tab === 'heron' && <HeronPanel />}
+        {tab === 'stats' && <StatsPanel />}
       </Suspense>
     </div>
   );

@@ -28,7 +28,7 @@ const PythDiagram: React.FC<{ a: number; b: number; c: number }> = ({ a, b, c })
     <text key={key} x={x} y={-y + fs / 3} textAnchor="middle" fontSize={fs} fill={fill} fontFamily="var(--font-mono)" fontWeight={700} strokeWidth={sw * 4} {...HALO}>{t}</text>
   );
   return (
-    <svg viewBox={`${minX - pad} ${-maxY - pad} ${w + 2 * pad} ${h + 2 * pad}`} className="mx-auto h-auto max-h-[380px] w-full rounded-xl bg-black/30" role="img" aria-label="Pythagoras">
+    <svg style={{ direction: 'ltr' }} viewBox={`${minX - pad} ${-maxY - pad} ${w + 2 * pad} ${h + 2 * pad}`} className="mx-auto h-auto max-h-[380px] w-full rounded-xl bg-black/30" role="img" aria-label="Pythagoras">
       <polygon points={ptsAttr(sqA)} fill="#8b5cf6" fillOpacity={0.32} stroke="#a78bfa" strokeWidth={sw} />
       <polygon points={ptsAttr(sqB)} fill="#06b6d4" fillOpacity={0.32} stroke="#22d3ee" strokeWidth={sw} />
       <polygon points={ptsAttr(sqC)} fill="#f97316" fillOpacity={0.32} stroke="#fb923c" strokeWidth={sw} />
@@ -61,6 +61,7 @@ const EuclidDiagram: React.FC<{ sol: EuclidSolution; faded?: boolean }> = ({ sol
   );
   return (
     <svg
+      style={{ direction: 'ltr' }}
       viewBox={`${-pad} ${-h - pad} ${a + 2 * pad} ${h + 2 * pad * 1.4}`}
       className={`mx-auto h-auto max-h-[340px] w-full rounded-xl bg-black/30 ${faded ? 'opacity-60' : ''}`}
       role="img" aria-label="Euclid"

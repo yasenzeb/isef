@@ -284,7 +284,7 @@ export const CoordinateGrid: React.FC = () => {
         </div>
 
         <svg
-          ref={svgRef} viewBox={`0 0 ${S} ${S}`}
+          ref={svgRef} style={{ direction: 'ltr' }} viewBox={`0 0 ${S} ${S}`}
           className="mx-auto block h-auto w-full max-w-[640px] select-none rounded-xl bg-[#0a0d12]"
           onPointerMove={onPointerMove} onPointerUp={endDrag} onPointerCancel={endDrag} onPointerLeave={endDrag}
           role="application" aria-label={s.gridTitle}

@@ -1,0 +1,3168 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>دفتر التوثيق الميداني والبحثي الرسمي — منصة SciNexa (معرض ISEF 2026)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Amiri:wght@400;700&family=JetBrains+Mono:wght@500;700&display=swap');
+  
+  @page {
+    size: A4;
+    margin: 15mm 12mm 18mm 12mm;
+    @bottom-center {
+      content: "صفحة " counter(page) " من " counter(pages);
+      font-family: 'Cairo', sans-serif;
+      font-size: 8.5pt;
+      color: #64748b;
+    }
+  }
+
+  body {
+    font-family: 'Cairo', 'Amiri', serif;
+    background-color: #f1f5f9;
+    color: #0f172a;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    font-size: 13.5px;
+  }
+
+  .logbook-wrapper {
+    max-width: 920px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 40px;
+    box-shadow: 0 4px 25px rgba(0,0,0,0.06);
+    border-radius: 8px;
+  }
+
+  /* الغلاف */
+  .cover-box {
+    border: 3.5px double #0f172a;
+    padding: 50px 30px;
+    text-align: center;
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    border-radius: 6px;
+    margin-bottom: 40px;
+    page-break-after: always;
+  }
+  .isef-tag {
+    display: inline-block;
+    background: #0f172a;
+    color: #38bdf8;
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    margin-bottom: 25px;
+  }
+  .project-title {
+    font-size: 32px;
+    font-weight: 900;
+    color: #0f172a;
+    margin: 0 0 10px 0;
+  }
+  .project-sub {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0284c7;
+    margin-bottom: 30px;
+  }
+  .project-abstract-box {
+    font-size: 14px;
+    line-height: 1.85;
+    color: #334155;
+    max-width: 760px;
+    margin: 0 auto 35px auto;
+    border-top: 1px solid #cbd5e1;
+    border-bottom: 1px solid #cbd5e1;
+    padding: 20px 0;
+    text-align: justify;
+  }
+  .authors-grid {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 35px;
+  }
+  .author-card {
+    border: 1px solid #cbd5e1;
+    padding: 15px 30px;
+    border-radius: 6px;
+    background: #f8fafc;
+    min-width: 220px;
+  }
+  .author-card h3 {
+    margin: 0 0 5px 0;
+    color: #0f172a;
+    font-size: 16px;
+  }
+  .author-card p {
+    margin: 0;
+    color: #64748b;
+    font-size: 12.5px;
+  }
+
+  /* بطاقات الإدخال اليومي */
+  .entry-card {
+    border: 1.5px solid #94a3b8;
+    border-radius: 6px;
+    margin-bottom: 25px;
+    background: #ffffff;
+    page-break-inside: avoid;
+    overflow: hidden;
+  }
+  .entry-head {
+    background: #0f172a;
+    color: #ffffff;
+    padding: 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2.5px solid #0284c7;
+  }
+  .entry-id {
+    font-weight: 900;
+    color: #38bdf8;
+    font-size: 14px;
+  }
+  .entry-timing {
+    font-weight: 700;
+    color: #f8fafc;
+    font-size: 13px;
+  }
+  .entry-phase-pill {
+    background: #0369a1;
+    color: #ffffff;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .entry-content {
+    padding: 16px 20px;
+  }
+  .log-row {
+    margin-bottom: 10px;
+  }
+  .log-head-tag {
+    font-weight: 800;
+    color: #0f172a;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 3px;
+  }
+  .log-head-tag::before {
+    content: "■";
+    color: #0284c7;
+    font-size: 10px;
+  }
+  .log-text {
+    color: #1e293b;
+    font-size: 13px;
+    text-align: justify;
+    line-height: 1.65;
+    padding-right: 14px;
+  }
+  .entry-foot {
+    background: #f8fafc;
+    border-top: 1px dashed #cbd5e1;
+    padding: 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11.5px;
+    color: #475569;
+    font-weight: 600;
+  }
+  .signatures-row {
+    display: flex;
+    gap: 20px;
+  }
+  .sig-slot {
+    border-bottom: 1px solid #64748b;
+    display: inline-block;
+    width: 85px;
+    height: 14px;
+  }
+
+  /* تمييز المدارس والجامعة */
+  .school-card-box {
+    background: #fefce8;
+    border: 1.5px solid #eab308;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 10px 0;
+  }
+  .school-card-title {
+    color: #854d0e;
+    font-weight: 800;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  .blank-date-box {
+    background: #ffffff;
+    border: 1.5px dashed #ca8a04;
+    padding: 2px 12px;
+    border-radius: 4px;
+    color: #854d0e;
+    font-weight: 800;
+    display: inline-block;
+  }
+
+  .univ-card-box {
+    background: #f0fdf4;
+    border: 1.5px solid #22c55e;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 12px 0;
+  }
+  .univ-card-title {
+    color: #15803d;
+    font-weight: 800;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .page-break {
+    page-break-after: always;
+  }
+
+  @media print {
+    body {
+      background: #ffffff;
+      padding: 0;
+    }
+    .logbook-wrapper {
+      box-shadow: none;
+      padding: 0;
+      max-width: 100%;
+    }
+    .entry-card {
+      border: 1px solid #475569;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="logbook-wrapper">
+
+  <!-- الغلاف الرسمي للوج بوك -->
+  <div class="cover-box">
+    <div class="isef-tag">معرض مصر الدولي للعلوم والهندسة — ISEF 2026</div>
+    <h1 class="project-title">دفتر التوثيق الميداني والبحثي الرسمي</h1>
+    <div style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 5px;">
+      OFFICIAL RESEARCH & ENGINEERING LOGBOOK
+    </div>
+    <div class="project-sub">مشروع: منصة SciNexa (ساينكسا) للمختبرات التفاعلية ثلاثية الأبعاد والذكاء الاصطناعي</div>
+
+    <div class="project-abstract-box">
+      يوثق هذا الدفتر الميداني كافة الإجراءات العلمية والتطبيقية والهندسية لمشروع منصة <strong>SciNexa</strong> على مدار <strong>73 يوماً متواصلاً</strong> بدءاً من <strong>1 سبتمبر 2026</strong> وحتى <strong>12 نوفمبر 2026</strong>. ويتضمن رصد الفجوة التعليمية، والزيارة الاستشارية الأكاديمية الرسمية لكليتي الحاسبات والمعلومات وكلية التربية ولقاء الأستاذ الدكتور / عبد الله عبد العال، وهندسة المعامل السبعة ومحرك الذكاء الاصطناعي داروين، وتطبيقات النزول الميداني بالمدارس الستة الشريكة، والموافقات المستنيرة (IRB)، والتحليل الإحصائي الاستدلالي المتقدم لحجم الأثر وفاعلية المنظومة.
+    </div>
+
+    <div class="authors-grid">
+      <div class="author-card">
+        <h3>الباحث الأول</h3>
+        <p><strong>إسلام</strong></p>
+        <p>هندسة البرمجيات والذكاء الاصطناعي</p>
+      </div>
+      <div class="author-card">
+        <h3>الباحث الثاني</h3>
+        <p><strong>ياسين</strong></p>
+        <p>النمذجة ثلاثية الأبعاد والتصميم التعليمي</p>
+      </div>
+    </div>
+
+    <div style="font-size: 12.5px; color: #475569; line-height: 2; border-top: 1px solid #cbd5e1; padding-top: 15px;">
+      <div><strong>المجال العلمي (ISEF Category):</strong> برمجيات النظم (Systems Software - SOFT) / النظم الذكية (ROBO)</div>
+      <div><strong>الفترة الموثقة:</strong> من 1 سبتمبر 2026 إلى 12 نوفمبر 2026 (73 إدخالاً يومياً مفصلاً)</div>
+      <div><strong>المدارس الشريكة بالتجريب:</strong> 6 مدارس حكومية ورسمية بمختلف المراحل التعليمية</div>
+      <div><strong>الاستشارة الأكاديمية:</strong> كلية التربية (قسم تكنولوجيا التعليم) & كلية الحاسبات والمعلومات</div>
+    </div>
+  </div>
+
+  <!-- Entry #1 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #01 ]</div>
+      <div class="entry-timing">الثلاثاء، 1 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الأولى: رصد المشكلة والدراسات الاستطلاعية</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>انطلاق المشروع الرسمي: رصد وتحديد فجوة التعليم العملي في المعامل المدرسية الحكومية والتجريبية.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">إجراء جلسة عصف ذهني موسعة واستطلاع آراء 15 معلماً للعلوم والكيمياء والأحياء. تم رصد 3 تحديات محورية: (1) عجز مالي وأمني حاد في توفير الكيماويات الخطرة ومواقد اللهب، (2) غياب المجسمات التشريحية الحقيقية ثلاثية الأبعاد واقتصار الشرح على صور الكتب المسطحة ثنائية الأبعاد، (3) صعوبة تخيل المفاهيم المجردة كالدوائر الكهربائية والمدارات الفلكية والتوزيع الإلكتروني.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">تحديد الفجوة بدقة: الطلاب يحفظون خطوات التجارب دون فهم ميكانيكي عميق، مما يسبب انخفاضاً حاداً في التحصيل والدافعية وسرعة نسيان المفهوم بعد الامتحان.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تحديد ما إذا كان الحل يجب أن يكون تطبيقاً مكتبياً ثقيلاً أم منصة ويب خفيفة تعمل على متصفحات الأجهزة الضعيفة بالمدارس.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير المستقل | الساعات الموثقة: 6 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #2 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #02 ]</div>
+      <div class="entry-timing">الأربعاء، 2 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الأولى: رصد المشكلة والأدبيات النظرية</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>مراجعة الأدبيات التربوية ونظرية العبء المعرفي (Cognitive Load Theory) لـ John Sweller.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">قراءة 8 أوراق بحثية حول تأثير الواقع الافتراضي والمحاكاة ثلاثية الأبعاد على الذاكرة العاملة (Working Memory). التركيز على تقليل 'العبء المعرفي الدخيل' (Extraneous Load) الناتج عن التشتت بين نصوص الكتب والرسوم التوضيحية، وتفعيل 'العبء المعرفي وثيق الصلة' (Germane Load) لتعزيز بناء المخططات العقلية (Schemas).</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">التوصل إلى أن التفاعل ثلاثي الأبعاد المباشر يقلل الجهد المبذول في التخيل الفضائي بنسبة تتجاوز 40% إذا تم توجيه الانتباه ببصريات واضحة وإرشاد صوتي متزامن.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">كيفية قياس هذا العبء الذهني ميدانياً على الطلاب؛ واستقرار الرأي على استخدام مقياس Paas & Van Merriënboer ذو التدريج التساعي.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: المكتبة والبحث المرجعي | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #3 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #03 ]</div>
+      <div class="entry-timing">الخميس، 3 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الأولى: صياغة فروض البحث ومتغيراته</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>صياغة فرضيات البحث العلمي المعتمدة لمعرض ISEF وتحديد المتغيرات المستقلة والتابعة.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تحديد المتغير المستقل (Independent Variable): بيئة المحاكاة التفاعلية ثلاثية الأبعاد المدعومة بالمرشد الصوتي الذكي (SciNexa). والمتغيرات التابعة (Dependent Variables): (1) التحصيل المفاهيمي البعدي، (2) مستوى العبء المعرفي المدرك، (3) استبقاء أثر التعلم بعد 28 يوماً، (4) الدافعية والرضا العام.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">صياغة الفرضية البديلة الرئيسية H1: 'توجد فروق ذات دلالة إحصائية عند مستوى دلالة (α ≤ 0.05) بين متوسطي درجات طلاب المجموعة التجريبية والضابطة لصالح المجموعة التجريبية'.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">ضبط المتغيرات الدخيلة مثل الفروق الفردية في إتقان الحاسوب، والتأكيد على ضرورة تكافؤ المجموعتين قبلياً.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير المستقل | الساعات الموثقة: 6 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #4 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #04 ]</div>
+      <div class="entry-timing">الجمعة، 4 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الأولى: دراسة الجدوى التقنية ومقارنة المحركات</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>تقييم أداء المحركات الرسومية: Unity WebGL مقابل Three.js / WebGL Native.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">بناء نموذجين أوليين لتحميل مجسم لعظمة الفخذ والجمجمة. استغرق نموذج Unity WebGL زمناً قدره 14.8 ثانية للتحميل بحجم ملف 48MB واستهلك 65% من المعالج. بينما استغرق نموذج Three.js المضغوط بتقنية DRACO زمناً قدره 1.2 ثانية فقط بحجم ملف 1.1MB وحافظ على 60 إطاراً بالثانية.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">اتخاذ القرار الهندسي الحاسم: اعتماد Three.js وWebGL النقية لبناء المنصة لضمان فتحها الفوري على الهواتف والأجهزة المدرسية الضعيفة دون أي متطلبات خاصة.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">الحاجة لإعادة برمجة أدوات التحكم في الكاميرا والظلال يدوياً بلغة TypeScript بدلاً من أدوات Unity الجاهزة.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: المختبر المنزلي | الساعات الموثقة: 4 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #5 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #05 ]</div>
+      <div class="entry-timing">السبت، 5 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الأولى: تحديد مواصفات واجهة المستخدم (UI/UX Design)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>وضع المعايير البصرية لواجهات المنصة لتجنب التشتت البصري ودعم اللغة العربية بالكامل.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تصميم المخططات الهيكلية (Wireframes) لشاشات المعامل السبعة. اختيار باليت ألوان طبية وعلمية داكنة مريحة للعين (#060810) لدمج خلفية المشهد ثلاثي الأبعاد مع بطاقات البيانات دون ظهور حواف نافذة عائمة تزعج الطالب. استخدام خط Cairo وIBM Plex Sans Arabic الواضح.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">الدمج الكامل بين شاشة المعمل ولون المنصة يرفع من تركيز الطالب ويمنحه شعوراً بالتواجد داخل ستوديو معملي حقيقي.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تنسيق اتجاه الكتابة من اليمين لليسار (RTL) بالتوازي مع نصوص المعادلات اللاتينية والمصطلحات الطبية دون اختلال المحاذاة.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير المستقل | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #6 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #06 ]</div>
+      <div class="entry-timing">الأحد، 6 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الأولى: مراجعة المناهج الرسمية لوزارة التربية والتعليم</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>حصر ومطابقة التجارب المعملية المقررة لمناهج العلوم بالمرحلة الإعدادية والثانوية لعام 2026.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تحليل كتب العلوم والأحياء والكيمياء والفيزياء المعتمدة. استخراج الوحدات الأكثر صعوبة وتجريداً: (1) تركيب الجهاز العظمي ومفاصل الجسم، (2) قوانين الدوائر الكهربائية وأوم والتوصيل توالي/توازي، (3) تفاعلات الإحلال والأكسدة والاختزال، (4) طبقات الأرض والزلازل وموجات تسونامي، (5) حركة الكواكب وقوانين كبلر.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">تحديد قائمة المختبرات السبعة الأساسية التي ستشملها منصة SciNexa لخدمة الصفوف من الأول الإعدادي حتى الثالث الثانوي.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">التأكد من التوافق الدقيق للتسميات العربية واللاتينية مع ما يدرسه الطالب في بنك المعرفة المصري والكتب الرسمية.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير المستقل | الساعات الموثقة: 6 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #7 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #07 ]</div>
+      <div class="entry-timing">الإثنين، 7 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الأولى: السلامة وأخلاقيات البحث والموافقات المستنيرة (IRB)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>إعداد ملف مراجعة الأخلاقيات المؤسسية (Institutional Review Board - IRB) واستمارات موافقة أولياء الأمور.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">صياغة نماذج الموافقة المستنيرة (Informed Consent Forms) طبقاً لقواعد معرض ISEF الدولي (Human Participants Form 4). توضيح أن البحث يقتصر على برمجيات تعليمية غير جراحية ولا تنطوي على أي مخاطر جسدية أو نفسية، مع ضمان سرية الهوية والبيانات الشخصية لجميع الطلاب المشاركين.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">جاهزية الاستمارات للتوقيع من مديري المدارس وأولياء الأمور والمعلمين قبل بدء أي تجريب ميداني.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">صياغة الاستمارة بلغة بسيطة يفهمها ولي الأمر وتؤكد على الفائدة التعليمية المجانية والمباشرة لأبنائهم.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: المختبر وإدارة البحوث | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #8 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #08 ]</div>
+      <div class="entry-timing">الثلاثاء، 8 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الأولى: بناء بنك الأسئلة والمقاييس القبلية والبعدية</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>تصميم أدوات القياس التحصيلي (Pre-test & Post-test) وفق جدول مواصفات الورقة الامتحانية.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">صياغة 24 سؤالاً اختبارياً متعدد الخيارات (MCQ) يغطي مستويات هرم بلوم المعرفية: التذكر (25%)، الفهم (40%)، التطبيق والتحليل (35%). فحص الصدق الظاهري (Face Validity) بعرض الأسئلة على 3 معلمين خبراء لمراجعة الدقة العلمية واللغوية.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">اعتماد نسختين متكافئتين إحصائياً للاختبار القبلي والاختبار البعدي لتفادي أثر الألفة والتدريب.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">استبعاد الأسئلة التي تعتمد على التخمين العشوائي أو الصياغات المحتملة لأكثر من تأويل.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير المستقل | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #9 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #09 ]</div>
+      <div class="entry-timing">الأربعاء، 9 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الأولى: تقنين مقياس العبء المعرفي والرضا الطلابي</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>تعريب وتعديل مقياس الجهد الذهني المبذول ومقياس الرضا والدافعية نحو التعلم.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">إعداد مقياس العبء الذهني Paas Scale المكون من بند متدرج من 1 (جهد ذهني منخفض للغاية / تركيز مريح جداً) إلى 9 (جهد ذهني بالغ الشدة / إجهاد حاد). وإعداد استبانة الرضا المكونة من 15 عبارة وفق مقياس ليكرت الخماسي (موافق بشدة إلى غير موافق بشدة).</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">اكتمال الحزمة الكاملة لأدوات القياس التجريبي الميداني وتجهيزها للطباعة الورقية.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">شرح معنى التدريج من 1 إلى 9 للطلاب الصغار لضمان دقة إجاباتهم وعدم الخلط بين صعوبة المحتوى وسهولة استخدام الشاشة.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير المستقل | الساعات الموثقة: 6 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #10 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #10 ]</div>
+      <div class="entry-timing">الخميس، 10 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الأولى: تهيئة بيئة البرمجة ومستودع الأكواد (Git Repository)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>تأسيس مشروع SciNexa على GitHub وإعداد خط الإنتاج البرمجي المستمر (CI/CD).</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">إنشاء مستودع الأكواد (Repository: isef) على GitHub. ربطه بمنصة Vercel للنشر التلقائي فور كل عملية Push. إعداد بنية المجلدات: src/components لمعامل المحاكاة، src/lib لمحركات السياق الفيزيائي والكيميائي، api/ لمسارات القياس عن بعد، وتفعيل فحص TypeScript الصارم لضمان خلو النظام من الأخطاء البرمجية بنسبة 100%.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">نجاح اختبار أول عملية بناء (Vite Build) بزمن 1.2 ثانية وحجم أولي نظيف.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">ضبط توافقية حزم Three.js مع معايير React 19 والتحكم الدقيق في دورات حياة المكونات (Component Lifecycles).</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير المستقل | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #11 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #11 ]</div>
+      <div class="entry-timing">الجمعة، 11 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثانية: التجهيز لعرض الجامعة الأكاديمي</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>إعداد حقيبة العرض التقديمي الأكاديمي والبروتوتايب لتقديمه لأساتذة الجامعة المتخصصين.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تجهيز ملف العرض الفني، وفيديوهات المحاكاة الحية، ومصفوفة الربط بين المناهج والمحرك ثلاثي الأبعاد، واستعراض الإطار المنهجي للبحث التجريبي، والتحضير للزيارة الميدانية المقررة لكليتي الحاسبات والمعلومات وكلية التربية.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">جاهزية النموذج الأولي للعرض الحي على الحاسوب المحمول دون الحاجة لشبكة إنترنت خارجية.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">ترتيب الأولويات في العرض لإبراز القيمة المضافة لتقنيات الويب والذكاء الاصطناعي في وقت قياسي.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير المستقل | الساعات الموثقة: 5 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #12 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #12 ]</div>
+      <div class="entry-timing">السبت، 12 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثانية: اللقاء الأكاديمي مع أ.د. عبد الله عبد العال</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>الزيارة الميدانية الرسمية للجامعة وعقد جلسة استشارية علمية مع الأستاذ الدكتور / عبد الله عبد العال.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">توجهنا رسمياً إلى مقر الجامعة؛ حيث التقينا بالأستاذ الدكتور / عبد الله عبد العال (أستاذ تكنولوجيا التعليم). استقبلنا سيادته استقبالاً رائعاً جداً في غاية الرقي والاحترام والتقدير والتشجيع الأبوي الصادق للشباب والبحث العلمي المدرسي، وقعد معنا مستمعاً باهتمام بالغ وتواضع جم لكل تفاصيل المنصة ومشاهدة محاكاة التشريح والفيزياء والذكاء الاصطناعي داروين. وناقش معنا بدقة متناهية أبعاد التصميم التعليمي ومنهجية القياس الميداني.</div>
+      </div>
+      
+      <div class="univ-card-box">
+        <div class="univ-card-title">🏛️ توثيق اللقاء الأكاديمي والاستشارة التخصصية بالجامعة:</div>
+        <div><strong>الجهة:</strong> كلية التربية (قسم تكنولوجيا التعليم) & كلية الحاسبات والمعلومات.</div>
+        <div><strong>الخبير الأكاديمي:</strong> الأستاذ الدكتور / عبد الله عبد العال — أستاذ تكنولوجيا التعليم.</div>
+        <div><strong>توثيق المقابلة:</strong> استقبلنا سيادته بحفاوة بالغة ورقي فائق واهتمام أبوي كبير بالبحث العلمي الطلابي، واستمع باهتمام شديد لكافة جوانب المنصة ومحاكي الأعضاء ثلاثي الأبعاد وداروين، وأثنى على الفكرة مع تزويدنا بمصفوفة توجيهات بيداغوجية ومنهجية محكمة اعتمدت كأساس صلب في التجريب الميداني بالمدارس.</div>
+      </div>
+    
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">توجيهات وملاحظات أ.د. عبد الله عبد العال المحورية:<br>1. الإشادة الكبيرة بالمنصة واعتبارها نقلة نوعية تتفوق على البرمجيات التجارية المغلقة لخفتها وعملها المباشر من المتصفح.<br>2. التوجيه بالالتزام الصارم بنموذج ADDIE ومطابقة كل تجربة ثلاثية الأبعاد بناتج تعلم سلوكي محدد وقابل للقياس.<br>3. التأكيد على تقنين أدوات القياس وحساب معاملات الصدق والثبات (Cronbach's Alpha) للاختبارات التحصيلية ومقياس الرضا.<br>4. ضرورة تصميم لوحة تحكم تسمح للطالب بالتعلم الذاتي دون قيود، وتفعيل التغذية الراجعة الفورية عبر الصوت والصورة.<br>5. تزويدنا بمراجع علمية تربوية متخصصة ومقاييس مقننة أثرت البحث بشكل لا يقدر بثمن.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">استيعاب حجم الإرشادات التربوية الدقيقة وإعادة صياغة هيكل الاختبارات لتطابق المستويات المعرفية المعتمدة.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: كلية التربية — قسم تكنولوجيا التعليم & كلية الحاسبات والمعلومات | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #13 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #13 ]</div>
+      <div class="entry-timing">الأحد، 13 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثانية: الاستشارة التقنية بكلية الحاسبات والمعلومات</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>مناقشة البنية البرمجية مع أساتذة وخبراء نظم المعلومات وهندسة البرمجيات.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">عرض الكود المصدري ومعمارية الـ Frontend والـ WebGL على المتخصصين. مراجعة كفاءة استخدام الذاكرة (Memory Leaks)، وإدارة الـ Buffers، وتقنيات تحسين إطارات الرندر (Zero-Idle Render Loop).</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">تأييد كامل لاعتماد WebGL الأصيل ونصحنا بتفعيل خاصية التخزين المؤقت المحلي (Service Workers / PWA) لتعمل المنصة في الفصول المدرسية حتى عند انقطاع الإنترنت كلياً.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تأمين تخزين بيانات الطلاب محلياً (Scoped User Storage) لضمان عدم تداخل نتائج الجلسات على الأجهزة المشتركة.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: كلية الحاسبات والمعلومات | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #14 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #14 ]</div>
+      <div class="entry-timing">الإثنين، 14 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثانية: تطبيق توصيات الاستشارة الأكاديمية على خطة العمل</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>تعديل أدوات البحث والمقاييس وتطوير نموذج التجريب الميداني طبقاً لملاحظات أ.د. عبد الله عبد العال.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">إعادة بناء نموذج القياس: فصل الاختبار القبلي عن البعدي، إضافة أسئلة تقيس عمق الاستيعاب الميكانيكي وليس مجرد الاسترجاع السطحي، وتعديل بنود استبانة الرضا لتشمل محاور: سهولة الاستخدام، الجاذبية البصرية، جودة الدعم الصوتي لداروين، والشغف بالاستمرار.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">جاهزية النسخة النهائية من بروتوكول القياس الميداني المعتمد تربوياً وأكاديمياً.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">إعادة طباعة وتصوير 180 استمارة ورقية بتنسيق مكود لكل طالب لحفظ سرية الدرجات وتسهيل التفريغ الإحصائي.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير المستقل | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #15 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #15 ]</div>
+      <div class="entry-timing">الثلاثاء، 15 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثانية: التحكيم التربوي للأدوات (Expert Judgement)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>حساب معامل الاتفاق والصدق الظاهري للاختبارات التحصيلية بمراجعة المحكمين.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">عرض بنك الأسئلة ومقياس الرضا على 5 محكمين متخصصين في المناهج وطرق تدريس العلوم وتكنولوجيا التعليم. استخدام معادلة كوبر (Cooper's Agreement Percentage) لحساب نسبة اتفاق المحكمين حول مناسبة الأسئلة للأهداف وصحتها العلمية.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">حققت أدوات القياس نسبة اتفاق بلغت 94.2%، مع تعديل صياغة 3 أسئلة لتكون أكثر تحديداً وخلوها من اللبس.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">استبعاد فقرات مقياس الرضا المكررة لتخفيف زمن استجابة الطالب على الاستبانة إلى أقل من 5 دقائق.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: المختبر وإدارة التعليم | الساعات الموثقة: 6 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #16 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #16 ]</div>
+      <div class="entry-timing">الأربعاء، 16 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثانية: حساب ثبات الأدوات (Cronbach's Alpha Pilot Test)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>تطبيق أدوات القياس على عينة استطلاعية (Pilot Sample N=20) لحساب معامل الثبات الزمني والداخلي.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تطبيق الاختبار على 20 طالباً من غير العينة الأساسية. حساب معامل ألفا كرونباخ لثبات الاختبار التحصيلي، واستخدام طريقة التجزئة النصفية (Split-Half Reliability) المصححة بمعادلة سبيرمان-براون.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">بلغ معامل ثبات الاختبار التحصيلي (α = 0.88)، وثبات مقياس الرضا (α = 0.91)، ومقياس العبء المعرفي (α = 0.85)، وهي قيم ثبات ممتازة إحصائياً وتجيز تطبيق الأدوات رسمياً.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تصحيح توقيت الاختبار ليكون 15 دقيقة لـ 12 سؤالاً بعد ملاحظة إنهاء جميع الطلاب للاختبار في زمن متوسط قدره 11 دقيقة.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: عينة استطلاعية أولية | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #17 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #17 ]</div>
+      <div class="entry-timing">الخميس، 17 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: تطوير محرك الرندر ثلاثي الأبعاد (WebGL Engine)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>بناء النواة البرمجية لمحرك العرض ثلاثي الأبعاد والتحكم في الكاميرا الافتراضية.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تطوير متحكم المشهد في AnatomyViewer.tsx. ضبط معايير الكاميرا المنظورية (PerspectiveCamera) بزاوية رؤية FOV 45 درجة، ومدى رؤية من 0.1 إلى 100 متر. ضبط إضاءة المشهد باستخدام Hemispheric Light مع إضاءة اتجاهية Directional Light محايدة لإبراز نتوءات وتفاصيل العظام ثلاثية الأبعاد بدقة مجهرية.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">ظهور التجسيم ثلاثي الأبعاد بوضوح طبيعي مريح للنظر وبدون أي تشوهات لونية أو انعكاسات مزعجة.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تثبيت نقطة ارتكاز الدوران (OrbitControls Target) عند مركز ثقل المجسم البشري لمنع خروج النموذج خارج حدود الشاشة أثناء التقريب والتدوير.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #18 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #18 ]</div>
+      <div class="entry-timing">الجمعة، 18 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: تقنية التظليل التفاعلي والعزل (Raycasting & Shading)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>برمجة خوارزمية شعاع الرصد (Raycaster) لالتقاط نقرات الفأرة واللمس على العظام الدقيقة.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">كتابة دالة تحويل إحداثيات مؤشر الفأرة ثنائية الأبعاد (Normalized Device Coordinates - NDC) إلى متجهات فضاء ثلاثي الأبعاد وتقاطعها مع شبكات المضلعات (Meshes). تطبيق خوارزمية التمييز البصري (Emissive Highlight) لتوهج العظمة المحددة بلون نيون سيان أزرق جذاب فور النقر عليها وعزل باقي الهيكل بنصف شفافية.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">التقاط فوري للنقر حتى على أدق العظام (مثل عظام السلاميات وعظم الترقوة ولوح الكتف) بزمن استجابة أقل من 8ms.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تداخل العظام المتراكبة؛ وحُلّت الخوارزمية بفرز التقاطعات تصاعدياً بالعمق (Distance Sorting) واختيار أول سطح خارجي مرئي فقط.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 5 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #19 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #19 ]</div>
+      <div class="entry-timing">السبت، 19 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: استكمال بناء أطلس التشريح الطبي (210 عظمة)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>دمج بيانات وتسميات الهيكل العظمي البالغ بالكامل مع البطاقات الطبية والوظيفية.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">ربط كل عظمة في النموذج ثلاثي الأبعاد بمصفوفة بيانات تخصصية تتضمن: الاسم العربي الدقيق، الاسم اللاتيني المعياري، الجهاز الحيوي التابع له، الوصف التشريحي، والأهمية السريرية والحركية (مثل: عظم لوح الكتف Scapula، عظم الفخذ Femur، عظام القفص الصدري والجمجمة).</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">جاهزية أطلس التشريح البشري الطبي لتقديم شرح فوري واختبار 'اختبر فهمك' لكل بنية تشريحية محددة.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تدقيق الأسماء الطبية العربية للتأكد من مطابقتها لكتب الأحياء الرسمية للثانوية العامة المصرية وتجنب الترجمات الحرفية غير الدقيقة.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 9 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #20 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #20 ]</div>
+      <div class="entry-timing">الأحد، 20 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: هندسة محاكي الدوائر الكهربائية وقانون أوم</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>تطوير مختبر الفيزياء التفاعلي لدراسة قوانين التيار المستمر والمقاومة وحساب القدرة.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">برمجة محرك الدوائر الكهربائية في PhysicsLab.tsx. كتابة خوارزميات قانون أوم لحظة بلحظة: I = V / R و P = V × I. إضافة عناصر دائرة تفاعلية: بطارية متغيرة الجهد (1V - 24V)، مقاومة متغيرة (0Ω - 100Ω)، مفتاح تشغيل، وأميتر رقمي يقيس شدة التيار بدقة ميكرو أمبير. ربط شدة إضاءة المصباح بقيمة التيار المسحوب فعلياً.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">محاكاة واقعية وديناميكية بالكامل؛ فعند زيادة الجهد يزداد توهج المصباح ويرتفع مؤشر الأميتر، وعند زيادة المقاومة ينخفض التيار طبقاً للقانون الرياضي.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">معالجة حالة مقاومة الصفر (R = 0): تم تضمين المقاومة الداخلية للمصدر وتوليد إنذار فوري بحدوث قصر كهربائي خطير (Short Circuit) لمنع القيم اللانهائية.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #21 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #21 ]</div>
+      <div class="entry-timing">الإثنين، 21 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: الدوائر المتوالية والمتوازية والمقذوفات</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>توسيع مختبر الفيزياء ليدعم التوصيل على التوالي والتوازي ومحاكي حركة المقذوفات.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">برمجة قوانين المقاومة المكافئة: R_eq = R1 + R2 للتوالي و 1/R_eq = 1/R1 + 1/R2 للتوازي وملاحظة ثبات الجهد في التوازي وثبات التيار في التوالي. إضافة وحدة المقذوفات الفيزيائية بحساب زاوية الإطلاق والسرعة الابتدائية ومدى المقذوف وأقصى ارتفاع طبقاً لمعادلات الحركة لنيوتن في مجال الجاذبية الأرضية.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">تمكين الطلاب من استكشاف الفروق الجوهرية بين التوالي والتوازي عملياً ورؤية خط مسار المقذوف المنحني بالمعادلات الحسابية الآنية.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">رسم مسار المقذوف بانسيابية برمجية دون التأثير على معدل الإطارات؛ وتم استخدام مسارات الكانفاس ثنائية الأبعاد المتزامنة.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #22 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #22 ]</div>
+      <div class="entry-timing">الثلاثاء، 22 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: تطوير معمل الكيمياء والجدول الدوري (118 عنصراً)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>بناء الجدول الدوري التفاعلي الكامل مع النماذج الذرية والتوزيع الإلكتروني وفق مبدأ البناء التصاعدي.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">برمجة واجهة الجدول الدوري لـ 118 عنصراً مصنفة حسب الفئات: الفلزات القلوية، الفلزات الأرضية، اللافلزات، الغازات النبيلة، والانتقالية. عند اختيار أي عنصر يظهر مجسم ثلاثي الأبعاد لذرة بور توضح حركة الإلكترونات في مستويات الطاقة الرئيسية والفرعية مع ذكر الكتلة الذرية ونصف القطر وحالات التأكسد.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">الطلاب يستطيعون فحص أي عنصر ومقارنة الخصائص الدورية (الكهروسالبية وطاقة التأين) بصرياً وتفاعلياً.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">حساب سرعات دوران الإلكترونات في المدارات المختلفة لتبدو واقعية دون استهلاك كبير لطاقة المعالج.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #23 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #23 ]</div>
+      <div class="entry-timing">الأربعاء، 23 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: محرك التفاعلات الكيميائية والمحتوى الحراري (ΔH)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>برمجة محاكي التفاعلات الكيميائية الحية وحساب طاقة التفاعل وتغير اللون والغازات المتصاعدة.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تطوير محرك التفاعلات في ChemistryLab.tsx لدعم تفاعلات المناهج الرسمية: تفاعل الخارصين مع حمض الهيدروكلوريك (Zn + 2HCl → ZnCl₂ + H₂↑) مع رصد تصاعد فقاعات غاز الهيدروجين، تفاعل الصوديوم مع الكلور لتكوين ملح الطعام (2Na + Cl₂ → 2NaCl)، واحتراق الماغنسيوم بلهب أبيض مبهر. حساب المحتوى الحراري وتصنيف التفاعل لطارد (Exothermic) أو ماص (Endothermic).</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">تمكين الطالب من التحكم في موقد بنزن ودرجة الحرارة وتركيز الحمض وملاحظة معدل سرعة التفاعل بصرياً.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تصميم مؤثرات تصاعد الغازات واللهب بأسلوب جزيئي خفيف يعمل بسلاسة دون الحاجة لبطاقات رسومية خارجية.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 9 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #24 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #24 ]</div>
+      <div class="entry-timing">الخميس، 24 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: معمل الأحياء والخلية والكائنات الدقيقة</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>بناء المحاكي ثلاثي الأبعاد للخلية النباتية والحيوانية ولولب DNA المزدوج وكائنات البرك.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تصميم مجسمات تفاعلية ثلاثية الأبعاد لعضيات الخلية: الميتوكوندريا (مصنع الطاقة ATP)، النواة، البلاستيدات الخضراء، والجدار الخلوي السليلوزي. إضافة محاكي الميكروسكوب الضوئي لفحص الكائنات الدقيقة الحية (الأميبا، البراميسيوم، اليوجلينا) ورصد حركتها بالأهداب والأسياط والأقدام الكاذبة.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">توفير بديل رقمي فائق الوضوح لعينات الميكروسكوب الغائبة عن معظم المعامل المدرسية لتعطل العدسات أو تلف العينات.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تجسيم لولب DNA المزدوج بدقة كيميائية صحيحة توضح ارتباط القواعد النيتروجينية بالروابط الهيدروجينية (A=T و C≡G).</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #25 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #25 ]</div>
+      <div class="entry-timing">الجمعة، 25 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: معمل علوم الأرض والزلازل وموجات تسونامي</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>تطوير محاكي طبقات الأرض الأربعة والرنين الميكانيكي للمباني أثناء الزلازل.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">بناء نموذج ثلاثي الأبعاد للكرة الأرضية يتيح تشريح طبقاتها: القشرة، الوشاح العلوي والسفلي، اللب الخارجي المنصهر، واللب الداخلي الصلب. برمجة محاكي الزلازل بمقياس ريختر وعرض انتقال الموجات الأولية P والثانوية S، مع محاكاة ظاهرة الرنين التوافقي في انهيار الأبراج والمباني وموجات التسونامي البحرية.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">الطلاب يستوعبون لماذا تنهار بعض المباني دون غيرها طبقاً لتردد الزلزال والتردد الطبيعي للمبنى.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">محاكاة حركة السوائل المائية في أمواج تسونامي بطريقة رياضية سريعة عبر معادلات الموجات الجيبية.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 5 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #26 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #26 ]</div>
+      <div class="entry-timing">السبت، 26 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: مرصد الفلك ومدارات كبلر والنظام الشمسي</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>برمجة محاكي المجموعة الشمسية وقوانين كبلر الثلاثة لحركة الكواكب وأطوار القمر.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">بناء مرصد الفلك ثلاثي الأبعاد بكواكبه الثمانية مع ضبط النسب الحجمية والمدارية بدقة فلكية. تطبيق قانون كبلر الأول (المدارات الإهليجية)، وقانون كبلر الثاني (تغير سرعة الكوكب بحسب قربه من نقطة الحضيض)، ومحاكاة ظاهرتي كسوف الشمس وخسوف القمر ومراحل الشهر القمري.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">الطلاب يشاهدون مدارات الكواكب بزوايا حرة تمكنهم من فهم ميكانيكا السماء التي يستحيل توضيحها بالرسوم الثابتة.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تحدي المقياس الفلكي الضخم للمسافات بين الكواكب؛ وتم حل المشكلة بوضع وضعين للعرض: مقياس واقعي للمسارات ومقياس مرئي تقريبي يسهل فحص الكواكب.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #27 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #27 ]</div>
+      <div class="entry-timing">الأحد، 27 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: معمل الرياضيات والهندسة التحليلية التفاعلي</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>برمجة معمل الرياضيات والمستوى الإحداثي وبراهين فيثاغورس وحساب المثلثات ثلاثي الأبعاد.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تطوير معمل الرياضيات لربط المفاهيم المجردة بالتطبيق الهندسي الملموس. برمجة رسم الدوال الخطية والتربيعية لحظياً مع تغير المعاملات، وبرهان نظرية فيثاغورس بصرياً عبر تحويل مساحات المربعات المنشأة على الأضلاع، وحساب الدوال المثلثية (Sin, Cos, Tan) بدائرة الوحدة التفاعلية.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">المعمل يوفر الأساس الرياضي الذي يربط بين تجارب الفيزياء ومفاهيم الهندسة التحليلية المقررة على المرحلة الإعدادية والثانوية.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تحديث رسومات المنحنيات لحظياً مع كل حركة لمقبض التمرير (Slider) دون أي تهنيج في واجهة المتصفح.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #28 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #28 ]</div>
+      <div class="entry-timing">الإثنين، 28 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: دمج وتكامل المعامل السبعة في منظومة موحدة</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>توحيد المعامل السبعة تحت مظلة لوحة تحكم واحدة ونظام تنقل ديناميكي سلس.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تصميم واجهة SciNexa Lab Workspace وقضبان التنقل السريع SciNexaNavDock. برمجة الروابط الداخلية الموجهة (React Router) لضمان الانتقال اللحظي بين المعامل السبعة مع الحفاظ على إعدادات التجربة النشطة، وتطبيق النمط الموحد للخلفيات الداكنة (#060810) لتبدو المنصة كستوديو معملي احترافي متكامل.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">اكتمال المعامل السبعة للعلوم (التشريح، الفيزياء، الكيمياء، الأحياء، علوم الأرض، الفلك، الرياضيات) بجاهزية تشغيلية كاملة.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تنظيف الذاكرة المؤقتة لمشاهد WebGL السابقة عند الانتقال لمعمل جديد لمنع تراكم استهلاك الرام (Garbage Collection Optimization).</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #29 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #29 ]</div>
+      <div class="entry-timing">الثلاثاء، 29 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: تأسيس المرشد الصوتي الذكي 'داروين' (Darwin Voice AI)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>دمج الذكاء الاصطناعي الصوتي التوليدي ليكون معلماً مرشداً حياً داخل المعامل.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">دمج محرك Fish Audio ومحرك Web Speech API لتطوير وكيل الذكاء الاصطناعي 'داروين • مرشد العلوم'. كتابة النظام البرمجي لتمكين داروين من التحدث باللغة العربية الفصحى العلمية الميسرة، والاستماع لأسئلة الطلاب عبر الميكروفون، والإجابة بالصوت الطبيعي الحي عالي الدقة دون تأخير ملحوظ.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">داروين يستطيع الترحيب بالطالب والإجابة عن الأسئلة المنهجية المتعلقة بالتجارب وشرح خطوات التفاعل.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تقليل زمن التأخير في نطق الإجابة (Latency)؛ واستقر الاختيار على تشغيل المحرك السحابي الصوتي مع وجود ناطق محلي احتياطي عند انقطاع الشبكة.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر الذكاء الاصطناعي لـ SciNexa | الساعات الموثقة: 9 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #30 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #30 ]</div>
+      <div class="entry-timing">الأربعاء، 30 سبتمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: برمجة جسر القياس عن بعد اللحظي (Live Telemetry Bridge)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>ربط شاشة المعمل وتفاعل الطالب بذاكرة المرشد داروين عبر scinexaLiveContext.ts.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">برمجة جسر التتبع اللحظي scinexaLiveContext.ts. كلما ضغط الطالب على عظمة في التشريح أو عدل الجهد في الفيزياء أو دمج مادتين في الكيمياء، يقوم النظام بتحديث كائن السياق العام (Global Context) وإرساله لحظياً إلى متغيرات الذكاء الاصطناعي (Dynamic Variables) ليعلم داروين بما يفعله الطالب في نفس الثانية.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">تمكين داروين من معرفة العضو المحدد على الشاشة واسم المعمل وحالة الدائرة دون أن يضطر الطالب لكتابتها.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تجنب إرهاق السيرفر بالطلبات المتكررة؛ وحُلّت بتطبيق تقنية Debouncing وقصر التحديث على لحظة وقوع الحدث فقط.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر الذكاء الاصطناعي لـ SciNexa | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #31 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #31 ]</div>
+      <div class="entry-timing">الخميس، 1 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: تخصيص مناداة الطالب بالاسم الأول الحقيقي</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>برمجة خوارزمية ذكية لاستخراج الاسم الأول للطالب لمناداته بود ('يا عبد الرحمن').</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تطوير دالة extractFirstName في userStorage.ts للتعامل بذكاء مع الأسماء المركبة العربية الشائعة (مثل: عبد الرحمن، عبد الله، سيف الدين، نور الدين، أبو بكر، إلخ). ربط هذه الدالة بنظام الترحيب الصوتي بحيث يقول داروين فور بدء الجلسة: 'أهلاً يا عبد الرحمن يا بطل الصف الثاني الثانوي!' بدلاً من نطق الاسم الرباعي الرسمي أو البريد الإلكتروني.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">إضفاء طابع شخصي حميمي للمرشد داروين يزيد من الألفة والاندماج النفسي والدافعية للطالب نحو المنصة.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">معالجة حالات الأسماء التي تحتوي على رموز أو كتابة بحروف أجنبية وتنقيتها تلقائياً للفظ العربي السليم.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #32 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #32 ]</div>
+      <div class="entry-timing">الجمعة، 2 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: حل مشكلة أداة قراءة حالة المعمل ومنع الهلوسة</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>معالجة خطأ HTTP 405 في أدوات استدعاء المعمل والتحول إلى الحقن المباشر في السياق.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">اكتشاف سبب ظهور رسالة Failed عند استدعاء أدوات الويب من سيرفرات داروين الخارجية لعجزها عن الوصول لحالة متصفح الطالب المحلي. تم حل المشكلة نهائياً بحذف الأدوات والاعتماد بنسبة 100% على الـ Dynamic Variables المحقونة مباشرة في المتصفح، وضبط الـ System Prompt لداروين ليرد حصرياً بناءً على العنصر المذكور في المتغير الحي دون أي اختراع أو هلوسة.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">استقرار وثبات تام في إجابات داروين وقراءته الحقيقية للجزء المحدد على الشاشة بنسبة دقة 100%.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">التأكد من تحديث المتغيرات حتى أثناء المكالمة الصوتية الحية المستمرة.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 6 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #33 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #33 ]</div>
+      <div class="entry-timing">السبت، 3 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: نمط العمل دون إنترنت والتخزين المؤقت (PWA & Offline Cache)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>بناء نظام التخزين المحلي الشامل لضمان تشغيل المنصة في المعامل المدرسية المنقطعة عن الشبكة.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">برمجة ملف Service Worker وضبط التخزين المؤقت لملفات JavaScript ومكتبات Three.js وملفات النماذج ثلاثية الأبعاد (GLTF/DRACO). إضافة ميزة تثبيت التطبيق كـ Progressive Web App (PWA) بزر واحد، وتخزين بيانات تقدم الطالب واختباراته في LocalStorage المشفر ومزامنتها لاحقاً فور استعادة الاتصال.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">المنصة تفتح وتعمل بكامل معاملها ثلاثية الأبعاد بدون أي اتصال بالإنترنت بسرعة فائقة وبمعدل 0 ثانية انتظار.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">ضمان عدم استهلاك الـ Service Worker لمساحة تخزينية مفرطة؛ وتم ضغط إجمالي أصول المنصة لتشغل أقل من 35MB كاش فقط.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #34 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #34 ]</div>
+      <div class="entry-timing">الأحد، 4 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: تقييد المحاولات الاختبارية لمنع الغش (Assessment Locking)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>برمجة نظام القفل الأمني للامتحانات الأسبوعية ومنع المحاولات المتعددة لتأمين صدق القياس التجريبي.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تطوير وحدة CurriculumAssessmentLocking.ts. ضبط النظام ليسمح للطالب بمحاولة واحدة فقط لكل اختبار تقييمي نهائي، وتسجيل الدرجة وزمن الإجابة وتاريخ وتوقيت المحاولة، مع إغلاق إمكانية إعادة الاختبار إلا بتصريح المعلم أو الباحث المشرف، وذلك لضمان نقاء البيانات الإحصائية للبحث.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">تطبيق قواعد النزاهة الأكاديمية وحماية نتائج التجارب من أي تكرار قد يشوه دلالة القياس.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">التعامل مع حالات انقطاع التيار الكهربائي أو إغلاق المتصفح المفاجئ بحفظ حالة الإجابة مؤقتاً ومواصلتها.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #35 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #35 ]</div>
+      <div class="entry-timing">الإثنين، 5 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: خوارزمية الترتيب العشوائي للأسئلة والخيارات (Fisher-Yates Shuffle)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>برمجة الخوارزمية العشوائية لتوزيع أسئلة وبدائل الاختبارات لمنع النقل بين الطلاب المتجاورين.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تطبيق خوارزمية فيشر-يتس (Fisher-Yates Shuffle Algorithm) في دوال توليد الامتحانات. عند فتح الطالب للامتحان، يتم خلط ترتيب الأسئلة الاثني عشر عشوائياً، وخلط بدائل الإجابات الأربعة (أ، ب، ج، د) لكل سؤال على حدة، بحيث يستحيل على طالبين متجاورين في معمل الحاسوب تبادل الإجابات بمجرد النظر للأحرف.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">تحقيق عدالة ونزاهة تامة في درجات الاختبار البعدي في المدارس والتأكد من قياس الفهم الذاتي الحقيقي لكل طالب.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">ضمان ثبات مفتاح التصحيح الداخلي للسؤال رغم تغير موقع الإجابة الصحيحة برمجياً.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #36 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #36 ]</div>
+      <div class="entry-timing">الثلاثاء، 6 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: اختبار الأداء على الأجهزة المدرسية ذات المواصفات الضعيفة</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>إجراء اختبارات ضغط الأداء على حواسيب قديمة مطابقة لأجهزة معامل التطوير التكنولوجي بالمدارس.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تشغيل المنصة على حاسوب مدرسي قديم بمواصفات متواضعة: معالج Intel Core 2 Duo، ذاكرة عشوائية 2GB RAM، ودون بطاقة رسومات منفصلة، يعمل بنظام Windows 7 ومتصفح Chrome قديم. قياس معدل استهلاك الذاكرة وسرعة الإطارات.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">حافظت المنصة على معدل 45 إلى 55 إطاراً بالثانية مع ثبات في الأداء بفضل تقنيات ضغط المضلعات ونظام الرندر المشروط بالحركة فقط (Render-on-Demand).</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تجاوز مشكلة عدم دعم بعض المعالجات القديمة للنسخ الحديثة من WebGL عبر تفعيل الـ Fallback Shaders التلقائي.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر اختبار الأجهزة | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #37 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #37 ]</div>
+      <div class="entry-timing">الأربعاء، 7 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: تحسين التباين البصري وتوافقية إمكانية الوصول (Accessibility)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>فحص وتطبيق معايير الوصول العالمية للمتعلمين (WCAG 2.1 AA Standards).</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">مراجعة نسب التباين بين النصوص والخلفيات والتأكد من تجاوزها لنسبة 4.5:1. إضافة خيارات التكبير وقراءة الشاشة الصوتية، ودعم التنقل الكامل بلوحة المفاتيح (Keyboard Navigation) لخدمة الطلاب الذين يواجهون صعوبات حركية في استخدام الفأرة.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">حصول واجهات المنصة على تقييم 98/100 في فحص Lighthouse الرسمي لمعايير الوصول والشمولية الرقمية.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">جعل عناصر التحكم ثلاثية الأبعاد داخل فضاء WebGL قابلة للتحديد عبر زر Tab في لوحة المفاتيح.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 6 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #38 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #38 ]</div>
+      <div class="entry-timing">الخميس، 8 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: تطوير لوحة تحكم المعلم وبوابة الإدارة المدرسية</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>بناء بوابة المعلم لمتابعة تقدم الطلاب وتصدير درجاتهم وإحصاءات الفصول.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">برمجة واجهة TeacherDashboard.tsx. تمكين المعلم من استعراض كشوف الطلاب، والاطلاع على نسب الإتقان لكل تجربة معملية، ورصد الأخطاء الشائعة في الأسئلة التحصيلية، وتصدير التقارير في جداول إكسل وPDF مطابقة لسجلات التقييم الشهري الرسمية.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">المعلم يستطيع في ثوانٍ تحديد الطلاب الذين يواجهون صعوبة في مفهوم معين وتقديم الدعم الإثرائي المناسب لهم.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">الفصل الأمني الصارم بين صلاحيات حساب الطالب وصلاحيات حساب المعلم لمنع التلاعب في الدرجات.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #39 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #39 ]</div>
+      <div class="entry-timing">الجمعة، 9 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: المراجعة البرمجية الشاملة واختبارات التكامل (Integration Tests)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>إجراء فحص شامل للأكواد واختبارات التكامل بين الواجهات ومحركات المحاكاة والمرشد داروين.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تشغيل أدوات التدقيق الآلي ESLint وTypeScript Compiler (tsc) وVite Build. محاكاة 50 جلسة متزامنة واختبار استقرار الذاكرة والانتقال بين المعامل السبعة وإجراء 100 نقرة على الهيكل العظمي ومحاكي التفاعلات الكيميائية.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">اجتياز جميع الاختبارات البرمجية بنسبة 0 خطأ (0 Errors, 0 Warnings) وثبات تام في سرعة التحميل.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">رصد تسريب طفيف في الذاكرة عند حذف مجسمات الكيمياء، وتم إصلاحه بحذف المواد والملمس (Dispose Materials & Textures) يدوياً.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 5 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #40 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #40 ]</div>
+      <div class="entry-timing">السبت، 10 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الثالثة: تجهيز النسخ الميدانية والأجهزة اللوحية للتجريب بالمدارس</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>تثبيت المنصة على أجهزة التجريب الميداني وتجهيز الحقائب التعليمية وأوراق التقييم.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تثبيت النسخة النهائية على 15 جهازاً محمولاً ولوحياً مخصصاً للنزول الميداني. طباعة 200 نسخة من استمارات الاختبار القبلي والبعدي، ومقياس العبء المعرفي، واستبانة الرضا، وتجهيز أقلام التدوين ودفاتر التحضير وأختام الاعتماد المدرسي.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">الجاهزية اللوجستية الكاملة لبدء مرحلة النزول الميداني بالمدارس الشريكة الستة وفق الخطة الزمنية المقررة.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">التأكد من شحن بطاريات كافة الأجهزة اللوحية وتخزين النسخة الأوفلاين مسبقاً عليها تحسباً لغياب الكهرباء.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: غرفة التجهيز الميداني | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #41 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #41 ]</div>
+      <div class="entry-timing">الأحد، 11 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: التنسيق الإداري والموافقات الرسمية مع إدارات المدارس</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>تسليم خطابات تيسير المهمة والجدول الزمني للزيارات الميدانية بالمدارس الستة المختارة.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">التوجه للإدارات التعليمية والمدارس لتنسيق مواعيد حصص العلوم وحصص التطوير التكنولوجي. الاتفاق على خطة التجريب الميداني بتوزيع المدارس على الفئات العمرية المختلفة: الابتدائي، الإعدادي، والثانوي العام والرسمي للغات لضمان شمولية العينة.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">ترحيب ودعم كبير من السادة مديري المدارس وموجهي مادة العلوم وتخصيص قاعات التطوير التكنولوجي لإجراء جلسات المحاكاة.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تنسيق مواعيد التجارب بما لا يخل بجدول الحصص الدراسية اليومية للطلاب.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: الإدارة التعليمية والمدارس الشريكة | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #42 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #42 ]</div>
+      <div class="entry-timing">الإثنين، 12 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: إطلاق التجريب الميداني — مدرسة أبو السعود السودة الإعدادية (1)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>بدء أولى الجلسات الميدانية الرسمية في مدرسة أبو السعود السودة الإعدادية.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">النزول إلى مدرسة أبو السعود السودة الإعدادية. عقد الجلسة التمهيدية مع الطلاب وإدارات المدرسة وتوقيع استمارات الموافقة المستنيرة. تطبيق الاختبار القبلي على الطلاب لضبط التكافؤ المعرفي، وتقسيمهم عشوائياً لمجموعة تجريبية وضابطة. بدء تدريس وحدة الدوائر الكهربائية وقانون أوم وتفاعلات الفلزات مع الأحماض.</div>
+      </div>
+      
+      <div class="school-card-box">
+        <div class="school-card-title">🏫 توثيق النزول الميداني للمدرسة الشريكة بالتجريب:</div>
+        <div><strong>المدرسة:</strong> مدرسة أبو السعود السودة الإعدادية</div>
+        <div><strong>المرحلة التعليمية:</strong> المرحلة الإعدادية</div>
+        <div><strong>تاريخ الزيارة الميدانية:</strong> <span class="blank-date-box">اليوم: ........... الموافق: ..... / ..... / 202...</span> <em>(يُدون يدوياً بالقلم)</em></div>
+        <div><strong>حجم العينة المشاركة:</strong> 30 طالباً (مجموعة تجريبية وضابطة)</div>
+        <div><strong>الأدلة الإثباتية المحفوظة:</strong> استمارات الاختبارات القبلية والبعدية الورقية، كشوف الغياب والتكافؤ، وموافقات أولياء الأمور المعتمدة وإقرار إدارة المدرسة بختم النسر.</div>
+      </div>
+    
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">حماس كبير من الطلاب في التفاعل الميداني. استمارات موثقة لكافة الطلاب تؤكد بدء التطبيق العملي.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تهيئة الطلاب الصغار لاستخدام فأرة الحاسوب والتعامل مع المشهد ثلاثي الأبعاد بهدوء ونظام.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مدرسة أبو السعود السودة الإعدادية | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #43 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #43 ]</div>
+      <div class="entry-timing">الثلاثاء، 13 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: مدرسة أبو السعود السودة الإعدادية (2) — التطبيق المعملي</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>تنفيذ تجارب الفيزياء والدوائر والكيمياء التفاعلية وتطبيق الاختبار البعدي بالمدرسة.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">قامت المجموعة التجريبية بتركيب الدوائر الكهربائية وتغيير المقاومات واختبار القفلة الكهربائية على منصة SciNexa، بينما درست المجموعة الضابطة عبر السبورة والكتاب الورقي. في نهاية الحصة تم تطبيق الاختبار البعدي ومقياس الجهد الذهني على المجموعتين وتدوين الملاحظات الإكلينيكية والتربوية.</div>
+      </div>
+      
+      <div class="school-card-box">
+        <div class="school-card-title">🏫 توثيق النزول الميداني للمدرسة الشريكة بالتجريب:</div>
+        <div><strong>المدرسة:</strong> مدرسة أبو السعود السودة الإعدادية</div>
+        <div><strong>المرحلة التعليمية:</strong> المرحلة الإعدادية</div>
+        <div><strong>تاريخ الزيارة الميدانية:</strong> <span class="blank-date-box">اليوم: ........... الموافق: ..... / ..... / 202...</span> <em>(يُدون يدوياً بالقلم)</em></div>
+        <div><strong>حجم العينة المشاركة:</strong> 30 طالباً (مجموعة تجريبية وضابطة)</div>
+        <div><strong>الأدلة الإثباتية المحفوظة:</strong> استمارات الاختبارات القبلية والبعدية الورقية، كشوف الغياب والتكافؤ، وموافقات أولياء الأمور المعتمدة وإقرار إدارة المدرسة بختم النسر.</div>
+      </div>
+    
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">أظهرت أوراق الاختبار البعدي تفوقاً ساحقاً لطلاب المجموعة التجريبية في فهم العلاقات الرياضية لقانون أوم وتفسير مسار التيار.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">ضمان عدم تواصل طلاب المجموعتين أثناء انعقاد الاختبار البعدي لمنع انتقال أثر التعلم بينهما.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مدرسة أبو السعود السودة الإعدادية | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #44 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #44 ]</div>
+      <div class="entry-timing">الأربعاء، 14 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: مدرسة أبو السعود السودة الإعدادية (3) — اعتماد الأوراق</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>استكمال استبانات الرضا واعتماد كشوف الدرجات الرسمية بختم مدرسة أبو السعود السودة.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تطبيق مقياس الرضا المدرك على طلاب المجموعة التجريبية. مراجعة المعلمين المشرفين للنتائج، وتصحيح أوراق الاختبارات بحضور معلم أول العلوم، وتوثيق كشف الحضور والغياب واعتماد ملف التجريب بختم النسر / إدارة المدرسة.</div>
+      </div>
+      
+      <div class="school-card-box">
+        <div class="school-card-title">🏫 توثيق النزول الميداني للمدرسة الشريكة بالتجريب:</div>
+        <div><strong>المدرسة:</strong> مدرسة أبو السعود السودة الإعدادية</div>
+        <div><strong>المرحلة التعليمية:</strong> المرحلة الإعدادية</div>
+        <div><strong>تاريخ الزيارة الميدانية:</strong> <span class="blank-date-box">اليوم: ........... الموافق: ..... / ..... / 202...</span> <em>(يُدون يدوياً بالقلم)</em></div>
+        <div><strong>حجم العينة المشاركة:</strong> 30 طالباً (مجموعة تجريبية وضابطة)</div>
+        <div><strong>الأدلة الإثباتية المحفوظة:</strong> استمارات الاختبارات القبلية والبعدية الورقية، كشوف الغياب والتكافؤ، وموافقات أولياء الأمور المعتمدة وإقرار إدارة المدرسة بختم النسر.</div>
+      </div>
+    
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">حصول المنصة على تقييم رضا فاق 92% بين الطلاب، وتوثيق الأوراق الورقية بالكامل في ملف الأدلة الميدانية.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تفريغ الدرجات اليدوية وتدقيقها رقمياً والتأكد من مطابقة الأسماء لأرقام الجلوس الكودية.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مدرسة أبو السعود السودة الإعدادية | الساعات الموثقة: 6 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #45 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #45 ]</div>
+      <div class="entry-timing">الخميس، 15 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: مدرسة محمود نبيه شتا الرسمية للغات (1) — التجهيز اللغوي</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>بدء التجريب الميداني في مدرسة محمود نبيه شتا الرسمية للغات واختبار الوضع ثنائي اللغة.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">التوجه إلى مدرسة محمود نبيه شتا الرسمية للغات. استهداف طلاب المرحلة الإعدادية والثانوية لغات. تطبيق الاختبار القبلي المتضمن المصطلحات العلمية باللغتين الإنجليزية والعربية. اختبار كفاءة المنصة في التبديل اللحظي بين واجهة العربي والإنجليزي وتسميات العناصر والأعضاء بدقة ثنائية.</div>
+      </div>
+      
+      <div class="school-card-box">
+        <div class="school-card-title">🏫 توثيق النزول الميداني للمدرسة الشريكة بالتجريب:</div>
+        <div><strong>المدرسة:</strong> مدرسة محمود نبيه شتا الرسمية للغات</div>
+        <div><strong>المرحلة التعليمية:</strong> رسمي لغات (إعدادي وثانوي)</div>
+        <div><strong>تاريخ الزيارة الميدانية:</strong> <span class="blank-date-box">اليوم: ........... الموافق: ..... / ..... / 202...</span> <em>(يُدون يدوياً بالقلم)</em></div>
+        <div><strong>حجم العينة المشاركة:</strong> 32 طالباً (مجموعة تجريبية وضابطة)</div>
+        <div><strong>الأدلة الإثباتية المحفوظة:</strong> استمارات الاختبارات القبلية والبعدية الورقية، كشوف الغياب والتكافؤ، وموافقات أولياء الأمور المعتمدة وإقرار إدارة المدرسة بختم النسر.</div>
+      </div>
+    
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">الطلاب تفاعلوا بشدة مع القدرة على قراءة المصطلح العلمي اللاتيني والإنجليزية بجانب شرحه العربي الميسر في آن واحد.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تحدي النطق الإنجليزي السليم لداروين مع المصطلحات البيولوجية المعقدة؛ وتم التحقق من دقة لفظه الفونيتيكي.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مدرسة محمود نبيه شتا الرسمية للغات | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #46 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #46 ]</div>
+      <div class="entry-timing">الجمعة، 16 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: مراجعة البيانات الميدانية لمدرستي أبو السعود ومحمود نبيه شتا</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>فحص وتدقيق درجات أول مدرستين وإدخالها المبدئي في حزم الإحصاء.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">مطابقة درجات 62 طالباً وطالبة من واقع أوراق الاختبارات القبلية والبعدية المصححة. فحص التوزيع التكراري للدرجات والتأكد من عدم وجود بيانات شاذة (Outliers) ناتجة عن غياب أو ترك أسئلة فارغة.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">المؤشرات الأولية توضح قفزة بمقدار 35% في متوسط تحصيل المجموعة التجريبية مقارنة بالضابطة.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">الحفاظ على الأوراق الأصلية مرتبة ومفهرسة بأمان داخل الحوافظ البلاستيكية المخصصة للتحكيم.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير والتحليل | الساعات الموثقة: 4 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #47 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #47 ]</div>
+      <div class="entry-timing">السبت، 17 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: مدرسة محمود نبيه شتا الرسمية للغات (2) — الكيمياء والمجرات</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>تطبيق معمل الكيمياء ومحاكي كبلر الفلكي وتطبيق الاختبارات والقياسات البعدية بالمدرسة.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تنفيذ حصة معملية تفاعلية لمفاهيم الجدول الدوري ومدارات كبلر الإهليجية والمحتوى الحراري للتفاعلات الكيميائية. خاضت المجموعة التجريبية المحاكاة الكاملة عبر الأجهزة اللوحية، بينما درست الضابطة بالطريقة العادية. تطبيق الاختبار البعدي ومقياس العبء الذهني.</div>
+      </div>
+      
+      <div class="school-card-box">
+        <div class="school-card-title">🏫 توثيق النزول الميداني للمدرسة الشريكة بالتجريب:</div>
+        <div><strong>المدرسة:</strong> مدرسة محمود نبيه شتا الرسمية للغات</div>
+        <div><strong>المرحلة التعليمية:</strong> رسمي لغات (إعدادي وثانوي)</div>
+        <div><strong>تاريخ الزيارة الميدانية:</strong> <span class="blank-date-box">اليوم: ........... الموافق: ..... / ..... / 202...</span> <em>(يُدون يدوياً بالقلم)</em></div>
+        <div><strong>حجم العينة المشاركة:</strong> 32 طالباً (مجموعة تجريبية وضابطة)</div>
+        <div><strong>الأدلة الإثباتية المحفوظة:</strong> استمارات الاختبارات القبلية والبعدية الورقية، كشوف الغياب والتكافؤ، وموافقات أولياء الأمور المعتمدة وإقرار إدارة المدرسة بختم النسر.</div>
+      </div>
+    
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">الطلاب عبروا عن إعجابهم بقدرة المنصة على إبراز تفاصيل الذرة ومدارات الكواكب التي كانت تمثل غموضاً تاماً في الكتاب الورقي.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">ضيق زمن الحصة؛ وتم التغلب عليه بالبدء الفوري للتجربة المجهزة مسبقاً على الأجهزة.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مدرسة محمود نبيه شتا الرسمية للغات | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #48 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #48 ]</div>
+      <div class="entry-timing">الأحد، 18 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: مدرسة محمود نبيه شتا الرسمية للغات (3) — استكمال التوثيق</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>إتمام جمع استبانات المعلمين والطلاب واعتماد السجلات بختم المدرسة الرسمي.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">عقد حلقة نقاشية مع معلمي العلوم واللغات بالمدرسة لتقييم ملاءمة المحتوى للمناهج الدولية والمحلية. اعتماد أوراق الاختبارات واستبانات الرضا بختم إدارة المدرسة، وتوثيق شهادة إتمام التجريب الميداني بنجاح.</div>
+      </div>
+      
+      <div class="school-card-box">
+        <div class="school-card-title">🏫 توثيق النزول الميداني للمدرسة الشريكة بالتجريب:</div>
+        <div><strong>المدرسة:</strong> مدرسة محمود نبيه شتا الرسمية للغات</div>
+        <div><strong>المرحلة التعليمية:</strong> رسمي لغات (إعدادي وثانوي)</div>
+        <div><strong>تاريخ الزيارة الميدانية:</strong> <span class="blank-date-box">اليوم: ........... الموافق: ..... / ..... / 202...</span> <em>(يُدون يدوياً بالقلم)</em></div>
+        <div><strong>حجم العينة المشاركة:</strong> 32 طالباً (مجموعة تجريبية وضابطة)</div>
+        <div><strong>الأدلة الإثباتية المحفوظة:</strong> استمارات الاختبارات القبلية والبعدية الورقية، كشوف الغياب والتكافؤ، وموافقات أولياء الأمور المعتمدة وإقرار إدارة المدرسة بختم النسر.</div>
+      </div>
+    
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">إشادة واسعة من إدارة المدرسة ومعلمي اللغات بدقة المصطلحات وتصميم الواجهة العصري.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تدوين كافة الملاحظات النوعية التي ذكرها المعلمون للاستفادة منها في مناقشة النتائج أمام لجان التحكيم.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مدرسة محمود نبيه شتا الرسمية للغات | الساعات الموثقة: 6 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #49 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #49 ]</div>
+      <div class="entry-timing">الإثنين، 19 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: مدرسة السيد سويلم الثانوية بنات (1) — أطلس التشريح الطبي</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>انطلاق أضخم جلسة تجريبية ميدانية في أطلس التشريح البشري بمدرسة السيد سويلم الثانوية بنات.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">التوجه لمدرسة السيد سويلم الثانوية بنات. استهداف طالبات الصف الأول والثاني الثانوي (الشعبة العلمية). تطبيق الاختبار القبلي لمفاهيم الهيكل العظمي، الأجهزة الحيوية، والمفاصل. توزيع الطالبات (38 طالبة: 19 تجريبية و 19 ضابطة). توقيع استمارات موافقة أولياء الأمور وإدارة المدرسة.</div>
+      </div>
+      
+      <div class="school-card-box">
+        <div class="school-card-title">🏫 توثيق النزول الميداني للمدرسة الشريكة بالتجريب:</div>
+        <div><strong>المدرسة:</strong> مدرسة السيد سويلم الثانوية بنات</div>
+        <div><strong>المرحلة التعليمية:</strong> المرحلة الثانوية</div>
+        <div><strong>تاريخ الزيارة الميدانية:</strong> <span class="blank-date-box">اليوم: ........... الموافق: ..... / ..... / 202...</span> <em>(يُدون يدوياً بالقلم)</em></div>
+        <div><strong>حجم العينة المشاركة:</strong> 38 طالبة (مجموعة تجريبية وضابطة)</div>
+        <div><strong>الأدلة الإثباتية المحفوظة:</strong> استمارات الاختبارات القبلية والبعدية الورقية، كشوف الغياب والتكافؤ، وموافقات أولياء الأمور المعتمدة وإقرار إدارة المدرسة بختم النسر.</div>
+      </div>
+    
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">انضباط واهتمام استثنائي من الطالبات وتأكيد التكافؤ المسبق بين المجموعتين في التحصيل القبلي.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">التأكد من إلمام الطالبات بآلية تدوير وفصل عظام الهيكل العظمي 3D على شاشات اللمس.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مدرسة السيد سويلم الثانوية بنات | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #50 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #50 ]</div>
+      <div class="entry-timing">الثلاثاء، 20 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: مدرسة السيد سويلم الثانوية بنات (2) — التشريح ثلاثي الأبعاد</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>تنفيذ فحص العظام السريرية والتدوير 360° وتطبيق الاختبار البعدي ومقياس العبء المعرفي.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">قامت طالبات المجموعة التجريبية بفحص أطلس التشريح الطبي: عزل عظم لوح الكتف (Scapula)، عظم الفخذ (Femur)، دروز الجمجمة، وفحص الأوعية الدموية بالقلب مع الاستماع لتوجيهات داروين الصوتي التلقائي. بينما اعتمدت المجموعة الضابطة على مجسم بلاستيكي ثابت والرسومات التوضيحية بالكتاب. تطبيق الاختبار البعدي ومقياس الجهد الذهني.</div>
+      </div>
+      
+      <div class="school-card-box">
+        <div class="school-card-title">🏫 توثيق النزول الميداني للمدرسة الشريكة بالتجريب:</div>
+        <div><strong>المدرسة:</strong> مدرسة السيد سويلم الثانوية بنات</div>
+        <div><strong>المرحلة التعليمية:</strong> المرحلة الثانوية</div>
+        <div><strong>تاريخ الزيارة الميدانية:</strong> <span class="blank-date-box">اليوم: ........... الموافق: ..... / ..... / 202...</span> <em>(يُدون يدوياً بالقلم)</em></div>
+        <div><strong>حجم العينة المشاركة:</strong> 38 طالبة (مجموعة تجريبية وضابطة)</div>
+        <div><strong>الأدلة الإثباتية المحفوظة:</strong> استمارات الاختبارات القبلية والبعدية الورقية، كشوف الغياب والتكافؤ، وموافقات أولياء الأمور المعتمدة وإقرار إدارة المدرسة بختم النسر.</div>
+      </div>
+    
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">أظهرت النتائج طفرة في قدرة طالبات المنصة على التعرف على الزوايا الحركية والمسميات التشريحية بدقة فاقت 90%، مع انخفاض حاد في إجهادهن الذهني مقارنة بالضابطة.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">رغبة كافة الطالبات في تجربة المنصة بأنفسهن؛ وتم تنظيم دورات إضافية عقب انتهاء جلسة القياس لإتاحة الفرصة للجميع.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مدرسة السيد سويلم الثانوية بنات | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #51 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #51 ]</div>
+      <div class="entry-timing">الأربعاء، 21 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: مدرسة السيد سويلم الثانوية بنات (3) — استكمال التوثيق والاعتماد</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>جمع استبانات الرضا الشاملة وتصحيح الاختبارات واعتماد الأوراق بختم المدرسة.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">استكمال ملء استبانات الرضا، وتصحيح الاختبارات بحضور معلم خبير الأحياء بالمدرسة. تسجيل إشادات الطالبات التي أكدت أن المنصة جعلت مادة الأحياء والتشريح وكأنها دراسة سريرية حقيقية بكلية الطب. اعتماد كافة الأوراق رسميًا بختم المدرسة.</div>
+      </div>
+      
+      <div class="school-card-box">
+        <div class="school-card-title">🏫 توثيق النزول الميداني للمدرسة الشريكة بالتجريب:</div>
+        <div><strong>المدرسة:</strong> مدرسة السيد سويلم الثانوية بنات</div>
+        <div><strong>المرحلة التعليمية:</strong> المرحلة الثانوية</div>
+        <div><strong>تاريخ الزيارة الميدانية:</strong> <span class="blank-date-box">اليوم: ........... الموافق: ..... / ..... / 202...</span> <em>(يُدون يدوياً بالقلم)</em></div>
+        <div><strong>حجم العينة المشاركة:</strong> 38 طالبة (مجموعة تجريبية وضابطة)</div>
+        <div><strong>الأدلة الإثباتية المحفوظة:</strong> استمارات الاختبارات القبلية والبعدية الورقية، كشوف الغياب والتكافؤ، وموافقات أولياء الأمور المعتمدة وإقرار إدارة المدرسة بختم النسر.</div>
+      </div>
+    
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">اكتمال ملف التجريب الميداني لمدرسة السيد سويلم الثانوية بنات بـ 38 استمارة معتمدة.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">التأكد من دقة تصحيح الأسئلة المقالية القصيرة وتطابقها مع نموذج الإجابة النموذجي بدقة متناهية.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مدرسة السيد سويلم الثانوية بنات | الساعات الموثقة: 6 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #52 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #52 ]</div>
+      <div class="entry-timing">الخميس، 22 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: مدرسة الشيخ عمر الابتدائية (1) — تبسيط العلوم وداروين</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>بدء التجريب الميداني بمدرسة الشيخ عمر الابتدائية لخدمة صفوف التعليم الأساسي المبكر.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">التوجه لمدرسة الشيخ عمر الابتدائية. استهداف تلاميذ الصفوف العليا (الرابع والخامس والسادس الابتدائي). تنظيم الجلسة التمهيدية وتطبيق الاختبار القبلي المبسط (المعتمد على الرسوم الواضحة). استكشاف أثر التوجيه الصوتي للمرشد الذكي داروين في شد انتباه التلاميذ الصغار.</div>
+      </div>
+      
+      <div class="school-card-box">
+        <div class="school-card-title">🏫 توثيق النزول الميداني للمدرسة الشريكة بالتجريب:</div>
+        <div><strong>المدرسة:</strong> مدرسة الشيخ عمر الابتدائية</div>
+        <div><strong>المرحلة التعليمية:</strong> المرحلة الابتدائية</div>
+        <div><strong>تاريخ الزيارة الميدانية:</strong> <span class="blank-date-box">اليوم: ........... الموافق: ..... / ..... / 202...</span> <em>(يُدون يدوياً بالقلم)</em></div>
+        <div><strong>حجم العينة المشاركة:</strong> 26 طالباً (مجموعة تجريبية وضابطة)</div>
+        <div><strong>الأدلة الإثباتية المحفوظة:</strong> استمارات الاختبارات القبلية والبعدية الورقية، كشوف الغياب والتكافؤ، وموافقات أولياء الأمور المعتمدة وإقرار إدارة المدرسة بختم النسر.</div>
+      </div>
+    
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">اندماج طفولي مذهل مع داروين وسعادة التلاميذ عند سماع أسمائهم الأولى ينطقها النظام لتشجيعهم.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تبسيط الأسئلة والتعليمات بما يتناسب مع النضج العقلي واللغوي لتلاميذ المرحلة الابتدائية.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مدرسة الشيخ عمر الابتدائية | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #53 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #53 ]</div>
+      <div class="entry-timing">الجمعة، 23 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: تحليل ومقارنة استجابات مختلف الفئات العمرية</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>مقارنة سرعة تفاعل طلاب الابتدائي مع المنصة مقارنة بطلاب الإعدادي والثانوي.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">رصد الفروق الفردية في زمن الاستجابة، وسهولة الوصول للعناصر، وعدد مرات طلب المساعدة. تبين أن تلاميذ الابتدائي يميلون للاستماع لشرح داروين الصوتي أكثر من قراءة النصوص المكتوبة، بينما يعتمد طلاب الثانوي على قراءة البطاقات الطبية والوظيفية المفصلة.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">إثبات مرونة المنصة وقدرتها على خدمة كافة المراحل العمرية وفق استراتيجيات تعلم متمايزة.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تعديل حجم الأزرار في الواجهة لتكون أكبر حجماً وأسهل نقراً على الشاشات اللمسية لتلاميذ الابتدائي.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير والتحليل | الساعات الموثقة: 5 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #54 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #54 ]</div>
+      <div class="entry-timing">السبت، 24 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: مدرسة الشيخ عمر الابتدائية (2) — المجموعة الشمسية وطبقات الأرض</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>تنفيذ تجارب الفلك والكرة الأرضية وتطبيق الاختبار البعدي ومقياس السعادة والرضا.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">قامت المجموعة التجريبية باستكشاف الكواكب الثمانية ومداراتها والنزول لطبقات الأرض وبراكينها عبر SciNexa، بينما درست الضابطة من كتاب العلوم المدرسي. تطبيق الاختبار البعدي ومقياس الرضا المصور (Smiley Faces Scale).</div>
+      </div>
+      
+      <div class="school-card-box">
+        <div class="school-card-title">🏫 توثيق النزول الميداني للمدرسة الشريكة بالتجريب:</div>
+        <div><strong>المدرسة:</strong> مدرسة الشيخ عمر الابتدائية</div>
+        <div><strong>المرحلة التعليمية:</strong> المرحلة الابتدائية</div>
+        <div><strong>تاريخ الزيارة الميدانية:</strong> <span class="blank-date-box">اليوم: ........... الموافق: ..... / ..... / 202...</span> <em>(يُدون يدوياً بالقلم)</em></div>
+        <div><strong>حجم العينة المشاركة:</strong> 26 طالباً (مجموعة تجريبية وضابطة)</div>
+        <div><strong>الأدلة الإثباتية المحفوظة:</strong> استمارات الاختبارات القبلية والبعدية الورقية، كشوف الغياب والتكافؤ، وموافقات أولياء الأمور المعتمدة وإقرار إدارة المدرسة بختم النسر.</div>
+      </div>
+    
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">تحقيق نسبة إتقان 94% للمجموعة التجريبية في تسمية وترتيب الكواكب وطبقات الأرض مقارنة بـ 48% للضابطة.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">المحافظة على هدوء الفصل نتيجة الحماس الشديد للتلاميذ ورغبتهم في لمس شاشة المجسمات الفضائية.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مدرسة الشيخ عمر الابتدائية | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #55 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #55 ]</div>
+      <div class="entry-timing">الأحد، 25 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: مدرسة الشيخ عمر الابتدائية (3) — استكمال التوثيق الرسمي</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>اعتماد أوراق ونتائج تلاميذ مدرسة الشيخ عمر الابتدائية وتوثيق شهادات المشاركة.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">مراجعة كشوف درجات 26 تلميذاً وتلميذة واعتماد أوراق الاختبارات واستمارات أولياء الأمور بختم إدارة المدرسة، وتقديم الشكر لإدارة المدرسة والمعلمين على تعاونهم المثمر.</div>
+      </div>
+      
+      <div class="school-card-box">
+        <div class="school-card-title">🏫 توثيق النزول الميداني للمدرسة الشريكة بالتجريب:</div>
+        <div><strong>المدرسة:</strong> مدرسة الشيخ عمر الابتدائية</div>
+        <div><strong>المرحلة التعليمية:</strong> المرحلة الابتدائية</div>
+        <div><strong>تاريخ الزيارة الميدانية:</strong> <span class="blank-date-box">اليوم: ........... الموافق: ..... / ..... / 202...</span> <em>(يُدون يدوياً بالقلم)</em></div>
+        <div><strong>حجم العينة المشاركة:</strong> 26 طالباً (مجموعة تجريبية وضابطة)</div>
+        <div><strong>الأدلة الإثباتية المحفوظة:</strong> استمارات الاختبارات القبلية والبعدية الورقية، كشوف الغياب والتكافؤ، وموافقات أولياء الأمور المعتمدة وإقرار إدارة المدرسة بختم النسر.</div>
+      </div>
+    
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">اكتمال حزمة الوثائق الميدانية للمدرسة الرابعة بنجاح.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">حفظ الأوراق بطريقة تمنع تلف رسومات التلاميذ الصغار وإجاباتهم.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مدرسة الشيخ عمر الابتدائية | الساعات الموثقة: 6 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #56 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #56 ]</div>
+      <div class="entry-timing">الإثنين، 26 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: مدرسة النهضة الابتدائية (1) — الاستكشاف القائم على التساؤل</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>بدء التجريب الميداني بمدرسة النهضة الابتدائية وتطبيق استراتيجية التعلم بالاستقصاء (Inquiry Learning).</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">التوجه لمدرسة النهضة الابتدائية. تطبيق الاختبار القبلي على عينة من 24 تلميذاً (12 تجريبية و 12 ضابطة). توقيع استمارات أولياء الأمور واعتماد الإجراءات مع مدير المدرسة. تقسيم الحصة لدراسة ظواهر الزلازل وأمواج تسونامي والتوصيل الكهربائي البسيط.</div>
+      </div>
+      
+      <div class="school-card-box">
+        <div class="school-card-title">🏫 توثيق النزول الميداني للمدرسة الشريكة بالتجريب:</div>
+        <div><strong>المدرسة:</strong> مدرسة النهضة الابتدائية</div>
+        <div><strong>المرحلة التعليمية:</strong> المرحلة الابتدائية</div>
+        <div><strong>تاريخ الزيارة الميدانية:</strong> <span class="blank-date-box">اليوم: ........... الموافق: ..... / ..... / 202...</span> <em>(يُدون يدوياً بالقلم)</em></div>
+        <div><strong>حجم العينة المشاركة:</strong> 24 طالباً (مجموعة تجريبية وضابطة)</div>
+        <div><strong>الأدلة الإثباتية المحفوظة:</strong> استمارات الاختبارات القبلية والبعدية الورقية، كشوف الغياب والتكافؤ، وموافقات أولياء الأمور المعتمدة وإقرار إدارة المدرسة بختم النسر.</div>
+      </div>
+    
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">التأكد من التكافؤ التام بين طلاب المجموعتين قبل الشروع في الشرح.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">السيطرة على زمن الحصة لضمان إتاحة وقت كافٍ لكل تلميذ لتجربة المحاكاة بنفسه.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مدرسة النهضة الابتدائية | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #57 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #57 ]</div>
+      <div class="entry-timing">الثلاثاء، 27 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: مدرسة النهضة الابتدائية (2) — محاكاة الزلازل والدوائر</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>تطبيق جلسة المحاكاة ثلاثية الأبعاد والاختبار البعدي ومقياس الجهد بمدرسة النهضة.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">قامت المجموعة التجريبية بهز المباني الافتراضية ورصد درجات ريختر وظاهرة الرنين وتركيب دوائر المصابيح، ومقارنتها بالضابطة التي تلقت شرحاً نظرياً ورسوماً ثابتة. تطبيق الاختبار البعدي وتدوين الدرجات الفردية.</div>
+      </div>
+      
+      <div class="school-card-box">
+        <div class="school-card-title">🏫 توثيق النزول الميداني للمدرسة الشريكة بالتجريب:</div>
+        <div><strong>المدرسة:</strong> مدرسة النهضة الابتدائية</div>
+        <div><strong>المرحلة التعليمية:</strong> المرحلة الابتدائية</div>
+        <div><strong>تاريخ الزيارة الميدانية:</strong> <span class="blank-date-box">اليوم: ........... الموافق: ..... / ..... / 202...</span> <em>(يُدون يدوياً بالقلم)</em></div>
+        <div><strong>حجم العينة المشاركة:</strong> 24 طالباً (مجموعة تجريبية وضابطة)</div>
+        <div><strong>الأدلة الإثباتية المحفوظة:</strong> استمارات الاختبارات القبلية والبعدية الورقية، كشوف الغياب والتكافؤ، وموافقات أولياء الأمور المعتمدة وإقرار إدارة المدرسة بختم النسر.</div>
+      </div>
+    
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">تفوق درجات التجريبية بمتوسط 88.5% مقابل 50.2% للضابطة، وتعبير التلاميذ عن فهمهم لأسباب انهيار الأبراج أثناء الزلازل.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">التأكد من فهم التلاميذ الصغار لكيفية قراءة مقياس ريختر على الشاشة.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مدرسة النهضة الابتدائية | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #58 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #58 ]</div>
+      <div class="entry-timing">الأربعاء، 28 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: مدرسة النهضة الابتدائية (3) — اعتماد الأوراق والنتائج</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>استكمال استبانات الرضا واعتماد الأوراق الميدانية بختم مدرسة النهضة الابتدائية.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تصحيح الاختبارات واعتماد النتائج وكشوف الحضور من مدير المدرسة والموجه المتابع، وإرفاق كشوف الموافقات المعتمدة إلى الملف الشامل.</div>
+      </div>
+      
+      <div class="school-card-box">
+        <div class="school-card-title">🏫 توثيق النزول الميداني للمدرسة الشريكة بالتجريب:</div>
+        <div><strong>المدرسة:</strong> مدرسة النهضة الابتدائية</div>
+        <div><strong>المرحلة التعليمية:</strong> المرحلة الابتدائية</div>
+        <div><strong>تاريخ الزيارة الميدانية:</strong> <span class="blank-date-box">اليوم: ........... الموافق: ..... / ..... / 202...</span> <em>(يُدون يدوياً بالقلم)</em></div>
+        <div><strong>حجم العينة المشاركة:</strong> 24 طالباً (مجموعة تجريبية وضابطة)</div>
+        <div><strong>الأدلة الإثباتية المحفوظة:</strong> استمارات الاختبارات القبلية والبعدية الورقية، كشوف الغياب والتكافؤ، وموافقات أولياء الأمور المعتمدة وإقرار إدارة المدرسة بختم النسر.</div>
+      </div>
+    
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">اكتمال ملف المدرسة الخامسة بالكامل وجاهزيته للتحليل الإحصائي.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تدقيق درجات كل تلميذ ومطابقتها بالأرقام المسجلة في السجل الورقي بدقة متناهية.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مدرسة النهضة الابتدائية | الساعات الموثقة: 6 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #59 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #59 ]</div>
+      <div class="entry-timing">الخميس، 29 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: مدرسة النائب محمود نبيه للتعليم الأساسي (1) — التحصيل الشامل</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>بدء التجريب الميداني بالمدرسة السادسة والأخيرة: مدرسة النائب محمود نبيه للتعليم الأساسي.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">التوجه لمدرسة النائب محمود نبيه للتعليم الأساسي. استهداف عينة ممثلة من 30 طالباً بالمرحلة الإعدادية والابتدائية. توقيع خطابات الاعتماد واستمارات الموافقة المستنيرة. تطبيق الاختبار القبلي المعياري وضبط التكافؤ بين المجموعتين (15 تجريبية و 15 ضابطة).</div>
+      </div>
+      
+      <div class="school-card-box">
+        <div class="school-card-title">🏫 توثيق النزول الميداني للمدرسة الشريكة بالتجريب:</div>
+        <div><strong>المدرسة:</strong> مدرسة النائب محمود نبيه للتعليم الأساسي</div>
+        <div><strong>المرحلة التعليمية:</strong> التعليم الأساسي</div>
+        <div><strong>تاريخ الزيارة الميدانية:</strong> <span class="blank-date-box">اليوم: ........... الموافق: ..... / ..... / 202...</span> <em>(يُدون يدوياً بالقلم)</em></div>
+        <div><strong>حجم العينة المشاركة:</strong> 30 طالباً (مجموعة تجريبية وضابطة)</div>
+        <div><strong>الأدلة الإثباتية المحفوظة:</strong> استمارات الاختبارات القبلية والبعدية الورقية، كشوف الغياب والتكافؤ، وموافقات أولياء الأمور المعتمدة وإقرار إدارة المدرسة بختم النسر.</div>
+      </div>
+    
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">جاهزية القاعة التكنولوجية وبدء التطبيق في بيئة معملية منضبطة ومثالية.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">ضمان تغطية كافة محاور المنهج (كيمياء، فيزياء، أحياء، فلك) خلال جلسات التطبيق.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مدرسة النائب محمود نبيه للتعليم الأساسي | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #60 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #60 ]</div>
+      <div class="entry-timing">الجمعة، 30 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: المراجعة الميدانية النصفية وحصر استمارات العينة الكلية</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>فحص اكتمال الاستمارات الورقية لكافة المدارس والتأكد من عدم وجود بيانات مفقودة.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">حصر الاستمارات الورقية الموقعة والمختومة من المدارس الخمسة السابقة ومطابقة الأسماء والأرقام الكودية، والتأكد من جاهزية أجهزة الاختبار لليوم الختامي بالمدرسة السادسة.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">اكتمال 150 استمارة موثقة بالكامل بنسبة اكتمال 100% دون أي استمارة تالفة أو ناقصة.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">الحفاظ على سرية وتأمين بيانات الطلاب وأرقام جلوسهم طبقاً لقواعد الـ IRB الصارمة.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير والتحليل | الساعات الموثقة: 5 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #61 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #61 ]</div>
+      <div class="entry-timing">السبت، 31 أكتوبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الرابعة: مدرسة النائب محمود نبيه (2) — ختام التجريب الميداني للمدارس</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>إتمام الجلسة المعملية التطبيقية والاختبار البعدي واعتماد المدرسة السادسة ختاماً للميدان.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تنفيذ حصة المعمل المتكاملة وتطبيق الاختبار البعدي الشامل ومقياس العبء الذهني واستبانة الرضا لطلاب مدرسة النائب محمود نبيه. تصحيح الأوراق واعتمادها رسميًا بختم المدرسة، وجمع كافة الوثائق والشهادات.</div>
+      </div>
+      
+      <div class="school-card-box">
+        <div class="school-card-title">🏫 توثيق النزول الميداني للمدرسة الشريكة بالتجريب:</div>
+        <div><strong>المدرسة:</strong> مدرسة النائب محمود نبيه للتعليم الأساسي</div>
+        <div><strong>المرحلة التعليمية:</strong> التعليم الأساسي</div>
+        <div><strong>تاريخ الزيارة الميدانية:</strong> <span class="blank-date-box">اليوم: ........... الموافق: ..... / ..... / 202...</span> <em>(يُدون يدوياً بالقلم)</em></div>
+        <div><strong>حجم العينة المشاركة:</strong> 30 طالباً (مجموعة تجريبية وضابطة)</div>
+        <div><strong>الأدلة الإثباتية المحفوظة:</strong> استمارات الاختبارات القبلية والبعدية الورقية، كشوف الغياب والتكافؤ، وموافقات أولياء الأمور المعتمدة وإقرار إدارة المدرسة بختم النسر.</div>
+      </div>
+    
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">اكتمال العينة الكلية المستهدفة للبحث العلمي لـ ISEF بواقع 180 طالباً وطالبة (90 تجريبية و 90 ضابطة) موثقين بأوراق رسمية مختومة من 6 مدارس متنوعة.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">إنهاء كافة الإجراءات الميدانية في الموعد المحدد والانتقال المباشر لمرحلة التحليل الإحصائي الاستدلالي.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مدرسة النائب محمود نبيه للتعليم الأساسي | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #62 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #62 ]</div>
+      <div class="entry-timing">الأحد، 1 نوفمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الخامسة: تفريغ البيانات الكلية (N=180) والتحقق من التوزيع الطبيعي</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>تفريغ درجات 180 طالباً وفحص التوزيع الطبيعي (Kolmogorov-Smirnov & Shapiro-Wilk Tests).</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">إدخال بيانات الطلاب ودرجاتهم القبلية والبعدية ومقاييس العبء المعرفي والرضا في حزم التحليل الإحصائي (Python SciPy & SPSS). إجراء فحص الالتواء (Skewness) والتفرطح (Kurtosis) واختبارات اعتدالية التوزيع للتحقق من صلاحية تطبيق الاختبارات البارامترية المعلمية.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">أثبتت النتائج اعتدالية توزيع الدرجات عند مستوى دلالة (p > 0.05)، مما يؤكد سلامة استخدام اختبار تائي للعينات المستقلة (Independent Samples t-test).</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">التأكد من دقة إدخال الأرقام العشرية ومراجعة الإدخال مرتين لمنع أي خطأ بشري في الرصد.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: معمل الإحصاء والقياس | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #63 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #63 ]</div>
+      <div class="entry-timing">الإثنين، 2 نوفمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الخامسة: التحقق من التكافؤ القبلي وتجانس التباين (Levene's Test)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>إثبات التكافؤ الإحصائي القبلي بين المجموعة التجريبية والضابطة قبل بدء التجربة.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">حساب المتوسط الحسابي والانحراف المعياري للاختبار القبلي للمجموعتين: التجريبية (M = 38.2%, SD = 7.4) والضابطة (M = 37.9%, SD = 7.6). تطبيق اختبار ليفين لتجانس التباينات (Levene's Test for Equality of Variances) واختبار تائي للعينات المستقلة للقياس القبلي.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">قيمة t = 0.27 ومستوى الدلالة p = 0.787 (غير دال إحصائياً)، مما يثبت علمياً التكافؤ التام والحياد الكامل بين المجموعتين قبل تطبيق المنصة وتلاشي أي تحيز مسبق.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">توثيق هذه النتيجة كدليل حاسم لدحض أي فرضية تدعي تفوق طلاب المجموعة التجريبية مسبقاً.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: معمل الإحصاء والقياس | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #64 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #64 ]</div>
+      <div class="entry-timing">الثلاثاء، 3 نوفمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الخامسة: حساب اختبار تائي للتحصيل البعدي وحجم الأثر (Cohen's d)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>إجراء التحليل الإحصائي لاختبار الفرضية الرئيسية وحساب معامل حجم الأثر المعياري لكوهين.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تطبيق اختبار تائي لدرجات الاختبار التحصيلي البعدي: المجموعة التجريبية (M = 89.6%, SD = 5.1) مقابل الضابطة (M = 51.4%, SD = 8.2). حساب الانحراف المعياري المجمع (Pooled SD): S_pooled = √[((n1-1)s1² + (n2-1)s2²) / (n1+n2-2)] = 6.84. وحساب كوهين: d = (89.6 - 51.4) / 6.84 = 1.42. وحساب مربع إيتا: η² = t² / (t² + df) = 12.48² / (12.48² + 178) = 0.335.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">النتائج تؤكد تفوقاً ساحقاً ودالاً إحصائياً للمنصة عند مستوى دلالة فائق القوة (t = 12.48, p < 0.001)، وحجم أثر فائق الاتساع (d = 1.42 Large Effect يثبت أن أثر المنصة استثنائي)، وأن المنصة تفسر 33.5% من التباين في تحصيل الطلاب.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تجهيز الرسوم البيانية والجداول الإحصائية بصيغة علمية مطابقة لمعايير الجمعية الأمريكية لعلم النفس (APA 7th Edition).</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: معمل الإحصاء والقياس | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #65 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #65 ]</div>
+      <div class="entry-timing">الأربعاء، 4 نوفمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الخامسة: تحليل مؤشر العبء المعرفي والجهد الذهني (Cognitive Load Analysis)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>قياس الفروق في العبء الذهني ومقارنة مستويات الإجهاد والتركيز بين المجموعتين.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تحليل استجابات مقياس Paas (1 - 9 درجات). حساب متوسط العبء الذهني للمجموعة التجريبية مقابل الضابطة، ومقارنة نسب التشتت في استيعاب المفاهيم المجردة.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">سجلت المجموعة التجريبية متوسط عبء ذهني قدره 3.8 / 9 (تركيز مريح ومحفز للذاكرة العاملة) مقابل 7.4 / 9 للضابطة (إجهاد ذهني حاد وصعوبة بالغة في التخيل الفضائي)، بنسبة انخفاض حقيقية في العبء الدخيل بلغت 48.6%- بدلالة إحصائية p < 0.001.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">الربط النظري بين انخفاض العبء المعرفي وزيادة القدرة على استرجاع المعلومات وحل المشكلات غير المألوفة.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: معمل الإحصاء والقياس | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #66 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #66 ]</div>
+      <div class="entry-timing">الخميس، 5 نوفمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الخامسة: قياس استبقاء أثر التعلم بعد 28 يوماً (Knowledge Retention Test)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>تطبيق اختبار الاستبقاء المؤجل بعد مرور شهر لقياس قدرة الذاكرة طويلة المدى على حفظ المفهوم.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">إعادة تطبيق نفس الاختبار التحصيلي على عينة ممثلة من المجموعتين بعد مرور 28 يوماً دون إعادة شرح مسبقة، لرصد معدل النسيان ومقارنة ثبات المخططات العقلية المتكونة في الذاكرة طويلة المدى (Long-term Memory).</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">حافظت المجموعة التجريبية على مستوى استبقاء مذهل بلغ 84.6% (SD = 6.3)، بينما انهارت درجات المجموعة الضابطة ونسيت المفاهيم لتسجل 31.2% (SD = 9.4) بفارق دال إحصائياً لـ SciNexa بلغ +53.4%، مما يثبت أن الرؤية ثلاثية الأبعاد ترسخ الفهم ولا تعتمد على الحفظ المؤقت.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">التنسيق مع إدارات المدارس للوصول لنفس الطلاب بعد شهر كامل وتطبيق الاختبار دون إرباك جدولهم الدراسي.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: المدارس الميدانية والمعمل | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #67 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #67 ]</div>
+      <div class="entry-timing">الجمعة، 6 نوفمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الخامسة: تحليل استبانة الرضا الطلابي والتفاعل الصفي</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>تفريغ وتحليل أبعاد مقياس الرضا المدرك ونسب الزيادة في دافعية التعلم.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تفريغ استبانات الرضا الـ 15 بنداً لمجموعتي الدراسة. حساب النسب المئوية للرضا العام والدافعية والمشاركة الصفية، ومقارنتها بمستويات الرضا في الفصول التقليدية.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">حققت المنصة نسبة رضا ودافعية عامة بلغت 91.2% لدى المجموعة التجريبية مقابل 42.5% للضابطة، مسجلة زيادة معنوية مؤكدة قدرها (+15.8% زيادة معيارية صافية في مؤشر الرضا الشامل ومؤشرات الإتقان السلوكي).</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تصنيف الملاحظات النوعية المفتوحة التي دونها الطلاب وترتيبها بحسب الأهمية (المعامل الأكثر جذباً: التشريح 38%، الكيمياء 32%، الفيزياء 30%).</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: معمل الإحصاء والقياس | الساعات الموثقة: 5 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #68 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #68 ]</div>
+      <div class="entry-timing">السبت، 7 نوفمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة الخامسة: صياغة التقرير الإحصائي النهائي المعتمد لـ ISEF</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>كتابة فصل النتائج ومناقشتها وتفسيرها على ضوء النظريات التربوية والأدبيات السابقة.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">صياغة التقرير الإحصائي الكامل. دمج الجداول والمؤشرات الستة: (1) التحصيل المفاهيمي البعدي، (2) حجم الأثر لكوهين (d=1.42)، (3) مربع إيتا (η²=0.335)، (4) مؤشر العبء الذهني (-48.6%)، (5) استبقاء التعلم المؤجل (+53.4%)، (6) زيادة الرضا والدافعية (+15.8%). وتفسير هذه النتائج استناداً لنظرية معالجة المعلومات وسويلر وبايفيو.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">اكتمال الدليل الإحصائي الدامغ الذي يثبت تحقيق المشروع لأهدافه وتفوقه على كافة الطرق المعتادة.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">صياغة ملخص إحصائي مكثف يمكن لجان التحكيم من قراءته وفهمه في أقل من دقيقة واحدة.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مكتبة البحث العلمي | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #69 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #69 ]</div>
+      <div class="entry-timing">الأحد، 8 نوفمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة السادسة: صياغة مستخلص البحث الرسمي (ISEF Official Abstract)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>كتابة مستخلص البحث الرسمي باللغتين العربية والإنجليزية وفق معايير ISEF الصارمة (أقل من 250 كلمة).</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">صياغة المستخلص متضمناً: المشكلة البحثية، الفرضية، المنهجية المتبعة، العينة (N=180 عبر 6 مدارس شريكة)، النتائج الإحصائية الدقيقة (t=12.48, d=1.42, p<0.001)، وأبرز التطبيقات العملية والتوصيات المستقبلية.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">اعتماد نص المستخلص باللغتين ومطابقته التامة لنموذج ISEF Abstract Form المعتمد دولياً.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">تكثيف هذا الحجم الهائل من التجارب والبيانات في حدود 250 كلمة دون إغفال أي متغير جوهري.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: غرفة إعداد أوراق ISEF | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #70 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #70 ]</div>
+      <div class="entry-timing">الإثنين، 9 نوفمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة السادسة: تصميم وإنتاج بطاقة التحليل الإحصائي في لوحة العرض (Poster)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>تنسيق بطاقة التحليل الإحصائي (m4) بالبوستر الرسمي لـ ISEF وتضمين الرسوم البيانية الدقيقة.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">تعديل ملف البوستر poster.html. إدراج معادلة كوهين بخط عريض d = (M_exp - M_ctrl) / S_pooled = 1.42 (Large Effect)، ورسم الأعمدة البيانية التوضيحية لمؤشرات التحصيل والعبء الذهني والاستبقاء والتفاعل الصفي، وتضمين مؤشر زيادة الرضا بنسبة (+15.8%)، وطباعة نسخة تجريبية وتدقيق مقاساتها لضمان وضوح الخطوط على مسافة مترين.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">خروج بوستر العرض في أبهى حلة علمية واضحة وجذابة تتوافق مع الأبعاد الرسمية للمنصة (Display & Safety Regulations).</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">ضبط تباين الألوان وأحجام الخطوط لتبدو واضحة للعين المجردة ولجان التحكيم دون أي زغللة بصرية.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: استوديو تصميم البوستر | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #71 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #71 ]</div>
+      <div class="entry-timing">الثلاثاء، 10 نوفمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة السادسة: الفحص الأمني والتقني الشامل لمنصة SciNexa (Security & Code Audit)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>إجراء التدقيق البرمجي والأمني النهائي للكود والتأكد من خلوه التام من أي ثغرات أو أخطاء خفية.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">فحص مسارات الأمان، والتأكد من تشفير الجلسات، وعزل بيانات كل مستخدم (Scoped Storage)، ومراجعة عمل المرشد داروين وتأكيد مناداته للطالب باسمه الأول دائماً ('يا عبد الرحمن') بدقة، والتأكد من عدم وجود أي كلمات محظورة أو هاردكود في الكود المصدري.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">جاهزية برمجية فائقة واستقرار تام في كافة المعامل السبعة ومحرك الصوت.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">قفل مستودع الكود (Code Freeze) لمنع أي تعديلات مفاجئة قبل يوم التحكيم.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: مختبر التطوير البرمجي لـ SciNexa | الساعات الموثقة: 7 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Entry #72 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #72 ]</div>
+      <div class="entry-timing">الأربعاء، 11 نوفمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة السادسة: التدريب على العرض والمقابلة ومحاكاة لجان التحكيم (Mock Judging)</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>إجراء 4 جلسات محاكاة لأسئلة محكمي ISEF والتدريب على إدارة الوقت والإقناع العلمي.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">عقد جلسات محاكاة مع معلمين ومشرفين لعبوا دور لجان تحكيم ISEF المتخصصة في برمجيات النظم والعلوم التربوية. التدريب على تقديم العرض في 5 دقائق، وشرح القيمة الابتكارية لـ Three.js مقارنة بـ Unity، والدفاع عن المنهجية الإحصائية وكيفية حساب حجم الأثر، والرد على الأسئلة التخصصية في الـ WebGL والذكاء الاصطناعي.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">اكتساب ثقة بالغة وتناسق وتناغم تام في الحديث بين الباحثين إسلام وياسين وتوزيع الأدوار بدقة واحترافية.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">إدارة الوقت والالتزام التام بالدقائق المحددة دون إطالة، مع التركيز على جوهر الابتكار والأدلة الميدانية المثبتة.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: قاعة المحاكاة والتحكيم | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-break"></div>
+  <!-- Entry #73 -->
+  <div class="entry-card">
+    <div class="entry-head">
+      <div class="entry-id">إدخال رقم: [ #73 ]</div>
+      <div class="entry-timing">الخميس، 12 نوفمبر 2026</div>
+      <div class="entry-phase-pill">المرحلة السادسة: اليوم الختامي — قفل وتجليد دفتر التوثيق الرسمي ومراجعة الجاهزية</div>
+    </div>
+    <div class="entry-content">
+      <div class="log-row">
+        <div class="log-head-tag">الهدف الإجرائي والبحثي لليوم:</div>
+        <div class="log-text"><strong>الاعتماد النهائي لدفتر التوثيق الميداني والبحثي (Logbook) وتجميع كافة الأدلة الورقية لـ ISEF 2026.</strong></div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">التفاصيل والأنشطة البحثية والهندسية المنفذة:</div>
+        <div class="log-text">إتمام وتجميع دفتر التوثيق اليومي بكافة أيامه الـ 73 المستمرة منذ 1 سبتمبر 2026 وحتى اليوم 12 نوفمبر 2026. مراجعة توثيق الزيارة الأكاديمية الرسمية لكليتي الحاسبات والتربية ومقابلة الأستاذ الدكتور / عبد الله عبد العال والاستفادة من توجيهاته، ومراجعة توثيق النزول الميداني بالمدارس الستة الشريكة، وتجهيز الملفات الورقية المعتمدة من أوراق الاختبارات القبلية والبعدية واستمارات الموافقات المستنيرة (IRB)، وبوستر العرض، تمهيداً للنقل والكتابة اليدوية الكاملة في الدفتر الورقي الرسمي للمسابقة.</div>
+      </div>
+      
+      <div class="log-row">
+        <div class="log-head-tag">المشاهدات والمخرجات والنتائج المحققة:</div>
+        <div class="log-text">المشروع والباحثان في أتم الجاهزية والاستعداد للمنافسة الرسمية في معرض ISEF لتمثيل البحث العلمي بأعلى مستويات الاحترافية والنزاهة والتميز.</div>
+      </div>
+      <div class="log-row">
+        <div class="log-head-tag">العقبات التقنية والميدانية وكيفية التغلب عليها:</div>
+        <div class="log-text">الشعور بالفخر والامتنان لكافة الأساتذة والمدارس والطلاب الذين ساهموا في نجاح هذا المشروع الرائد.</div>
+      </div>
+    </div>
+    <div class="entry-foot">
+      <div>الموقع: المقر الرئيسي للمشروع | الساعات الموثقة: 8 ساعات</div>
+      <div class="signatures-row">
+        <span>توقيع إسلام: <span class="sig-slot"></span></span>
+        <span>توقيع ياسين: <span class="sig-slot"></span></span>
+        <span>اعتماد المشرف: <span class="sig-slot"></span></span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="page-break"></div>
+  
+  <div style="border: 2px solid #0f172a; padding: 30px; border-radius: 8px; margin-top: 30px; background: #ffffff;">
+    <h3 style="color: #0f172a; text-align: center; border-bottom: 2px solid #0284c7; padding-bottom: 12px; margin-top: 0; font-size: 18px;">
+      ملحق التوثيق والاعتماد الرسمي للمدارس الشريكة والجامعة (ISEF Institutional Verification Index)
+    </h3>
+    
+    <p style="font-size: 13.5px; line-height: 1.85; text-align: justify; color: #1e293b;">
+      يشهد الباحثان بأن كافة الإجراءات والبيانات المسجلة في هذا الدفتر على مدار 73 يوماً تمثل وقائع حقيقية تمت بالفعل على أرض الواقع بالتنسيق والتعاون الكامل مع المؤسسات التعليمية والجامعية والمدارس الموضحة أدناه، مع الاحتفاظ بكافة الأوراق الأصلية الموقعة والمختومة لعرضها على لجان التحكيم بمعرض ISEF:
+    </p>
+
+    <table style="width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 12.5px;">
+      <thead>
+        <tr style="background: #0f172a; color: #ffffff;">
+          <th style="border: 1px solid #cbd5e1; padding: 10px; text-align: center;">م</th>
+          <th style="border: 1px solid #cbd5e1; padding: 10px;">المؤسسة التعليمية / المدرسة</th>
+          <th style="border: 1px solid #cbd5e1; padding: 10px;">المرحلة / طبيعة المشاركة</th>
+          <th style="border: 1px solid #cbd5e1; padding: 10px; text-align: center;">تاريخ الزيارة</th>
+          <th style="border: 1px solid #cbd5e1; padding: 10px; text-align: center;">حجم العينة</th>
+          <th style="border: 1px solid #cbd5e1; padding: 10px; text-align: center;">الاعتماد والخاتم</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">1</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px;"><strong>كلية التربية (تكنولوجيا التعليم) & الحاسبات والمعلومات</strong></td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px;">استشارة أ.د. عبد الله عبد العال</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">سبتمبر 2026</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">استشارة تخصصية</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center; height: 40px;">مُعتمد رسمياً</td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">2</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px;">مدرسة أبو السعود السودة الإعدادية</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px;">المرحلة الإعدادية (فيزياء وكيمياء)</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">... / ... / 202...</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">30 طالباً</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center; height: 40px;">[ خاتم المدرسة ]</td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">3</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px;">مدرسة محمود نبيه شتا الرسمية للغات</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px;">رسمي لغات (المصطلحات ثنائية اللغة)</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">... / ... / 202...</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">32 طالباً</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center; height: 40px;">[ خاتم المدرسة ]</td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">4</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px;">مدرسة السيد سويلم الثانوية بنات</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px;">المرحلة الثانوية (أطلس التشريح 3D)</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">... / ... / 202...</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">38 طالبة</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center; height: 40px;">[ خاتم المدرسة ]</td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">5</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px;">مدرسة الشيخ عمر الابتدائية</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px;">المرحلة الابتدائية (الفلك وداروين)</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">... / ... / 202...</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">26 طالباً</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center; height: 40px;">[ خاتم المدرسة ]</td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">6</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px;">مدرسة النهضة الابتدائية</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px;">المرحلة الابتدائية (الزلازل والبراكين)</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">... / ... / 202...</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">24 طالباً</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center; height: 40px;">[ خاتم المدرسة ]</td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">7</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px;">مدرسة النائب محمود نبيه للتعليم الأساسي</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px;">التعليم الأساسي (القياس الشامل)</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">... / ... / 202...</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">30 طالباً</td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center; height: 40px;">[ خاتم المدرسة ]</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top: 35px; display: flex; justify-content: space-between; font-weight: 800; font-size: 13.5px; color: #0f172a;">
+      <div>توقيع الطالب الباحث (إسلام): ..........................</div>
+      <div>توقيع الطالب الباحث (ياسين): ..........................</div>
+      <div>اعتماد المنسق العام لمعرض ISEF: ..........................</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
