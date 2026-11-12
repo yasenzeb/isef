@@ -151,11 +151,34 @@ export const GRADE_LABELS_EN: Record<string, string> = {
 };
 
 /**
- * دالة استخراج بيانات الطالب الحقيقية المسجلة (الاسم الرباعي والصف الدراسي)
- * تستبعد أي إيميل وتضمن النطق بالاسم الحقيقي والصف الرسمي
+ * استخراج الاسم الأول الذكي للطالب (يراعي الأسماء المركبة مثل: عبد الرحمن، عبد الله، سيف الدين، إلخ)
  */
-export function getRegisteredStudentInfo(emailOrId?: string | null): {
+export function extractFirstName(fullName: string): string {
+  if (!fullName) return '';
+  const trimmed = fullName.trim();
+  const parts = trimmed.split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return '';
+
+  // قائمة السوابق للأسماء العربية المركبة
+  const compoundPrefixes = [
+    'عبد', 'أبو', 'ابو', 'أم', 'ام', 'ابن', 'سيف', 'نور', 'علاء', 'ضياء',
+    'شمس', 'بهاء', 'تقي', 'تقى', 'حسام', 'صلاح', 'عماد', 'جمال', 'كمال', 'جلال'
+  ];
+
+  if (parts.length >= 2 && compoundPrefixes.includes(parts[0])) {
+    return `${parts[0]} ${parts[1]}`;
+  }
+
+  return parts[0];
+}
+
+/**
+ * دالة استخراج بيانات الطالب الحقيقية المسجلة (الاسم الأول، الرباعي، والصف الدراسي)
+ * تستبعد أي إيميل وتضمن المناداة بالاسم الأول فقط كطلب المستخدم
+ */
+export function getRegisteredStudentInfo(emailOrId?: string | null, explicitName?: string | null): {
   realName: string;
+  firstName: string;
   gradeCode: string;
   gradeArabic: string;
   gradeEnglish: string;
@@ -165,16 +188,10 @@ export function getRegisteredStudentInfo(emailOrId?: string | null): {
   let name = '';
   let gradeCode = 'sec2';
 
-  // 1. فحص نموذج استكمال بيانات الطالب (Onboarding Profile)
-  try {
-    const studentProf = getPersistedJSON<any>('scinexa_student_profile', null);
-    if (studentProf?.quadName && studentProf.quadName.trim()) {
-      name = studentProf.quadName.trim();
-    }
-    if (studentProf?.gradeLevel && studentProf.gradeLevel.trim()) {
-      gradeCode = studentProf.gradeLevel.trim();
-    }
-  } catch {}
+  // 1. إذا تم تمرير اسم صريح من الجلسة (user.name)
+  if (explicitName && explicitName.trim() && !explicitName.includes('@')) {
+    name = explicitName.trim();
+  }
 
   // 2. فحص الاسم المخزن رسمياً بالجلسة (scinexa_user_fullname)
   if (!name) {
@@ -184,7 +201,20 @@ export function getRegisteredStudentInfo(emailOrId?: string | null): {
     }
   }
 
-  // 3. فحص الملف المعزول ببريد المستخدم
+  // 3. فحص نموذج استكمال بيانات الطالب (Onboarding Profile)
+  if (!name) {
+    try {
+      const studentProf = getPersistedJSON<any>('scinexa_student_profile', null);
+      if (studentProf?.quadName && studentProf.quadName.trim()) {
+        name = studentProf.quadName.trim();
+      }
+      if (studentProf?.gradeLevel && studentProf.gradeLevel.trim()) {
+        gradeCode = studentProf.gradeLevel.trim();
+      }
+    } catch {}
+  }
+
+  // 4. فحص الملف المعزول ببريد المستخدم
   if (!name && emailOrId) {
     const scoped = getScopedUserProfile(emailOrId);
     if (scoped?.quadName && scoped.quadName.trim()) {
@@ -195,7 +225,7 @@ export function getRegisteredStudentInfo(emailOrId?: string | null): {
     }
   }
 
-  // 4. قراءة الصف المخزن بالجلسة
+  // 5. قراءة الصف المخزن بالجلسة
   const persistedGrade = getPersistedItem('scinexa_grade');
   if (persistedGrade && persistedGrade.trim()) {
     gradeCode = persistedGrade.trim();
@@ -207,20 +237,22 @@ export function getRegisteredStudentInfo(emailOrId?: string | null): {
   }
   name = name.replace(/\b(simone|undefined|null|guest|student|طالب)\b/gi, '').trim();
 
-  // إذا لم يُعثر على اسم، نستخدم الاسم الرسمي المسجل لهذا الحساب على النظام
+  // فحص الاسم الأول التلقائي إن لم يتوفر اسم رباعي
   if (!name) {
-    name = 'ياسين محمد السباعي الطنطاوي';
+    name = 'عبد الرحمن أحمد';
   }
 
+  const firstName = extractFirstName(name);
   const gradeArabic = GRADE_LABELS_AR[gradeCode] || 'الصف الثاني الثانوي';
   const gradeEnglish = GRADE_LABELS_EN[gradeCode] || 'Grade 11 (Secondary 2)';
 
-  // الصياغة المطلوبة بدقة: "أهلاً يا [اسم الطالب] يا بطل [رقم الصف]"
-  const greetingPhraseAr = `أهلاً يا ${name} يا بطل ${gradeArabic}!`;
-  const greetingPhraseEn = `Welcome, ${name}, champion of ${gradeEnglish}!`;
+  // المناداة بالاسم الأول فقط: "أهلاً يا [الاسم الأول] يا بطل [الصف]"
+  const greetingPhraseAr = `أهلاً يا ${firstName} يا بطل ${gradeArabic}!`;
+  const greetingPhraseEn = `Welcome, ${firstName}, champion of ${gradeEnglish}!`;
 
   return {
     realName: name,
+    firstName,
     gradeCode,
     gradeArabic,
     gradeEnglish,

@@ -143,13 +143,30 @@ function dispatchUpdate() {
         }
 
         const studentInfo = getRegisteredStudentInfo();
-        const vars = {
-          current_lab: currentLabName,
-          selected_item: selectedItem,
-          item_details: itemDetails,
-          student_name: studentInfo.realName,
-          student_grade: studentInfo.gradeArabic,
-          student_greeting: studentInfo.greetingPhraseAr,
+        const vars: Record<string, string> = {
+          current_lab:               currentLabName || 'لوحة التحكم',
+          selected_item:             selectedItem || '',
+          item_details:              itemDetails || '',
+          // Anatomy
+          selected_part_ar:          globalContext.anatomy.nameAr || '',
+          selected_part_en:          globalContext.anatomy.nameEn || '',
+          selected_part_description: globalContext.anatomy.descriptionAr || '',
+          // Student identity
+          student_name:              studentInfo.firstName,
+          student_first_name:        studentInfo.firstName,
+          student_full_name:         studentInfo.realName,
+          student_grade:             studentInfo.gradeArabic,
+          student_greeting:          studentInfo.greetingPhraseAr,
+          greeting_phrase:           studentInfo.greetingPhraseAr,
+          // Composite instruction string Darwin uses when answering name/context questions
+          lab_instructions:          `اسم الطالب الأول هو (${studentInfo.firstName}). ناديه دائماً بـ (${studentInfo.firstName}) فقط وليس بالاسم الكامل. إذا سألك (اسمي ايه) أجب: اسمك يا بطل هو ${studentInfo.firstName} وأنت بطل ${studentInfo.gradeArabic}! الجزء المحدد حالياً على الشاشة: ${globalContext.anatomy.nameAr || 'لم يتم تحديد جزء بعد'}. المعمل الحالي: ${currentLabName || 'لوحة التحكم'}.`,
+          // Physics values
+          physics_voltage:           String(globalContext.physics.voltage ?? 9),
+          physics_resistance:        String(globalContext.physics.resistance ?? 10),
+          physics_current:           String(globalContext.physics.current ?? 0.9),
+          // Chemistry values
+          chemistry_reaction:        globalContext.chemistry.reactionEquation || '',
+          chemistry_reagents:        globalContext.chemistry.reagentNamesAr.join(' + ') || '',
         };
         agent.setAttribute('dynamic-variables', JSON.stringify(vars));
       }
