@@ -11,6 +11,7 @@ import {
   dbDeleteClass,
   dbFetchEnrolledStudents,
   dbEnrollStudent,
+  dbUpdateEnrolledStudent,
   dbDeleteEnrolledStudent,
   dbUpdateStudentMastery,
   dbFetchAssignments,
@@ -18,7 +19,8 @@ import {
   dbDeleteAssignment,
   dbFetchSubmissions,
   dbSubmitAssignment,
-  type DbClass
+  type DbClass,
+  type DbProfile,
 } from '../lib/supabase';
 import { getPersistedItem, setPersistedItem, getPersistedJSON, setPersistedJSON } from '../lib/cookies';
 
@@ -48,6 +50,7 @@ export interface ClassInfo {
 
 export interface EnrolledStudent {
   id: string;
+  studentId?: string;
   quadName: string;
   nationalId?: string;
   email?: string;
@@ -107,6 +110,7 @@ export const getEnrolledStudents = (): EnrolledStudent[] => {
   if (!Array.isArray(rawList)) return [];
   return rawList.map((r: any) => ({
     id: String(r.id || `st_${Math.random().toString(36).slice(2, 9)}`),
+    studentId: r.studentId || r.student_id || undefined,
     quadName: String(r.quadName || r.quad_name || r.name || 'طالب مسجل'),
     nationalId: r.nationalId || r.national_id || undefined,
     email: r.email ? String(r.email) : undefined,
@@ -229,9 +233,45 @@ export const getAssignmentsForStudent = (
 };
 
 /**
- * قيام المعلم بإضافة طالب جديد إلى فصله بالاسم الرباعي
+ * البحث عن حساب طالب مسجل بالفعل في جدول profiles بالاسم أو البريد أو الكود
+ */
+export const searchRegisteredStudents = (profiles: DbProfile[], query: string): DbProfile[] => {
+  const students = (profiles || []).filter((p) => (p.role || 'student') === 'student');
+  const q = normalizeArabicName(query);
+  if (!q) return students;
+  return students.filter((p) => {
+    const fullName = normalizeArabicName(p.quad_name || p.display_name || '');
+    const email = (p.email || '').trim().toLowerCase();
+    const code = (p.student_code || p.id || '').toLowerCase();
+    return fullName.includes(q) || q.includes(fullName) || email.includes(q) || code.includes(q);
+  });
+};
+
+export const findExactRegisteredStudent = (
+  profiles: DbProfile[],
+  queryNameOrEmail: string
+): DbProfile | null => {
+  const students = (profiles || []).filter((p) => (p.role || 'student') === 'student');
+  const q = normalizeArabicName(queryNameOrEmail);
+  if (!q) return null;
+  // 1. Exact email match
+  const byEmail = students.find((p) => p.email && p.email.trim().toLowerCase() === queryNameOrEmail.trim().toLowerCase());
+  if (byEmail) return byEmail;
+  // 2. Exact student code match
+  const byCode = students.find((p) => p.student_code && p.student_code.trim().toLowerCase() === queryNameOrEmail.trim().toLowerCase());
+  if (byCode) return byCode;
+  // 3. Exact or multi-word normalized Arabic name match
+  const exactName = students.find((p) => normalizeArabicName(p.quad_name || p.display_name) === q);
+  if (exactName) return exactName;
+  const fuzzyMatches = students.filter((p) => namesMatch(p.quad_name || p.display_name, queryNameOrEmail));
+  return fuzzyMatches.length === 1 ? fuzzyMatches[0] : null;
+};
+
+/**
+ * قيام المعلم بإضافة طالب مسجل إلى فصله
  */
 export const buildStudentRecord = (params: {
+  studentId?: string;
   quadName: string;
   classId: string;
   schoolName: string;
@@ -244,12 +284,15 @@ export const buildStudentRecord = (params: {
   classNameAr?: string;
   teacherId?: string;
   teacherNameAr?: string;
+  streak?: number;
+  mastery?: number;
 }): EnrolledStudent => {
   const cachedClasses = getPersistedJSON<any[]>('scinexa_supabase_classes_cache', []);
   const cls = cachedClasses.find((c) => c.id === params.classId);
 
   return {
     id: `std-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    studentId: params.studentId,
     quadName: params.quadName.trim(),
     nationalId: params.nationalId?.trim() || undefined,
     parentPhone: params.parentPhone?.trim() || undefined,
@@ -263,13 +306,14 @@ export const buildStudentRecord = (params: {
     teacherId: params.teacherId || cls?.teacher_id || cls?.teacherId || 't-admin',
     teacherNameAr: params.teacherNameAr || cls?.teacher_name_ar || cls?.teacherNameAr || 'المعلم المشرف',
     enrolledAt: new Date().toISOString().slice(0, 10),
-    mastery: 0,
-    streak: 0,
+    mastery: typeof params.mastery === 'number' ? params.mastery : 0,
+    streak: typeof params.streak === 'number' ? params.streak : 0,
     lastActiveDate: new Date().toISOString().slice(0, 10),
   };
 };
 
 export const addStudentToClassByTeacherAsync = async (params: {
+  studentId?: string;
   quadName: string;
   classId: string;
   schoolName: string;
@@ -282,13 +326,31 @@ export const addStudentToClassByTeacherAsync = async (params: {
   classNameAr?: string;
   teacherId?: string;
   teacherNameAr?: string;
+  streak?: number;
+  mastery?: number;
 }): Promise<{ ok: boolean; student: EnrolledStudent; error?: string }> => {
   const list = getEnrolledStudents();
+  const duplicate = list.find(
+    (s) =>
+      s.classId === params.classId &&
+      ((params.studentId && s.studentId === params.studentId) ||
+        (params.email && s.email && s.email.toLowerCase() === params.email.toLowerCase()) ||
+        namesMatch(s.quadName, params.quadName))
+  );
+  if (duplicate) {
+    return {
+      ok: false,
+      student: duplicate,
+      error: 'هذا الطالب ملتحق بالفعل بنفس الفصل الدراسي.',
+    };
+  }
+
   const newStudent = buildStudentRecord(params);
   saveEnrolledStudents([newStudent, ...list]);
 
   const res = await dbEnrollStudent({
     id: newStudent.id,
+    student_id: newStudent.studentId,
     quad_name: newStudent.quadName,
     national_id: newStudent.nationalId,
     parent_phone: newStudent.parentPhone,
@@ -307,6 +369,37 @@ export const addStudentToClassByTeacherAsync = async (params: {
     last_active_date: newStudent.lastActiveDate,
   });
   return { ok: res.ok, student: newStudent, error: res.error };
+};
+
+/**
+ * نقل الطالب إلى فصل آخر وتحديث السجل في Supabase
+ */
+export const transferStudentClassAndSync = async (
+  enrollmentId: string,
+  targetClass: DbClass
+): Promise<{ ok: boolean; error?: string }> => {
+  const updates = {
+    class_id: targetClass.id,
+    class_name_ar: targetClass.name_ar,
+    teacher_id: targetClass.teacher_id,
+    teacher_name_ar: targetClass.teacher_name_ar,
+  };
+  const res = await dbUpdateEnrolledStudent(enrollmentId, updates);
+  const current = getEnrolledStudents();
+  saveEnrolledStudents(
+    current.map((s) =>
+      s.id === enrollmentId
+        ? {
+            ...s,
+            classId: targetClass.id,
+            classNameAr: targetClass.name_ar,
+            teacherId: targetClass.teacher_id,
+            teacherNameAr: targetClass.teacher_name_ar,
+          }
+        : s
+    )
+  );
+  return res;
 };
 
 export const addStudentToClassByTeacher = (params: {
@@ -542,6 +635,7 @@ export const fetchAndSyncEnrollment = async (): Promise<EnrolledStudent[]> => {
   if (fromRemote) {
     const mapped: EnrolledStudent[] = rows.map((r: any) => ({
       id: r.id,
+      studentId: r.student_id || undefined,
       quadName: r.quad_name,
       nationalId: r.national_id || undefined,
       email: r.email || undefined,

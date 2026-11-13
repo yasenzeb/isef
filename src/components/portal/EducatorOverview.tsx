@@ -13,14 +13,19 @@ import { useSession } from '../../context/SessionContext';
 import {
   dbFetchClasses,
   dbFetchInstitutions,
+  dbFetchAllProfiles,
   type DbClass,
   type DbInstitution,
+  type DbProfile,
 } from '../../lib/supabase';
 import {
   fetchAndSyncEnrollment,
   fetchAndSyncAssignments,
+  fetchAndSyncSubmissions,
+  findStudentEnrollmentsFromList,
   type EnrolledStudent,
   type AssignmentItem,
+  type StudentSubmission,
 } from '../../data/schoolEnrollment';
 import { PageHeader, StatCard, SectionCard } from '../dashboard/ui';
 import {
@@ -32,6 +37,8 @@ import {
   ArrowRight,
   TrendingUp,
   MessageSquare,
+  UserCheck,
+  Clock,
   Sparkles,
   School,
   Activity,
@@ -49,7 +56,9 @@ export const EducatorOverview: React.FC = () => {
 
   const [classes, setClasses] = useState<DbClass[]>([]);
   const [students, setStudents] = useState<EnrolledStudent[]>([]);
+  const [platformStudents, setPlatformStudents] = useState<DbProfile[]>([]);
   const [assignments, setAssignments] = useState<AssignmentItem[]>([]);
+  const [submissions, setSubmissions] = useState<StudentSubmission[]>([]);
   const [institutions, setInstitutions] = useState<DbInstitution[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -57,16 +66,20 @@ export const EducatorOverview: React.FC = () => {
     let mounted = true;
     const load = async () => {
       setLoading(true);
-      const [cls, std, asgn, inst] = await Promise.all([
+      const [cls, std, asgn, subs, profs, inst] = await Promise.all([
         dbFetchClasses(),
         fetchAndSyncEnrollment(),
         fetchAndSyncAssignments(),
+        fetchAndSyncSubmissions(),
+        dbFetchAllProfiles(),
         dbFetchInstitutions(),
       ]);
       if (mounted) {
         setClasses(cls || []);
         setStudents(std || []);
         setAssignments(asgn || []);
+        setSubmissions(subs || []);
+        setPlatformStudents((profs || []).filter((p) => (p.role || 'student') === 'student'));
         setInstitutions(inst || []);
         setLoading(false);
       }
@@ -81,6 +94,10 @@ export const EducatorOverview: React.FC = () => {
     students.length > 0
       ? Math.round(students.reduce((acc, s) => acc + (s.mastery || 0), 0) / students.length)
       : 0;
+  const pendingReviewCount = submissions.filter((s) => s.status === 'submitted').length;
+  const unenrolledRegistered = platformStudents.filter(
+    (p) => findStudentEnrollmentsFromList(students, p.quad_name || p.display_name, p.email).length === 0
+  );
 
   return (
     <div className="space-y-6">
@@ -126,9 +143,13 @@ export const EducatorOverview: React.FC = () => {
           icon={GraduationCap}
         />
         <StatCard
-          label={ar ? 'الطلاب المسجلون' : ja ? '登録生徒数' : 'Enrolled Students'}
+          label={ar ? 'طلاب الفصول الملحقين' : ja ? '登録生徒数' : 'Enrolled Students'}
           value={String(students.length)}
-          hint={ar ? 'مع أرقام أولياء الأمور' : ja ? '保護者連絡先連携' : 'With parent phones'}
+          hint={
+            ar
+              ? `من أصل ${platformStudents.length} مسجل بالمنصة`
+              : `${platformStudents.length} registered on platform`
+          }
           icon={Users}
         />
         <StatCard
@@ -138,12 +159,46 @@ export const EducatorOverview: React.FC = () => {
           icon={TrendingUp}
         />
         <StatCard
-          label={ar ? 'الواجبات والتكليفات' : ja ? '課題・提出' : 'Assignments'}
+          label={ar ? 'الواجبات والتصحيح' : ja ? '課題・提出' : 'Assignments & Review'}
           value={String(assignments.length)}
-          hint={ar ? 'مهام معملية نشطة' : ja ? '実験課題数' : 'Active lab tasks'}
-          icon={ClipboardList}
+          hint={
+            pendingReviewCount > 0
+              ? ar
+                ? `${pendingReviewCount} تسليم بانتظار التقييم`
+                : `${pendingReviewCount} awaiting grading`
+              : ar
+                ? `${submissions.length} تسليم مسجل`
+                : `${submissions.length} submissions recorded`
+          }
+          icon={pendingReviewCount > 0 ? Clock : ClipboardList}
         />
       </div>
+
+      {unenrolledRegistered.length > 0 && (
+        <div className="rounded-2xl border border-blue-200 bg-blue-50/70 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex items-start gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white">
+              <UserCheck size={17} />
+            </span>
+            <div>
+              <div className="text-[13px] font-bold text-[#0a0a0a]">
+                {ar
+                  ? `${unenrolledRegistered.length} طالب مسجل بالمنصة جاهزون للإلحاق بالفصول`
+                  : `${unenrolledRegistered.length} registered platform student(s) ready for class enrollment`}
+              </div>
+              <div className="text-[11px] text-[#525252] mt-0.5">
+                {ar
+                  ? `منهم: ${unenrolledRegistered.slice(0, 3).map((p) => p.quad_name || p.display_name).join('، ')}`
+                  : unenrolledRegistered.slice(0, 3).map((p) => p.quad_name || p.display_name).join(', ')}
+              </div>
+            </div>
+          </div>
+          <Link to="/portal/students" className="sn-btn sn-btn-primary sn-btn-sm shrink-0">
+            <Plus size={14} />
+            <span>{ar ? 'إلحاق الطلاب المسجلين' : 'Enroll Registered Students'}</span>
+          </Link>
+        </div>
+      )}
 
       {/* ── QUICK SHORTCUTS ── */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">

@@ -536,6 +536,29 @@ select.sn-input {
 }
 
 /* ── Unified Lab Stage (High-Contrast Dark Observatory System) ──────────── */
+#lab-canvas-container:fullscreen,
+#lab-canvas-container:-webkit-full-screen {
+  width: 100vw !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  overflow-y: auto !important;
+  overflow-x: clip !important;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y pinch-zoom;
+  overscroll-behavior: contain;
+  background: #070b14;
+  border-radius: 0 !important;
+}
+
+#classroom-stage-root:fullscreen,
+#classroom-stage-root:-webkit-full-screen {
+  width: 100vw !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  overflow: hidden !important;
+  border-radius: 0 !important;
+}
+
 .sn-lab-stage {
   background: #070b14;
   color: #e2e8f0;

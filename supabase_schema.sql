@@ -119,6 +119,7 @@ ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS teacher_code TEXT;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS school_name TEXT;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS school_code TEXT;
 ALTER TABLE public.students_enrollment ADD COLUMN IF NOT EXISTS parent_phone TEXT;
+ALTER TABLE public.students_enrollment ADD COLUMN IF NOT EXISTS student_id TEXT;
 
 -- 5. جدول الواجبات والتكليفات المعملية (Assignments)
 CREATE TABLE IF NOT EXISTS public.assignments (

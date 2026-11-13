@@ -199,6 +199,9 @@ export const StudentProfileOnboardingModal: React.FC = () => {
       setPersistedItem('scinexa_admin_id', profileData.administrationId);
       setPersistedItem('scinexa_grade', profileData.gradeLevel);
 
+      const currentXp = parseInt(getPersistedItem('scinexa_user_xp') || '0', 10) || 0;
+      const currentStars = parseInt(getPersistedItem('scinexa_user_stars') || '0', 10) || 0;
+      const currentStreak = parseInt(getPersistedItem('scinexa_real_streak') || '1', 10) || 1;
       void dbUpsertProfile({
         id: user?.id || ('st_' + Date.now()),
         email: user?.email,
@@ -210,6 +213,9 @@ export const StudentProfileOnboardingModal: React.FC = () => {
         governorate_id: profileData.governorateId,
         administration_id: profileData.administrationId,
         grade_level: profileData.gradeLevel,
+        xp: currentXp,
+        stars: currentStars,
+        streak: currentStreak,
         role: 'student'
       });
 

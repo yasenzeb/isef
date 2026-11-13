@@ -26,6 +26,7 @@ import {
   type CurriculumPathway,
 } from '../../data/curriculumData';
 import { updateAndGetRealStreak, calculateStudentLevel, recordSubmission } from '../../data/schoolEnrollment';
+import { dbSyncStudentProgress } from '../../lib/supabase';
 import { analyzeSearchWithGemini, type GeminiSearchResult } from '../../lib/geminiAI';
 import { PageHeader, ProgressBar } from './ui';
 import {
@@ -541,6 +542,13 @@ export const CurriculumPage: React.FC = () => {
       setPersistedJSON('scinexa_completed_lessons', next);
       setPersistedItem('scinexa_user_xp', String(nextXp));
       setPersistedItem('scinexa_user_stars', String(nextStars));
+      void dbSyncStudentProgress({
+        id: user?.id,
+        email: user?.email,
+        xp: nextXp,
+        stars: nextStars,
+        streak: realStreak,
+      });
     }
   };
 

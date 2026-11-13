@@ -119,9 +119,14 @@ export interface DbInstitution {
 export async function dbUpsertProfile(profile: Partial<DbProfile> & { id: string }): Promise<void> {
   if (isSupabaseConfigured && supabase) {
     try {
+      const cleanEmail = profile.email ? profile.email.trim().toLowerCase() : undefined;
       let targetId = profile.id;
-      if (profile.email) {
-        const { data: existing } = await supabase.from('profiles').select('id').eq('email', profile.email).maybeSingle();
+      if (cleanEmail) {
+        const { data: existing } = await supabase
+          .from('profiles')
+          .select('id')
+          .ilike('email', cleanEmail)
+          .maybeSingle();
         if (existing?.id) {
           targetId = existing.id;
         }
@@ -132,7 +137,7 @@ export async function dbUpsertProfile(profile: Partial<DbProfile> & { id: string
         display_name: profile.display_name || profile.quad_name || 'مستخدم',
         quad_name: profile.quad_name || profile.display_name || undefined,
         role: profile.role || 'student',
-        email: profile.email || undefined,
+        email: cleanEmail,
         school_code: profile.school_code || profile.school_name || undefined,
         school_name: profile.school_name || profile.school_code || undefined,
         parent_phone: profile.parent_phone || undefined,
@@ -141,12 +146,15 @@ export async function dbUpsertProfile(profile: Partial<DbProfile> & { id: string
         grade_level: profile.grade_level || undefined,
         student_code: profile.student_code || profile.national_id || undefined,
         national_id: profile.national_id || undefined,
+        updated_at: new Date().toISOString(),
       };
+      if (typeof profile.xp === 'number') payload.xp = profile.xp;
+      if (typeof profile.streak === 'number') payload.streak = profile.streak;
+      if (typeof profile.stars === 'number') payload.stars = profile.stars;
 
       const { error } = await supabase.from('profiles').upsert([payload]);
-      if (error && profile.email) {
-        // Fallback: update by email if UUID primary key prevents inserting non-UUID id
-        await supabase.from('profiles').update({
+      if (error && cleanEmail) {
+        const updateFields: Record<string, any> = {
           display_name: payload.display_name,
           quad_name: payload.quad_name,
           school_code: payload.school_code,
@@ -157,11 +165,46 @@ export async function dbUpsertProfile(profile: Partial<DbProfile> & { id: string
           grade_level: payload.grade_level,
           student_code: payload.student_code,
           national_id: payload.national_id,
-        }).eq('email', profile.email);
+          updated_at: payload.updated_at,
+        };
+        if (typeof payload.xp === 'number') updateFields.xp = payload.xp;
+        if (typeof payload.streak === 'number') updateFields.streak = payload.streak;
+        if (typeof payload.stars === 'number') updateFields.stars = payload.stars;
+        await supabase.from('profiles').update(updateFields).ilike('email', cleanEmail);
       }
     } catch (e) {
       console.warn('Supabase upsert profile error', e);
     }
+  }
+}
+
+/**
+ * مزامنة نقاط التفاعل (XP / Streak / Stars) للطالب في قاعدة البيانات ليرى المعلم التقدم الفعلي
+ */
+export async function dbSyncStudentProgress(params: {
+  id?: string;
+  email?: string;
+  xp?: number;
+  streak?: number;
+  stars?: number;
+}): Promise<void> {
+  if (!isSupabaseConfigured || !supabase) return;
+  const patch: Record<string, any> = { updated_at: new Date().toISOString() };
+  if (typeof params.xp === 'number') patch.xp = params.xp;
+  if (typeof params.streak === 'number') patch.streak = params.streak;
+  if (typeof params.stars === 'number') patch.stars = params.stars;
+
+  try {
+    if (params.email) {
+      const cleanEmail = params.email.trim().toLowerCase();
+      const { error } = await supabase.from('profiles').update(patch).ilike('email', cleanEmail);
+      if (!error) return;
+    }
+    if (params.id) {
+      await supabase.from('profiles').update(patch).eq('id', params.id);
+    }
+  } catch (e) {
+    console.warn('Supabase sync student progress error', e);
   }
 }
 
@@ -516,6 +559,33 @@ export async function dbCreateClass(newClass: DbClass): Promise<{ ok: boolean; d
 }
 
 /**
+ * تعديل بيانات فصل دراسي قائم في Supabase
+ */
+export async function dbUpdateClass(
+  id: string,
+  updates: Partial<DbClass>
+): Promise<{ ok: boolean; error?: string }> {
+  let dbError: string | undefined;
+  if (isSupabaseConfigured && supabase) {
+    try {
+      const { error } = await supabase.from('classes').update(updates).eq('id', id);
+      if (error) {
+        dbError = error.message;
+        console.warn('Supabase update class error', error);
+      }
+    } catch (e: any) {
+      dbError = e?.message || 'Network error';
+    }
+  }
+  const current = getPersistedJSON<DbClass[]>('scinexa_supabase_classes_cache', []);
+  setPersistedJSON(
+    'scinexa_supabase_classes_cache',
+    current.map((c) => (c.id === id ? { ...c, ...updates } : c))
+  );
+  return { ok: !dbError, error: dbError };
+}
+
+/**
  * حذف فصل دراسي من Supabase
  */
 export async function dbDeleteClass(id: string): Promise<void> {
@@ -560,18 +630,24 @@ export async function dbEnrollStudent(student: any): Promise<{ ok: boolean; erro
 
   if (isSupabaseConfigured && supabase) {
     try {
-      let { error } = await supabase.from('students_enrollment').upsert([cleanPayload]);
-      // Fallback safely if live DB table has not run ALTER TABLE for parent_phone yet
+      let attempt = { ...cleanPayload };
+      let { error } = await supabase.from('students_enrollment').upsert([attempt]);
+      // Fallback safely if live DB table lacks optional columns
       if (error && error.message?.includes('parent_phone')) {
-        const { parent_phone: _omit, ...withoutPhone } = cleanPayload;
-        const retry = await supabase.from('students_enrollment').upsert([withoutPhone]);
-        error = retry.error;
+        const { parent_phone: _omit, ...rest } = attempt;
+        attempt = rest;
+        error = (await supabase.from('students_enrollment').upsert([attempt])).error;
+      }
+      if (error && error.message?.includes('student_id')) {
+        const { student_id: _omitSid, ...rest } = attempt;
+        attempt = rest;
+        error = (await supabase.from('students_enrollment').upsert([attempt])).error;
       }
       if (error) {
         dbError = error.message;
         console.warn('Supabase insert student error', error);
-      } else {
-        // Also ensure student exists in public.profiles for full DB visibility
+      } else if (!cleanPayload.student_id) {
+        // Mirror only when no existing profile id was linked
         const profileRow: Record<string, any> = {
           id: cleanPayload.id,
           role: 'student',
@@ -599,6 +675,33 @@ export async function dbEnrollStudent(student: any): Promise<{ ok: boolean; erro
   const current = getPersistedJSON<any[]>('scinexa_enrolled_students', []);
   const updated = [student, ...current.filter((s) => s.id !== student.id)];
   setPersistedJSON('scinexa_enrolled_students', updated);
+  return { ok: !dbError, error: dbError };
+}
+
+/**
+ * تحديث بيانات قيد طالب (نقل فصل، تعديل رقم ولي الأمر، المرحلة، أو الإتقان) في Supabase
+ */
+export async function dbUpdateEnrolledStudent(
+  id: string,
+  updates: Record<string, any>
+): Promise<{ ok: boolean; error?: string }> {
+  let dbError: string | undefined;
+  if (isSupabaseConfigured && supabase) {
+    try {
+      const { error } = await supabase.from('students_enrollment').update(updates).eq('id', id);
+      if (error) {
+        dbError = error.message;
+        console.warn('Supabase update enrolled student error', error);
+      }
+    } catch (e: any) {
+      dbError = e?.message || 'Network error';
+    }
+  }
+  const current = getPersistedJSON<any[]>('scinexa_enrolled_students', []);
+  setPersistedJSON(
+    'scinexa_enrolled_students',
+    current.map((s) => (s.id === id ? { ...s, ...updates } : s))
+  );
   return { ok: !dbError, error: dbError };
 }
 

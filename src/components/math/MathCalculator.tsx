@@ -46,17 +46,38 @@ export const MathCalculator: React.FC = () => {
   const btnRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null); // fixed-position, free to move anywhere
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(() =>
+    typeof document !== 'undefined' ? ((document.fullscreenElement as HTMLElement) || document.body) : null
+  );
   const drag = useRef<{ dx: number; dy: number } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const clamp = (x: number, y: number): { x: number; y: number } => {
     const w = panelRef.current?.offsetWidth ?? 312;
     const h = panelRef.current?.offsetHeight ?? 400;
+    const vw = window.visualViewport?.width ?? window.innerWidth;
+    const vh = window.visualViewport?.height ?? window.innerHeight;
     return {
-      x: Math.min(Math.max(0, x), Math.max(0, window.innerWidth - w)),
-      y: Math.min(Math.max(0, y), Math.max(0, window.innerHeight - Math.min(h, 60))),
+      x: Math.min(Math.max(8, x), Math.max(8, vw - w - 8)),
+      y: Math.min(Math.max(8, y), Math.max(8, vh - Math.min(h, 80))),
     };
   };
+
+  // Track fullscreen container so the calculator portal renders inside the fullscreen top-layer
+  useEffect(() => {
+    if (typeof document === 'undefined') return undefined;
+    const syncPortal = (): void => {
+      setPortalTarget((document.fullscreenElement as HTMLElement) || document.body);
+      setPos((p) => (p ? clamp(p.x, p.y) : p));
+    };
+    syncPortal();
+    document.addEventListener('fullscreenchange', syncPortal);
+    document.addEventListener('webkitfullscreenchange', syncPortal as EventListener);
+    return () => {
+      document.removeEventListener('fullscreenchange', syncPortal);
+      document.removeEventListener('webkitfullscreenchange', syncPortal as EventListener);
+    };
+  }, []);
 
   // close on Escape only — the panel stays open (and movable) while the student works in the lab
   useEffect(() => {
@@ -70,11 +91,15 @@ export const MathCalculator: React.FC = () => {
 
   const toggle = (): void => {
     if (open) { setOpen(false); return; }
-    if (!pos) {
-      const r = btnRef.current?.getBoundingClientRect();
-      const w = Math.min(312, window.innerWidth - 16);
-      setPos({ x: Math.min(Math.max(8, r?.left ?? 16), Math.max(8, window.innerWidth - w - 8)), y: (r?.bottom ?? 48) + 8 });
-    }
+    setPortalTarget((document.fullscreenElement as HTMLElement) || document.body);
+    const r = btnRef.current?.getBoundingClientRect();
+    const vw = window.visualViewport?.width ?? window.innerWidth;
+    const w = Math.min(312, vw - 16);
+    const nextPos = clamp(
+      r ? Math.min(Math.max(8, r.left), Math.max(8, vw - w - 8)) : 16,
+      r ? r.bottom + 8 : 56
+    );
+    setPos((prev) => (prev ? clamp(prev.x, prev.y) : nextPos));
     setOpen(true);
     window.setTimeout(() => inputRef.current?.focus(), 0);
   };
@@ -142,7 +167,7 @@ export const MathCalculator: React.FC = () => {
         <span className="hidden sm:inline">{s.calcButton}</span>
       </button>
 
-      {open && pos && typeof document !== 'undefined' && createPortal(
+      {open && pos && portalTarget && createPortal(
         <div
           ref={panelRef}
           dir="ltr"
@@ -234,7 +259,7 @@ export const MathCalculator: React.FC = () => {
             </div>
           )}
         </div>,
-        document.body,
+        portalTarget,
       )}
     </div>
   );

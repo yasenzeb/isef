@@ -40,7 +40,11 @@ export const ClassroomMode: React.FC<ClassroomModeProps> = ({ onExit }) => {
       setIsFullscreen(!!document.fullscreenElement);
     };
     document.addEventListener('fullscreenchange', handleFsChange);
-    return () => document.removeEventListener('fullscreenchange', handleFsChange);
+    document.addEventListener('webkitfullscreenchange', handleFsChange as EventListener);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFsChange);
+      document.removeEventListener('webkitfullscreenchange', handleFsChange as EventListener);
+    };
   }, []);
 
   const toggleFullscreen = () => {
@@ -74,8 +78,8 @@ export const ClassroomMode: React.FC<ClassroomModeProps> = ({ onExit }) => {
       dir={isRTL ? 'rtl' : 'ltr'}
       className={`flex flex-col w-full transition-all duration-300 ${
         isFullscreen 
-          ? 'fixed inset-0 z-50 h-screen w-screen bg-[#07090e] rounded-none border-0' 
-          : 'relative h-[calc(100vh-100px)] min-h-[680px] rounded-[22px] overflow-hidden border border-[#e5e5e5] bg-white shadow-lg'
+          ? 'fixed inset-0 z-50 h-[100dvh] max-h-[100dvh] w-screen bg-[#07090e] rounded-none border-0 overflow-hidden' 
+          : 'relative h-[calc(100dvh-96px)] min-h-[540px] rounded-[22px] overflow-hidden border border-[#e5e5e5] bg-white shadow-lg'
       }`}
     >
       {/* Top Integrated Clean White Control Bar matching site design */}
@@ -166,16 +170,19 @@ export const ClassroomMode: React.FC<ClassroomModeProps> = ({ onExit }) => {
       </header>
 
       {/* Presentation Content Canvas Area */}
-      <main className={`sn-lab-stage !rounded-none !border-0 relative flex-1 w-full h-full overflow-y-auto overflow-x-clip transition-all ${
-        isTvHighContrast ? '!bg-[#000000] contrast-125' : '!bg-[#070b14]'
-      }`}>
+      <main
+        style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-x pan-y pinch-zoom' }}
+        className={`sn-lab-stage !rounded-none !border-0 relative flex-1 min-h-0 w-full overflow-y-auto overflow-x-clip overscroll-contain transition-all ${
+          isTvHighContrast ? '!bg-[#000000] contrast-125' : '!bg-[#070b14]'
+        }`}
+      >
         <Suspense fallback={
           <div className="flex h-full min-h-[400px] w-full items-center justify-center text-white/60 font-mono text-xs">
             <span className="h-6 w-6 animate-spin rounded-full border-2 border-cyan-400 border-t-transparent me-2" />
             {ar ? 'جاري تشغيل المعمل التفاعلي للشاشة…' : 'Loading Interactive Lab…'}
           </div>
         }>
-          <div className="w-full h-full min-h-[600px]">
+          <div className="w-full min-h-[520px] pb-8">
             {activeModule === 'physics' && <PhysicsLab />}
             {activeModule === 'chemistry' && <ChemistryLab />}
             {activeModule === 'anatomy' && <AnatomyViewer isPresentationMode={true} />}

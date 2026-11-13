@@ -24,6 +24,10 @@ import {
   fetchAndSyncAssignments,
   fetchAndSyncSubmissions,
   gradeSubmissionAndSync,
+  searchRegisteredStudents,
+  findExactRegisteredStudent,
+  namesMatch,
+  transferStudentClassAndSync,
   type EnrolledStudent,
   type AssignmentItem,
   type StudentSubmission,
@@ -32,10 +36,12 @@ import {
 import {
   dbFetchClasses,
   dbCreateClass,
+  dbUpdateClass,
   dbDeleteClass,
   dbFetchAllProfiles,
   dbUpdateProfileRole,
   dbDeleteProfile,
+  dbUpdateStudentMastery,
   dbFetchInstitutions,
   dbCreateInstitution,
   dbUpdateInstitution,
@@ -70,7 +76,31 @@ import {
   MessageSquare,
   Pencil,
   Phone,
+  Download,
+  Eye,
+  Flame,
+  Star,
+  UserCheck,
+  RefreshCw,
+  ArrowRightLeft,
 } from 'lucide-react';
+
+const GRADE_LABELS_AR: Record<string, string> = {
+  prep1: 'الأول الإعدادي',
+  prep2: 'الثاني الإعدادي',
+  prep3: 'الثالث الإعدادي',
+  sec1: 'الأول الثانوي',
+  sec2: 'الثاني الثانوي',
+  sec3: 'الثالث الثانوي',
+  stem: 'مدارس المتفوقين STEM',
+  university: 'طالب جامعي',
+  researcher: 'باحث علمي',
+};
+
+const gradeLabel = (grade: string | undefined, ar: boolean): string => {
+  if (!grade) return ar ? 'غير محدد' : 'Unspecified';
+  return ar ? (GRADE_LABELS_AR[grade] || grade) : grade.toUpperCase();
+};
 
 const Avatar: React.FC<{ name?: string; tone?: string }> = ({ name = '', tone = 'bg-[#f5f5f5] text-[#171717]' }) => (
   <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11px] font-medium ${tone}`}>
@@ -84,13 +114,15 @@ const ROLE_BADGE: Record<string, string> = {
   admin: 'sn-badge-amber',
 };
 
-/* ── 1. Create Class Modal ─────────────────────────────────────────────────── */
+/* ── 1. Create / Edit Class Modal ──────────────────────────────────────────── */
 const CreateClassModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
   onCreated: (cls: DbClass) => void;
+  onUpdated?: (cls: DbClass) => void;
+  editingClass?: DbClass | null;
   ar: boolean;
-}> = ({ isOpen, onClose, onCreated, ar }) => {
+}> = ({ isOpen, onClose, onCreated, onUpdated, editingClass, ar }) => {
   const { educator } = useSession();
   const [nameAr, setNameAr] = useState('');
   const [nameEn, setNameEn] = useState('');
@@ -102,10 +134,24 @@ const CreateClassModal: React.FC<{
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isOpen && educator?.name && !teacherNameAr) {
-      setTeacherNameAr(educator.name);
+    if (!isOpen) return;
+    setError(null);
+    if (editingClass) {
+      setNameAr(editingClass.name_ar || '');
+      setNameEn(editingClass.name_en || '');
+      setGrade(editingClass.grade || 'sec1');
+      setSubjectAr(editingClass.subject_ar || 'الكيمياء');
+      setTeacherNameAr(editingClass.teacher_name_ar || educator?.name || '');
+      setAccent(editingClass.accent || 'chemistry');
+    } else {
+      setNameAr('');
+      setNameEn('');
+      setGrade('sec1');
+      setSubjectAr('الكيمياء');
+      setTeacherNameAr(educator?.name || '');
+      setAccent('chemistry');
     }
-  }, [isOpen, educator?.name, teacherNameAr]);
+  }, [isOpen, editingClass, educator?.name]);
 
   if (!isOpen) return null;
 
@@ -124,6 +170,28 @@ const CreateClassModal: React.FC<{
       التشريح: 'Anatomy',
       'العلوم العامة': 'General Science',
     };
+
+    if (editingClass) {
+      const updates: Partial<DbClass> = {
+        name_ar: nameAr.trim(),
+        name_en: nameEn.trim() || nameAr.trim(),
+        grade,
+        teacher_name_ar: teacherNameAr.trim() || educator?.name || editingClass.teacher_name_ar,
+        subject_ar: subjectAr,
+        subject_en: subjectEnMap[subjectAr] || 'General Science',
+        accent,
+      };
+      const res = await dbUpdateClass(editingClass.id, updates);
+      setLoading(false);
+      if (!res.ok) {
+        setError(ar ? `فشل تعديل الفصل: ${res.error || 'خطأ في الاتصال'}` : `Failed to update class: ${res.error}`);
+        return;
+      }
+      onUpdated?.({ ...editingClass, ...updates });
+      onClose();
+      return;
+    }
+
     const teacherId = educator?.nationalId
       ? `edu_${educator.nationalId.slice(-6)}`
       : `edu_${Date.now()}`;
@@ -165,8 +233,14 @@ const CreateClassModal: React.FC<{
               <GraduationCap size={18} />
             </span>
             <div>
-              <h3 className="text-[16px] font-bold text-[#0a0a0a]">{ar ? 'إضافة فصل دراسي جديد' : 'Create New Class'}</h3>
-              <p className="text-[11px] text-[#737373]">{ar ? 'سيتم حفظ الفصل في Supabase لربط الطلاب والواجبات' : 'Class will be saved to Supabase'}</p>
+              <h3 className="text-[16px] font-bold text-[#0a0a0a]">
+                {editingClass
+                  ? (ar ? 'تعديل بيانات الفصل الدراسي' : 'Edit Class Details')
+                  : (ar ? 'إضافة فصل دراسي جديد' : 'Create New Class')}
+              </h3>
+              <p className="text-[11px] text-[#737373]">
+                {ar ? 'متزامن مباشرة مع قاعدة بيانات Supabase' : 'Synced directly with Supabase'}
+              </p>
             </div>
           </div>
           <button type="button" onClick={onClose} className="sn-btn sn-btn-quiet sn-btn-icon">
@@ -250,7 +324,11 @@ const CreateClassModal: React.FC<{
           <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#f0f0f0]">
             <button type="button" onClick={onClose} className="sn-btn sn-btn-outline sn-btn-sm">{ar ? 'إلغاء' : 'Cancel'}</button>
             <button type="submit" disabled={loading} className="sn-btn sn-btn-primary sn-btn-sm">
-              {loading ? (ar ? 'جارٍ الحفظ…' : 'Saving…') : ar ? 'تأكيد وحفظ الفصل' : 'Confirm & Save'}
+              {loading
+                ? (ar ? 'جارٍ الحفظ…' : 'Saving…')
+                : editingClass
+                  ? (ar ? 'حفظ التعديلات' : 'Save Changes')
+                  : (ar ? 'تأكيد وحفظ الفصل' : 'Confirm & Save')}
             </button>
           </div>
         </form>
@@ -265,17 +343,26 @@ export const ClassesPage: React.FC = () => {
   const ar = language === 'ar';
   const [classList, setClassList] = useState<DbClass[]>([]);
   const [students, setStudents] = useState<EnrolledStudent[]>([]);
+  const [assignmentsList, setAssignmentsList] = useState<AssignmentItem[]>([]);
+  const [registeredProfiles, setRegisteredProfiles] = useState<DbProfile[]>([]);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [editingClass, setEditingClass] = useState<DbClass | null>(null);
+  const [rosterClass, setRosterClass] = useState<DbClass | null>(null);
+  const [enrollClassId, setEnrollClassId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const loadData = async () => {
     setLoading(true);
-    const [fetchedClasses, fetchedStudents] = await Promise.all([
+    const [fetchedClasses, fetchedStudents, fetchedAsg, fetchedProfiles] = await Promise.all([
       dbFetchClasses(),
       fetchAndSyncEnrollment(),
+      fetchAndSyncAssignments(),
+      dbFetchAllProfiles(),
     ]);
     setClassList(fetchedClasses || []);
     setStudents(fetchedStudents || []);
+    setAssignmentsList(fetchedAsg || []);
+    setRegisteredProfiles(fetchedProfiles || []);
     setLoading(false);
   };
 
@@ -289,6 +376,13 @@ export const ClassesPage: React.FC = () => {
     }
     await dbDeleteClass(id);
     setClassList((prev) => prev.filter((c) => c.id !== id));
+    if (rosterClass?.id === id) setRosterClass(null);
+  };
+
+  const handleRemoveStudentFromRoster = (enrollmentId: string, name: string) => {
+    if (!window.confirm(ar ? `إزالة الطالب "${name}" من هذا الفصل؟` : `Remove ${name} from class?`)) return;
+    deleteStudentEnrollment(enrollmentId);
+    setStudents((prev) => prev.filter((s) => s.id !== enrollmentId));
   };
 
   const totalStudents = students.length;
@@ -299,12 +393,15 @@ export const ClassesPage: React.FC = () => {
   return (
     <div>
       <PageHeader
-        eyebrow={ar ? 'التعليم' : 'Teaching'}
+        eyebrow={ar ? 'التعليم والإدارة' : 'Teaching & Management'}
         title={ar ? 'فصولك، في مكان واحد.' : 'Your classes, in one room.'}
-        subtitle={ar ? 'تابع الإنجاز، افتح السبورة، ووزّع الواجبات دون مغادرة اللوحة.' : 'Track completion and assign work from real Supabase records.'}
+        subtitle={ar ? 'أنشئ الفصول، أدر قوائم الطلاب المسجلين بالمنصة، وتابع التكليفات المعملية من لوحة واحدة.' : 'Create classes, manage enrolled platform students, and monitor lab tasks.'}
         actions={
           <div className="flex items-center gap-2">
-            <button type="button" onClick={() => setIsCreateOpen(true)} className="sn-btn sn-btn-primary">
+            <button type="button" onClick={() => void loadData()} className="sn-btn sn-btn-outline sn-btn-sm" title={ar ? 'تحديث' : 'Refresh'}>
+              <RefreshCw size={14} />
+            </button>
+            <button type="button" onClick={() => { setEditingClass(null); setIsCreateOpen(true); }} className="sn-btn sn-btn-primary">
               <Plus size={15} strokeWidth={2} />
               {ar ? 'إضافة فصل جديد' : 'New Class'}
             </button>
@@ -317,15 +414,130 @@ export const ClassesPage: React.FC = () => {
       />
 
       <CreateClassModal
-        isOpen={isCreateOpen}
-        onClose={() => setIsCreateOpen(false)}
+        isOpen={isCreateOpen || Boolean(editingClass)}
+        onClose={() => { setIsCreateOpen(false); setEditingClass(null); }}
+        editingClass={editingClass}
         onCreated={(newCls) => setClassList((prev) => [newCls, ...prev])}
+        onUpdated={(upd) => {
+          setClassList((prev) => prev.map((c) => (c.id === upd.id ? upd : c)));
+          if (rosterClass?.id === upd.id) setRosterClass(upd);
+        }}
         ar={ar}
       />
 
+      {enrollClassId && (
+        <AddStudentModal
+          isOpen={true}
+          onClose={() => setEnrollClassId(null)}
+          onAdded={(newS) => setStudents((prev) => [newS, ...prev])}
+          classes={classList}
+          registeredProfiles={registeredProfiles}
+          existingEnrollments={students}
+          defaultClassId={enrollClassId}
+          ar={ar}
+        />
+      )}
+
+      {rosterClass && (
+        <div role="dialog" aria-modal="true" dir={ar ? 'rtl' : 'ltr'} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="relative w-full max-w-[680px] max-h-[88vh] flex flex-col overflow-hidden rounded-[22px] bg-white border border-[#e5e5e5] shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#f0f0f0] px-6 py-4 bg-[#fafafa]">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="sn-badge sn-badge-blue !text-[10px]">{gradeLabel(rosterClass.grade, ar)}</span>
+                  <span className="sn-badge sn-badge-soft !text-[10px]">{ar ? rosterClass.subject_ar : rosterClass.subject_en}</span>
+                </div>
+                <h3 className="text-[16px] font-bold text-[#0a0a0a] mt-1">
+                  {ar ? `قائمة طلاب فصل: ${rosterClass.name_ar}` : `Class Roster: ${rosterClass.name_en}`}
+                </h3>
+                <p className="text-[11px] text-[#737373]">
+                  {ar ? `المشرف: ${rosterClass.teacher_name_ar}` : `Lead: ${rosterClass.teacher_name_ar}`}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setEnrollClassId(rosterClass.id)}
+                  className="sn-btn sn-btn-primary sn-btn-sm"
+                >
+                  <Plus size={14} />
+                  <span>{ar ? 'إلحاق طالب مسجل' : 'Enroll Student'}</span>
+                </button>
+                <button type="button" onClick={() => setRosterClass(null)} className="sn-btn sn-btn-quiet sn-btn-icon">
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
+            <div className="overflow-y-auto p-5 space-y-4">
+              {(() => {
+                const clsStudents = students.filter((s) => s.classId === rosterClass.id);
+                const clsAsgs = assignmentsList.filter((a) => a.classId === rosterClass.id);
+                return (
+                  <>
+                    <div>
+                      <div className="text-[12px] font-bold text-[#0a0a0a] mb-2">
+                        {ar ? `الطلاب الملتحقون (${clsStudents.length})` : `Enrolled Students (${clsStudents.length})`}
+                      </div>
+                      {clsStudents.length === 0 ? (
+                        <div className="rounded-xl border border-dashed border-[#e5e5e5] p-6 text-center text-[12px] text-[#737373]">
+                          {ar ? 'لا يوجد طلاب في هذا الفصل بعد — اضغط "إلحاق طالب مسجل" للربط المباشر.' : 'No students enrolled in this class yet.'}
+                        </div>
+                      ) : (
+                        <div className="divide-y divide-[#f0f0f0] rounded-xl border border-[#e5e5e5]">
+                          {clsStudents.map((st) => (
+                            <div key={st.id} className="flex items-center justify-between gap-3 px-4 py-2.5 text-[12px]">
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                <Avatar name={st.quadName} />
+                                <div className="min-w-0">
+                                  <div className="font-semibold text-[#0a0a0a] truncate">{st.quadName}</div>
+                                  <div className="text-[10px] text-[#737373] truncate">{st.email || st.schoolName}</div>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2 shrink-0">
+                                <span className="font-mono text-[11px] font-bold text-[#0a0a0a]">{st.mastery}%</span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveStudentFromRoster(st.id, st.quadName)}
+                                  className="text-red-500 hover:bg-red-50 p-1 rounded-lg"
+                                  title={ar ? 'إزالة من الفصل' : 'Remove'}
+                                >
+                                  <Trash2 size={14} />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div>
+                      <div className="text-[12px] font-bold text-[#0a0a0a] mb-2">
+                        {ar ? `التكليفات المرسلة للفصل (${clsAsgs.length})` : `Class Assignments (${clsAsgs.length})`}
+                      </div>
+                      {clsAsgs.length === 0 ? (
+                        <p className="text-[11px] text-[#737373]">{ar ? 'لا توجد واجبات مرتبطة بهذا الفصل حالياً.' : 'No assignments yet.'}</p>
+                      ) : (
+                        <div className="space-y-1.5">
+                          {clsAsgs.map((a) => (
+                            <div key={a.id} className="flex items-center justify-between rounded-xl border border-[#f0f0f0] bg-[#fafafa] px-3 py-2 text-[11px]">
+                              <span className="font-semibold text-[#0a0a0a]">{ar ? a.titleAr : a.titleEn}</span>
+                              <span className="text-[#737373]">{ar ? a.dueDateAr : a.dueDateEn}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard label={ar ? 'الفصول المعتمدة' : 'Classes'} value={String(classList.length)} hint={ar ? 'في قاعدة البيانات' : 'in database'} icon={GraduationCap} />
-        <StatCard label={ar ? 'الطلاب المسجلون' : 'Students'} value={String(totalStudents)} hint={ar ? 'بيانات حقيقية' : 'live data'} icon={Users} />
+        <StatCard label={ar ? 'الطلاب الملتحقون' : 'Enrolled'} value={String(totalStudents)} hint={ar ? 'بيانات حقيقية' : 'live data'} icon={Users} />
         <StatCard label={ar ? 'متوسط الإنجاز' : 'Avg. completion'} value={`${avgMastery}%`} hint={ar ? 'تقييم فعلي' : 'real mastery'} icon={TrendingUp} />
         <StatCard label={ar ? 'المعامل التفاعلية' : 'Active Labs'} value={String(LAB_MODULES.length)} hint={ar ? 'معامل متاحة' : 'active labs'} icon={FlaskConical} />
       </div>
@@ -344,7 +556,7 @@ export const ClassesPage: React.FC = () => {
           <p className="text-[12px] text-[#737373] max-w-[45ch] mx-auto mb-4">
             {ar ? 'قم بإنشاء أول فصل دراسي حقيقي ليتمكن المعلمون من إلحاق الطلاب وتعيين التجارب والواجبات.' : 'Create your first class to enroll students and distribute lab tasks.'}
           </p>
-          <button type="button" onClick={() => setIsCreateOpen(true)} className="sn-btn sn-btn-primary">
+          <button type="button" onClick={() => { setEditingClass(null); setIsCreateOpen(true); }} className="sn-btn sn-btn-primary">
             <Plus size={15} strokeWidth={2} />
             {ar ? 'إضافة أول فصل الآن' : 'Add First Class'}
           </button>
@@ -353,6 +565,7 @@ export const ClassesPage: React.FC = () => {
         <div className="grid gap-3 md:grid-cols-2">
           {classList.map((item) => {
             const classStudents = students.filter((s) => s.classId === item.id);
+            const classAsgs = assignmentsList.filter((a) => a.classId === item.id);
             const classCount = classStudents.length;
             const classAvg = classCount > 0 ? Math.round(classStudents.reduce((a, b) => a + (b.mastery || 0), 0) / classCount) : 0;
             return (
@@ -363,24 +576,45 @@ export const ClassesPage: React.FC = () => {
                       <GraduationCap size={18} strokeWidth={1.6} />
                     </span>
                     <div>
-                      <h2 className="text-[15px] font-semibold">{ar ? item.name_ar : item.name_en}</h2>
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <h2 className="text-[15px] font-semibold">{ar ? item.name_ar : item.name_en}</h2>
+                        <span className="sn-badge sn-badge-soft !text-[10px]">{gradeLabel(item.grade, ar)}</span>
+                      </div>
                       <div className="mt-0.5 text-[11px] text-[#737373]">
-                        {classCount} {ar ? 'طالب مسجل' : 'students enrolled'}
+                        {classCount} {ar ? 'طالب' : 'students'} · {classAsgs.length} {ar ? 'واجب' : 'tasks'}
                       </div>
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => handleDeleteClass(item.id, item.name_ar)}
-                    className="sn-btn sn-btn-quiet sn-btn-icon text-red-500 hover:bg-red-50"
-                    title={ar ? 'حذف الفصل' : 'Delete Class'}
-                  >
-                    <Trash2 size={15} />
-                  </button>
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setRosterClass(item)}
+                      className="sn-btn sn-btn-quiet sn-btn-icon text-[#171717] hover:bg-[#f0f0f0]"
+                      title={ar ? 'إدارة قائمة الطلاب' : 'View Roster'}
+                    >
+                      <Eye size={15} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditingClass(item)}
+                      className="sn-btn sn-btn-quiet sn-btn-icon text-blue-600 hover:bg-blue-50"
+                      title={ar ? 'تعديل الفصل' : 'Edit Class'}
+                    >
+                      <Pencil size={15} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteClass(item.id, item.name_ar)}
+                      className="sn-btn sn-btn-quiet sn-btn-icon text-red-500 hover:bg-red-50"
+                      title={ar ? 'حذف الفصل' : 'Delete Class'}
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
                 </div>
                 <div className="mt-5">
                   <div className="mb-1.5 flex items-center justify-between text-[10px] text-[#737373]">
-                    <span>{ar ? 'نسبة الإتقان' : 'Mastery'}</span>
+                    <span>{ar ? 'متوسط الإتقان' : 'Mastery'}</span>
                     <span className="font-mono">{classAvg}%</span>
                   </div>
                   <div className="h-1.5 overflow-hidden rounded-full bg-[#f0f0f0]">
@@ -392,10 +626,23 @@ export const ClassesPage: React.FC = () => {
                     <CalendarDays size={12} strokeWidth={1.8} />
                     <span>{ar ? `المشرف: ${item.teacher_name_ar}` : item.teacher_name_ar}</span>
                   </span>
-                  <Link to="/portal/students" className="sn-link !text-[12px]">
-                    {ar ? 'عرض الطلاب' : 'Students'}
-                    <ArrowRight size={13} strokeWidth={1.8} className={ar ? 'rotate-180' : ''} />
-                  </Link>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setEnrollClassId(item.id)}
+                      className="text-[11px] font-bold text-[#1d4ed8] hover:underline"
+                    >
+                      {ar ? '+ إلحاق طالب' : '+ Enroll'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setRosterClass(item)}
+                      className="sn-link !text-[12px]"
+                    >
+                      {ar ? 'القائمة والإدارة' : 'Manage Roster'}
+                      <ArrowRight size={13} strokeWidth={1.8} className={ar ? 'rotate-180' : ''} />
+                    </button>
+                  </div>
                 </div>
               </div>
             );
@@ -406,118 +653,167 @@ export const ClassesPage: React.FC = () => {
   );
 };
 
-/* ── 2. Add Student Modal ─────────────────────────────────────────────────── */
+/* ── 2. Add Student Modal (Registered Platform Lookup) ───────────────────── */
 const AddStudentModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
   onAdded: (s: EnrolledStudent) => void;
   classes: DbClass[];
+  registeredProfiles: DbProfile[];
+  existingEnrollments: EnrolledStudent[];
+  defaultClassId?: string;
+  preselectedProfile?: DbProfile | null;
   ar: boolean;
-}> = ({ isOpen, onClose, onAdded, classes, ar }) => {
+}> = ({
+  isOpen,
+  onClose,
+  onAdded,
+  classes,
+  registeredProfiles,
+  existingEnrollments,
+  defaultClassId,
+  preselectedProfile,
+  ar,
+}) => {
   const { educator } = useSession();
-  const [quadName, setQuadName] = useState('');
-  const [email, setEmail] = useState('');
-  const [parentPhone, setParentPhone] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedProfile, setSelectedProfile] = useState<DbProfile | null>(null);
   const [classId, setClassId] = useState('');
-  const [schoolName, setSchoolName] = useState('');
-  const [governorateId, setGovernorateId] = useState('cairo');
-  const [adminId, setAdminId] = useState('');
-  const [gradeLevel, setGradeLevel] = useState('sec1');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (classes.length > 0 && !classId) {
-      setClassId(classes[0].id);
-      setGradeLevel(classes[0].grade || 'sec1');
-    }
-  }, [classes, classId]);
+  const platformStudents = useMemo(
+    () => (registeredProfiles || []).filter((p) => (p.role || 'student') === 'student'),
+    [registeredProfiles]
+  );
 
   useEffect(() => {
-    if (isOpen && educator?.schoolName && !schoolName) {
-      setSchoolName(educator.schoolName);
+    if (!isOpen) return;
+    setError(null);
+    if (defaultClassId) {
+      setClassId(defaultClassId);
+    } else if (classes.length > 0 && !classId) {
+      setClassId(classes[0].id);
     }
-  }, [isOpen, educator?.schoolName, schoolName]);
+    if (preselectedProfile) {
+      setSelectedProfile(preselectedProfile);
+      setSearchTerm(preselectedProfile.quad_name || preselectedProfile.display_name || preselectedProfile.email || '');
+    } else {
+      setSelectedProfile(null);
+      setSearchTerm('');
+    }
+  }, [isOpen, defaultClassId, preselectedProfile, classes]);
+
+  const searchResults = useMemo(
+    () => searchRegisteredStudents(platformStudents, searchTerm).slice(0, 8),
+    [platformStudents, searchTerm]
+  );
+
+  const exactMatch = useMemo(() => {
+    if (selectedProfile) return selectedProfile;
+    if (!searchTerm.trim()) return null;
+    return findExactRegisteredStudent(platformStudents, searchTerm);
+  }, [selectedProfile, platformStudents, searchTerm]);
+
+  const resolvedProfile = selectedProfile || exactMatch;
 
   if (!isOpen) return null;
 
-  const selectedGov = EGYPT_GOVERNORATES.find((g) => g.id === governorateId) || EGYPT_GOVERNORATES[0];
-  const admins = selectedGov.administrations || [];
+  const isAlreadyInClass = Boolean(
+    resolvedProfile &&
+      classId &&
+      existingEnrollments.some(
+        (e) =>
+          e.classId === classId &&
+          ((e.studentId && e.studentId === resolvedProfile.id) ||
+            (resolvedProfile.email && e.email && e.email.toLowerCase() === resolvedProfile.email.toLowerCase()) ||
+            namesMatch(e.quadName, resolvedProfile.quad_name || resolvedProfile.display_name))
+      )
+  );
+
+  const handlePickProfile = (p: DbProfile) => {
+    setSelectedProfile(p);
+    setSearchTerm(p.quad_name || p.display_name || p.email || '');
+    setError(null);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    const words = quadName.trim().split(/\s+/).filter(Boolean);
-    if (words.length < 2) {
-      setError(ar ? 'يرجى إدخال اسم الطالب كاملاً (اسمان على الأقل، ويفضل الاسم الرباعي).' : 'Please enter the student full name (at least 2 parts).');
-      return;
-    }
+
     if (classes.length === 0 || !classId) {
-      setError(ar ? 'يرجى إنشاء فصل دراسي أولاً من صفحة "فصولي" لإلحاق الطالب به.' : 'Please create a class first before enrolling a student.');
-      return;
-    }
-    if (!schoolName.trim()) {
-      setError(ar ? 'يرجى إدخال اسم المدرسة.' : 'Please enter school name.');
+      setError(ar ? 'يرجى إنشاء فصل دراسي أولاً من صفحة "فصولي" لإلحاق الطالب به.' : 'Please create a class first.');
       return;
     }
 
-    const cleanPhone = parentPhone.trim().replace(/\D/g, '');
-    if (cleanPhone && !/^01[0125][0-9]{8}$/.test(cleanPhone)) {
-      setError(ar ? 'رقم هاتف ولي الأمر يجب أن يكون رقماً مصرياً صحيحاً (١١ رقماً يبدأ بـ 010 أو 011 أو 012 أو 015).' : 'Parent phone must be a valid 11-digit Egyptian mobile number.');
-      return;
-    }
-
-    const cleanEmail = email.trim().toLowerCase();
-    if (cleanEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
-      setError(ar ? 'صيغة البريد الإلكتروني غير صحيحة.' : 'Please enter a valid email address.');
-      return;
-    }
-
-    const selectedCls = classes.find((c) => c.id === classId);
-    setSaving(true);
-
-    const res = await addStudentToClassByTeacherAsync({
-      quadName: quadName.trim(),
-      email: cleanEmail || undefined,
-      parentPhone: cleanPhone || undefined,
-      classId,
-      classNameAr: selectedCls?.name_ar,
-      teacherId: selectedCls?.teacher_id || educator?.nationalId,
-      teacherNameAr: selectedCls?.teacher_name_ar || educator?.name,
-      schoolName: schoolName.trim(),
-      governorateId,
-      administrationId: adminId || admins[0]?.id || 'default',
-      gradeLevel: selectedCls?.grade || gradeLevel,
-    });
-
-    setSaving(false);
-    if (!res.ok) {
+    if (!resolvedProfile) {
       setError(
         ar
-          ? `فشل تسجيل الطالب في قاعدة بيانات Supabase: ${res.error || 'خطأ في الاتصال'}`
-          : `Failed to save student in Supabase: ${res.error || 'Connection error'}`
+          ? 'هذا الاسم غير مسجل بعد في قاعدة بيانات طلاب المنصة. يجب على الطالب تسجيل دخوله وإكمال ملفه في SciNexa أولاً، ثم اختياره أو كتابة اسمه كما سجّله.'
+          : 'No registered SciNexa student matched this query. The student must register on the platform first.'
       );
       return;
     }
 
-    setQuadName('');
-    setEmail('');
-    setParentPhone('');
+    if (isAlreadyInClass) {
+      setError(ar ? 'هذا الطالب ملتحق بالفعل بنفس الفصل الدراسي المختار.' : 'This student is already enrolled in the selected class.');
+      return;
+    }
+
+    const selectedCls = classes.find((c) => c.id === classId);
+    const fullName = (resolvedProfile.quad_name || resolvedProfile.display_name || '').trim();
+
+    setSaving(true);
+    const res = await addStudentToClassByTeacherAsync({
+      studentId: resolvedProfile.id,
+      quadName: fullName,
+      email: resolvedProfile.email || undefined,
+      parentPhone: resolvedProfile.parent_phone || undefined,
+      nationalId: resolvedProfile.national_id || undefined,
+      classId,
+      classNameAr: selectedCls?.name_ar,
+      teacherId: selectedCls?.teacher_id || educator?.nationalId,
+      teacherNameAr: selectedCls?.teacher_name_ar || educator?.name,
+      schoolName: resolvedProfile.school_name || resolvedProfile.school_code || educator?.schoolName || 'المدرسة المسجلة',
+      governorateId: resolvedProfile.governorate_id || 'cairo',
+      administrationId: resolvedProfile.administration_id || 'default',
+      gradeLevel: resolvedProfile.grade_level || selectedCls?.grade || 'sec1',
+      streak: resolvedProfile.streak ?? 0,
+    });
+    setSaving(false);
+
+    if (!res.ok) {
+      setError(
+        ar
+          ? `فشل إلحاق الطالب في Supabase: ${res.error || 'خطأ في الاتصال'}`
+          : `Failed to enroll student in Supabase: ${res.error || 'Connection error'}`
+      );
+      return;
+    }
+
+    setSearchTerm('');
+    setSelectedProfile(null);
     onAdded(res.student);
     onClose();
   };
 
   return (
     <div role="dialog" aria-modal="true" dir={ar ? 'rtl' : 'ltr'} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="relative w-full max-w-[500px] overflow-hidden rounded-[22px] bg-white border border-[#e5e5e5] p-6 shadow-2xl">
-        <div className="flex items-center justify-between border-b border-[#f0f0f0] pb-4 mb-4">
+      <div className="relative w-full max-w-[560px] max-h-[90vh] flex flex-col overflow-hidden rounded-[22px] bg-white border border-[#e5e5e5] shadow-2xl">
+        <div className="flex items-center justify-between border-b border-[#f0f0f0] px-6 py-4">
           <div className="flex items-center gap-2.5">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-[#1d4ed8]">
-              <UserCog size={18} />
+              <UserCheck size={18} />
             </span>
             <div>
-              <h3 className="text-[16px] font-bold text-[#0a0a0a]">{ar ? 'إضافة طالب إلى الفصل' : 'Enroll Student in Class'}</h3>
-              <p className="text-[11px] text-[#737373]">{ar ? 'يُحفظ الطالب مباشرة في قاعدة البيانات دون اشتراط الرقم القومي' : 'Saved directly to Supabase without National ID'}</p>
+              <h3 className="text-[16px] font-bold text-[#0a0a0a]">
+                {ar ? 'إلحاق طالب مسجل بالمنصة إلى الفصل' : 'Enroll Registered Platform Student'}
+              </h3>
+              <p className="text-[11px] text-[#737373]">
+                {ar
+                  ? `ابحث باسم الطالب المسجل (${platformStudents.length} طالب بالمنصة) لسحب بياناته الحقيقية تلقائياً`
+                  : `Search ${platformStudents.length} registered platform students to pull live records automatically`}
+              </p>
             </div>
           </div>
           <button type="button" onClick={onClose} className="sn-btn sn-btn-quiet sn-btn-icon">
@@ -525,105 +821,372 @@ const AddStudentModal: React.FC<{
           </button>
         </div>
 
-        {error && (
-          <div className="mb-3.5 p-3 rounded-xl bg-red-50 text-red-700 text-[12px] border border-red-200">
-            {error}
-          </div>
-        )}
+        <form onSubmit={handleSubmit} className="overflow-y-auto p-6 space-y-4">
+          {error && (
+            <div className="p-3 rounded-xl bg-red-50 text-red-700 text-[12px] border border-red-200 flex items-start gap-2">
+              <AlertCircle size={15} className="shrink-0 mt-0.5" />
+              <span>{error}</span>
+            </div>
+          )}
 
-        <form onSubmit={handleSubmit} className="space-y-3.5">
+          {/* Class picker */}
           <div>
             <label className="block text-[12px] font-semibold text-[#171717] mb-1">
-              {ar ? 'اسم الطالب الكامل (يفضل الرباعي) *' : 'Student Full Name *'}
+              {ar ? 'الفصل الدراسي المستهدف *' : 'Target Class *'}
             </label>
-            <input
-              required
-              value={quadName}
-              onChange={(e) => setQuadName(e.target.value)}
-              placeholder={ar ? 'مثال: ياسين محمد إبراهيم زيد' : 'e.g. Yaseen Mohamed Ibrahim Zed'}
-              className="sn-input !h-10 text-[13px]"
-            />
+            <select
+              value={classId}
+              onChange={(e) => setClassId(e.target.value)}
+              className="sn-input !h-10 text-[12px]"
+            >
+              {classes.length === 0 ? (
+                <option value="">{ar ? 'لا توجد فصول (أنشئ فصلاً أولاً)' : 'No classes available'}</option>
+              ) : (
+                classes.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {ar ? `${c.name_ar} (${gradeLabel(c.grade, true)})` : `${c.name_en} (${gradeLabel(c.grade, false)})`}
+                  </option>
+                ))
+              )}
+            </select>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-[12px] font-semibold text-[#171717] mb-1">
-                {ar ? 'البريد الإلكتروني للطالب (اختياري)' : 'Student Email (Optional)'}
-              </label>
-              <input
-                type="email"
-                dir="ltr"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="student@school.edu.eg"
-                className="sn-input !h-10 text-[12px] font-mono"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[12px] font-semibold text-[#171717] mb-1">
-                {ar ? 'هاتف ولي الأمر (اختياري - واتساب)' : 'Parent Mobile (Optional)'}
-              </label>
-              <input
-                type="tel"
-                dir="ltr"
-                value={parentPhone}
-                onChange={(e) => setParentPhone(e.target.value)}
-                placeholder="010XXXXXXXX"
-                className="sn-input !h-10 text-[12px] font-mono"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-[12px] font-semibold text-[#171717] mb-1">{ar ? 'الفصل الدراسي *' : 'Class *'}</label>
-              <select
-                value={classId}
-                onChange={(e) => {
-                  setClassId(e.target.value);
-                  const cls = classes.find((c) => c.id === e.target.value);
-                  if (cls?.grade) setGradeLevel(cls.grade);
-                }}
-                className="sn-input !h-10 text-[12px]"
-              >
-                {classes.length === 0 ? (
-                  <option value="">{ar ? 'لا توجد فصول (أنشئ فصلاً أولاً)' : 'No classes available'}</option>
-                ) : (
-                  classes.map((c) => (
-                    <option key={c.id} value={c.id}>{ar ? c.name_ar : c.name_en}</option>
-                  ))
-                )}
-              </select>
-            </div>
-            <div>
-              <label className="block text-[12px] font-semibold text-[#171717] mb-1">{ar ? 'المحافظة *' : 'Governorate *'}</label>
-              <select value={governorateId} onChange={(e) => setGovernorateId(e.target.value)} className="sn-input !h-10 text-[12px]">
-                {EGYPT_GOVERNORATES.map((g) => (
-                  <option key={g.id} value={g.id}>{ar ? g.nameAr : g.nameEn}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
+          {/* Search registered student */}
           <div>
-            <label className="block text-[12px] font-semibold text-[#171717] mb-1">{ar ? 'اسم المدرسة الحالية *' : 'School Name *'}</label>
-            <input
-              required
-              value={schoolName}
-              onChange={(e) => setSchoolName(e.target.value)}
-              placeholder={ar ? 'مثال: مدرسة المتفوقين للعلوم والتكنولوجيا' : 'e.g. STEM High School'}
-              className="sn-input !h-10 text-[13px]"
-            />
+            <label className="block text-[12px] font-semibold text-[#171717] mb-1">
+              {ar ? 'اسم الطالب المسجل بالمنصة أو بريده / كوده *' : 'Registered Student Name, Email or Code *'}
+            </label>
+            <div className="relative">
+              <Search size={14} className="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-[#a3a3a3]" />
+              <input
+                required
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setSelectedProfile(null);
+                  setError(null);
+                }}
+                placeholder={ar ? 'اكتب اسم الطالب كما سجله في المنصة…' : 'Type registered student name or email…'}
+                className="sn-input !h-10 !ps-9 text-[13px]"
+              />
+            </div>
           </div>
+
+          {/* Live matched suggestions from registered profiles */}
+          {!resolvedProfile && (
+            <div className="rounded-xl border border-[#e5e5e5] bg-[#fafafa] p-2.5 max-h-[210px] overflow-y-auto space-y-1">
+              <div className="px-2 py-1 text-[10px] font-semibold text-[#737373] uppercase tracking-wider">
+                {ar
+                  ? `الطلاب المسجلون المطابقون (${searchResults.length})`
+                  : `Matching Platform Students (${searchResults.length})`}
+              </div>
+              {platformStudents.length === 0 ? (
+                <div className="p-3 text-[11px] text-amber-800 bg-amber-50 rounded-lg border border-amber-200">
+                  {ar
+                    ? 'لا يوجد طلاب مسجلون في جدول الحسابات (profiles) حتى الآن. اطلب من الطالب تسجيل الدخول وإكمال ملفه في SciNexa أولاً.'
+                    : 'No students found in profiles yet. Students must sign up on SciNexa first.'}
+                </div>
+              ) : searchResults.length === 0 ? (
+                <div className="p-3 text-[11px] text-amber-800 bg-amber-50 rounded-lg border border-amber-200">
+                  {ar
+                    ? 'لم يتم العثور على طالب مسجل بهذا الاسم في المنصة — تأكد من تسجيل الطالب حسابه أولاً أو اكتب جزءاً آخر من اسمه.'
+                    : 'No registered student matches your query yet.'}
+                </div>
+              ) : (
+                searchResults.map((p) => {
+                  const fullName = p.quad_name || p.display_name || p.email || 'طالب';
+                  const enrolledInTarget = Boolean(
+                    classId &&
+                      existingEnrollments.some(
+                        (e) =>
+                          e.classId === classId &&
+                          ((e.studentId && e.studentId === p.id) || namesMatch(e.quadName, fullName))
+                      )
+                  );
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => handlePickProfile(p)}
+                      className="w-full text-start flex items-center justify-between gap-2 rounded-lg border border-transparent bg-white px-3 py-2 hover:border-[#0a0a0a]/20 hover:bg-blue-50/40 transition-colors"
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <Avatar name={fullName} />
+                        <div className="min-w-0">
+                          <div className="text-[12px] font-bold text-[#0a0a0a] truncate">{fullName}</div>
+                          <div className="text-[10px] text-[#737373] truncate">
+                            {gradeLabel(p.grade_level, ar)} · {p.school_name || p.school_code || (ar ? 'مدرسة مسجلة' : 'Registered School')}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <span className="font-mono text-[10px] text-[#525252]">{p.xp ?? 0} XP</span>
+                        {enrolledInTarget && (
+                          <span className="sn-badge sn-badge-green !text-[9px]">{ar ? 'ملتحق' : 'In Class'}</span>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          )}
+
+          {/* Auto-pulled Verified Platform Data Preview */}
+          {resolvedProfile && (
+            <div className={`rounded-2xl border p-4 space-y-3 ${isAlreadyInClass ? 'border-amber-300 bg-amber-50/60' : 'border-emerald-300 bg-emerald-50/50'}`}>
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2.5">
+                  <CheckCircle2 size={18} className={isAlreadyInClass ? 'text-amber-600' : 'text-emerald-600'} />
+                  <div>
+                    <div className="text-[13px] font-bold text-[#0a0a0a]">
+                      {resolvedProfile.quad_name || resolvedProfile.display_name}
+                    </div>
+                    <div className="text-[11px] text-[#525252] font-mono">
+                      {resolvedProfile.email || resolvedProfile.id}
+                    </div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => { setSelectedProfile(null); setSearchTerm(''); }}
+                  className="text-[11px] font-semibold text-[#525252] hover:text-[#0a0a0a] underline"
+                >
+                  {ar ? 'تغيير الطالب' : 'Change'}
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px] pt-1 border-t border-black/5">
+                <div className="rounded-lg bg-white/80 px-2.5 py-1.5 border border-black/5">
+                  <div className="text-[9px] text-[#737373]">{ar ? 'المرحلة الدراسية' : 'Grade'}</div>
+                  <div className="font-bold text-[#0a0a0a]">{gradeLabel(resolvedProfile.grade_level, ar)}</div>
+                </div>
+                <div className="rounded-lg bg-white/80 px-2.5 py-1.5 border border-black/5">
+                  <div className="text-[9px] text-[#737373]">{ar ? 'المدرسة المسجلة' : 'School'}</div>
+                  <div className="font-bold text-[#0a0a0a] truncate">{resolvedProfile.school_name || resolvedProfile.school_code || '—'}</div>
+                </div>
+                <div className="rounded-lg bg-white/80 px-2.5 py-1.5 border border-black/5">
+                  <div className="text-[9px] text-[#737373]">{ar ? 'هاتف ولي الأمر' : 'Parent Phone'}</div>
+                  <div className="font-mono font-bold text-[#0a0a0a]">{resolvedProfile.parent_phone || '—'}</div>
+                </div>
+                <div className="rounded-lg bg-white/80 px-2.5 py-1.5 border border-black/5">
+                  <div className="text-[9px] text-[#737373]">{ar ? 'نقاط المنصة (XP)' : 'Platform XP'}</div>
+                  <div className="font-mono font-bold text-[#1d4ed8]">{resolvedProfile.xp ?? 0} XP</div>
+                </div>
+                <div className="rounded-lg bg-white/80 px-2.5 py-1.5 border border-black/5">
+                  <div className="text-[9px] text-[#737373]">{ar ? 'أيام الاستمرارية' : 'Streak'}</div>
+                  <div className="font-mono font-bold text-amber-600">{resolvedProfile.streak ?? 0} 🔥</div>
+                </div>
+                <div className="rounded-lg bg-white/80 px-2.5 py-1.5 border border-black/5">
+                  <div className="text-[9px] text-[#737373]">{ar ? 'نجوم الإتقان' : 'Stars'}</div>
+                  <div className="font-mono font-bold text-emerald-700">{resolvedProfile.stars ?? 0} ★</div>
+                </div>
+              </div>
+
+              {isAlreadyInClass && (
+                <div className="text-[11px] font-semibold text-amber-800">
+                  {ar ? '⚠ هذا الطالب ملتحق بالفعل بهذا الفصل. اختر فصلاً آخر أو طالباً آخر.' : 'Already enrolled in this class.'}
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#f0f0f0]">
             <button type="button" onClick={onClose} className="sn-btn sn-btn-outline sn-btn-sm">{ar ? 'إلغاء' : 'Cancel'}</button>
-            <button type="submit" disabled={saving} className="sn-btn sn-btn-primary sn-btn-sm">
-              {saving ? (ar ? 'جارٍ الحفظ في Supabase…' : 'Saving…') : (ar ? 'تأكيد وإضافة الطالب' : 'Confirm & Add')}
+            <button
+              type="submit"
+              disabled={saving || !resolvedProfile || isAlreadyInClass || classes.length === 0}
+              className="sn-btn sn-btn-primary sn-btn-sm disabled:opacity-50"
+            >
+              {saving ? (ar ? 'جارٍ الربط والحفظ…' : 'Linking…') : (ar ? 'تأكيد إلحاق الطالب بالفصل' : 'Enroll Verified Student')}
             </button>
           </div>
         </form>
+      </div>
+    </div>
+  );
+};
+
+/* ── 2B. Student Detail & Management Modal ────────────────────────────────── */
+const StudentDetailModal: React.FC<{
+  student: EnrolledStudent | null;
+  profile: DbProfile | null;
+  classes: DbClass[];
+  submissions: StudentSubmission[];
+  onClose: () => void;
+  onUpdated: (id: string, patch: Partial<EnrolledStudent>) => void;
+  ar: boolean;
+}> = ({ student, profile, classes, submissions, onClose, onUpdated, ar }) => {
+  const [targetClassId, setTargetClassId] = useState('');
+  const [masteryVal, setMasteryVal] = useState(0);
+  const [saving, setSaving] = useState(false);
+  const [note, setNote] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!student) return;
+    setTargetClassId(student.classId);
+    setMasteryVal(student.mastery ?? 0);
+    setNote(null);
+  }, [student]);
+
+  if (!student) return null;
+
+  const studentSubs = submissions.filter((sub) => namesMatch(sub.studentQuadName, student.quadName));
+  const cleanPhone = (student.parentPhone || profile?.parent_phone || '').replace(/\D/g, '');
+  const gov = EGYPT_GOVERNORATES.find((g) => g.id === (student.governorateId || profile?.governorate_id));
+
+  const handleSaveChanges = async () => {
+    setSaving(true);
+    setNote(null);
+    const clampedMastery = Math.max(0, Math.min(100, Math.round(masteryVal)));
+    if (clampedMastery !== student.mastery) {
+      await dbUpdateStudentMastery(student.id, clampedMastery);
+      onUpdated(student.id, { mastery: clampedMastery });
+    }
+    if (targetClassId && targetClassId !== student.classId) {
+      const targetCls = classes.find((c) => c.id === targetClassId);
+      if (targetCls) {
+        await transferStudentClassAndSync(student.id, targetCls);
+        onUpdated(student.id, {
+          classId: targetCls.id,
+          classNameAr: targetCls.name_ar,
+          teacherId: targetCls.teacher_id,
+          teacherNameAr: targetCls.teacher_name_ar,
+        });
+      }
+    }
+    setSaving(false);
+    setNote(ar ? 'تم حفظ التعديلات ومزامنتها مع Supabase بنجاح.' : 'Saved and synced with Supabase.');
+  };
+
+  return (
+    <div role="dialog" aria-modal="true" dir={ar ? 'rtl' : 'ltr'} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <div className="relative w-full max-w-[660px] max-h-[90vh] flex flex-col overflow-hidden rounded-[22px] bg-white border border-[#e5e5e5] shadow-2xl">
+        <div className="flex items-center justify-between border-b border-[#f0f0f0] px-6 py-4 bg-[#fafafa]">
+          <div className="flex items-center gap-3">
+            <Avatar name={student.quadName} tone="bg-[#0a0a0a] text-white" />
+            <div>
+              <h3 className="text-[16px] font-bold text-[#0a0a0a]">{student.quadName}</h3>
+              <p className="text-[11px] text-[#737373] font-mono">
+                {student.email || profile?.email || student.schoolName}
+              </p>
+            </div>
+          </div>
+          <button type="button" onClick={onClose} className="sn-btn sn-btn-quiet sn-btn-icon">
+            <X size={16} />
+          </button>
+        </div>
+
+        <div className="overflow-y-auto p-6 space-y-5">
+          {note && (
+            <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[12px] font-semibold">
+              ✓ {note}
+            </div>
+          )}
+
+          {/* Platform Live Telemetry */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div className="rounded-xl border border-[#e5e5e5] p-3">
+              <div className="text-[10px] text-[#737373]">{ar ? 'نقاط المنصة' : 'Platform XP'}</div>
+              <div className="mt-1 text-[17px] font-bold font-mono text-[#1d4ed8]">{profile?.xp ?? 0} XP</div>
+            </div>
+            <div className="rounded-xl border border-[#e5e5e5] p-3">
+              <div className="text-[10px] text-[#737373]">{ar ? 'الاستمرارية' : 'Streak'}</div>
+              <div className="mt-1 text-[17px] font-bold font-mono text-amber-600">{profile?.streak ?? student.streak ?? 0} 🔥</div>
+            </div>
+            <div className="rounded-xl border border-[#e5e5e5] p-3">
+              <div className="text-[10px] text-[#737373]">{ar ? 'النجوم' : 'Stars'}</div>
+              <div className="mt-1 text-[17px] font-bold font-mono text-emerald-700">{profile?.stars ?? 0} ★</div>
+            </div>
+            <div className="rounded-xl border border-[#e5e5e5] p-3">
+              <div className="text-[10px] text-[#737373]">{ar ? 'الإتقان بالفصل' : 'Mastery'}</div>
+              <div className="mt-1 text-[17px] font-bold font-mono text-[#0a0a0a]">{student.mastery}%</div>
+            </div>
+          </div>
+
+          {/* Academic & Contact Info */}
+          <div className="rounded-xl border border-[#e5e5e5] bg-[#fafafa] p-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-[12px]">
+            <div><span className="text-[#737373]">{ar ? 'المرحلة:' : 'Grade:'} </span><span className="font-semibold">{gradeLabel(student.gradeLevel || profile?.grade_level, ar)}</span></div>
+            <div><span className="text-[#737373]">{ar ? 'المدرسة:' : 'School:'} </span><span className="font-semibold">{student.schoolName}</span></div>
+            <div><span className="text-[#737373]">{ar ? 'المحافظة:' : 'Governorate:'} </span><span className="font-semibold">{gov ? (ar ? gov.nameAr : gov.nameEn) : student.governorateId}</span></div>
+            <div className="flex items-center gap-2">
+              <span className="text-[#737373]">{ar ? 'ولي الأمر:' : 'Parent:'} </span>
+              {cleanPhone ? (
+                <a
+                  href={`https://wa.me/20${cleanPhone.replace(/^0/, '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 font-mono font-bold text-emerald-700 hover:underline"
+                >
+                  <MessageSquare size={12} />
+                  <span>{cleanPhone}</span>
+                </a>
+              ) : (
+                <span className="text-[#a3a3a3]">—</span>
+              )}
+            </div>
+          </div>
+
+          {/* Class Transfer & Mastery Adjustment */}
+          <div className="rounded-xl border border-[#e5e5e5] p-4 space-y-3">
+            <div className="flex items-center gap-2 text-[12px] font-bold text-[#0a0a0a]">
+              <ArrowRightLeft size={14} />
+              <span>{ar ? 'تعديل الفصل أو نسبة الإتقان' : 'Class Transfer & Mastery Control'}</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-[11px] font-semibold text-[#525252] mb-1">{ar ? 'الفصل الدراسي' : 'Enrolled Class'}</label>
+                <select value={targetClassId} onChange={(e) => setTargetClassId(e.target.value)} className="sn-input !h-9 text-[12px]">
+                  {classes.map((c) => (
+                    <option key={c.id} value={c.id}>{ar ? c.name_ar : c.name_en}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-[11px] font-semibold text-[#525252] mb-1">{ar ? `تقييم الإتقان (${masteryVal}%)` : `Mastery (${masteryVal}%)`}</label>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  value={masteryVal}
+                  onChange={(e) => setMasteryVal(Number(e.target.value))}
+                  className="w-full accent-[#0a0a0a] mt-2"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <button type="button" onClick={() => void handleSaveChanges()} disabled={saving} className="sn-btn sn-btn-primary sn-btn-sm">
+                {saving ? (ar ? 'جارٍ الحفظ…' : 'Saving…') : (ar ? 'حفظ التغييرات' : 'Save Updates')}
+              </button>
+            </div>
+          </div>
+
+          {/* Submissions History */}
+          <div>
+            <div className="text-[12px] font-bold text-[#0a0a0a] mb-2">
+              {ar ? `سجل تسليمات واختبارات الطالب (${studentSubs.length})` : `Student Submissions (${studentSubs.length})`}
+            </div>
+            {studentSubs.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-[#e5e5e5] p-4 text-center text-[11px] text-[#737373]">
+                {ar ? 'لم يسلم الطالب أي واجبات أو اختبارات بعد.' : 'No submissions recorded yet.'}
+              </div>
+            ) : (
+              <div className="divide-y divide-[#f0f0f0] rounded-xl border border-[#e5e5e5]">
+                {studentSubs.map((sub) => (
+                  <div key={sub.id} className="flex items-center justify-between gap-2 px-3.5 py-2.5 text-[11px]">
+                    <div>
+                      <div className="font-semibold text-[#0a0a0a]">{sub.assignmentId}</div>
+                      <div className="text-[10px] text-[#737373]">{sub.submittedAt} {sub.teacherFeedback ? `· ${sub.teacherFeedback}` : ''}</div>
+                    </div>
+                    <span className={`sn-badge !text-[10px] ${sub.status === 'graded' ? 'sn-badge-green' : 'sn-badge-amber'}`}>
+                      {sub.status === 'graded' ? `${sub.score ?? 0}%` : (ar ? 'بانتظار التقييم' : 'Pending')}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -633,22 +1196,32 @@ const AddStudentModal: React.FC<{
 export const StudentsPage: React.FC = () => {
   const { language } = useLanguage();
   const ar = language === 'ar';
+  const [activeTab, setActiveTab] = useState<'enrolled' | 'platform'>('enrolled');
   const [query, setQuery] = useState('');
+  const [classFilter, setClassFilter] = useState<string>('all');
   const [onlyReview, setOnlyReview] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [preselectedProfile, setPreselectedProfile] = useState<DbProfile | null>(null);
+  const [inspectStudent, setInspectStudent] = useState<EnrolledStudent | null>(null);
   const [customList, setCustomList] = useState<EnrolledStudent[]>([]);
+  const [registeredProfiles, setRegisteredProfiles] = useState<DbProfile[]>([]);
   const [classes, setClasses] = useState<DbClass[]>([]);
+  const [submissions, setSubmissions] = useState<StudentSubmission[]>([]);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const loadData = async () => {
     setLoading(true);
-    const [fetchedStudents, fetchedClasses] = await Promise.all([
+    const [fetchedStudents, fetchedClasses, fetchedProfiles, fetchedSubs] = await Promise.all([
       fetchAndSyncEnrollment(),
       dbFetchClasses(),
+      dbFetchAllProfiles(),
+      fetchAndSyncSubmissions(),
     ]);
     setCustomList(fetchedStudents || []);
     setClasses(fetchedClasses || []);
+    setRegisteredProfiles(fetchedProfiles || []);
+    setSubmissions(fetchedSubs || []);
     setLoading(false);
   };
 
@@ -656,8 +1229,24 @@ export const StudentsPage: React.FC = () => {
     void loadData();
   }, []);
 
+  const platformStudents = useMemo(
+    () => (registeredProfiles || []).filter((p) => (p.role || 'student') === 'student'),
+    [registeredProfiles]
+  );
+
+  const findProfileForStudent = (s: EnrolledStudent): DbProfile | null => {
+    return (
+      platformStudents.find(
+        (p) =>
+          (s.studentId && p.id === s.studentId) ||
+          (s.email && p.email && p.email.toLowerCase() === s.email.toLowerCase()) ||
+          namesMatch(p.quad_name || p.display_name, s.quadName)
+      ) || null
+    );
+  };
+
   const handleDeleteStudent = (id: string, name: string) => {
-    if (!window.confirm(ar ? `هل أنت متأكد من حذف الطالب "${name}" نهائياً من Supabase؟` : `Delete student "${name}"?`)) {
+    if (!window.confirm(ar ? `هل أنت متأكد من إزالة الطالب "${name}" من الفصل؟` : `Remove student "${name}" from class?`)) {
       return;
     }
     deleteStudentEnrollment(id);
@@ -666,74 +1255,174 @@ export const StudentsPage: React.FC = () => {
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const all = (customList || []).map((s) => ({
-      id: s.id,
-      nameEn: s.quadName || 'Student',
-      nameAr: s.quadName || 'طالب مسجل',
-      code: s.nationalId ? `ID: ${s.nationalId.slice(-4)}` : (s.id || '2026').slice(-6).toUpperCase(),
-      classEn: s.classNameAr || 'General',
-      classAr: s.classNameAr || 'فصل عام',
-      parentPhone: s.parentPhone || (s as any).parent_phone || '',
-      mastery: s.mastery ?? 0,
-      lastEn: s.lastActiveDate || 'Today',
-      lastAr: s.lastActiveDate || 'اليوم',
-      status: s.mastery > 50 ? 'active' : 'review',
-    }));
+    return (customList || [])
+      .map((s) => {
+        const prof = findProfileForStudent(s);
+        return {
+          raw: s,
+          profile: prof,
+          id: s.id,
+          nameEn: s.quadName || 'Student',
+          nameAr: s.quadName || 'طالب مسجل',
+          email: s.email || prof?.email || '',
+          code: s.nationalId ? `ID: ${s.nationalId.slice(-4)}` : (s.studentId || s.id || '2026').slice(-6).toUpperCase(),
+          classId: s.classId,
+          classEn: s.classNameAr || 'General',
+          classAr: s.classNameAr || 'فصل عام',
+          gradeLabelText: gradeLabel(s.gradeLevel || prof?.grade_level, ar),
+          parentPhone: s.parentPhone || prof?.parent_phone || '',
+          mastery: s.mastery ?? 0,
+          xp: prof?.xp ?? 0,
+          streak: prof?.streak ?? s.streak ?? 0,
+          stars: prof?.stars ?? 0,
+          lastEn: s.lastActiveDate || 'Today',
+          lastAr: s.lastActiveDate || 'اليوم',
+          status: (s.mastery ?? 0) >= 50 ? 'active' : 'review',
+        };
+      })
+      .filter((student) => {
+        if (classFilter !== 'all' && student.classId !== classFilter) return false;
+        const matches =
+          !q ||
+          student.nameEn.toLowerCase().includes(q) ||
+          student.nameAr.includes(q) ||
+          student.email.toLowerCase().includes(q) ||
+          student.code.toLowerCase().includes(q) ||
+          student.classEn.toLowerCase().includes(q);
+        return matches && (!onlyReview || student.status !== 'active');
+      });
+  }, [query, classFilter, onlyReview, customList, platformStudents, ar]);
 
-    return all.filter((student) => {
-      const sNameEn = student.nameEn || '';
-      const sNameAr = student.nameAr || '';
-      const sCode = student.code || '';
-      const sClassEn = student.classEn || '';
-      const matches =
-        !q ||
-        sNameEn.toLowerCase().includes(q) ||
-        sNameAr.includes(q) ||
-        sCode.includes(q) ||
-        sClassEn.toLowerCase().includes(q);
-      return matches && (!onlyReview || student.status !== 'active');
-    });
-  }, [query, onlyReview, customList]);
+  const filteredPlatformStudents = useMemo(() => {
+    return searchRegisteredStudents(platformStudents, query);
+  }, [platformStudents, query]);
 
   const handleStudentAdded = (newS: EnrolledStudent) => {
-    setCustomList((prev) => [newS, ...prev]);
-    setSuccessMsg(ar ? `تمت إضافة الطالب "${newS.quadName}" إلى فصل ${newS.classNameAr} بنجاح!` : `Student ${newS.quadName} enrolled successfully!`);
+    setCustomList((prev) => [newS, ...prev.filter((s) => s.id !== newS.id)]);
+    setSuccessMsg(
+      ar
+        ? `تم إلحاق الطالب المسجل "${newS.quadName}" بفصل ${newS.classNameAr} وجلب بياناته تلقائياً!`
+        : `Registered student ${newS.quadName} enrolled in ${newS.classNameAr}!`
+    );
     setTimeout(() => setSuccessMsg(null), 5000);
+  };
+
+  const handleExportCsv = () => {
+    const header = ['Student Name', 'Email', 'Class', 'Grade', 'Parent Phone', 'Mastery %', 'XP', 'Streak', 'Last Active'];
+    const csvRows = [
+      header.join(','),
+      ...rows.map((r) =>
+        [
+          `"${(r.nameAr || '').replace(/"/g, '""')}"`,
+          `"${r.email}"`,
+          `"${(r.classAr || '').replace(/"/g, '""')}"`,
+          `"${r.gradeLabelText}"`,
+          `"${r.parentPhone}"`,
+          r.mastery,
+          r.xp,
+          r.streak,
+          `"${r.lastAr}"`,
+        ].join(',')
+      ),
+    ];
+    const blob = new Blob(['\uFEFF' + csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `scinexa-students-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
     <div>
       <PageHeader
-        eyebrow={ar ? 'التعليم' : 'Teaching'}
-        title={ar ? 'الطلاب' : 'Students'}
-        subtitle={ar ? 'ابحث عن طالب، راجع إتقانه، وافتح تقريره الكامل.' : 'Real student records from Supabase.'}
+        eyebrow={ar ? 'إدارة الطلاب والسجلات' : 'Student Registry & Management'}
+        title={ar ? 'الطلاب المسجلون وإلحاق الفصول' : 'Students & Class Enrollment'}
+        subtitle={
+          ar
+            ? 'ابحث عن أي طالب مسجل بالمنصة لإلحاقه بفصلك تلقائياً، وتابع نقاطه وتسليماته وتواصل مع ولي أمره.'
+            : 'Enroll registered SciNexa students by name, inspect telemetry, and message parents.'
+        }
         actions={
-          <button type="button" onClick={() => setIsAddOpen(true)} className="sn-btn sn-btn-primary">
-            <Plus size={15} strokeWidth={2} />
-            {ar ? 'إضافة طالب جديد' : 'Add Student'}
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button type="button" onClick={handleExportCsv} disabled={rows.length === 0} className="sn-btn sn-btn-outline sn-btn-sm disabled:opacity-40">
+              <Download size={14} />
+              <span>{ar ? 'تصدير CSV' : 'Export CSV'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => { setPreselectedProfile(null); setIsAddOpen(true); }}
+              className="sn-btn sn-btn-primary"
+            >
+              <Plus size={15} strokeWidth={2} />
+              {ar ? 'إلحاق طالب مسجل' : 'Enroll Registered Student'}
+            </button>
+          </div>
         }
       />
 
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative w-full sm:w-[320px]">
-          <Search size={14} strokeWidth={1.8} className="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-[#a3a3a3]" />
-          <input
-            className="sn-input !h-9 !ps-9 !text-[12px]"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={ar ? 'ابحث بالاسم أو الكود…' : 'Search by name or code…'}
-            aria-label={ar ? 'بحث الطلاب' : 'Search students'}
-          />
-        </div>
+      {/* Tabs: Class Roster vs Registered Platform Directory */}
+      <div className="mb-4 flex flex-wrap items-center gap-2">
         <button
           type="button"
-          onClick={() => setOnlyReview((v) => !v)}
-          className={`sn-btn sn-btn-sm ${onlyReview ? 'sn-btn-primary' : 'sn-btn-outline'}`}
+          onClick={() => setActiveTab('enrolled')}
+          className={`sn-btn sn-btn-sm ${activeTab === 'enrolled' ? 'sn-btn-primary' : 'sn-btn-outline'}`}
         >
-          <Activity size={13} strokeWidth={1.8} />
-          {ar ? 'يحتاجون متابعة' : 'Needs review'}
+          <Users size={13} />
+          <span>{ar ? `طلاب الفصول الملحقون (${customList.length})` : `Class Roster (${customList.length})`}</span>
         </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('platform')}
+          className={`sn-btn sn-btn-sm ${activeTab === 'platform' ? 'sn-btn-primary' : 'sn-btn-outline'}`}
+        >
+          <UserCheck size={13} />
+          <span>{ar ? `دليل طلاب المنصة المسجلين (${platformStudents.length})` : `Platform Directory (${platformStudents.length})`}</span>
+        </button>
+      </div>
+
+      {/* Filters bar */}
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center gap-2 flex-1">
+          <div className="relative w-full sm:w-[280px]">
+            <Search size={14} strokeWidth={1.8} className="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-[#a3a3a3]" />
+            <input
+              className="sn-input !h-9 !ps-9 !text-[12px]"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={ar ? 'ابحث بالاسم أو البريد أو الكود…' : 'Search name, email, code…'}
+              aria-label={ar ? 'بحث الطلاب' : 'Search students'}
+            />
+          </div>
+          {activeTab === 'enrolled' && classes.length > 0 && (
+            <select
+              value={classFilter}
+              onChange={(e) => setClassFilter(e.target.value)}
+              className="sn-input !h-9 !w-auto text-[12px]"
+            >
+              <option value="all">{ar ? 'كل الفصول الدراسية' : 'All Classes'}</option>
+              {classes.map((c) => (
+                <option key={c.id} value={c.id}>{ar ? c.name_ar : c.name_en}</option>
+              ))}
+            </select>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          {activeTab === 'enrolled' && (
+            <button
+              type="button"
+              onClick={() => setOnlyReview((v) => !v)}
+              className={`sn-btn sn-btn-sm ${onlyReview ? 'sn-btn-primary' : 'sn-btn-outline'}`}
+            >
+              <Activity size={13} strokeWidth={1.8} />
+              {ar ? 'يحتاجون متابعة' : 'Needs review'}
+            </button>
+          )}
+          <button type="button" onClick={() => void loadData()} className="sn-btn sn-btn-outline sn-btn-sm" title={ar ? 'تحديث' : 'Refresh'}>
+            <RefreshCw size={13} />
+          </button>
+        </div>
       </div>
 
       {successMsg && (
@@ -745,44 +1434,152 @@ export const StudentsPage: React.FC = () => {
 
       <AddStudentModal
         isOpen={isAddOpen}
-        onClose={() => setIsAddOpen(false)}
+        onClose={() => { setIsAddOpen(false); setPreselectedProfile(null); }}
         onAdded={handleStudentAdded}
         classes={classes}
+        registeredProfiles={registeredProfiles}
+        existingEnrollments={customList}
+        preselectedProfile={preselectedProfile}
+        ar={ar}
+      />
+
+      <StudentDetailModal
+        student={inspectStudent}
+        profile={inspectStudent ? findProfileForStudent(inspectStudent) : null}
+        classes={classes}
+        submissions={submissions}
+        onClose={() => setInspectStudent(null)}
+        onUpdated={(id, patch) => {
+          setCustomList((prev) => prev.map((s) => (s.id === id ? { ...s, ...patch } : s)));
+          setInspectStudent((prev) => (prev && prev.id === id ? { ...prev, ...patch } : prev));
+        }}
         ar={ar}
       />
 
       {loading ? (
         <div className="py-12 text-center text-[#737373] text-[13px]">
           <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-[#0a0a0a] border-t-transparent mb-2" />
-          <p>{ar ? 'جارٍ جلب الطلاب المسجلين من Supabase…' : 'Loading students from Supabase…'}</p>
+          <p>{ar ? 'جارٍ تحميل بيانات الطلاب من Supabase…' : 'Loading student data from Supabase…'}</p>
         </div>
+      ) : activeTab === 'platform' ? (
+        filteredPlatformStudents.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-[#e5e5e5] p-10 text-center bg-[#fafafa]">
+            <UserCheck size={36} className="mx-auto text-[#a3a3a3] mb-3" />
+            <h3 className="text-[15px] font-bold text-[#0a0a0a] mb-1">
+              {ar ? 'لا يوجد طلاب مسجلون في دليل المنصة مطابِقون للبحث' : 'No matching registered platform students'}
+            </h3>
+            <p className="text-[12px] text-[#737373] max-w-[45ch] mx-auto">
+              {ar ? 'أي طالب يسجل حسابه في SciNexa ويكمل ملفه الدراسي سيظهر هنا تلقائياً ليتمكن المعلم من إلحاقه.' : 'Registered students appear here automatically.'}
+            </p>
+          </div>
+        ) : (
+          <SectionCard
+            title={ar ? 'دليل طلاب المنصة الحقيقيين (profiles)' : 'Registered Platform Student Directory'}
+            action={<span className="sn-badge sn-badge-blue">{filteredPlatformStudents.length} {ar ? 'طالب مسجل' : 'registered'}</span>}
+            bodyClassName="p-0"
+          >
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[760px]">
+                <thead>
+                  <tr className="border-b border-[#f0f0f0] text-[10px] uppercase tracking-[0.08em] text-[#a3a3a3]">
+                    <th className="px-5 py-2.5 text-start font-medium">{ar ? 'الطالب المسجل' : 'Registered Student'}</th>
+                    <th className="px-3 py-2.5 text-start font-medium">{ar ? 'المرحلة والمدرسة' : 'Grade & School'}</th>
+                    <th className="px-3 py-2.5 text-start font-medium">{ar ? 'النشاط (XP / نجوم)' : 'XP / Stars'}</th>
+                    <th className="px-3 py-2.5 text-start font-medium">{ar ? 'حالة الإلحاق بالفصول' : 'Class Status'}</th>
+                    <th className="px-5 py-2.5 text-end font-medium">{ar ? 'إجراء' : 'Action'}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredPlatformStudents.map((prof) => {
+                    const name = prof.quad_name || prof.display_name || prof.email || 'طالب';
+                    const matchedEnrollments = customList.filter(
+                      (e) =>
+                        (e.studentId && e.studentId === prof.id) ||
+                        (prof.email && e.email && e.email.toLowerCase() === prof.email.toLowerCase()) ||
+                        namesMatch(e.quadName, name)
+                    );
+                    return (
+                      <tr key={prof.id} className="border-b border-[#f7f7f7] text-[12px] last:border-0 hover:bg-[#fafafa]">
+                        <td className="px-5 py-3">
+                          <div className="flex items-center gap-2.5">
+                            <Avatar name={name} />
+                            <div>
+                              <div className="font-semibold text-[#0a0a0a]">{name}</div>
+                              <div className="font-mono text-[10px] text-[#737373]">{prof.email || prof.id}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-3 py-3">
+                          <div className="font-medium text-[#171717]">{gradeLabel(prof.grade_level, ar)}</div>
+                          <div className="text-[10px] text-[#737373]">{prof.school_name || prof.school_code || '—'}</div>
+                        </td>
+                        <td className="px-3 py-3">
+                          <div className="flex items-center gap-2 font-mono text-[11px]">
+                            <span className="font-bold text-[#1d4ed8]">{prof.xp ?? 0} XP</span>
+                            <span className="inline-flex items-center gap-0.5 text-amber-600"><Flame size={11} />{prof.streak ?? 0}</span>
+                            <span className="inline-flex items-center gap-0.5 text-emerald-700"><Star size={11} />{prof.stars ?? 0}</span>
+                          </div>
+                        </td>
+                        <td className="px-3 py-3">
+                          {matchedEnrollments.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {matchedEnrollments.map((m) => (
+                                <span key={m.id} className="sn-badge sn-badge-green !text-[10px]">{m.classNameAr}</span>
+                              ))}
+                            </div>
+                          ) : (
+                            <span className="sn-badge sn-badge-amber !text-[10px]">
+                              {ar ? 'غير ملتحق بفصل بعد' : 'Not enrolled yet'}
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-5 py-3 text-end">
+                          <button
+                            type="button"
+                            onClick={() => { setPreselectedProfile(prof); setIsAddOpen(true); }}
+                            className="sn-btn sn-btn-primary sn-btn-sm !h-8 !text-[11px]"
+                          >
+                            <Plus size={13} />
+                            <span>{ar ? 'إلحاق بفصل' : 'Enroll'}</span>
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </SectionCard>
+        )
       ) : rows.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-[#e5e5e5] p-10 text-center bg-[#fafafa]">
           <Users size={36} className="mx-auto text-[#a3a3a3] mb-3" />
           <h3 className="text-[15px] font-bold text-[#0a0a0a] mb-1">
-            {ar ? 'لا يوجد طلاب مسجلون حالياً' : 'No students found'}
+            {ar ? 'لا يوجد طلاب ملحقون بالفصول حالياً' : 'No enrolled students found'}
           </h3>
           <p className="text-[12px] text-[#737373] max-w-[45ch] mx-auto mb-4">
-            {ar ? 'استخدم زر "إضافة طالب جديد" لتسجيل الطلاب وإلحاقهم بالفصول مباشرة في Supabase.' : 'Click "Add Student" to enroll real students into classes.'}
+            {ar
+              ? 'استخدم زر "إلحاق طالب مسجل" للبحث باسم الطالب المسجل بالمنصة وإضافته لفصلك ببياناته الحقيقية فوراً.'
+              : 'Click "Enroll Registered Student" to attach existing SciNexa students to your class.'}
           </p>
-          <button type="button" onClick={() => setIsAddOpen(true)} className="sn-btn sn-btn-primary">
+          <button type="button" onClick={() => { setPreselectedProfile(null); setIsAddOpen(true); }} className="sn-btn sn-btn-primary">
             <Plus size={15} strokeWidth={2} />
-            {ar ? 'إضافة أول طالب' : 'Add First Student'}
+            {ar ? 'إلحاق طالب مسجل بالمنصة' : 'Enroll Registered Student'}
           </button>
         </div>
       ) : (
-        <SectionCard title={ar ? 'كل الطلاب' : 'All students'} action={<span className="sn-badge sn-badge-outline">{rows.length} {ar ? 'طالب' : 'students'}</span>} bodyClassName="p-0">
+        <SectionCard title={ar ? 'الطلاب الملتحقون بالفصول' : 'Enrolled Class Roster'} action={<span className="sn-badge sn-badge-outline">{rows.length} {ar ? 'طالب' : 'students'}</span>} bodyClassName="p-0">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[720px]">
+            <table className="w-full min-w-[820px]">
               <thead>
                 <tr className="border-b border-[#f0f0f0] text-[10px] uppercase tracking-[0.08em] text-[#a3a3a3]">
                   <th className="px-5 py-2.5 text-start font-medium">{ar ? 'الطالب' : 'Student'}</th>
-                  <th className="px-3 py-2.5 text-start font-medium">{ar ? 'الفصل' : 'Class'}</th>
+                  <th className="px-3 py-2.5 text-start font-medium">{ar ? 'الفصل والمرحلة' : 'Class & Grade'}</th>
+                  <th className="px-3 py-2.5 text-start font-medium">{ar ? 'نقاط المنصة' : 'Telemetry'}</th>
                   <th className="px-3 py-2.5 text-start font-medium">{ar ? 'ولي الأمر وواتساب' : 'Parent & WhatsApp'}</th>
                   <th className="px-3 py-2.5 text-start font-medium">{ar ? 'الإتقان' : 'Mastery'}</th>
-                  <th className="px-3 py-2.5 text-start font-medium">{ar ? 'آخر نشاط' : 'Last active'}</th>
                   <th className="px-5 py-2.5 text-start font-medium">{ar ? 'الحالة' : 'Status'}</th>
-                  <th className="px-5 py-2.5 text-end font-medium">{ar ? 'إجراءات' : 'Actions'}</th>
+                  <th className="px-5 py-2.5 text-end font-medium">{ar ? 'إدارة' : 'Manage'}</th>
                 </tr>
               </thead>
               <tbody>
@@ -792,12 +1589,21 @@ export const StudentsPage: React.FC = () => {
                       <div className="flex items-center gap-2.5">
                         <Avatar name={student.nameEn} />
                         <div>
-                          <div className="font-medium">{ar ? student.nameAr : student.nameEn}</div>
-                          <div className="font-mono text-[10px] text-[#a3a3a3]">{student.code}</div>
+                          <div className="font-medium text-[#0a0a0a]">{ar ? student.nameAr : student.nameEn}</div>
+                          <div className="font-mono text-[10px] text-[#737373]">{student.email || student.code}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-3 py-3 text-[#737373]">{ar ? student.classAr : student.classEn}</td>
+                    <td className="px-3 py-3">
+                      <div className="font-medium text-[#171717]">{ar ? student.classAr : student.classEn}</div>
+                      <div className="text-[10px] text-[#737373]">{student.gradeLabelText}</div>
+                    </td>
+                    <td className="px-3 py-3">
+                      <div className="flex items-center gap-2 font-mono text-[11px]">
+                        <span className="font-bold text-[#1d4ed8]">{student.xp} XP</span>
+                        <span className="text-amber-600">{student.streak}🔥</span>
+                      </div>
+                    </td>
                     <td className="px-3 py-3">
                       {student.parentPhone ? (
                         <a
@@ -827,21 +1633,30 @@ export const StudentsPage: React.FC = () => {
                         <span className="font-mono text-[11px]">{student.mastery}%</span>
                       </div>
                     </td>
-                    <td className="px-3 py-3 text-[#737373]">{ar ? student.lastAr : student.lastEn}</td>
                     <td className="px-5 py-3">
                       <span className={`sn-badge !text-[10px] ${student.status === 'active' ? 'sn-badge-green' : 'sn-badge-amber'}`}>
                         {student.status === 'active' ? (ar ? 'نشط' : 'Active') : (ar ? 'مراجعة' : 'Review')}
                       </span>
                     </td>
                     <td className="px-5 py-3 text-end">
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteStudent(student.id, student.nameAr)}
-                        className="text-red-500 hover:text-red-700 p-1 rounded-lg hover:bg-red-50 transition-colors"
-                        title={ar ? 'حذف الطالب' : 'Delete Student'}
-                      >
-                        <Trash2 size={15} />
-                      </button>
+                      <div className="inline-flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => setInspectStudent(student.raw)}
+                          className="text-blue-600 hover:bg-blue-50 p-1.5 rounded-lg transition-colors"
+                          title={ar ? 'إدارة وملف الطالب' : 'Manage Student'}
+                        >
+                          <Eye size={15} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteStudent(student.id, student.nameAr)}
+                          className="text-red-500 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                          title={ar ? 'إزالة من الفصل' : 'Remove from Class'}
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -1118,6 +1933,9 @@ export const AssignmentsPage: React.FC = () => {
   const [submissions, setSubmissions] = useState<StudentSubmission[]>(() => getSubmissions());
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [expandedAsgId, setExpandedAsgId] = useState<string | null>(null);
+  const [classFilter, setClassFilter] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [onlyPendingReview, setOnlyPendingReview] = useState(false);
   const [gradingInputs, setGradingInputs] = useState<Record<string, { score: string; feedback: string }>>({});
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -1174,6 +1992,24 @@ export const AssignmentsPage: React.FC = () => {
     ? Math.round(gradedSubs.reduce((a, b) => a + (b.score || 0), 0) / gradedSubs.length)
     : null;
 
+  const filteredAssignments = useMemo(() => {
+    const q = searchTerm.trim().toLowerCase();
+    return assignmentsList.filter((item) => {
+      if (classFilter !== 'all' && item.classId !== classFilter) return false;
+      if (onlyPendingReview) {
+        const hasPending = submissions.some((s) => s.assignmentId === item.id && s.status === 'submitted');
+        if (!hasPending) return false;
+      }
+      if (!q) return true;
+      return (
+        item.titleAr.toLowerCase().includes(q) ||
+        item.titleEn.toLowerCase().includes(q) ||
+        item.classNameAr.toLowerCase().includes(q) ||
+        (item.targetStudentQuadName || '').toLowerCase().includes(q)
+      );
+    });
+  }, [assignmentsList, classFilter, onlyPendingReview, searchTerm, submissions]);
+
   return (
     <div>
       <PageHeader
@@ -1211,30 +2047,82 @@ export const AssignmentsPage: React.FC = () => {
         <StatCard label={ar ? 'متوسط الدرجة' : 'Avg. score'} value={avgScore !== null ? `${avgScore}%` : '—'} hint={ar ? 'تقييم فعلي' : 'real average'} icon={TrendingUp} />
       </div>
 
+      {/* Filters bar */}
+      {assignmentsList.length > 0 && (
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-2 flex-1">
+            <div className="relative w-full sm:w-[260px]">
+              <Search size={14} strokeWidth={1.8} className="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-[#a3a3a3]" />
+              <input
+                className="sn-input !h-9 !ps-9 !text-[12px]"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder={ar ? 'ابحث في الواجبات أو الطلاب…' : 'Search assignments…'}
+              />
+            </div>
+            {classes.length > 0 && (
+              <select
+                value={classFilter}
+                onChange={(e) => setClassFilter(e.target.value)}
+                className="sn-input !h-9 !w-auto text-[12px]"
+              >
+                <option value="all">{ar ? 'كل الفصول' : 'All Classes'}</option>
+                {classes.map((c) => (
+                  <option key={c.id} value={c.id}>{ar ? c.name_ar : c.name_en}</option>
+                ))}
+              </select>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setOnlyPendingReview((v) => !v)}
+              className={`sn-btn sn-btn-sm ${onlyPendingReview ? 'sn-btn-primary' : 'sn-btn-outline'}`}
+            >
+              <Clock size={13} />
+              <span>{ar ? 'بانتظار التصحيح' : 'Pending review'}</span>
+            </button>
+            <button type="button" onClick={() => void loadData()} className="sn-btn sn-btn-outline sn-btn-sm" title={ar ? 'تحديث' : 'Refresh'}>
+              <RefreshCw size={13} />
+            </button>
+          </div>
+        </div>
+      )}
+
       {loading ? (
         <div className="py-12 text-center text-[#737373] text-[13px]">
           <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-[#0a0a0a] border-t-transparent mb-2" />
           <p>{ar ? 'جارٍ تحميل الواجبات من Supabase…' : 'Loading assignments from Supabase…'}</p>
         </div>
-      ) : assignmentsList.length === 0 ? (
+      ) : filteredAssignments.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-[#e5e5e5] p-10 text-center bg-[#fafafa]">
           <ClipboardList size={36} className="mx-auto text-[#a3a3a3] mb-3" />
           <h3 className="text-[15px] font-bold text-[#0a0a0a] mb-1">
-            {ar ? 'لا توجد واجبات منشورة حتى الآن' : 'No assignments found'}
+            {assignmentsList.length === 0
+              ? (ar ? 'لا توجد واجبات منشورة حتى الآن' : 'No assignments found')
+              : (ar ? 'لا توجد واجبات مطابقة للتصفية الحالية' : 'No assignments match the current filter')}
           </h3>
           <p className="text-[12px] text-[#737373] max-w-[45ch] mx-auto mb-4">
             {ar ? 'اضغط على "إنشاء واجب جديد" لتعيين تجربة معملية لفصل كامل أو لطالب معين.' : 'Click "Create assignment" to link a 3D lab task to your students.'}
           </p>
           <button type="button" onClick={() => setIsCreateOpen(true)} className="sn-btn sn-btn-primary">
             <Plus size={15} strokeWidth={2} />
-            {ar ? 'إنشاء أول واجب الآن' : 'Create First Assignment'}
+            {ar ? 'إنشاء واجب الآن' : 'Create Assignment'}
           </button>
         </div>
       ) : (
         <div className="space-y-2.5">
-          {assignmentsList.map((item) => {
+          {filteredAssignments.map((item) => {
             const accent = item.linkedLab || 'chemistry';
             const asgSubs = submissions.filter((s) => s.assignmentId === item.id);
+            const targetStudents = item.targetStudentQuadName
+              ? enrolledStudents.filter((st) => st.classId === item.classId && namesMatch(st.quadName, item.targetStudentQuadName))
+              : enrolledStudents.filter((st) => st.classId === item.classId);
+            const targetTotal = item.targetStudentQuadName ? Math.max(1, targetStudents.length) : targetStudents.length;
+            const notSubmittedStudents = targetStudents.filter(
+              (st) => !asgSubs.some((sub) => namesMatch(sub.studentQuadName, st.quadName))
+            );
+            const progressPct = targetTotal > 0 ? Math.min(100, Math.round((asgSubs.length / targetTotal) * 100)) : 0;
             const isExpanded = expandedAsgId === item.id;
             return (
               <div key={item.id} className={`sn-${accent} sn-card p-4`}>
@@ -1260,6 +2148,16 @@ export const AssignmentsPage: React.FC = () => {
                       )}
                     </div>
                     <p className="mt-1 text-[11px] text-[#737373] line-clamp-1">{item.descriptionAr}</p>
+                    {targetTotal > 0 && (
+                      <div className="mt-2 flex items-center gap-2 max-w-[260px]">
+                        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#f0f0f0]">
+                          <div className="h-full rounded-full bg-[#0a0a0a]" style={{ width: `${progressPct}%` }} />
+                        </div>
+                        <span className="font-mono text-[10px] text-[#737373]">
+                          {asgSubs.length}/{targetTotal} {ar ? 'تسليم' : 'submitted'}
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-center gap-2">
                     <button
@@ -1348,6 +2246,12 @@ export const AssignmentsPage: React.FC = () => {
                           </div>
                         );
                       })
+                    )}
+                    {notSubmittedStudents.length > 0 && (
+                      <div className="rounded-xl border border-amber-200 bg-amber-50/60 px-3 py-2.5 text-[11px] text-amber-900">
+                        <span className="font-bold">{ar ? `لم يسلموا بعد (${notSubmittedStudents.length}): ` : `Not submitted yet (${notSubmittedStudents.length}): `}</span>
+                        <span>{notSubmittedStudents.map((s) => s.quadName).join('، ')}</span>
+                      </div>
                     )}
                   </div>
                 )}
