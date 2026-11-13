@@ -38,6 +38,7 @@ ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS quad_name TEXT;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS national_id VARCHAR(14);
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS student_code TEXT;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS school_name TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS parent_phone TEXT;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS governorate_id TEXT DEFAULT 'cairo';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS administration_id TEXT;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS grade_level TEXT DEFAULT 'sec1';
@@ -46,6 +47,8 @@ ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS xp INTEGER DEFAULT 0;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS streak INTEGER DEFAULT 0;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS stars INTEGER DEFAULT 0;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+
+CREATE UNIQUE INDEX IF NOT EXISTS profiles_email_key ON public.profiles (lower(email));
 
 -- فك قيد الارتباط بـ auth.users لتمكين مزامنة حسابات Clerk و Google بسلاسة
 DO $$

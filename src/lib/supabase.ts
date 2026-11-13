@@ -136,8 +136,11 @@ export async function dbUpsertProfile(profile: Partial<DbProfile> & { id: string
         school_code: profile.school_code || profile.school_name || undefined,
         school_name: profile.school_name || profile.school_code || undefined,
         parent_phone: profile.parent_phone || undefined,
+        governorate_id: profile.governorate_id || undefined,
+        administration_id: profile.administration_id || undefined,
         grade_level: profile.grade_level || undefined,
         student_code: profile.student_code || profile.national_id || undefined,
+        national_id: profile.national_id || undefined,
       };
 
       const { error } = await supabase.from('profiles').upsert([payload]);
@@ -149,8 +152,11 @@ export async function dbUpsertProfile(profile: Partial<DbProfile> & { id: string
           school_code: payload.school_code,
           school_name: payload.school_name,
           parent_phone: payload.parent_phone,
+          governorate_id: payload.governorate_id,
+          administration_id: payload.administration_id,
           grade_level: payload.grade_level,
           student_code: payload.student_code,
+          national_id: payload.national_id,
         }).eq('email', profile.email);
       }
     } catch (e) {

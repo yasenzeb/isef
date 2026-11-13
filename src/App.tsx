@@ -132,10 +132,12 @@ const AppRoutes: React.FC = () => (
 
 const ClerkWithRouter: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navigate = useNavigate();
+  const navigateRef = React.useRef(navigate);
+  navigateRef.current = navigate;
 
   // تفعيل المراقبة اللحظية الشاملة لداروين للتنقل بين كل صفحات المنصة
   useEffect(() => {
-    const cleanup = initDarwinAgentWatcher((path) => navigate(path));
+    const cleanup = initDarwinAgentWatcher((path) => navigateRef.current(path));
 
     // تحديث عبارة ترحيب داروين فورياً باسم الطالب والصف الحقيقي
     const syncDarwinGreeting = () => {

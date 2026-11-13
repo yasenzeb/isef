@@ -29,7 +29,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     document.documentElement.setAttribute('lang', language);
   }, [language, isRTL]);
 
-  const t = translations[language];
+  const t = translations[language] || translations.ar || translations.en;
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t, isRTL }}>

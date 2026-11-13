@@ -917,7 +917,7 @@ export const AnatomyViewer: React.FC<AnatomyViewerProps> = ({ isPresentationMode
     const height = mount.clientHeight || 650;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x060810);
+    scene.background = new THREE.Color(0xf5f5f5);
     sceneRef.current = scene;
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);

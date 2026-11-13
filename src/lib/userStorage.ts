@@ -238,17 +238,22 @@ export function getRegisteredStudentInfo(emailOrId?: string | null, explicitName
   name = name.replace(/\b(simone|undefined|null|guest|student|طالب)\b/gi, '').trim();
 
   // فحص الاسم الأول التلقائي إن لم يتوفر اسم رباعي
+  const isDefaultName = !name;
   if (!name) {
-    name = 'عبد الرحمن أحمد';
+    name = 'طالب العلم';
   }
 
-  const firstName = extractFirstName(name);
-  const gradeArabic = GRADE_LABELS_AR[gradeCode] || 'الصف الثاني الثانوي';
-  const gradeEnglish = GRADE_LABELS_EN[gradeCode] || 'Grade 11 (Secondary 2)';
+  const firstName = isDefaultName ? 'يا بطل' : extractFirstName(name);
+  const gradeArabic = GRADE_LABELS_AR[gradeCode] || 'المرحلة الثانوية';
+  const gradeEnglish = GRADE_LABELS_EN[gradeCode] || 'Secondary School';
 
-  // المناداة بالاسم الأول فقط: "أهلاً يا [الاسم الأول] يا بطل [الصف]"
-  const greetingPhraseAr = `أهلاً يا ${firstName} يا بطل ${gradeArabic}!`;
-  const greetingPhraseEn = `Welcome, ${firstName}, champion of ${gradeEnglish}!`;
+  // المناداة بالاسم الأول: "أهلاً يا [الاسم] يا بطل [الصف]"
+  const greetingPhraseAr = isDefaultName
+    ? `أهلاً بك يا بطل في ${gradeArabic}!`
+    : `أهلاً يا ${firstName} يا بطل ${gradeArabic}!`;
+  const greetingPhraseEn = isDefaultName
+    ? `Welcome to SciNexa, explorer of ${gradeEnglish}!`
+    : `Welcome, ${firstName}, champion of ${gradeEnglish}!`;
 
   return {
     realName: name,

@@ -113,8 +113,8 @@ export const GeologyModelViewer: React.FC<GeologyModelViewerProps> = ({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x050a1a);
-    scene.fog = new THREE.FogExp2(0x050a1a, 0.028);
+    scene.background = new THREE.Color(0xf5f5f5);
+    scene.fog = new THREE.FogExp2(0xf5f5f5, 0.028);
 
     // 2. Camera
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);

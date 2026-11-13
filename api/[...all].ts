@@ -101,7 +101,11 @@ export default async function handler(req: any, res: any) {
 
   let bodyData: any = {};
   if (req.method === 'POST') {
-    bodyData = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : req.body || {};
+    try {
+      bodyData = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : req.body || {};
+    } catch {
+      bodyData = {};
+    }
   }
 
   const payload = {
