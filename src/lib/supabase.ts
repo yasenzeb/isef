@@ -87,6 +87,7 @@ export interface DbAssignment {
   description_en: string;
   total_points: number;
   assigned_at: string;
+  questions?: any[];
 }
 
 export interface DbSubmission {
@@ -97,6 +98,9 @@ export interface DbSubmission {
   status: 'submitted' | 'graded';
   teacher_feedback?: string;
   submitted_at: string;
+  answers?: any[];
+  auto_score?: number;
+  manual_score?: number;
 }
 
 export interface DbInstitution {

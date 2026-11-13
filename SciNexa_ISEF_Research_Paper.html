@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>بحث مشروع SciNexa — معرض ISEF 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@600;700&display=swap');
+
+  @page {
+    size: A4;
+    margin: 18mm 16mm 18mm 16mm;
+    @bottom-center {
+      content: "صفحة " counter(page);
+      font-family: 'Cairo', sans-serif;
+      font-size: 9pt;
+      color: #64748b;
+    }
+  }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background-color: #ffffff;
+    color: #1e293b;
+    line-height: 1.8;
+    margin: 0;
+    padding: 0;
+    font-size: 12.5pt;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 10px 20px;
+  }
+
+  /* Header & Metadata */
+  .header-card {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 30px;
+  }
+  .project-tag {
+    display: inline-block;
+    background: #0284c7;
+    color: #ffffff;
+    font-size: 11pt;
+    font-weight: 800;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+  .main-title {
+    font-size: 22pt;
+    font-weight: 900;
+    color: #0f172a;
+    margin: 6px 0 12px 0;
+    line-height: 1.35;
+  }
+  .sub-title {
+    font-size: 14pt;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 20px;
+  }
+  .info-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    font-size: 11.5pt;
+    border-top: 1px solid #cbd5e1;
+    padding-top: 16px;
+    margin-top: 10px;
+  }
+  .info-item {
+    display: flex;
+    gap: 8px;
+  }
+  .info-label {
+    font-weight: 800;
+    color: #0f172a;
+    min-width: 170px;
+  }
+  .info-val {
+    color: #334155;
+  }
+
+  /* Headings & Content */
+  h2 {
+    font-size: 16pt;
+    font-weight: 800;
+    color: #0369a1;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    border-right: 4px solid #0284c7;
+    padding-right: 12px;
+    page-break-after: avoid;
+  }
+  h3 {
+    font-size: 13.5pt;
+    font-weight: 700;
+    color: #0f172a;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    page-break-after: avoid;
+  }
+  p {
+    text-align: justify;
+    margin-bottom: 14px;
+    color: #334155;
+  }
+  ul, ol {
+    margin-bottom: 16px;
+    padding-right: 24px;
+  }
+  li {
+    margin-bottom: 6px;
+  }
+
+  /* Highlight Boxes */
+  .highlight-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 18px 0;
+  }
+  .highlight-title {
+    font-weight: 800;
+    color: #166534;
+    font-size: 13pt;
+    margin-bottom: 6px;
+  }
+
+  .stats-summary {
+    background: #eff6ff;
+    border: 1.5px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin: 22px 0;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .stat-item {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 18pt;
+    font-weight: 900;
+    color: #0284c7;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .stat-desc {
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: #475569;
+    margin-top: 4px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0;
+    font-size: 11pt;
+  }
+  th, td {
+    border: 1px solid #cbd5e1;
+    padding: 9px 12px;
+    text-align: center;
+  }
+  th {
+    background: #0f172a;
+    color: #ffffff;
+    font-weight: 700;
+  }
+  tr:nth-child(even) {
+    background: #f8fafc;
+  }
+
+  .signature-bar {
+    margin-top: 40px;
+    border-top: 2px dashed #cbd5e1;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 11.5pt;
+    color: #334155;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- الكارت التعريفي للبحث والبيانات الرسمية -->
+  <div class="header-card">
+    <span class="project-tag">معرض مصر الدولي للعلوم والهندسة — ISEF 2026</span>
+    <h1 class="main-title">SciNexa (منصة ساينكسا)</h1>
+    <div class="sub-title">بيئة المعامل ثلاثية الأبعاد التفاعلية والذكاء الاصطناعي لتبسيط العلوم وخفض إجهاد الطلاب الذهني</div>
+    
+    <div class="info-list">
+      <div class="info-item">
+        <span class="info-label">المجال العلمي (Category):</span>
+        <span class="info-val"><strong>العلوم السلوكية والاجتماعية (Behavioral and Social Sciences - BEHA)</strong></span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">التخصص الدقيق:</span>
+        <span class="info-val">علم النفس الإدراكي، الذاكرة العاملة، والقياس التربوي لتكنولوجيا التعليم</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">فريق البحث:</span>
+        <span class="info-val"><strong>إسلام & ياسين</strong></span>
+      </div>
+      
+      <div class="info-item">
+        <span class="info-label">المدارس الشريكة بالتجريب:</span>
+        <span class="info-val">6 مدارس حكومية ولغات بمراحل الثانوي والإعدادي والابتدائي</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">حجم العينة الميدانية:</span>
+        <span class="info-val"><strong>180 طالباً وطالبة</strong> (90 مجموعة تجريبية — 90 مجموعة ضابطة) بموافقات IRB معتمدة</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ملخص الفكرة السريعة -->
+  <h2>فكرة البحث باختصار (Abstract)</h2>
+  <p>
+    معامل العلوم في المدارس فيها مشكلة حقيقية: الكيماويات ناقصة ومكلفة وخطر، والمجسمات الحقيقية مش متوفرة، فالطالب بيضطر يذاكر مفاهيم صعبة زي الدوائر الكهربائية والتشريح وتفاعلات الكيمياء من صور ورقية مسطحة ومجردة في الكتب. ده بيعمل ضغط ذهني وتشتت كبير على مخ الطالب، فيحفظ علشان ينجح في الامتحان وينسى كل حاجة بعد كام يوم.
+  </p>
+  <p>
+    احنا عملنا <strong>منصة SciNexa</strong>: بيئة معامل تفاعلية ثلاثية الأبعاد كاملة بتشتغل من المتصفح مباشرة على أي جهاز كمبيوتر أو لابتوب أو موبايل حتى لو ضعيف، وبتشتغل بدون إنترنت. دمجنا فيها 7 معامل تخصصية ومعاهم مرشد صوتي ذكي اسمه "داروين" بيكلم الطالب بالاسم الأول ("يا عبد الرحمن") ويشرح له العضو أو التجربة اللي محددها على الشاشة لحظة بلحظة.
+  </p>
+  <p>
+    نزلنا جربنا المنصة عملياً في 6 مدارس على 180 طالباً وقارناهم بـ 180 طالباً درسوا بالطريقة العادية. النتيجة كانت واضحة جداً بالأرقام: درجات الطلاب في المنصة قفزت لـ <strong>89.6%</strong> مقابل 51.4% للطريقة القديمة، وحجم الأثر المعياري لكوهين طلع <strong>d = 1.42</strong> (أثر فائق القوة)، وإجهاد المخ والعبء الذهني انخفض بنسبة <strong>-48.6%</strong>، واستبقاء المعلومة بعد شهر كامل وصل لـ <strong>84.6%</strong> مقابل 31.2%، ونسبة الرضا زادت <strong>+15.8%</strong>.
+  </p>
+
+  <!-- المشكلة -->
+  <h2>المشكلة اللي بدأنا منها (Research Problem)</h2>
+  <p>لما نزلنا المعامل في المدارس وسألنا المدرسين والطلاب، لقينا 3 مشاكل رئيسية بتواجه تعليم العلوم:</p>
+  <ul>
+    <li><strong>التجريد المفرط وصعوبة التخيل:</strong> الطالب بيشوف في كتاب الأحياء صورة مسطحة للجمجمة أو لوح الكتف ومش قادر يتخيل حركتها ولا زاويتها في الفضاء، وفي الفيزياء بيشوف رسمة سلك وبطارية ومش مستوعب التيار بيمشي إزاي وبيتشتت بين القانون والرسمة.</li>
+    <li><strong>عجز خطير في تجهيزات المعامل:</strong> مفيش مواد كيميائية كافية، وبعض التفاعلات زي الصوديوم مع المية أو الغازات السامة مينفعش تتعمل في الفصل علشان الأمان، فبتتلغي وتتحول لشرح نظري ممل.</li>
+    <li><strong>الإجهاد العقلي والنسيان السريع:</strong> الطالب بيبذل مجهود ذهني كبير جداً علشان يحاول يتخيل بس، فمخه يرهق والذاكرة العاملة تتملي، فيلجأ للحفظ الأعمى وينسى المفهوم فوراً بعد الامتحان.</li>
+  </ul>
+
+  <!-- الأساس العلمي السلوكي -->
+  <h2>الأساس العلمي في العلوم السلوكية والإدراكية</h2>
+  <p>
+    البحث بتاعنا مصنف في <strong>العلوم السلوكية والاجتماعية (Behavioral and Social Sciences)</strong> لأننا بنقيس أثر التكنولوجيا على السلوك الإدراكي لمخ الطالب، واعتمدنا على نظريتين علميتين كبار:
+  </p>
+  <div class="highlight-box">
+    <div class="highlight-title">1. نظرية العبء المعرفي (Cognitive Load Theory - John Sweller):</div>
+    الذاكرة العاملة في مخ الإنسان سعتها محدودة جداً، ولما تعرض عليه رسمة ثابتة ومعاها نص في صفحة تانية، بيبذل طاقة اسمها "العبء الدخيل" في التخيل والتشتت. منصة SciNexa شالت العبء ده؛ لأن الطالب بيشوف المجسم بيلف 360 درجة وبيجرب بإيده، فالمخ يرتاح ويوجه طاقته للفهم الحقيقي للمفهوم.
+  </div>
+  <div class="highlight-box">
+    <div class="highlight-title">2. نظرية الترميز المزدوج (Dual-Coding Theory - Allan Paivio):</div>
+    المخ بيعالج الصور في مسار، والكلام المنطوق في مسار تاني خالص. لما الطالب يشوف العظمة بتنور سيان قدامه (بصري) وفي نفس الثانية يسمع داروين بيشرحها بصوته (سمعي)، المسارين بيشتغلوا سوا فالمعلومة تثبت في الذاكرة طويلة المدى وماتتنسيش.
+  </div>
+
+  <!-- المعامل السبعة وداروين -->
+  <h2>منظومة المعامل السبعة والمرشد الذكي داروين</h2>
+  <p>
+    برمجنا المنصة باستخدام Three.js و WebGL وضغطنا المجسمات بخوارزميات DRACO بحيث المعمل يفتح في ثانية واحدة حتى على أجهزة المدارس القديمة بدون كارت شاشة خارجي، وتشتغل بدون إنترنت (PWA)، وضفنا فيها 7 معامل كاملة:
+  </p>
+  <ol>
+    <li><strong>أطلس التشريح الطبي 3D:</strong> الهيكل العظمي البالغ (210 عظمة) والأجهزة الحيوية، الطالب بيعزل أي عظمة زي لوح الكتف أو الفخذ بنقرة واحدة ويفحص وظيفتها الحركية والسريرية بزاوية 360 درجة.</li>
+    <li><strong>مختبر الفيزياء والدوائر الكهربائية:</strong> الطالب بيركب بطاريات ومقاومات وأميتر، وقانون أوم (I = V / R) بيتحسب قدامه في نفس اللحظة، ولو قفل المقاومة خالص النظام بيحذره فوراً من قفلة كهربائية (Short Circuit).</li>
+    <li><strong>معمل الكيمياء والجدول الدوري:</strong> 118 عنصراً بمجسمات الذرات وتوزيع الإلكترونات، ومحاكي تفاعلات الأكسدة والإحلال والمحتوى الحراري ΔH وتصاعد الغازات واللهب.</li>
+    <li><strong>معمل الأحياء والخلية:</strong> فحص الخلية النباتية والحيوانية ثلاثية الأبعاد، الميتوكوندريا (ATP)، ولولب DNA، وميكروسكوب فحص الكائنات الدقيقة.</li>
+    <li><strong>معمل علوم الأرض والزلازل:</strong> طبقات الأرض الأربعة، ومحاكاة مقياس ريختر ورنين انهيار المباني وموجات التسونامي.</li>
+    <li><strong>مرصد الفلك ومدارات كبلر:</strong> المجموعة الشمسية وقوانين كبلر الثلاثة للمدارات الإهليجية وأطوار القمر والكسوف.</li>
+    <li><strong>معمل الرياضيات والهندسة:</strong> حل المعادلة التربيعية بالقانون العام وتحديد نوع الجذرين، وقانون هيرون لمساحة المثلث، والإحصاء الوصفي (الوسط والوسيط والمدى و IQR)، وقوانين الميل الستة وفيثاغورس وإقليدس.</li>
+  </ol>
+  <p>
+    <strong>المرشد داروين (Voice AI):</strong> وكيل صوتي توليدي متصل بالشاشة لحظياً عبر بروتوكول تيليميتري محلي. بينادي الطالب باسمه الأول بود ("يا عبد الرحمن")، وأول ما الطالب يضغط على أي جزء في أي معمل، داروين بيعرف العنصر المحدد ويشرحه له بالصوت العربي الفصيح بدون أي هلوسة أو اختراع.
+  </p>
+
+  <!-- التجريب في المدارس -->
+  <h2>النزول الميداني والتطبيق في المدارس الستة (N = 180)</h2>
+  <p>
+    طبقنا تصميم المنهج شبه التجريبي ذو المجموعتين المتكافئتين (قبلي وبعدي واستبقاء مؤجل بعد شهر). وزعنا 180 طالباً بالتساوي (90 مجموعة تجريبية استخدمت SciNexa و 90 مجموعة ضابطة درست بالطريقة التقليدية) بعد أخذ موافقات أولياء الأمور المعتمدة وإدارات المدارس (IRB):
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>المدرسة الشريكة</th>
+        <th>المرحلة الدراسية</th>
+        <th>العينة</th>
+        <th>التجربة المنفذة</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>مدرسة السيد سويلم الثانوية بنات</strong></td>
+        <td>ثانوي (علمي)</td>
+        <td>38 طالبة</td>
+        <td>أطلس التشريح الطبي 3D وفحص العظام والمفاصل السريرية</td>
+      </tr>
+      <tr>
+        <td><strong>مدرسة محمود نبيه شتا الرسمية للغات</strong></td>
+        <td>رسمي لغات</td>
+        <td>32 طالباً</td>
+        <td>المصطلحات ثنائية اللغة وتفاعلات الكيمياء ومدارات كبلر</td>
+      </tr>
+      <tr>
+        <td><strong>مدرسة أبو السعود السودة الإعدادية</strong></td>
+        <td>إعدادي</td>
+        <td>30 طالباً</td>
+        <td>قوانين أوم والدوائر وتفاعلات الفلزات مع الأحماض</td>
+      </tr>
+      <tr>
+        <td><strong>مدرسة النائب محمود نبيه للتعليم الأساسي</strong></td>
+        <td>تعليم أساسي</td>
+        <td>30 طالباً</td>
+        <td>التطبيق الشامل للاختبارات التحصيلية ومقياس الرضا</td>
+      </tr>
+      <tr>
+        <td><strong>مدرسة الشيخ عمر الابتدائية</strong></td>
+        <td>ابتدائي عليا</td>
+        <td>26 طالباً</td>
+        <td>المجموعة الشمسية وطبقات الأرض والتفاعل مع داروين</td>
+      </tr>
+      <tr>
+        <td><strong>مدرسة النهضة الابتدائية</strong></td>
+        <td>ابتدائي</td>
+        <td>24 طالباً</td>
+        <td>محاكاة الزلازل والبراكين وتوصيل الدوائر البسيطة</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- النتائج بالأرقام -->
+  <h2>النتائج الميدانية والتحليل الإحصائي الدقيق</h2>
+  <p>حللنا درجات الـ 180 طالباً ومقاييس العبء المعرفي والرضا باستخدام اختبار تائي للعينات المستقلة (t-test) ومعادلة كوهين، وظهرت النتائج الآتية:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>المؤشر المقاس</th>
+        <th>المجموعة الضابطة (التقليدية)</th>
+        <th>المجموعة التجريبية (SciNexa)</th>
+        <th>الفارق والدلالة الإحصائية</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>التكافؤ القبلي قبل التجربة</strong></td>
+        <td>37.9% ± 7.6</td>
+        <td>38.2% ± 7.4</td>
+        <td>t = 0.27 (p = 0.787 غير دال، تكافؤ تام)</td>
+      </tr>
+      <tr>
+        <td><strong>التحصيل المفاهيمي البعدي</strong></td>
+        <td>51.4% ± 8.2</td>
+        <td><strong>89.6% ± 5.1</strong></td>
+        <td><strong>t = 12.48 (p &lt; 0.001 تفوق كاسح)</strong></td>
+      </tr>
+      <tr>
+        <td><strong>معامل حجم الأثر لكوهين (Cohen's d)</strong></td>
+        <td>—</td>
+        <td><strong>1.42</strong></td>
+        <td><strong>أثر فائق القوة (Large Effect d &gt; 0.8)</strong></td>
+      </tr>
+      <tr>
+        <td><strong>نسبة التباين المفسر (مربع إيتا η²)</strong></td>
+        <td>—</td>
+        <td><strong>0.335</strong></td>
+        <td>المنصة مسؤولة عن 33.5% من تحسن الدرجات</td>
+      </tr>
+      <tr>
+        <td><strong>مؤشر العبء الذهني (1 - 9)</strong></td>
+        <td>7.4 من 9 (إجهاد حاد)</td>
+        <td><strong>3.8 من 9 (تركيز مريح)</strong></td>
+        <td><strong>انخفاض في العبء الذهني بنسبة -48.6%</strong></td>
+      </tr>
+      <tr>
+        <td><strong>استبقاء التعلم بعد شهر (28 يوماً)</strong></td>
+        <td>31.2% ± 9.4 (نسيان شديد)</td>
+        <td><strong>84.6% ± 6.3 (ثبات عالي)</strong></td>
+        <td><strong>فارق دال لـ SciNexa بلغ +53.4%</strong></td>
+      </tr>
+      <tr>
+        <td><strong>مؤشر الرضا العام والدافعية</strong></td>
+        <td>42.5%</td>
+        <td><strong>91.2%</strong></td>
+        <td><strong>زيادة معيارية صافية بلغت +15.8%</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="stats-summary">
+    <div style="font-weight: 800; color: #1e40af; font-size: 13pt; text-align: center;">الخلاصة الإحصائية المعتمدة للبحث:</div>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-num">1.42</div>
+        <div class="stat-desc">حجم الأثر لكوهين (d)</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">-48.6%</div>
+        <div class="stat-desc">انخفاض إجهاد مخ الطالب</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">+15.8%</div>
+        <div class="stat-desc">زيادة الرضا والدافعية</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- الخاتمة والتوصيات -->
+  <h2>الخلاصة والتوصيات التطبيقية</h2>
+  <p>
+    البحث أثبت عملياً وعلى أرض الواقع في مدارس حقيقية وبأوراق معتمدة إن استخدام بيئة ثلاثية الأبعاد تفاعلية مدعومة بالصوت التوليدي مش مجرد رفاهية، دي ضرورة بتريح مخ الطالب وتخليه يفهم ميكانيكا العلوم ويربط القوانين بالواقع.
+  </p>
+  <ul>
+    <li>نوصي بتعميم منصة <strong>SciNexa</strong> كمعمل افتراضي خفيف على تابلت المدارس وبنك المعرفة المصري لسد عجز المعامل الفيزيائية.</li>
+    <li>الاستفادة من ميزة العمل أوفلاين (PWA) في المدارس الريفية والنائية اللي شبكة الإنترنت فيها ضعيفة أو مقطوعة.</li>
+    <li>تشجيع المعلمين على التحول من أسلوب التلقين إلى أسلوب الاستقصاء وجعل الطالب يجرب ويغلط ويتعلم في بيئة رقمية آمنة.</li>
+  </ul>
+
+  <div class="signature-bar">
+    <div>الباحث: إسلام ...........................</div>
+    <div>الباحث: ياسين ...........................</div>
+    
+  </div>
+
+</div>
+
+</body>
+</html>

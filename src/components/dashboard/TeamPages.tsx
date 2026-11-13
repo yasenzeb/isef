@@ -32,6 +32,9 @@ import {
   type AssignmentItem,
   type StudentSubmission,
   type ClassInfo,
+  type AssignmentQuestion,
+  type StudentAnswer,
+  type QuestionType,
 } from '../../data/schoolEnrollment';
 import {
   dbFetchClasses,
@@ -83,6 +86,11 @@ import {
   UserCheck,
   RefreshCw,
   ArrowRightLeft,
+  Beaker,
+  Sparkles,
+  Maximize2,
+  FileText,
+  Check,
 } from 'lucide-react';
 
 const GRADE_LABELS_AR: Record<string, string> = {
@@ -1670,6 +1678,91 @@ export const StudentsPage: React.FC = () => {
 };
 
 /* ── 3. Create Assignment Modal ───────────────────────────────────────────── */
+const getLabQuestionTemplates = (lab: string): AssignmentQuestion[] => {
+  const ts = Date.now();
+  if (lab === 'chemistry') {
+    return [
+      {
+        id: `q-mcq-${ts}-1`,
+        type: 'mcq',
+        questionAr: 'ما هو العامل المؤكسد في تفاعل إمرار غاز الهيدروجين على أكسيد النحاس الأسود الساخن؟',
+        questionEn: 'What is the oxidizing agent in the reaction of hydrogen gas with heated copper oxide?',
+        options: ['أكسيد النحاس الأسود (CuO)', 'غاز الهيدروجين (H2)', 'بخار الماء الناتج (H2O)', 'فلز النحاس الأحمر (Cu)'],
+        correctAnswer: 0,
+        points: 30,
+      },
+      {
+        id: `q-essay-${ts}-2`,
+        type: 'essay',
+        questionAr: 'فسر علمياً التغير اللوني الحادث في أنبوب التفاعل، مع كتابة المعادلة الكيميائية الموزونة الدالة على ذلك.',
+        questionEn: 'Explain scientifically the color change observed in the tube and write the balanced equation.',
+        points: 35,
+        instructionsAr: 'اذكر التغير اللوني من الأسود إلى الأحمر وتأثير عملية الاختزال.',
+      },
+      {
+        id: `q-lab-${ts}-3`,
+        type: 'lab_work',
+        questionAr: 'لقطة شاشة أو صورة من المعمل ثلاثي الأبعاد تثبت استكمال التجربة وظهور راسب النحاس الأحمر.',
+        questionEn: 'Screenshot from the 3D lab verifying experiment completion and red copper deposit.',
+        points: 35,
+        instructionsAr: 'يجب على الطالب رفع صورة شاشة واضحة من معمل الكيمياء 3D توضح النتيجة النهائية.',
+      },
+    ];
+  }
+  if (lab === 'physics') {
+    return [
+      {
+        id: `q-mcq-${ts}-1`,
+        type: 'mcq',
+        questionAr: 'إذا زادت شدة التيار الكهربائي المار في مقاومة أومية ثابتة إلى الضعف، فإن فرق الجهد بين طرفيها:',
+        questionEn: 'If the current through a fixed ohmic resistor is doubled, the potential difference across it:',
+        options: ['يزداد إلى الضعف', 'يقل إلى النصف', 'يظل ثابتاً لا يتغير', 'يتضاعف لأربعة أمثال'],
+        correctAnswer: 0,
+        points: 30,
+      },
+      {
+        id: `q-essay-${ts}-2`,
+        type: 'essay',
+        questionAr: 'وضح نص قانون أوم واستنتج العلاقة الرياضية المستخدمة لحساب المقاومة الكهربائية ووحدات قياسها.',
+        questionEn: 'State Ohm’s Law and derive the formula used for calculating resistance and its units.',
+        points: 35,
+      },
+      {
+        id: `q-lab-${ts}-3`,
+        type: 'lab_work',
+        questionAr: 'صورة توضح توصيل الدائرة الكهربائية الافتراضية مع قراءات الفولتميتر والأميتر على التوالي والتوازي.',
+        questionEn: 'Photo of the virtual circuit setup with voltmeter and ammeter readings.',
+        points: 35,
+      },
+    ];
+  }
+  return [
+    {
+      id: `q-mcq-${ts}-1`,
+      type: 'mcq',
+      questionAr: 'ما الفرضية العلمية الأساسية التي اختبرتها خلال هذه التجربة المعملية الاستقصائية؟',
+      questionEn: 'What is the primary scientific hypothesis tested in this experimental inquiry?',
+      options: ['وجود علاقة طردية بين المتغيرات', 'عدم وجود أي تأثير للمتغير المستقل', 'حدوث تفاعل تلقائي غير محفز', 'ثبات الطاقة الكلية للنظام'],
+      correctAnswer: 0,
+      points: 30,
+    },
+    {
+      id: `q-essay-${ts}-2`,
+      type: 'essay',
+      questionAr: 'سجل أهم ملاحظاتك ونتائج القياسات والتحليل البياني المستخلص من التجربة.',
+      questionEn: 'Record your main observations, measurement data, and analytical conclusions.',
+      points: 35,
+    },
+    {
+      id: `q-lab-${ts}-3`,
+      type: 'lab_work',
+      questionAr: 'لقطة شاشة أو صورة تثبت إتمام التجربة المعملية وتوثيق النتائج الحية.',
+      questionEn: 'Screenshot or photo proving experimental completion and live data.',
+      points: 35,
+    },
+  ];
+};
+
 const CreateAssignmentModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
@@ -1679,6 +1772,7 @@ const CreateAssignmentModal: React.FC<{
   ar: boolean;
 }> = ({ isOpen, onClose, onAdded, classes, students, ar }) => {
   const { educator } = useSession();
+  const [activeTab, setActiveTab] = useState<'info' | 'questions'>('info');
   const [titleAr, setTitleAr] = useState('');
   const [classId, setClassId] = useState('');
   const [targetType, setTargetType] = useState<'class' | 'student'>('class');
@@ -1686,6 +1780,7 @@ const CreateAssignmentModal: React.FC<{
   const [linkedLab, setLinkedLab] = useState('chemistry');
   const [dueDateAr, setDueDateAr] = useState('الخميس القادم · ١٠:٠٠ م');
   const [descriptionAr, setDescriptionAr] = useState('');
+  const [questions, setQuestions] = useState<AssignmentQuestion[]>(() => getLabQuestionTemplates('chemistry'));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -1706,6 +1801,64 @@ const CreateAssignmentModal: React.FC<{
     }
   }, [targetType, classStudents, targetStudentQuadName]);
 
+  const handleLabChange = (newLab: string) => {
+    setLinkedLab(newLab);
+    if (questions.length === 0 || window.confirm(ar ? 'هل ترغب في تحميل أسئلة مقترحة تتوافق مع هذا المعمل؟' : 'Load template questions for this lab?')) {
+      setQuestions(getLabQuestionTemplates(newLab));
+    }
+  };
+
+  const handleAddQuestion = (type: QuestionType) => {
+    const ts = Date.now();
+    if (type === 'mcq') {
+      setQuestions((prev) => [
+        ...prev,
+        {
+          id: `q-mcq-${ts}`,
+          type: 'mcq',
+          questionAr: 'سؤال اختر من متعدد جديد…',
+          options: ['الخيار أ', 'الخيار ب', 'الخيار ج', 'الخيار د'],
+          correctAnswer: 0,
+          points: 25,
+        },
+      ]);
+    } else if (type === 'essay') {
+      setQuestions((prev) => [
+        ...prev,
+        {
+          id: `q-essay-${ts}`,
+          type: 'essay',
+          questionAr: 'اشرح واستنتج…',
+          points: 25,
+          instructionsAr: 'كتابة الإجابة والتفسير العلمي',
+        },
+      ]);
+    } else {
+      setQuestions((prev) => [
+        ...prev,
+        {
+          id: `q-lab-${ts}`,
+          type: 'lab_work',
+          questionAr: 'رفع لقطة شاشة أو صورة من المعمل توثق الخطوة…',
+          points: 25,
+          instructionsAr: 'ارفع صورة توضح إنجاز التجربة',
+        },
+      ]);
+    }
+  };
+
+  const handleRemoveQuestion = (id: string) => {
+    setQuestions((prev) => prev.filter((q) => q.id !== id));
+  };
+
+  const handleUpdateQuestion = (id: string, updates: Partial<AssignmentQuestion>) => {
+    setQuestions((prev) => prev.map((q) => (q.id === id ? { ...q, ...updates } : q)));
+  };
+
+  const totalPoints = useMemo(() => {
+    return questions.reduce((sum, q) => sum + (Number(q.points) || 0), 0);
+  }, [questions]);
+
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -1713,16 +1866,25 @@ const CreateAssignmentModal: React.FC<{
     setError(null);
     if (!titleAr.trim()) {
       setError(ar ? 'يرجى إدخال عنوان الواجب أو التكليف.' : 'Please enter assignment title.');
+      setActiveTab('info');
       return;
     }
     if (classes.length === 0 || !classId) {
       setError(ar ? 'يرجى إنشاء فصل دراسي أولاً لإرسال الواجب إليه.' : 'Please create a class first.');
+      setActiveTab('info');
       return;
     }
     if (targetType === 'student' && !targetStudentQuadName.trim()) {
       setError(ar ? 'يرجى اختيار الطالب المعني أو كتابة اسمه.' : 'Please select or enter the target student.');
+      setActiveTab('info');
       return;
     }
+    if (questions.length === 0) {
+      setError(ar ? 'يرجى إضافة سؤال واحد على الأقل في بنك الأسئلة.' : 'Please add at least one question.');
+      setActiveTab('questions');
+      return;
+    }
+
     const cls = classes.find((c) => c.id === classId);
     const newAssignment: AssignmentItem = {
       id: `asg-${Date.now()}`,
@@ -1738,9 +1900,11 @@ const CreateAssignmentModal: React.FC<{
       dueDateEn: dueDateAr.trim() || 'Next Thursday',
       descriptionAr: descriptionAr.trim() || 'قم بفتح المعمل 3D وإجراء التجربة المطلوبة وتسجيل النتائج.',
       descriptionEn: descriptionAr.trim() || 'Open the 3D lab, conduct the experiment, and report findings.',
-      totalPoints: 100,
+      totalPoints: totalPoints > 0 ? totalPoints : 100,
       assignedAt: new Date().toISOString().slice(0, 10),
+      questions,
     };
+
     setSaving(true);
     const res = await addAssignment(newAssignment);
     setSaving(false);
@@ -1755,170 +1919,697 @@ const CreateAssignmentModal: React.FC<{
   };
 
   return (
-    <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="relative w-full max-w-[540px] rounded-2xl bg-white p-6 shadow-2xl border border-[#e5e5e5]" dir={ar ? 'rtl' : 'ltr'}>
-        <div className="flex items-center justify-between border-b border-[#f0f0f0] pb-3 mb-4">
-          <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#eff6ff] text-[#1d4ed8]">
+    <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-sm overflow-y-auto">
+      <div className="relative w-full max-w-[680px] my-auto max-h-[90vh] flex flex-col rounded-2xl bg-white shadow-2xl border border-[#e5e5e5] overflow-hidden" dir={ar ? 'rtl' : 'ltr'}>
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-[#f0f0f0] p-4 shrink-0 bg-slate-50/70">
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
               <ClipboardList size={18} />
             </span>
-            <h3 className="text-[15px] font-bold text-[#0a0a0a]">
-              {ar ? 'إنشاء واجب أو تقييم معملي جديد' : 'Create New Assignment'}
-            </h3>
+            <div>
+              <h3 className="text-sm font-bold text-[#0a0a0a]">
+                {ar ? 'إنشاء واجب وتقييم معملي ذكي' : 'Create Smart Lab Assignment'}
+              </h3>
+              <p className="text-[11px] text-[#737373]">
+                {ar ? 'يدعم الاختيار من متعدد، المقالي، والتجارب المعملية المصورة' : 'Supports MCQ, Essay, and Practical Lab photo proofs'}
+              </p>
+            </div>
           </div>
           <button type="button" onClick={onClose} className="sn-btn sn-btn-quiet sn-btn-icon text-[#737373]">
             <X size={16} />
           </button>
         </div>
 
+        {/* Tab Toggle */}
+        <div className="flex border-b border-[#f0f0f0] px-4 pt-2 gap-2 bg-white shrink-0">
+          <button
+            type="button"
+            onClick={() => setActiveTab('info')}
+            className={`pb-2.5 px-3 text-xs font-semibold border-b-2 transition-all flex items-center gap-1.5 ${
+              activeTab === 'info'
+                ? 'border-[#0a0a0a] text-[#0a0a0a]'
+                : 'border-transparent text-[#737373] hover:text-[#0a0a0a]'
+            }`}
+          >
+            <span>{ar ? 'البيانات الأساسية والفصل' : 'Basic Info & Class'}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('questions')}
+            className={`pb-2.5 px-3 text-xs font-semibold border-b-2 transition-all flex items-center gap-1.5 ${
+              activeTab === 'questions'
+                ? 'border-[#0a0a0a] text-[#0a0a0a]'
+                : 'border-transparent text-[#737373] hover:text-[#0a0a0a]'
+            }`}
+          >
+            <span>{ar ? 'بنك الأسئلة والتجارب' : 'Questions & Labs'}</span>
+            <span className="px-1.5 py-0.2 rounded-full bg-blue-100 text-blue-700 font-mono text-[10px]">
+              {questions.length}
+            </span>
+            <span className="text-[10px] text-[#737373] font-mono">
+              ({totalPoints} {ar ? 'درجة' : 'pts'})
+            </span>
+          </button>
+        </div>
+
         {error && (
-          <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-[12px] text-red-700">
-            {error}
+          <div className="m-4 p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
+            <AlertCircle size={15} className="shrink-0" />
+            <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-3.5">
-          <div>
-            <label className="block text-[11px] font-semibold text-[#171717] mb-1">
-              {ar ? 'عنوان الواجب أو التجربة *' : 'Assignment Title *'}
-            </label>
-            <input
-              type="text"
-              required
-              value={titleAr}
-              onChange={(e) => setTitleAr(e.target.value)}
-              placeholder={ar ? 'مثال: تقرير تجربة اختزال أكسيد النحاس بالهيدروجين' : 'e.g. Hydrogen reduction report'}
-              className="h-9 w-full rounded-xl border border-[#e5e5e5] px-3 text-[12px] text-[#0a0a0a] outline-none focus:border-[#0a0a0a]"
-            />
-          </div>
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-5 space-y-4">
+          {activeTab === 'info' ? (
+            <div className="space-y-3.5">
+              <div>
+                <label className="block text-[11px] font-semibold text-[#171717] mb-1">
+                  {ar ? 'عنوان الواجب أو التجربة *' : 'Assignment Title *'}
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={titleAr}
+                  onChange={(e) => setTitleAr(e.target.value)}
+                  placeholder={ar ? 'مثال: تقرير تجربة اختزال أكسيد النحاس بالهيدروجين' : 'e.g. Hydrogen reduction report'}
+                  className="h-9 w-full rounded-xl border border-[#e5e5e5] px-3 text-xs text-[#0a0a0a] outline-none focus:border-[#0a0a0a]"
+                />
+              </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-[11px] font-semibold text-[#171717] mb-1">
-                {ar ? 'الفصل الدراسي *' : 'Target Class *'}
-              </label>
-              <select
-                value={classId}
-                onChange={(e) => setClassId(e.target.value)}
-                className="h-9 w-full rounded-xl border border-[#e5e5e5] px-2 text-[12px] text-[#0a0a0a] outline-none focus:border-[#0a0a0a] bg-white"
-              >
-                {classes.length === 0 ? (
-                  <option value="">{ar ? 'لا توجد فصول (أنشئ فصلاً أولاً)' : 'No classes available'}</option>
-                ) : (
-                  classes.map((c) => (
-                    <option key={c.id} value={c.id}>{ar ? c.name_ar : c.name_en}</option>
-                  ))
-                )}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-semibold text-[#171717] mb-1">
-                {ar ? 'المعمل التفاعلي المرتبط *' : 'Linked Lab *'}
-              </label>
-              <select
-                value={linkedLab}
-                onChange={(e) => setLinkedLab(e.target.value)}
-                className="h-9 w-full rounded-xl border border-[#e5e5e5] px-2 text-[12px] text-[#0a0a0a] outline-none focus:border-[#0a0a0a] bg-white"
-              >
-                {LAB_MODULES.map((lab) => (
-                  <option key={lab.id} value={lab.id}>{ar ? lab.nameAr : lab.nameEn}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="block text-[11px] font-semibold text-[#171717]">
-              {ar ? 'توجيه التكليف إلى *' : 'Target Audience *'}
-            </label>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => { setTargetType('class'); setTargetStudentQuadName(''); }}
-                className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-xl border text-[11px] font-semibold transition-all ${targetType === 'class' ? 'border-[#0a0a0a] bg-[#0a0a0a] text-white' : 'border-[#e5e5e5] bg-white text-[#737373] hover:border-[#a3a3a3]'}`}
-              >
-                <Users size={13} />
-                <span>{ar ? 'جميع طلاب الفصل' : 'All Class'}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setTargetType('student');
-                  if (classStudents.length > 0 && !targetStudentQuadName) {
-                    setTargetStudentQuadName(classStudents[0].quadName);
-                  }
-                }}
-                className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-xl border text-[11px] font-semibold transition-all ${targetType === 'student' ? 'border-[#0a0a0a] bg-[#0a0a0a] text-white' : 'border-[#e5e5e5] bg-white text-[#737373] hover:border-[#a3a3a3]'}`}
-              >
-                <UserCog size={13} />
-                <span>{ar ? 'طالب معين من المسجلين' : 'Specific Student'}</span>
-              </button>
-            </div>
-
-            {targetType === 'student' && (
-              <div className="pt-1 space-y-1.5">
-                {classStudents.length > 0 ? (
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] font-semibold text-[#171717] mb-1">
+                    {ar ? 'الفصل الدراسي *' : 'Target Class *'}
+                  </label>
                   <select
-                    value={targetStudentQuadName}
-                    onChange={(e) => setTargetStudentQuadName(e.target.value)}
-                    className="h-9 w-full rounded-xl border border-[#e5e5e5] px-2.5 text-[12px] text-[#0a0a0a] outline-none focus:border-[#0a0a0a] bg-white"
+                    value={classId}
+                    onChange={(e) => setClassId(e.target.value)}
+                    className="h-9 w-full rounded-xl border border-[#e5e5e5] px-2 text-xs text-[#0a0a0a] outline-none focus:border-[#0a0a0a] bg-white"
                   >
-                    {classStudents.map((st) => (
-                      <option key={st.id} value={st.quadName}>
-                        {st.quadName} ({st.classNameAr})
-                      </option>
+                    {classes.length === 0 ? (
+                      <option value="">{ar ? 'لا توجد فصول (أنشئ فصلاً أولاً)' : 'No classes available'}</option>
+                    ) : (
+                      classes.map((c) => (
+                        <option key={c.id} value={c.id}>{ar ? c.name_ar : c.name_en}</option>
+                      ))
+                    )}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-[#171717] mb-1">
+                    {ar ? 'المعمل التفاعلي المرتبط *' : 'Linked Lab *'}
+                  </label>
+                  <select
+                    value={linkedLab}
+                    onChange={(e) => handleLabChange(e.target.value)}
+                    className="h-9 w-full rounded-xl border border-[#e5e5e5] px-2 text-xs text-[#0a0a0a] outline-none focus:border-[#0a0a0a] bg-white"
+                  >
+                    {LAB_MODULES.map((lab) => (
+                      <option key={lab.id} value={lab.id}>{ar ? lab.nameAr : lab.nameEn}</option>
                     ))}
                   </select>
-                ) : (
-                  <input
-                    type="text"
-                    value={targetStudentQuadName}
-                    onChange={(e) => setTargetStudentQuadName(e.target.value)}
-                    placeholder={ar ? 'اكتب الاسم الكامل للطالب المعني…' : 'Student full name…'}
-                    className="h-9 w-full rounded-xl border border-[#e5e5e5] px-3 text-[12px] text-[#0a0a0a] outline-none focus:border-[#0a0a0a]"
-                    required
-                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-[11px] font-semibold text-[#171717]">
+                  {ar ? 'توجيه التكليف إلى *' : 'Target Audience *'}
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => { setTargetType('class'); setTargetStudentQuadName(''); }}
+                    className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-xl border text-[11px] font-semibold transition-all ${targetType === 'class' ? 'border-[#0a0a0a] bg-[#0a0a0a] text-white' : 'border-[#e5e5e5] bg-white text-[#737373] hover:border-[#a3a3a3]'}`}
+                  >
+                    <Users size={13} />
+                    <span>{ar ? 'جميع طلاب الفصل' : 'All Class'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTargetType('student');
+                      if (classStudents.length > 0 && !targetStudentQuadName) {
+                        setTargetStudentQuadName(classStudents[0].quadName);
+                      }
+                    }}
+                    className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-xl border text-[11px] font-semibold transition-all ${targetType === 'student' ? 'border-[#0a0a0a] bg-[#0a0a0a] text-white' : 'border-[#e5e5e5] bg-white text-[#737373] hover:border-[#a3a3a3]'}`}
+                  >
+                    <UserCog size={13} />
+                    <span>{ar ? 'طالب معين من المسجلين' : 'Specific Student'}</span>
+                  </button>
+                </div>
+
+                {targetType === 'student' && (
+                  <div className="pt-1 space-y-1.5">
+                    {classStudents.length > 0 ? (
+                      <select
+                        value={targetStudentQuadName}
+                        onChange={(e) => setTargetStudentQuadName(e.target.value)}
+                        className="h-9 w-full rounded-xl border border-[#e5e5e5] px-2.5 text-xs text-[#0a0a0a] outline-none focus:border-[#0a0a0a] bg-white"
+                      >
+                        {classStudents.map((st) => (
+                          <option key={st.id} value={st.quadName}>
+                            {st.quadName} ({st.classNameAr})
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type="text"
+                        value={targetStudentQuadName}
+                        onChange={(e) => setTargetStudentQuadName(e.target.value)}
+                        placeholder={ar ? 'اكتب الاسم الكامل للطالب المعني…' : 'Student full name…'}
+                        className="h-9 w-full rounded-xl border border-[#e5e5e5] px-3 text-xs text-[#0a0a0a] outline-none focus:border-[#0a0a0a]"
+                        required
+                      />
+                    )}
+                  </div>
                 )}
               </div>
-            )}
-          </div>
 
-          <div>
-            <label className="block text-[11px] font-semibold text-[#171717] mb-1">
-              {ar ? 'موعد التسليم' : 'Due Date'}
-            </label>
-            <input
-              type="text"
-              value={dueDateAr}
-              onChange={(e) => setDueDateAr(e.target.value)}
-              className="h-9 w-full rounded-xl border border-[#e5e5e5] px-3 text-[12px] text-[#0a0a0a] outline-none focus:border-[#0a0a0a]"
-            />
-          </div>
+              <div>
+                <label className="block text-[11px] font-semibold text-[#171717] mb-1">
+                  {ar ? 'موعد التسليم' : 'Due Date'}
+                </label>
+                <input
+                  type="text"
+                  value={dueDateAr}
+                  onChange={(e) => setDueDateAr(e.target.value)}
+                  className="h-9 w-full rounded-xl border border-[#e5e5e5] px-3 text-xs text-[#0a0a0a] outline-none focus:border-[#0a0a0a]"
+                />
+              </div>
 
-          <div>
-            <label className="block text-[11px] font-semibold text-[#171717] mb-1">
-              {ar ? 'تعليمات الواجب والتجربة' : 'Instructions'}
-            </label>
-            <textarea
-              rows={3}
-              value={descriptionAr}
-              onChange={(e) => setDescriptionAr(e.target.value)}
-              placeholder={ar ? 'اكتب تعليمات التجربة المعملية وكيفية تسجيل النتائج…' : 'Enter instructions…'}
-              className="w-full rounded-xl border border-[#e5e5e5] p-2.5 text-[12px] text-[#0a0a0a] outline-none focus:border-[#0a0a0a]"
-            />
-          </div>
+              <div>
+                <label className="block text-[11px] font-semibold text-[#171717] mb-1">
+                  {ar ? 'تعليمات الواجب والتجربة' : 'Instructions'}
+                </label>
+                <textarea
+                  rows={3}
+                  value={descriptionAr}
+                  onChange={(e) => setDescriptionAr(e.target.value)}
+                  placeholder={ar ? 'اكتب تعليمات التجربة المعملية وكيفية تسجيل النتائج…' : 'Enter instructions…'}
+                  className="w-full rounded-xl border border-[#e5e5e5] p-2.5 text-xs text-[#0a0a0a] outline-none focus:border-[#0a0a0a]"
+                />
+              </div>
+            </div>
+          ) : (
+            /* Questions Builder Tab */
+            <div className="space-y-4">
+              <div className="flex items-center justify-between gap-2 flex-wrap pb-2 border-b border-[#f0f0f0]">
+                <span className="text-xs font-semibold text-[#0a0a0a]">
+                  {ar ? 'قائمة الأسئلة والأنشطة المعملية:' : 'Questions & Practical Tasks:'}
+                </span>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <button
+                    type="button"
+                    onClick={() => setQuestions(getLabQuestionTemplates(linkedLab))}
+                    className="px-2.5 py-1 rounded-lg border border-blue-200 bg-blue-50 text-blue-700 text-[11px] font-medium hover:bg-blue-100 transition-colors"
+                  >
+                    {ar ? 'تحميل أسئلة المعمل' : 'Reset to Lab Template'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAddQuestion('mcq')}
+                    className="px-2 py-1 rounded-lg border border-[#e5e5e5] text-[11px] font-medium text-[#171717] hover:bg-[#f5f5f5]"
+                  >
+                    + {ar ? 'اختيار من متعدد' : 'MCQ'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAddQuestion('essay')}
+                    className="px-2 py-1 rounded-lg border border-[#e5e5e5] text-[11px] font-medium text-[#171717] hover:bg-[#f5f5f5]"
+                  >
+                    + {ar ? 'مقالي' : 'Essay'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAddQuestion('lab_work')}
+                    className="px-2 py-1 rounded-lg border border-[#e5e5e5] text-[11px] font-medium text-[#171717] hover:bg-[#f5f5f5]"
+                  >
+                    + {ar ? 'تجربة مصورة' : 'Lab Photo'}
+                  </button>
+                </div>
+              </div>
 
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#f0f0f0]">
-            <button type="button" onClick={onClose} className="sn-btn sn-btn-outline sn-btn-sm">
-              {ar ? 'إلغاء' : 'Cancel'}
-            </button>
-            <button type="submit" disabled={saving} className="sn-btn sn-btn-primary sn-btn-sm">
-              {saving ? (ar ? 'جارٍ الحفظ…' : 'Saving…') : (ar ? 'حفظ وإرسال للطلاب' : 'Save & Assign')}
-            </button>
+              {questions.length === 0 ? (
+                <div className="p-8 text-center text-xs text-[#737373] border border-dashed border-[#e5e5e5] rounded-xl">
+                  {ar ? 'لا توجد أسئلة مضافة بعد. اضغط على "تحميل أسئلة المعمل" لبدء نموذج جاهز.' : 'No questions yet. Click "Reset to Lab Template".'}
+                </div>
+              ) : (
+                <div className="space-y-3.5">
+                  {questions.map((q, qIndex) => (
+                    <div key={q.id} className="p-3.5 rounded-xl border border-[#e5e5e5] bg-[#fafafa] space-y-2.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="flex h-5 w-5 items-center justify-center rounded-md bg-[#0a0a0a] text-white text-[10px] font-bold">
+                            {qIndex + 1}
+                          </span>
+                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded ${
+                            q.type === 'mcq'
+                              ? 'bg-blue-100 text-blue-800'
+                              : q.type === 'essay'
+                              ? 'bg-purple-100 text-purple-800'
+                              : 'bg-emerald-100 text-emerald-800'
+                          }`}>
+                            {q.type === 'mcq'
+                              ? (ar ? 'اختيار من متعدد (تصحيح آلي)' : 'MCQ (Auto)')
+                              : q.type === 'essay'
+                              ? (ar ? 'سؤال مقالي' : 'Essay')
+                              : (ar ? 'تجربة معملية مصورة' : 'Lab Practical')}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1 text-[11px] text-[#737373]">
+                            <span>{ar ? 'الدرجة:' : 'Points:'}</span>
+                            <input
+                              type="number"
+                              min={1}
+                              max={100}
+                              value={q.points}
+                              onChange={(e) => handleUpdateQuestion(q.id, { points: Number(e.target.value) || 0 })}
+                              className="h-6 w-12 rounded border border-[#e5e5e5] bg-white px-1 text-center font-mono text-[11px] outline-none"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveQuestion(q.id)}
+                            className="text-[#a3a3a3] hover:text-red-500 p-1"
+                            title={ar ? 'حذف السؤال' : 'Delete'}
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Question prompt input */}
+                      <div>
+                        <input
+                          type="text"
+                          value={q.questionAr}
+                          onChange={(e) => handleUpdateQuestion(q.id, { questionAr: e.target.value })}
+                          placeholder={ar ? 'نص السؤال أو التكليف المطلوب…' : 'Question text…'}
+                          className="h-8 w-full rounded-lg border border-[#e5e5e5] bg-white px-2.5 text-xs text-[#0a0a0a] outline-none focus:border-[#0a0a0a]"
+                        />
+                      </div>
+
+                      {/* Options editor for MCQ */}
+                      {q.type === 'mcq' && q.options && (
+                        <div className="space-y-1.5 pt-1 ps-2 border-s-2 border-blue-200">
+                          <span className="block text-[10px] font-semibold text-[#737373]">
+                            {ar ? 'الخيارات (حدد الدائرة أمام الإجابة الصحيحة للتصحيح التلقائي):' : 'Options (select the correct one):'}
+                          </span>
+                          {q.options.map((opt, optIdx) => (
+                            <div key={optIdx} className="flex items-center gap-2">
+                              <input
+                                type="radio"
+                                name={`correct-${q.id}`}
+                                checked={q.correctAnswer === optIdx}
+                                onChange={() => handleUpdateQuestion(q.id, { correctAnswer: optIdx })}
+                                className="accent-[#0a0a0a] cursor-pointer"
+                                title={ar ? 'تعيين كإجابة صحيحة' : 'Set as correct'}
+                              />
+                              <input
+                                type="text"
+                                value={opt}
+                                onChange={(e) => {
+                                  const updatedOpts = [...(q.options || [])];
+                                  updatedOpts[optIdx] = e.target.value;
+                                  handleUpdateQuestion(q.id, { options: updatedOpts });
+                                }}
+                                className="h-7 flex-1 rounded-md border border-[#e5e5e5] bg-white px-2 text-[11px] text-[#0a0a0a] outline-none"
+                                placeholder={`${ar ? 'الخيار' : 'Option'} ${String.fromCharCode(65 + optIdx)}`}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Instructions for essay/lab */}
+                      {q.type !== 'mcq' && (
+                        <div>
+                          <input
+                            type="text"
+                            value={q.instructionsAr || ''}
+                            onChange={(e) => handleUpdateQuestion(q.id, { instructionsAr: e.target.value })}
+                            placeholder={ar ? 'إرشادات إضافية للطالب (اختياري)…' : 'Extra student guidance (optional)…'}
+                            className="h-7 w-full rounded-md border border-dashed border-[#e5e5e5] bg-white px-2 text-[11px] text-[#737373] outline-none"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="flex items-center justify-between pt-3 border-t border-[#f0f0f0] shrink-0">
+            <div className="text-[11px] text-[#737373]">
+              {totalPoints > 0 && (
+                <span>
+                  {ar ? `إجمالي درجات التكليف: ${totalPoints} درجة` : `Total: ${totalPoints} pts`}
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button type="button" onClick={onClose} className="sn-btn sn-btn-outline sn-btn-sm">
+                {ar ? 'إلغاء' : 'Cancel'}
+              </button>
+              <button type="submit" disabled={saving} className="sn-btn sn-btn-primary sn-btn-sm">
+                {saving ? (ar ? 'جارٍ الحفظ…' : 'Saving…') : (ar ? 'حفظ وإرسال للطلاب' : 'Save & Assign')}
+              </button>
+            </div>
           </div>
         </form>
       </div>
+    </div>
+  );
+};
+
+/* ── Teacher Grade Submission Modal ─────────────────────────────────────── */
+const TeacherGradeSubmissionModal: React.FC<{
+  isOpen: boolean;
+  onClose: () => void;
+  submission: StudentSubmission | null;
+  assignment: AssignmentItem | null;
+  onGraded: (updated: StudentSubmission) => void;
+  ar: boolean;
+}> = ({ isOpen, onClose, submission, assignment, onGraded, ar }) => {
+  const [questionScores, setQuestionScores] = useState<Record<string, number>>({});
+  const [feedback, setFeedback] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
+
+  const questions: AssignmentQuestion[] = useMemo(() => {
+    if (assignment?.questions && assignment.questions.length > 0) {
+      return assignment.questions;
+    }
+    return assignment ? getLabQuestionTemplates(assignment.linkedLab || 'chemistry') : [];
+  }, [assignment]);
+
+  useEffect(() => {
+    if (submission) {
+      setFeedback(submission.teacherFeedback || (ar ? 'أداء معملي متميز ومتقن! 🌟' : 'Great lab work and observations!'));
+      const initialScores: Record<string, number> = {};
+      questions.forEach((q) => {
+        const ans = submission.answers?.find((a) => a.questionId === q.id);
+        if (q.type === 'mcq') {
+          const isCorrect = ans?.selectedOption !== undefined && ans.selectedOption === q.correctAnswer;
+          initialScores[q.id] = isCorrect ? q.points : 0;
+        } else {
+          initialScores[q.id] = typeof ans?.pointsEarned === 'number'
+            ? ans.pointsEarned
+            : submission.status === 'graded' && typeof submission.score === 'number'
+            ? Math.round((submission.score / 100) * q.points)
+            : q.points;
+        }
+      });
+      setQuestionScores(initialScores);
+    }
+  }, [submission, questions, isOpen, ar]);
+
+  if (!isOpen || !submission || !assignment) return null;
+
+  const totalPossiblePoints = questions.reduce((sum, q) => sum + (q.points || 0), 0) || 100;
+  const currentTotalScore = Object.values(questionScores).reduce((sum, s) => sum + (Number(s) || 0), 0);
+  const finalPercentage = Math.min(100, Math.max(0, Math.round((currentTotalScore / totalPossiblePoints) * 100)));
+
+  const handleSave = async () => {
+    setSaving(true);
+    const updatedAnswers: StudentAnswer[] = questions.map((q) => {
+      const existing = submission.answers?.find((a) => a.questionId === q.id);
+      return {
+        questionId: q.id,
+        questionType: q.type,
+        maxPoints: q.points,
+        selectedOption: existing?.selectedOption,
+        answerText: existing?.answerText,
+        imageBase64: existing?.imageBase64,
+        isCorrect: q.type === 'mcq' ? existing?.selectedOption === q.correctAnswer : undefined,
+        pointsEarned: questionScores[q.id] ?? 0,
+      };
+    });
+
+    const res = await gradeSubmissionAndSync(submission, finalPercentage, feedback, updatedAnswers);
+    setSaving(false);
+    if (res.ok) {
+      onGraded(res.updated);
+      onClose();
+    }
+  };
+
+  const praiseTemplates = [
+    ar ? 'أداء معملي ممتاز ومتقن! 🌟' : 'Excellent laboratory performance!',
+    ar ? 'تم التحقق من نتائج التجربة ورصد الدرجة كاملة.' : 'Experiment verified and approved.',
+    ar ? 'ملاحظات جيدة، يرجى التدقيق أكثر في استنتاج المعادلة.' : 'Good observation, please refine conclusion.',
+  ];
+
+  return (
+    <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-sm overflow-y-auto">
+      <div className="relative w-full max-w-[720px] my-auto max-h-[92vh] flex flex-col rounded-2xl bg-white shadow-2xl border border-[#e5e5e5] overflow-hidden" dir={ar ? 'rtl' : 'ltr'}>
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-[#f0f0f0] p-4 bg-slate-50 shrink-0">
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+              <FileCheck2 size={18} />
+            </span>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-bold text-[#0a0a0a]">{submission.studentQuadName}</h3>
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                  submission.status === 'graded' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                }`}>
+                  {submission.status === 'graded' ? (ar ? `مُقيّم (${submission.score}%)` : `Graded (${submission.score}%)`) : (ar ? 'بانتظار التقييم' : 'Pending')}
+                </span>
+              </div>
+              <p className="text-[11px] text-[#737373]">
+                {ar ? assignment.titleAr : assignment.titleEn} · {assignment.classNameAr} · {submission.submittedAt}
+              </p>
+            </div>
+          </div>
+          <button type="button" onClick={onClose} className="sn-btn sn-btn-quiet sn-btn-icon text-[#737373]">
+            <X size={16} />
+          </button>
+        </div>
+
+        {/* Content Body */}
+        <div className="flex-1 overflow-y-auto p-5 space-y-4">
+          <div className="text-xs font-semibold text-[#0a0a0a] border-b border-[#f0f0f0] pb-2">
+            {ar ? 'إجابات الطالب وتقييم الأسئلة:' : 'Student Answers & Question Grading:'}
+          </div>
+
+          <div className="space-y-4">
+            {questions.map((q, idx) => {
+              const studentAns = submission.answers?.find((a) => a.questionId === q.id);
+              const scoreForQ = questionScores[q.id] ?? 0;
+
+              return (
+                <div key={q.id} className="p-4 rounded-xl border border-[#e5e5e5] bg-[#fafafa] space-y-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-2">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-[#0a0a0a] text-white text-[10px] font-bold">
+                        {idx + 1}
+                      </span>
+                      <div>
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded ${
+                            q.type === 'mcq'
+                              ? 'bg-blue-100 text-blue-800'
+                              : q.type === 'essay'
+                              ? 'bg-purple-100 text-purple-800'
+                              : 'bg-emerald-100 text-emerald-800'
+                          }`}>
+                            {q.type === 'mcq'
+                              ? (ar ? 'اختيار من متعدد (تصحيح آلي)' : 'MCQ (Auto)')
+                              : q.type === 'essay'
+                              ? (ar ? 'سؤال مقالي' : 'Essay')
+                              : (ar ? 'تجربة معملية مصورة' : 'Lab Photo')}
+                          </span>
+                          <span className="text-[10px] text-[#737373] font-mono">
+                            {q.points} {ar ? 'درجة' : 'pts'}
+                          </span>
+                        </div>
+                        <h4 className="text-xs font-semibold text-[#0a0a0a]">
+                          {ar ? q.questionAr : (q.questionEn || q.questionAr)}
+                        </h4>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1 shrink-0">
+                      <span className="text-[11px] text-[#737373]">{ar ? 'الدرجة:' : 'Points:'}</span>
+                      <input
+                        type="number"
+                        min={0}
+                        max={q.points}
+                        value={scoreForQ}
+                        onChange={(e) => {
+                          const val = Math.max(0, Math.min(q.points, Number(e.target.value) || 0));
+                          setQuestionScores((prev) => ({ ...prev, [q.id]: val }));
+                        }}
+                        className="h-7 w-14 rounded-lg border border-[#e5e5e5] bg-white px-1 text-center font-mono text-xs font-bold text-[#0a0a0a] outline-none"
+                      />
+                      <span className="text-[11px] text-[#737373]">/ {q.points}</span>
+                    </div>
+                  </div>
+
+                  {/* Render Answer content */}
+                  {q.type === 'mcq' && q.options && (
+                    <div className="ps-6 space-y-1.5 text-xs">
+                      {q.options.map((opt, optIdx) => {
+                        const isStudentChoice = studentAns?.selectedOption === optIdx;
+                        const isCorrectOption = q.correctAnswer === optIdx;
+                        let itemClass = 'border-transparent bg-white text-[#737373]';
+                        if (isStudentChoice && isCorrectOption) {
+                          itemClass = 'border-emerald-500 bg-emerald-50 text-emerald-900 font-bold';
+                        } else if (isStudentChoice && !isCorrectOption) {
+                          itemClass = 'border-red-500 bg-red-50 text-red-900 line-through';
+                        } else if (isCorrectOption) {
+                          itemClass = 'border-emerald-300 bg-emerald-50/50 text-emerald-800';
+                        }
+                        return (
+                          <div key={optIdx} className={`flex items-center justify-between p-2 rounded-lg border text-xs ${itemClass}`}>
+                            <span>{String.fromCharCode(65 + optIdx)}. {opt}</span>
+                            {isStudentChoice && (
+                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-black/5 font-semibold">
+                                {ar ? 'اختيار الطالب' : 'Student choice'}
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {q.type === 'essay' && (
+                    <div className="ps-6">
+                      <div className="p-3 rounded-lg bg-white border border-[#e5e5e5] text-xs text-[#171717] leading-relaxed whitespace-pre-wrap">
+                        {studentAns?.answerText ? (
+                          studentAns.answerText
+                        ) : (
+                          <span className="italic text-[#a3a3a3]">{ar ? '(لم يكتب الطالب إجابة نصية)' : '(No response provided)'}</span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {q.type === 'lab_work' && (
+                    <div className="ps-6">
+                      {studentAns?.imageBase64 ? (
+                        <div className="flex items-center gap-3 p-2.5 rounded-lg bg-white border border-[#e5e5e5]">
+                          <div
+                            onClick={() => setEnlargedImage(studentAns.imageBase64!)}
+                            className="relative w-28 h-20 rounded-md overflow-hidden bg-slate-100 border border-[#e5e5e5] shrink-0 cursor-pointer group"
+                          >
+                            <img src={studentAns.imageBase64} alt="Lab work" className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                              <Maximize2 size={15} />
+                            </div>
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="text-xs font-semibold text-[#0a0a0a]">
+                              {ar ? 'صورة إثبات التجربة المعملية' : 'Lab Proof Photo'}
+                            </div>
+                            <p className="text-[11px] text-[#737373] mt-0.5">
+                              {ar ? 'اضغط على الصورة للمعاينة بالحجم الكامل وفحص النتائج.' : 'Click to inspect full size.'}
+                            </p>
+                            <button
+                              type="button"
+                              onClick={() => setEnlargedImage(studentAns.imageBase64!)}
+                              className="mt-1 text-[11px] text-blue-600 font-semibold hover:underline inline-flex items-center gap-1"
+                            >
+                              <Eye size={12} />
+                              <span>{ar ? 'معاينة مكبرة' : 'Inspect image'}</span>
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="p-3 rounded-lg bg-white border border-dashed border-[#e5e5e5] text-xs text-[#a3a3a3] italic">
+                          {ar ? 'لم يقم الطالب برفع صورة أو لقطة شاشة من المعمل.' : 'No lab image uploaded.'}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Teacher Feedback & Praise Section */}
+          <div className="pt-2 space-y-2 border-t border-[#f0f0f0]">
+            <label className="block text-xs font-semibold text-[#0a0a0a]">
+              {ar ? 'ملاحظات المعلم والتوجيه العلمي:' : 'Teacher Feedback & Notes:'}
+            </label>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {praiseTemplates.map((praise, pIdx) => (
+                <button
+                  key={pIdx}
+                  type="button"
+                  onClick={() => setFeedback(praise)}
+                  className="px-2 py-1 rounded-lg border border-[#e5e5e5] bg-[#fafafa] text-[10px] text-[#737373] hover:text-[#0a0a0a] hover:bg-white transition-colors"
+                >
+                  {praise}
+                </button>
+              ))}
+            </div>
+            <textarea
+              rows={2}
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+              placeholder={ar ? 'اكتب ملاحظاتك وتوجيهاتك للطالب…' : 'Enter constructive feedback…'}
+              className="w-full rounded-xl border border-[#e5e5e5] p-2.5 text-xs text-[#0a0a0a] outline-none focus:border-[#0a0a0a]"
+            />
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-between border-t border-[#f0f0f0] p-4 bg-slate-50 shrink-0">
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-[#737373]">{ar ? 'المجموع المحتسب:' : 'Total Score:'}</span>
+            <span className="text-base font-bold font-mono text-[#0a0a0a]">
+              {currentTotalScore} / {totalPossiblePoints} ({finalPercentage}%)
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={onClose} className="sn-btn sn-btn-outline sn-btn-sm">
+              {ar ? 'إلغاء' : 'Cancel'}
+            </button>
+            <button
+              type="button"
+              disabled={saving}
+              onClick={() => void handleSave()}
+              className="sn-btn sn-btn-primary sn-btn-sm !bg-emerald-600 hover:!bg-emerald-700 !text-white"
+            >
+              {saving ? (ar ? 'جارٍ الحفظ والمزامنة…' : 'Saving…') : (ar ? 'رصد وحفظ التقييم في Supabase' : 'Save Grade to Supabase')}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Lightbox for teacher */}
+      {enlargedImage && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setEnlargedImage(null)}
+          className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md cursor-zoom-out"
+        >
+          <div className="relative max-w-4xl max-h-[90vh] rounded-2xl overflow-hidden border border-white/20 bg-black">
+            <button
+              type="button"
+              onClick={() => setEnlargedImage(null)}
+              className="absolute top-3 end-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/70 text-white border border-white/20 hover:bg-white/20 transition-colors"
+            >
+              <X size={16} />
+            </button>
+            <img src={enlargedImage} alt="Enlarged lab preview" className="max-h-[85vh] w-auto object-contain mx-auto" />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -1933,6 +2624,10 @@ export const AssignmentsPage: React.FC = () => {
   const [submissions, setSubmissions] = useState<StudentSubmission[]>(() => getSubmissions());
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [expandedAsgId, setExpandedAsgId] = useState<string | null>(null);
+  const [inspectingSub, setInspectingSub] = useState<{
+    sub: StudentSubmission;
+    assignment: AssignmentItem;
+  } | null>(null);
   const [classFilter, setClassFilter] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [onlyPendingReview, setOnlyPendingReview] = useState(false);
@@ -2242,6 +2937,15 @@ export const AssignmentsPage: React.FC = () => {
                               >
                                 {ar ? 'حفظ الدرجة' : 'Save Grade'}
                               </button>
+                              <button
+                                type="button"
+                                onClick={() => setInspectingSub({ sub, assignment: item })}
+                                className="sn-btn sn-btn-outline sn-btn-sm !h-8 !text-[11px] flex items-center gap-1 text-blue-600 hover:bg-blue-50"
+                                title={ar ? 'معاينة إجابات الطالب والصور والتصحيح المفصل' : 'Inspect Answers & Grade'}
+                              >
+                                <Eye size={12} />
+                                <span>{ar ? 'معاينة وتصحيح' : 'Inspect'}</span>
+                              </button>
                             </div>
                           </div>
                         );
@@ -2259,6 +2963,26 @@ export const AssignmentsPage: React.FC = () => {
             );
           })}
         </div>
+      )}
+
+      {/* نافذة معاينة وتصحيح إجابات الطالب وصور التجربة المعملية */}
+      {inspectingSub && (
+        <TeacherGradeSubmissionModal
+          isOpen={true}
+          onClose={() => setInspectingSub(null)}
+          submission={inspectingSub.sub}
+          assignment={inspectingSub.assignment}
+          onGraded={(updated) => {
+            setSubmissions((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+            setSuccessMsg(
+              ar
+                ? `تم حفظ تصحيح الطالب ${updated.studentQuadName} بنسبة ${updated.score}% في Supabase!`
+                : `Graded ${updated.studentQuadName} with ${updated.score}% in Supabase!`
+            );
+            setTimeout(() => setSuccessMsg(null), 5000);
+          }}
+          ar={ar}
+        />
       )}
     </div>
   );

@@ -33,6 +33,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useSession } from '../../context/SessionContext';
 import { LAB_MODULES } from '../../data/labs';
 import { PageHeader, StatCard, SectionCard } from './ui';
+import { StudentAssignmentModal } from './StudentAssignmentModal';
 import {
   Activity,
   Atom,
@@ -142,6 +143,7 @@ export const DashboardHome: React.FC = () => {
   const [profiles, setProfiles] = useState<DbProfile[]>([]);
   const [institutions, setInstitutions] = useState<DbInstitution[]>([]);
   const [submittingId, setSubmittingId] = useState<string | null>(null);
+  const [selectedAssignmentForModal, setSelectedAssignmentForModal] = useState<AssignmentItem | null>(null);
 
   useEffect(() => {
     const loadRealData = async () => {
@@ -651,15 +653,17 @@ export const DashboardHome: React.FC = () => {
                       key={item.id}
                       className="flex items-center gap-3 rounded-[10px] px-2 py-2 hover:bg-[#fafafa] transition-colors"
                     >
-                      <Link
-                        to={'/app/labs/' + (item.linkedLab || 'chemistry')}
-                        className="flex min-w-0 flex-1 items-center gap-3"
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => setSelectedAssignmentForModal(item)}
+                        className="flex min-w-0 flex-1 items-center gap-3 text-start cursor-pointer group"
                       >
                         <span className={'sn-' + (item.linkedLab || 'chemistry') + ' sn-icon-tile !h-8 !w-8 !rounded-[8px]'}>
                           <FileCheck2 size={14} strokeWidth={1.7} />
                         </span>
                         <div className="min-w-0 flex-1">
-                          <div className="truncate text-[12px] font-medium text-[#0a0a0a]">
+                          <div className="truncate text-[12px] font-medium text-[#0a0a0a] group-hover:text-cyan-600 transition-colors">
                             {ar ? item.titleAr : item.titleEn}
                           </div>
                           <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-[#737373]">
@@ -682,21 +686,33 @@ export const DashboardHome: React.FC = () => {
                             )}
                           </div>
                         </div>
-                      </Link>
-                      {role === 'student' && !mySub ? (
+                      </div>
+                      <div className="flex items-center gap-1.5 shrink-0">
                         <button
                           type="button"
-                          disabled={submittingId === item.id}
-                          onClick={() => handleCompleteAssignment(item)}
-                          className="shrink-0 rounded-lg border border-black/10 bg-white px-2.5 py-1 text-[10px] font-semibold text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-white transition-colors disabled:opacity-50"
+                          onClick={() => setSelectedAssignmentForModal(item)}
+                          className={`shrink-0 rounded-lg px-2.5 py-1 text-[10px] font-semibold transition-all ${
+                            mySub
+                              ? mySub.status === 'graded'
+                                ? 'border border-emerald-500/30 bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
+                                : 'border border-amber-500/30 bg-amber-50 text-amber-800 hover:bg-amber-100'
+                              : 'border border-[#0a0a0a] bg-[#0a0a0a] text-white hover:bg-neutral-800 shadow-sm'
+                          }`}
                         >
-                          {submittingId === item.id ? '...' : (ar ? 'تسليم' : 'Submit')}
+                          {mySub
+                            ? mySub.status === 'graded'
+                              ? (ar ? 'عرض النتيجة' : 'View Grade')
+                              : (ar ? 'عرض التسليم' : 'View Submission')
+                            : (ar ? 'حل وتسليم' : 'Solve & Submit')}
                         </button>
-                      ) : (
-                        <Link to={'/app/labs/' + (item.linkedLab || 'chemistry')} className="shrink-0 p-1">
-                          <ArrowRight size={13} className={'text-[#a3a3a3] ' + (ar ? 'rotate-180' : '')} />
+                        <Link
+                          to={'/app/labs/' + (item.linkedLab || 'chemistry')}
+                          className="shrink-0 p-1 text-[#a3a3a3] hover:text-[#0a0a0a] transition-colors"
+                          title={ar ? 'فتح المعمل 3D' : 'Open 3D Lab'}
+                        >
+                          <ArrowRight size={13} className={ar ? 'rotate-180' : ''} />
                         </Link>
-                      )}
+                      </div>
                     </div>
                   );
                 })
@@ -805,6 +821,30 @@ export const DashboardHome: React.FC = () => {
           })}
         </div>
       </div>
+
+      {/* نافذة حل ومراجعة الواجب للطلاب مع التصحيح التلقائي والمقالي والتجارب المصورة */}
+      {selectedAssignmentForModal && (
+        <StudentAssignmentModal
+          isOpen={true}
+          onClose={() => setSelectedAssignmentForModal(null)}
+          assignment={selectedAssignmentForModal}
+          existingSubmission={submissions.find(
+            (s) =>
+              s.assignmentId === selectedAssignmentForModal.id &&
+              (namesMatch(s.studentQuadName, effectiveStudentIdentity) ||
+                namesMatch(s.studentQuadName, studentQuadName) ||
+                namesMatch(s.studentQuadName, user?.email))
+          )}
+          studentQuadName={effectiveStudentIdentity || studentQuadName || 'طالب SciNexa'}
+          onSubmitted={(sub) => {
+            setSubmissions(getSubmissions());
+            void fetchAndSyncSubmissions().then((subs) => {
+              if (subs) setSubmissions(subs);
+            });
+          }}
+          ar={ar}
+        />
+      )}
     </div>
   );
 };

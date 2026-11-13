@@ -69,6 +69,31 @@ export interface EnrolledStudent {
   lastActiveDate: string;
 }
 
+export type QuestionType = 'mcq' | 'essay' | 'lab_work';
+
+export interface AssignmentQuestion {
+  id: string;
+  type: QuestionType;
+  questionAr: string;
+  questionEn?: string;
+  options?: string[]; // for mcq
+  correctAnswer?: number; // 0-based index of correct option
+  points: number;
+  instructionsAr?: string;
+}
+
+export interface StudentAnswer {
+  questionId: string;
+  questionType: QuestionType;
+  answerText?: string; // essay response or student notes
+  selectedOption?: number; // 0-based index for MCQ
+  imageBase64?: string; // photo/screenshot of lab work or paper
+  isCorrect?: boolean; // evaluated for MCQ
+  pointsEarned?: number;
+  maxPoints: number;
+  teacherNote?: string;
+}
+
 export interface AssignmentItem {
   id: string;
   titleAr: string;
@@ -85,6 +110,7 @@ export interface AssignmentItem {
   descriptionEn: string;
   totalPoints: number;
   assignedAt: string;
+  questions?: AssignmentQuestion[];
 }
 
 export interface StudentSubmission {
@@ -95,6 +121,9 @@ export interface StudentSubmission {
   status: 'submitted' | 'graded';
   score?: number;
   teacherFeedback?: string;
+  answers?: StudentAnswer[];
+  autoScore?: number;
+  manualScore?: number;
 }
 
 // Zero fake data: Empty lists by default. Real data comes from Supabase.
@@ -503,6 +532,7 @@ export const getAssignments = (): AssignmentItem[] => {
     descriptionEn: String(a.descriptionEn || a.description_en || ''),
     totalPoints: typeof a.totalPoints === 'number' ? a.totalPoints : (typeof a.total_points === 'number' ? a.total_points : 100),
     assignedAt: String(a.assignedAt || a.assigned_at || new Date().toISOString().slice(0, 10)),
+    questions: Array.isArray(a.questions) ? a.questions : undefined,
   }));
 };
 
@@ -526,6 +556,7 @@ export const addAssignment = async (item: AssignmentItem): Promise<{ ok: boolean
     description_en: item.descriptionEn,
     total_points: item.totalPoints,
     assigned_at: item.assignedAt,
+    questions: item.questions || [],
   });
 };
 
@@ -547,6 +578,9 @@ export const getSubmissions = (): StudentSubmission[] => {
     status: s.status === 'graded' ? 'graded' : 'submitted',
     score: typeof s.score === 'number' ? s.score : undefined,
     teacherFeedback: s.teacherFeedback || s.teacher_feedback || undefined,
+    answers: Array.isArray(s.answers) ? s.answers : undefined,
+    autoScore: typeof s.autoScore === 'number' ? s.autoScore : (typeof s.auto_score === 'number' ? s.auto_score : undefined),
+    manualScore: typeof s.manualScore === 'number' ? s.manualScore : (typeof s.manual_score === 'number' ? s.manual_score : undefined),
   }));
 };
 
@@ -571,6 +605,9 @@ export const recordSubmission = async (submission: StudentSubmission): Promise<{
     status: submission.status,
     teacher_feedback: submission.teacherFeedback,
     submitted_at: submission.submittedAt,
+    answers: submission.answers || [],
+    auto_score: submission.autoScore ?? 0,
+    manual_score: submission.manualScore ?? 0,
   });
 };
 
@@ -580,13 +617,16 @@ export const recordSubmission = async (submission: StudentSubmission): Promise<{
 export const gradeSubmissionAndSync = async (
   submission: StudentSubmission,
   score: number,
-  feedback: string
+  feedback: string,
+  updatedAnswers?: StudentAnswer[]
 ): Promise<{ ok: boolean; updated: StudentSubmission; error?: string }> => {
   const graded: StudentSubmission = {
     ...submission,
     status: 'graded',
     score: Math.max(0, Math.min(100, Math.round(score))),
     teacherFeedback: feedback.trim() || undefined,
+    answers: updatedAnswers || submission.answers,
+    manualScore: typeof submission.autoScore === 'number' ? Math.max(0, Math.round(score - submission.autoScore)) : score,
   };
   const res = await recordSubmission(graded);
 
@@ -681,6 +721,7 @@ export const fetchAndSyncAssignments = async (): Promise<AssignmentItem[]> => {
       descriptionEn: a.description_en,
       totalPoints: a.total_points,
       assignedAt: a.assigned_at,
+      questions: Array.isArray(a.questions) ? a.questions : undefined,
     }));
     setPersistedJSON(STORAGE_ASSIGNMENTS, mapped);
     return mapped;
@@ -702,6 +743,9 @@ export const fetchAndSyncSubmissions = async (): Promise<StudentSubmission[]> =>
       status: s.status === 'graded' ? 'graded' : 'submitted',
       score: typeof s.score === 'number' ? s.score : undefined,
       teacherFeedback: s.teacher_feedback || undefined,
+      answers: Array.isArray(s.answers) ? s.answers : undefined,
+      autoScore: typeof s.auto_score === 'number' ? s.auto_score : undefined,
+      manualScore: typeof s.manual_score === 'number' ? s.manual_score : undefined,
     }));
     setPersistedJSON(STORAGE_SUBMISSIONS, mapped);
     return mapped;
