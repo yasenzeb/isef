@@ -161,7 +161,7 @@ export const FunctionTable: React.FC = () => {
       >
         {rows.length > 0 ? (
           <>
-            <div className="max-h-[520px] overflow-auto rounded-lg border border-white/[0.07]">
+            <div className="overflow-x-auto lg:max-h-[520px] lg:overflow-y-auto rounded-lg border border-white/[0.1]" style={{ touchAction: 'pan-x pan-y pinch-zoom' }}>
               <table dir="ltr" className="w-full border-collapse text-sm">
                 <thead className="sticky top-0 bg-[#141922]">
                   <tr>

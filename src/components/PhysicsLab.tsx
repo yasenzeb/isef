@@ -676,7 +676,7 @@ export const PhysicsLab: React.FC = () => {
           {/* Simulation Frame & Optional Side Reference */}
           <div className={`grid grid-cols-1 ${isSidePinned && savedCircuit?.screenshot ? 'lg:grid-cols-12' : ''} gap-4`}>
             <div className={`${isSidePinned && savedCircuit?.screenshot ? 'lg:col-span-8' : 'w-full'} sci-card p-2 sm:p-3 overflow-hidden shadow-2xl`}>
-              <div className="relative w-full rounded-xl overflow-hidden bg-[#030712] border border-white/10" style={{ height: '720px' }}>
+              <div className="relative w-full h-[400px] sm:h-[520px] lg:h-[680px] rounded-xl overflow-hidden bg-[#030712] border border-white/10">
                 <iframe
                   ref={circuitsIframeRef}
                   key={`circuits-${simLocale}`}
@@ -913,7 +913,7 @@ export const PhysicsLab: React.FC = () => {
 
           {/* Simulation Frame */}
           <div className="sci-card p-2 sm:p-3 overflow-hidden shadow-2xl">
-            <div className="relative w-full rounded-xl overflow-hidden bg-[#030712] border border-white/10" style={{ height: '720px' }}>
+            <div className="relative w-full h-[400px] sm:h-[520px] lg:h-[680px] rounded-xl overflow-hidden bg-[#030712] border border-white/10">
               <iframe
                 ref={forcesIframeRef}
                 key={`forces-${forcesScreen}-${simLocale}`}
@@ -1032,7 +1032,7 @@ export const PhysicsLab: React.FC = () => {
 
           {/* Simulation Frame */}
           <div className="sci-card p-2 sm:p-3 overflow-hidden shadow-2xl">
-            <div className="relative w-full rounded-xl overflow-hidden bg-[#030712] border border-white/10" style={{ height: '720px' }}>
+            <div className="relative w-full h-[400px] sm:h-[520px] lg:h-[680px] rounded-xl overflow-hidden bg-[#030712] border border-white/10">
               <iframe
                 ref={projectilesIframeRef}
                 key={`pm-${pmScreen}-${simLocale}`}
@@ -1150,7 +1150,7 @@ export const PhysicsLab: React.FC = () => {
 
           {/* Simulation Frame */}
           <div className="sci-card p-2 sm:p-3 overflow-hidden shadow-2xl">
-            <div className="relative w-full rounded-xl overflow-hidden bg-[#030712] border border-white/10" style={{ height: '720px' }}>
+            <div className="relative w-full h-[400px] sm:h-[520px] lg:h-[680px] rounded-xl overflow-hidden bg-[#030712] border border-white/10">
               <iframe
                 ref={opticsIframeRef}
                 key={`optics-${opticsScreen}-${simLocale}`}

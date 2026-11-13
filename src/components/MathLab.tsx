@@ -55,18 +55,18 @@ export const MathLab: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 px-4 pb-24 sm:px-6 sm:pb-16 lg:px-8">
+    <div className="mx-auto max-w-7xl space-y-6 px-2 pb-20 sm:px-6 sm:pb-16 lg:px-8" style={{ touchAction: 'pan-x pan-y pinch-zoom' }}>
       {/* Header (scrolls away) */}
       <div className="pb-1">
         <span className="sci-badge">{s.badge}</span>
         <h1 className="mt-1 text-2xl font-extrabold text-white sm:text-3xl" style={{ fontFamily: 'var(--font-display)' }}>{s.title}</h1>
-        <p className="mt-0.5 text-xs text-slate-400">{s.subtitle}</p>
+        <p className="mt-0.5 text-xs text-slate-300">{s.subtitle}</p>
       </div>
 
-      {/* Fixed navigation bar: stays on top while scrolling, calculator always one tap away */}
+      {/* Navigation bar: static on touch/tablets so zoomed scrolling never traps or covers controls */}
       <div
-        className="z-30 sm:sticky sm:top-0 -mx-2 rounded-xl px-2 py-2 backdrop-blur"
-        style={{ background: 'rgba(6,8,12,0.92)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+        className="z-30 rounded-xl px-2 py-2 lg:sticky lg:top-0 backdrop-blur"
+        style={{ background: 'rgba(10,16,29,0.94)', border: '1px solid rgba(255,255,255,0.1)' }}
       >
         <div className="flex items-center gap-2">
           {/* calculator lives outside the scrolling strip so its panel is never clipped */}

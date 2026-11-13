@@ -71,10 +71,10 @@ export const LabWorkspace: React.FC = () => {
       {/* Unified Seamless Observatory Shell (Docked Header + High-Contrast Dark Stage) */}
       <div
         id="lab-canvas-container"
-        className="w-full overflow-hidden rounded-[22px] border border-white/10 bg-[#0b0f17] text-slate-100 shadow-[0_24px_64px_-24px_rgba(10,10,10,0.45)]"
+        className="w-full overflow-x-clip rounded-[22px] border border-white/15 bg-[#070b14] text-slate-100 shadow-[0_24px_64px_-24px_rgba(10,10,10,0.55)]"
       >
         {/* Docked Observatory Control Bar */}
-        <div className="flex flex-col gap-3 border-b border-white/10 bg-[#0e1422] px-4 py-3 sm:px-5 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-col gap-3 rounded-t-[21px] border-b border-white/10 bg-[#0d1424] px-4 py-3 sm:px-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-3">
             <Link
               to="/app/labs"
@@ -141,7 +141,7 @@ export const LabWorkspace: React.FC = () => {
         </div>
 
         {/* Seamless Unified Lab Stage */}
-        <div className="sn-lab-stage w-full !rounded-none !border-0 !bg-[#0b0f17] !p-3 sm:!p-5">
+        <div className="sn-lab-stage w-full !rounded-none !rounded-b-[21px] !border-0 !bg-[#070b14] !p-3 sm:!p-5">
           <ErrorBoundary dark ar={ar} title={ar ? 'تعذّر تشغيل محرك 3D' : 'The 3D engine could not start'}>
             <Suspense fallback={<LabLoading ar={ar} />}>
               <Component />

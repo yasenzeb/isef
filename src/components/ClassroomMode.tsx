@@ -166,8 +166,8 @@ export const ClassroomMode: React.FC<ClassroomModeProps> = ({ onExit }) => {
       </header>
 
       {/* Presentation Content Canvas Area */}
-      <main className={`relative flex-1 w-full h-full overflow-y-auto overflow-x-hidden transition-all ${
-        isTvHighContrast ? 'bg-[#000000] contrast-125' : 'bg-[#060810]'
+      <main className={`sn-lab-stage !rounded-none !border-0 relative flex-1 w-full h-full overflow-y-auto overflow-x-clip transition-all ${
+        isTvHighContrast ? '!bg-[#000000] contrast-125' : '!bg-[#070b14]'
       }`}>
         <Suspense fallback={
           <div className="flex h-full min-h-[400px] w-full items-center justify-center text-white/60 font-mono text-xs">

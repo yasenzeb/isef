@@ -537,15 +537,17 @@ select.sn-input {
 
 /* ── Unified Lab Stage (High-Contrast Dark Observatory System) ──────────── */
 .sn-lab-stage {
-  background: #0b0f17;
+  background: #070b14;
   color: #e2e8f0;
   border-radius: var(--radius-card);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   padding: 16px;
-  --bg-void: #0b0f17;
-  --sn-lab-surface: #121826;
-  --sn-lab-surface-2: #0e1422;
-  --sn-lab-border: rgba(255, 255, 255, 0.09);
+  touch-action: pan-x pan-y pinch-zoom;
+  --bg-void: #070b14;
+  --sn-lab-surface: #111827;
+  --sn-lab-surface-2: #0a101d;
+  --sn-lab-well: #050811;
+  --sn-lab-border: rgba(255, 255, 255, 0.12);
   --font-display: var(--font-ui);
 }
 
@@ -561,7 +563,7 @@ select.sn-input {
   border: 1px solid var(--sn-lab-border) !important;
   border-radius: 16px;
   color: #e2e8f0;
-  box-shadow: 0 12px 32px -16px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 14px 36px -16px rgba(0, 0, 0, 0.85);
 }
 
 .sn-lab-stage .metric-card {
@@ -576,29 +578,30 @@ select.sn-input {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
+  padding: 7px 14px;
   border-radius: 999px;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #94a3b8;
-  background: var(--sn-lab-surface);
-  border: 1px solid var(--sn-lab-border);
+  color: #cbd5e1;
+  background: var(--sn-lab-surface-2);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   cursor: pointer;
   transition: all 160ms ease;
 }
 
 .sn-lab-stage .tech-tab-pill:hover,
 .sn-lab-stage .ios-tab-pill:hover {
-  color: #f8fafc;
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .sn-lab-stage .tech-tab-pill.active,
 .sn-lab-stage .ios-tab-pill.active {
-  color: #0b0f17;
+  color: #070b14;
   background: #f8fafc;
   border-color: #f8fafc;
+  box-shadow: 0 4px 16px -4px rgba(248, 250, 252, 0.35);
 }
 
 .sn-lab-stage .tech-badge,
@@ -611,9 +614,9 @@ select.sn-input {
   border-radius: 999px;
   font-size: 0.6875rem;
   font-weight: 600;
-  background: rgba(56, 189, 248, 0.14);
+  background: rgba(56, 189, 248, 0.16);
   color: #38bdf8;
-  border: 1px solid rgba(56, 189, 248, 0.28);
+  border: 1px solid rgba(56, 189, 248, 0.32);
 }
 
 .sn-lab-stage .ios-squircle { border-radius: 14px; }
@@ -624,15 +627,19 @@ select.sn-input {
   color: #e2e8f0;
 }
 
-.sn-lab-stage ::-webkit-scrollbar-track { background: #0b0f17; }
-.sn-lab-stage ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.18); }
+.sn-lab-stage ::-webkit-scrollbar-track { background: #070b14; }
+.sn-lab-stage ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.22); }
 
-/* Normalize varied per-lab hex shades onto one unified observatory palette */
+/* Keep headings crisp and preserve distinct dark hierarchy between cards vs deep wells */
 .sn-lab-stage h1,
 .sn-lab-stage h2,
 .sn-lab-stage h3,
 .sn-lab-stage h4 {
   color: #f8fafc;
+}
+
+.sn-lab-stage .text-slate-500 {
+  color: #94a3b8;
 }
 
 .sn-lab-stage .bg-\[\#02040a\],
@@ -645,14 +652,18 @@ select.sn-input {
 .sn-lab-stage .bg-\[\#050a1a\]\/85,
 .sn-lab-stage .bg-\[\#050a1a\]\/90,
 .sn-lab-stage .bg-\[\#060810\],
-.sn-lab-stage .bg-\[\#060b18\],
+.sn-lab-stage .bg-\[\#060b18\] {
+  background-color: var(--sn-lab-well) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
 .sn-lab-stage .bg-\[\#08090c\],
 .sn-lab-stage .bg-\[\#090d1a\],
 .sn-lab-stage .bg-\[\#0a0e1c\],
 .sn-lab-stage .bg-\[\#0a0f20\],
 .sn-lab-stage .bg-\[\#0e1116\] {
-  background-color: #121826 !important;
-  border-color: rgba(255, 255, 255, 0.09) !important;
+  background-color: var(--sn-lab-surface-2) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
 }
 
 /* ── Motion ───────────────────────────────────────────────────────────────── */

@@ -98,10 +98,12 @@ export const CoordinateGrid: React.FC = () => {
 
   const [hist, setHist] = useState<Shape[][]>([]);
   const [drag, setDrag] = useState<{ s: number; i: number } | null>(null);
+  const [scrollMode, setScrollMode] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [cx, setCx] = useState('');
   const [cy, setCy] = useState('');
   const svgRef = useRef<SVGSVGElement>(null);
+  const activePointersRef = useRef<Set<number>>(new Set());
 
   useEffect(() => {
     if (!notice) return undefined;
@@ -161,12 +163,13 @@ export const CoordinateGrid: React.FC = () => {
   };
 
   const onBackgroundClick = (e: React.MouseEvent): void => {
+    if (scrollMode) return;
     const p = toMath(e);
     if (p) addPoint(p);
   };
 
   const onPointerMove = (e: React.PointerEvent): void => {
-    if (!drag) return;
+    if (scrollMode || !drag || activePointersRef.current.size > 1) return;
     const p = toMath(e);
     if (!p) return;
     setSt((prev) => ({
@@ -175,7 +178,22 @@ export const CoordinateGrid: React.FC = () => {
     }));
   };
 
-  const endDrag = (): void => setDrag(null);
+  const endDrag = (e?: React.PointerEvent): void => {
+    if (e) {
+      activePointersRef.current.delete(e.pointerId);
+      if (e.buttons === 0) activePointersRef.current.clear();
+      try {
+        if ((e.target as Element)?.hasPointerCapture?.(e.pointerId)) {
+          (e.target as Element).releasePointerCapture(e.pointerId);
+        }
+      } catch {
+        /* ignore */
+      }
+    } else {
+      activePointersRef.current.clear();
+    }
+    setDrag(null);
+  };
 
   const undo = (): void => {
     if (hist.length === 0) return;
@@ -249,7 +267,20 @@ export const CoordinateGrid: React.FC = () => {
       <Panel
         title={s.gridTitle}
         right={
-          <div className="flex gap-1.5">
+          <div className="flex flex-wrap gap-1.5">
+            <button
+              type="button"
+              onClick={() => { setScrollMode((m) => !m); setDrag(null); }}
+              className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
+                scrollMode
+                  ? 'border-cyan-400/50 bg-cyan-500/20 text-cyan-200'
+                  : 'border-white/10 bg-white/[0.04] text-slate-300 hover:bg-white/10'
+              }`}
+            >
+              {language === 'ar'
+                ? (scrollMode ? '🔓 تمرير وتكبير حر' : '✋ تحريك النقاط')
+                : (scrollMode ? '🔓 Free Scroll' : '✋ Edit Points')}
+            </button>
             <button type="button" onClick={undo} disabled={hist.length === 0}
               className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-semibold text-slate-300 transition hover:bg-white/10 disabled:opacity-40">
               <RotateCcw className="h-3 w-3" />{s.gridUndo}
@@ -284,9 +315,17 @@ export const CoordinateGrid: React.FC = () => {
         </div>
 
         <svg
-          ref={svgRef} style={{ direction: 'ltr' }} viewBox={`0 0 ${S} ${S}`}
+          ref={svgRef}
+          style={{ direction: 'ltr', touchAction: drag && !scrollMode ? 'none' : 'pan-x pan-y pinch-zoom' }}
+          viewBox={`0 0 ${S} ${S}`}
           className="mx-auto block h-auto w-full max-w-[640px] select-none rounded-xl bg-[#0a0d12]"
-          onPointerMove={onPointerMove} onPointerUp={endDrag} onPointerCancel={endDrag} onPointerLeave={endDrag}
+          onPointerDownCapture={(e) => {
+            activePointersRef.current.add(e.pointerId);
+            if (activePointersRef.current.size > 1) {
+              setDrag(null);
+            }
+          }}
+          onPointerMove={onPointerMove} onPointerUp={endDrag} onPointerCancel={endDrag}
           role="application" aria-label={s.gridTitle}
         >
           <rect x={0} y={0} width={S} height={S} fill="transparent" style={{ cursor: 'crosshair' }} onClick={onBackgroundClick} />
@@ -331,8 +370,13 @@ export const CoordinateGrid: React.FC = () => {
             <g key={`pt${k}-${i}`}>
               <circle
                 cx={px(p.x)} cy={py(p.y)} r={16} fill="transparent"
-                style={{ cursor: drag && drag.s === k && drag.i === i ? 'grabbing' : 'grab', touchAction: 'none' }}
+                style={{
+                  cursor: scrollMode ? 'default' : drag && drag.s === k && drag.i === i ? 'grabbing' : 'grab',
+                  touchAction: scrollMode ? 'pan-x pan-y pinch-zoom' : 'none',
+                  pointerEvents: scrollMode ? 'none' : 'auto',
+                }}
                 onPointerDown={(e) => {
+                  if (scrollMode || !e.isPrimary || activePointersRef.current.size > 1) return;
                   e.stopPropagation();
                   (e.currentTarget as SVGCircleElement).setPointerCapture(e.pointerId);
                   setHist((h) => [...h.slice(-30), shapes]);
