@@ -125,7 +125,7 @@ export const StudentProfileOnboardingModal: React.FC = () => {
 
   const isResearcherMode = gradeLevel === 'university' || gradeLevel === 'researcher';
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
@@ -202,7 +202,7 @@ export const StudentProfileOnboardingModal: React.FC = () => {
       const currentXp = parseInt(getPersistedItem('scinexa_user_xp') || '0', 10) || 0;
       const currentStars = parseInt(getPersistedItem('scinexa_user_stars') || '0', 10) || 0;
       const currentStreak = parseInt(getPersistedItem('scinexa_real_streak') || '1', 10) || 1;
-      void dbUpsertProfile({
+      await dbUpsertProfile({
         id: user?.id || ('st_' + Date.now()),
         email: user?.email,
         display_name: profileData.quadName,
@@ -216,7 +216,7 @@ export const StudentProfileOnboardingModal: React.FC = () => {
         xp: currentXp,
         stars: currentStars,
         streak: currentStreak,
-        role: 'student'
+        role: 'student',
       });
 
       try {

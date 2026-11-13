@@ -120,6 +120,12 @@ const LandingHeader: React.FC<{ signedIn: boolean }> = ({ signedIn }) => {
 
         <div className="flex items-center gap-2">
           <LanguageSelector compact />
+          <Link
+            to="/portal/login"
+            className="hidden sn-btn sn-btn-outline sn-btn-sm sm:inline-flex"
+          >
+            {ar ? 'بوابة المعلمين' : language === 'ja' ? '教員ポータル' : 'Educator Portal'}
+          </Link>
           {!signedIn && (
             <Link to="/sign-in" className="hidden sn-btn sn-btn-ghost sn-btn-sm sm:inline-flex">
               {signInText}
@@ -158,6 +164,9 @@ const LandingHeader: React.FC<{ signedIn: boolean }> = ({ signedIn }) => {
             ))}
             <Link to="/sign-in" className="rounded-[10px] px-3 py-2.5 text-sm font-medium text-[#171717] hover:bg-[#f5f5f5]">
               {signInText}
+            </Link>
+            <Link to="/portal/login" className="rounded-[10px] px-3 py-2.5 text-sm font-semibold text-[#0a0a0a] hover:bg-[#f5f5f5]">
+              {ar ? 'بوابة المعلمين والإدارة (منفصلة)' : language === 'ja' ? '教員ポータル' : 'Educator & Admin Portal'}
             </Link>
           </nav>
         </div>

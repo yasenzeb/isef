@@ -113,68 +113,130 @@ export interface DbInstitution {
 
 // 4. خدمات استرجاع وحفظ وحذف البيانات مع سوبابيز (Zero Fake Data)
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * تحويل أي معرف نصي (مثل Clerk user_... أو بريد إلكتروني) إلى UUID ثابت وحتمي
+ * لضمان عمل الحفظ في Supabase حتى لو كان عمود profiles.id من نوع uuid.
+ */
+export function toStableUuid(seed: string): string {
+  const normalized = (seed || 'scinexa-default').trim().toLowerCase();
+  if (UUID_REGEX.test(normalized)) return normalized;
+
+  // FNV-1a / Murmur-style 128-bit deterministic hash across 4x32-bit lanes
+  const h = [0x811c9dc5, 0x9e3779b9, 0x85ebca6b, 0xc2b2ae35];
+  for (let i = 0; i < normalized.length; i++) {
+    const ch = normalized.charCodeAt(i);
+    for (let j = 0; j < 4; j++) {
+      h[j] ^= ch + i * (j + 1) * 31;
+      h[j] = Math.imul(h[j], 0x01000193 + j * 2) >>> 0;
+    }
+  }
+  const hex = h.map((v) => (v >>> 0).toString(16).padStart(8, '0')).join('');
+  // Format as valid RFC 4122 v4-shaped UUID
+  const variant = ((parseInt(hex.slice(16, 18), 16) & 0x3f) | 0x80).toString(16).padStart(2, '0');
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-4${hex.slice(13, 16)}-${variant}${hex.slice(18, 20)}-${hex.slice(20, 32)}`;
+}
+
+function isUuidSyntaxError(error: any): boolean {
+  if (!error) return false;
+  const code = String(error.code || '');
+  const msg = String(error.message || '');
+  return code === '22P02' || /invalid input syntax for type uuid/i.test(msg);
+}
+
 /**
  * مزامنة ملف المستخدم الشخصي (Google Login أو Onboarding) مع جدول profiles في Supabase
  */
-export async function dbUpsertProfile(profile: Partial<DbProfile> & { id: string }): Promise<void> {
-  if (isSupabaseConfigured && supabase) {
-    try {
-      const cleanEmail = profile.email ? profile.email.trim().toLowerCase() : undefined;
-      let targetId = profile.id;
-      if (cleanEmail) {
-        const { data: existing } = await supabase
-          .from('profiles')
-          .select('id')
-          .ilike('email', cleanEmail)
-          .maybeSingle();
-        if (existing?.id) {
-          targetId = existing.id;
-        }
-      }
+export async function dbUpsertProfile(
+  profile: Partial<DbProfile> & { id: string }
+): Promise<{ ok: boolean; id?: string; error?: string }> {
+  if (!isSupabaseConfigured || !supabase) {
+    return { ok: false, error: 'Supabase not configured' };
+  }
+  try {
+    const cleanEmail = profile.email ? profile.email.trim().toLowerCase() : undefined;
+    let targetId = profile.id;
+    let existingRow: { id: string; role?: string; display_name?: string; quad_name?: string } | null = null;
 
-      const payload: Record<string, any> = {
-        id: targetId,
-        display_name: profile.display_name || profile.quad_name || 'مستخدم',
-        quad_name: profile.quad_name || profile.display_name || undefined,
-        role: profile.role || 'student',
-        email: cleanEmail,
-        school_code: profile.school_code || profile.school_name || undefined,
-        school_name: profile.school_name || profile.school_code || undefined,
-        parent_phone: profile.parent_phone || undefined,
-        governorate_id: profile.governorate_id || undefined,
-        administration_id: profile.administration_id || undefined,
-        grade_level: profile.grade_level || undefined,
-        student_code: profile.student_code || profile.national_id || undefined,
-        national_id: profile.national_id || undefined,
-        updated_at: new Date().toISOString(),
-      };
-      if (typeof profile.xp === 'number') payload.xp = profile.xp;
-      if (typeof profile.streak === 'number') payload.streak = profile.streak;
-      if (typeof profile.stars === 'number') payload.stars = profile.stars;
-
-      const { error } = await supabase.from('profiles').upsert([payload]);
-      if (error && cleanEmail) {
-        const updateFields: Record<string, any> = {
-          display_name: payload.display_name,
-          quad_name: payload.quad_name,
-          school_code: payload.school_code,
-          school_name: payload.school_name,
-          parent_phone: payload.parent_phone,
-          governorate_id: payload.governorate_id,
-          administration_id: payload.administration_id,
-          grade_level: payload.grade_level,
-          student_code: payload.student_code,
-          national_id: payload.national_id,
-          updated_at: payload.updated_at,
-        };
-        if (typeof payload.xp === 'number') updateFields.xp = payload.xp;
-        if (typeof payload.streak === 'number') updateFields.streak = payload.streak;
-        if (typeof payload.stars === 'number') updateFields.stars = payload.stars;
-        await supabase.from('profiles').update(updateFields).ilike('email', cleanEmail);
+    if (cleanEmail) {
+      const { data: existing } = await supabase
+        .from('profiles')
+        .select('id, role, display_name, quad_name')
+        .ilike('email', cleanEmail)
+        .maybeSingle();
+      if (existing?.id) {
+        existingRow = existing;
+        targetId = existing.id;
       }
-    } catch (e) {
-      console.warn('Supabase upsert profile error', e);
     }
+
+    const resolvedDisplayName =
+      profile.display_name?.trim() ||
+      profile.quad_name?.trim() ||
+      existingRow?.display_name ||
+      existingRow?.quad_name ||
+      'طالب SciNexa';
+
+    const payload: Record<string, any> = {
+      id: targetId,
+      display_name: resolvedDisplayName,
+      role: existingRow?.role === 'teacher' || existingRow?.role === 'admin'
+        ? existingRow.role
+        : profile.role || existingRow?.role || 'student',
+      updated_at: new Date().toISOString(),
+    };
+
+    if (profile.quad_name || existingRow?.quad_name) {
+      payload.quad_name = profile.quad_name?.trim() || existingRow?.quad_name;
+    }
+    if (cleanEmail) payload.email = cleanEmail;
+    if (profile.school_code || profile.school_name) {
+      payload.school_code = profile.school_code || profile.school_name;
+    }
+    if (profile.school_name || profile.school_code) {
+      payload.school_name = profile.school_name || profile.school_code;
+    }
+    if (profile.parent_phone) payload.parent_phone = profile.parent_phone;
+    if (profile.governorate_id) payload.governorate_id = profile.governorate_id;
+    if (profile.administration_id) payload.administration_id = profile.administration_id;
+    if (profile.grade_level) payload.grade_level = profile.grade_level;
+    if (profile.student_code || profile.national_id) {
+      payload.student_code = profile.student_code || profile.national_id;
+    }
+    if (profile.national_id) payload.national_id = profile.national_id;
+    if (typeof profile.xp === 'number') payload.xp = profile.xp;
+    if (typeof profile.streak === 'number') payload.streak = profile.streak;
+    if (typeof profile.stars === 'number') payload.stars = profile.stars;
+
+    let { error } = await supabase.from('profiles').upsert([payload]);
+
+    // إذا كان عمود id في Supabase من نوع UUID والمعرف الممرر نصي، نُحوّله تلقائياً لـ UUID ثابت ونعيد المحاولة
+    if (error && isUuidSyntaxError(error)) {
+      const stableId = toStableUuid(cleanEmail || targetId);
+      payload.id = stableId;
+      payload.student_code = payload.student_code || targetId;
+      const retry = await supabase.from('profiles').upsert([payload]);
+      error = retry.error;
+    }
+
+    if (error && cleanEmail) {
+      const { id: _omitId, ...updateFields } = payload;
+      const updateRes = await supabase.from('profiles').update(updateFields).ilike('email', cleanEmail);
+      if (!updateRes.error) {
+        return { ok: true, id: payload.id };
+      }
+      error = updateRes.error;
+    }
+
+    if (error) {
+      console.warn('Supabase upsert profile error', error);
+      return { ok: false, error: error.message };
+    }
+    return { ok: true, id: payload.id };
+  } catch (e: any) {
+    console.warn('Supabase upsert profile error', e);
+    return { ok: false, error: e?.message || 'Unknown error' };
   }
 }
 
@@ -427,7 +489,13 @@ export async function dbLinkGoogleEducatorProfile(params: {
 
   if (isSupabaseConfigured && supabase) {
     try {
-      await supabase.from('profiles').upsert([profile]);
+      let { error } = await supabase.from('profiles').upsert([profile]);
+      if (error && isUuidSyntaxError(error)) {
+        profile.id = toStableUuid(cleanEmail || profileId);
+        const retry = await supabase.from('profiles').upsert([profile]);
+        error = retry.error;
+      }
+      if (error) console.warn('Failed to link Google educator in Supabase:', error);
     } catch (e) {
       console.warn('Failed to link Google educator in Supabase:', e);
     }
@@ -445,15 +513,18 @@ export async function dbLinkGoogleEducatorProfile(params: {
 export async function dbRegisterEducator(params: {
   quadName: string;
   nationalId: string;
+  email?: string;
   schoolCode?: string;
   schoolName?: string;
   role: 'teacher' | 'admin';
   subject?: string;
 }): Promise<{ success: boolean; profile?: DbProfile; error?: string }> {
+  const cleanEmail = params.email?.trim().toLowerCase() || undefined;
   const profileId = `${params.role}_${params.nationalId.slice(-6)}_${Date.now().toString().slice(-4)}`;
   const profile: DbProfile = {
     id: profileId,
     role: params.role,
+    email: cleanEmail,
     display_name: params.quadName.trim(),
     quad_name: params.quadName.trim(),
     national_id: params.nationalId.trim(),
@@ -464,7 +535,13 @@ export async function dbRegisterEducator(params: {
 
   if (isSupabaseConfigured && supabase) {
     try {
-      await supabase.from('profiles').upsert([profile]);
+      let { error } = await supabase.from('profiles').upsert([profile]);
+      if (error && isUuidSyntaxError(error)) {
+        profile.id = toStableUuid(cleanEmail || params.nationalId.trim() || profileId);
+        const retry = await supabase.from('profiles').upsert([profile]);
+        error = retry.error;
+      }
+      if (error) console.warn('Failed to upsert educator in Supabase:', error);
     } catch (e) {
       console.warn('Failed to upsert educator in Supabase:', e);
     }

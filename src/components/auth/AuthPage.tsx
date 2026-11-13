@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { SignIn, SignUp } from '@clerk/clerk-react';
 import { useLanguage } from '../../context/LanguageContext';
-import { useSession, type AppRole } from '../../context/SessionContext';
+import { useSession } from '../../context/SessionContext';
 import { clerkAppearance, isClerkConfigured } from '../../lib/clerkConfig';
 import { Wordmark } from '../ui/Brand';
 import {
@@ -10,7 +10,6 @@ import {
   ArrowRight,
   Check,
   GraduationCap,
-  Presentation,
   ShieldCheck,
   Sparkles,
 } from 'lucide-react';
@@ -18,12 +17,6 @@ import {
 interface AuthPageProps {
   mode: 'signin' | 'signup';
 }
-
-const ROLES: { id: AppRole; icon: React.ElementType; en: string; ar: string; descEn: string; descAr: string }[] = [
-  { id: 'student', icon: GraduationCap, en: 'Student', ar: 'طالب', descEn: 'Labs, lessons, progress', descAr: 'معامل ودروس وتقدّم' },
-  { id: 'teacher', icon: Presentation, en: 'Teacher', ar: 'معلم', descEn: 'Classes and assignments', descAr: 'فصول وواجبات' },
-  { id: 'admin', icon: ShieldCheck, en: 'Administrator', ar: 'إدارة', descEn: 'School and access control', descAr: 'المدرسة والصلاحيات' },
-];
 
 const AuthAside: React.FC<{ ar: boolean }> = ({ ar }) => (
   <aside className="relative hidden overflow-hidden bg-[#0a0a0a] p-10 text-white lg:flex lg:flex-col lg:justify-between">
@@ -80,11 +73,10 @@ const DemoAuthForm: React.FC<{ mode: 'signin' | 'signup'; ar: boolean }> = ({ mo
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState<AppRole>('student');
 
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
-    signInDemo({ name, email, role });
+    signInDemo({ name, email, role: 'student' });
     navigate('/app');
   };
 
@@ -154,31 +146,9 @@ const DemoAuthForm: React.FC<{ mode: 'signin' | 'signup'; ar: boolean }> = ({ mo
           />
         </div>
 
-        <div>
-          <span className="sn-label">{ar ? 'الدور' : 'Role'}</span>
-          <div className="grid grid-cols-3 gap-2">
-            {ROLES.map((item) => {
-              const Icon = item.icon;
-              const selected = role === item.id;
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => setRole(item.id)}
-                  aria-pressed={selected}
-                  className={`flex flex-col items-start gap-2 rounded-[10px] border p-3 text-start transition-all ${
-                    selected
-                      ? 'border-[#0a0a0a] bg-white shadow-[0_0_0_1px_#0a0a0a]'
-                      : 'border-[#e5e5e5] bg-[#fafafa] hover:border-[#d4d4d4]'
-                  }`}
-                >
-                  <Icon size={15} strokeWidth={1.7} className={selected ? 'text-[#0a0a0a]' : 'text-[#737373]'} />
-                  <span className="text-[12px] font-medium">{ar ? item.ar : item.en}</span>
-                  <span className="text-[9px] leading-tight text-[#737373]">{ar ? item.descAr : item.descEn}</span>
-                </button>
-              );
-            })}
-          </div>
+        <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] px-3 py-2.5 text-[11px] text-[#525252] flex items-center gap-2">
+          <GraduationCap size={15} className="text-[#0a0a0a] shrink-0" />
+          <span>{ar ? 'تسجيل دخول الطالب الموحد عبر حسابات الطلاب فقط' : 'Unified Student Account Login'}</span>
         </div>
 
         <button type="submit" className="sn-btn sn-btn-primary w-full">
@@ -310,8 +280,8 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
             {isClerkConfigured ? (
               <p className="mt-6 text-center text-[10px] leading-relaxed text-[#a3a3a3]">
                 {ar
-                  ? 'تسجيل Google يفتح نافذة منبثقة. اسمح بالنوافذ المنبثقة لهذا الموقع إن لم تُكمل العملية.'
-                  : 'Google sign-in opens a secure popup. Allow popups for this site if the flow does not complete.'}
+                  ? 'تسجيل Google يفتح نافذة منبثقة للطلاب فقط. اسمح بالنوافذ المنبثقة لهذا الموقع إن لم تُكمل العملية.'
+                  : 'Google sign-in opens a secure popup for students only. Allow popups for this site if the flow does not complete.'}
               </p>
             ) : (
               <div className="mt-8 flex items-center justify-center gap-2 text-[10px] text-[#a3a3a3]">
@@ -319,6 +289,20 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
                 {ar ? 'جلسة محلية تجريبية · ليست مصادقة إنتاجية' : 'Local demo session · not production auth'}
               </div>
             )}
+
+            <div className="mt-6 border-t border-[#e5e5e5] pt-4 text-center">
+              <Link
+                to="/portal/login"
+                className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#525252] hover:text-[#0a0a0a] transition-colors"
+              >
+                <ShieldCheck size={13} />
+                <span>
+                  {ar
+                    ? 'هل أنت معلم أو مدير مدرسة؟ انتقل لبوابة المعلمين المنفصلة →'
+                    : 'Are you a Teacher or School Admin? Go to the separate Educator Portal →'}
+                </span>
+              </Link>
+            </div>
           </div>
         </div>
       </main>

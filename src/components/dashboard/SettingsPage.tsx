@@ -639,34 +639,6 @@ export const SettingsPage: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            <div className="mt-4 pt-3 border-t border-[#f0f0f0] flex flex-col gap-2">
-              <span className="text-[10px] uppercase tracking-[0.08em] text-[#a3a3a3] font-semibold">
-                {tLang(language, {
-                  ar: 'بوابة المعلمين والإدارة المدرسية المعتمدة',
-                  en: 'Official Educator Portal',
-                  fr: 'Portail officiel des enseignants',
-                  de: 'Offizielles Lehrerportal',
-                  ja: '認定教員・学校管理者専用ポータル',
-                })}
-              </span>
-              <a
-                href="/portal/login"
-                className="rounded-xl border border-[#e5e5e5] bg-[#fafafa] hover:bg-white hover:border-[#0284c7] p-3 text-[12px] font-bold text-[#0284c7] flex items-center justify-between transition-all"
-              >
-                <div className="flex items-center gap-2">
-                  <ShieldCheck size={16} />
-                  <span>{tLang(language, {
-                    ar: 'دخول بوابة المعلمين والإدارة (محمية بكلمة مرور)',
-                    en: 'Educator & Admin Login (Secured)',
-                    fr: 'Connexion Enseignants & Direction (Sécurisée)',
-                    de: 'Lehrer- & Admin-Login (Geschützt)',
-                    ja: '教員・管理者ポータル（パスワード保護区域）',
-                  })}</span>
-                </div>
-                <span>➔</span>
-              </a>
-            </div>
           </SectionCard>
 
           <SectionCard title={tLang(language, { ar: 'العمل دون إنترنت', en: 'Offline access', fr: 'Accès hors ligne', de: 'Offline-Zugriff', ja: 'オフライン利用' })} action={<WifiOff size={14} strokeWidth={1.7} className="text-[#a3a3a3]" />}>

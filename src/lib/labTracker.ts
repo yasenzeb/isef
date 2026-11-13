@@ -9,7 +9,7 @@
 import { useEffect, useRef } from 'react';
 import { getPersistedItem, setPersistedItem, getPersistedJSON, setPersistedJSON } from './cookies';
 import { getUserScopedKey, getScopedUserProfile, saveScopedUserProfile } from './userStorage';
-import { dbUpsertProfile } from './supabase';
+import { dbSyncStudentProgress } from './supabase';
 
 export interface RealLabStats {
   totalSeconds: number;
@@ -139,11 +139,14 @@ export function useLabActiveTracker(labId?: string, userEmail?: string | null): 
     return () => {
       clearInterval(interval);
       if (accumulatedRef.current > 0 && userEmail) {
-        const stats = getRealLabStats(userEmail);
-        void dbUpsertProfile({
-          id: userEmail,
+        const xp = parseInt(getPersistedItem(getUserScopedKey(userEmail, 'scinexa_user_xp')) || getPersistedItem('scinexa_user_xp') || '0', 10) || undefined;
+        const stars = parseInt(getPersistedItem(getUserScopedKey(userEmail, 'scinexa_user_stars')) || getPersistedItem('scinexa_user_stars') || '0', 10) || undefined;
+        const streak = parseInt(getPersistedItem(getUserScopedKey(userEmail, 'scinexa_real_streak')) || getPersistedItem('scinexa_real_streak') || '1', 10) || undefined;
+        void dbSyncStudentProgress({
           email: userEmail,
-          // Sync real lab seconds to profile
+          xp,
+          stars,
+          streak,
         });
       }
     };

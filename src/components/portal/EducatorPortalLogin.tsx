@@ -17,17 +17,11 @@ import { useSession } from '../../context/SessionContext';
 import {
   dbVerifyEducator,
   dbRegisterEducator,
-  dbVerifyEducatorByEmail,
-  dbLinkGoogleEducatorProfile,
-  supabase,
 } from '../../lib/supabase';
 import { LanguageSelector } from '../ui/LanguageSelector';
 import { BrandMark } from '../ui/Brand';
 import {
-  GraduationCap,
-  Building2,
   ShieldCheck,
-  Lock,
   User,
   ArrowRight,
   AlertCircle,
@@ -35,10 +29,6 @@ import {
   KeyRound,
   UserPlus,
   LogIn,
-  School,
-  Sparkles,
-  Phone,
-  Mail,
 } from 'lucide-react';
 
 export const EducatorPortalLogin: React.FC = () => {
@@ -69,51 +59,9 @@ export const EducatorPortalLogin: React.FC = () => {
   const [regRole, setRegRole] = useState<'teacher' | 'admin'>('teacher');
   const [regSubject, setRegSubject] = useState('chemistry');
 
-  // Google Link Modal fields
-  const [googleModalOpen, setGoogleModalOpen] = useState(false);
-  const [googleEmail, setGoogleEmail] = useState('');
-  const [googleQuadName, setGoogleQuadName] = useState('');
-  const [googleNationalId, setGoogleNationalId] = useState('');
-  const [googleSchoolName, setGoogleSchoolName] = useState('');
-  const [googleRole, setGoogleRole] = useState<'teacher' | 'admin'>('teacher');
-
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  // Check Supabase OAuth redirect on mount
-  useEffect(() => {
-    const checkOAuth = async () => {
-      if (!supabase) return;
-      try {
-        const { data } = await supabase.auth.getSession();
-        const user = data.session?.user;
-        if (user && user.email) {
-          const email = user.email;
-          const verify = await dbVerifyEducatorByEmail(email);
-          if (verify.success && verify.profile && verify.profile.national_id) {
-            loginEducator({
-              name: verify.profile.display_name || verify.profile.quad_name || email,
-              nationalId: verify.profile.national_id,
-              role: (verify.profile.role as 'teacher' | 'admin') || 'teacher',
-              schoolName: verify.profile.school_name || '',
-              schoolCode: verify.profile.school_code || '',
-              verifiedAt: Date.now(),
-            });
-            navigate('/portal');
-          } else {
-            // Need to collect national ID & quad name for Google user
-            setGoogleEmail(email);
-            setGoogleQuadName(user.user_metadata?.full_name || '');
-            setGoogleModalOpen(true);
-          }
-        }
-      } catch (e) {
-        console.warn('OAuth check error', e);
-      }
-    };
-    void checkOAuth();
-  }, [loginEducator, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -214,6 +162,7 @@ export const EducatorPortalLogin: React.FC = () => {
       const res = await dbRegisterEducator({
         quadName: cleanFullName,
         nationalId: cleanNationalId,
+        email: regEmail.trim() || undefined,
         schoolName: regSchoolName.trim() || undefined,
         role: regRole,
         subject: regSubject,
@@ -242,71 +191,6 @@ export const EducatorPortalLogin: React.FC = () => {
       }
     } catch {
       setError(ar ? 'حدث خطأ غير متوقع أثناء التسجيل.' : 'Unexpected error during registration.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    setError(null);
-    if (!supabase) {
-      // Fallback modal if Supabase OAuth isn't configured
-      setGoogleEmail('educator@scinexa.edu.eg');
-      setGoogleModalOpen(true);
-      return;
-    }
-    try {
-      const { error: oauthErr } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin + '/portal/login',
-        },
-      });
-      if (oauthErr) {
-        // If OAuth provider not enabled on Supabase, open linking modal directly
-        setGoogleEmail('teacher@moe.edu.eg');
-        setGoogleModalOpen(true);
-      }
-    } catch {
-      setGoogleModalOpen(true);
-    }
-  };
-
-  const handleLinkGoogleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!googleQuadName.trim()) {
-      setError(ar ? 'يرجى كتابة الاسم الرباعي المعتمد.' : 'Please enter full 4-part name.');
-      return;
-    }
-    if (!googleNationalId.trim() || googleNationalId.trim().length !== 14) {
-      setError(ar ? 'الرقم القومي يجب أن يتكون من ١٤ رقماً.' : 'National ID must be 14 digits.');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const res = await dbLinkGoogleEducatorProfile({
-        email: googleEmail,
-        quadName: googleQuadName.trim(),
-        nationalId: googleNationalId.trim(),
-        schoolName: googleSchoolName.trim(),
-        role: googleRole,
-      });
-
-      if (res.success && res.profile) {
-        loginEducator({
-          name: googleQuadName.trim(),
-          nationalId: googleNationalId.trim(),
-          role: googleRole,
-          schoolName: googleSchoolName.trim(),
-          schoolCode: 'MOE.GOOGLE',
-          verifiedAt: Date.now(),
-        });
-        setGoogleModalOpen(false);
-        navigate('/portal');
-      }
-    } catch {
-      setError(ar ? 'تعذر ربط الحساب، يرجى المحاولة ثانية.' : 'Failed to link account.');
     } finally {
       setLoading(false);
     }
@@ -400,50 +284,16 @@ export const EducatorPortalLogin: React.FC = () => {
           </div>
         )}
 
-        {/* Google Sign In Button */}
-        <div className="mb-5">
-          <button
-            type="button"
-            onClick={handleGoogleSignIn}
-            className="w-full h-11 rounded-xl border border-[#e5e5e5] bg-white hover:bg-[#fafafa] text-[#0a0a0a] font-semibold text-[13px] flex items-center justify-center gap-2.5 transition-all shadow-xs"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24">
-              <path
-                fill="#4285F4"
-                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-              />
-              <path
-                fill="#34A853"
-                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-              />
-              <path
-                fill="#FBBC05"
-                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-              />
-              <path
-                fill="#EA4335"
-                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-              />
-            </svg>
-            <span>
-              {ar
-                ? 'الدخول المباشر بحساب Google'
-                : ja
-                ? 'Google アカウントでログイン'
-                : 'Sign in with Google'}
-            </span>
-          </button>
-
-          <div className="relative my-4">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[#e5e5e5]" />
-            </div>
-            <div className="relative flex justify-center text-[10px] uppercase font-mono tracking-wider text-[#a3a3a3]">
-              <span className="bg-white px-2">
-                {ar ? 'أو بالبيانات الرسمية' : ja ? 'または公式IDで' : 'Or with credentials'}
-              </span>
-            </div>
-          </div>
+        {/* Isolated Portal Notice (100% separate from Clerk Student Google Auth) */}
+        <div className="mb-5 rounded-xl border border-blue-200 bg-blue-50/70 px-3.5 py-2.5 text-[11.5px] leading-relaxed text-blue-950 flex items-start gap-2.5">
+          <ShieldCheck size={16} className="shrink-0 mt-0.5 text-blue-600" />
+          <span>
+            {ar
+              ? 'هذه البوابة مستقلة كلياً عن دخول الطلاب (Google / Clerk) ولا تتداخل مع بياناتهم. سجل دخولك بالاسم الرباعي أو البريد + الرقم القومي.'
+              : ja
+              ? 'この教員ポータルは生徒用ログイン（Google / Clerk）と完全に分離されています。'
+              : 'This portal is completely isolated from Student Google / Clerk login. Sign in with your verified official credentials.'}
+          </span>
         </div>
 
         {/* ── MODE: LOGIN ── */}
@@ -451,7 +301,7 @@ export const EducatorPortalLogin: React.FC = () => {
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="block text-[12px] font-semibold text-[#0a0a0a] mb-1.5">
-                {ar ? 'اسم المستخدم (الاسم الرباعي)' : ja ? 'ユーザー名（氏名）' : 'Username (Full 4-Part Name)'}
+                {ar ? 'اسم المستخدم (الاسم الرباعي أو البريد)' : ja ? 'ユーザー名（氏名またはメール）' : 'Username (Full 4-Part Name or Email)'}
               </label>
               <div className="relative">
                 <input
@@ -615,104 +465,6 @@ export const EducatorPortalLogin: React.FC = () => {
           </form>
         )}
       </div>
-
-      {/* ── GOOGLE PROFILE LINKING MODAL ── */}
-      {googleModalOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
-        >
-          <div className="relative w-full max-w-[480px] overflow-hidden rounded-[24px] bg-white border border-[#e5e5e5] p-6 sm:p-7 shadow-2xl">
-            <div className="flex items-center gap-3 mb-4 pb-4 border-b border-[#e5e5e5]">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                <ShieldCheck size={20} />
-              </span>
-              <div>
-                <h3 className="text-[16px] font-bold text-[#0a0a0a]">
-                  {ar ? 'استكمال ربط حساب Google بالمعلم' : 'Link Google Account to Educator Profile'}
-                </h3>
-                <p className="text-[11px] text-[#737373]">{googleEmail}</p>
-              </div>
-            </div>
-
-            <form onSubmit={handleLinkGoogleSubmit} className="space-y-3.5">
-              <div>
-                <label className="block text-[12px] font-semibold text-[#0a0a0a] mb-1">
-                  {ar ? 'الاسم الرباعي الرسمي' : 'Full 4-Part Official Name'}
-                  <span className="text-red-500 ms-1">*</span>
-                </label>
-                <input
-                  required
-                  value={googleQuadName}
-                  onChange={(e) => setGoogleQuadName(e.target.value)}
-                  placeholder={ar ? 'مثال: إسلام أسامة محمد علي' : 'Full name'}
-                  className="w-full h-10 px-3 rounded-xl border border-[#e5e5e5] bg-[#fafafa] text-[13px] outline-none focus:border-[#0a0a0a]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[12px] font-semibold text-[#0a0a0a] mb-1">
-                  {ar ? 'الرقم القومي (١٤ رقماً)' : 'National ID (14 digits)'}
-                  <span className="text-red-500 ms-1">*</span>
-                </label>
-                <input
-                  required
-                  maxLength={14}
-                  dir="ltr"
-                  value={googleNationalId}
-                  onChange={(e) => setGoogleNationalId(e.target.value)}
-                  placeholder="2990101XXXXXXXXX"
-                  className="w-full h-10 px-3 rounded-xl border border-[#e5e5e5] bg-[#fafafa] text-[13px] outline-none focus:border-[#0a0a0a] font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[12px] font-semibold text-[#0a0a0a] mb-1">
-                  {ar ? 'اسم مدرستك الحقيقية (اختياري)' : 'School Name (Optional)'}
-                </label>
-                <input
-                  value={googleSchoolName}
-                  onChange={(e) => setGoogleSchoolName(e.target.value)}
-                  placeholder={ar ? 'اسم المدرسة التابع لها' : 'Your school name'}
-                  className="w-full h-10 px-3 rounded-xl border border-[#e5e5e5] bg-[#fafafa] text-[13px] outline-none focus:border-[#0a0a0a]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[12px] font-semibold text-[#0a0a0a] mb-1">
-                  {ar ? 'الدور والصلاحية' : 'Role'}
-                </label>
-                <select
-                  value={googleRole}
-                  onChange={(e) => setGoogleRole(e.target.value as any)}
-                  className="w-full h-10 px-3 rounded-xl border border-[#e5e5e5] bg-[#fafafa] text-[12px] outline-none focus:border-[#0a0a0a]"
-                >
-                  <option value="teacher">{ar ? 'معلم مشرف' : 'Teacher'}</option>
-                  <option value="admin">{ar ? 'مدير نظام / مسؤول مدرسة' : 'Administrator'}</option>
-                </select>
-              </div>
-
-              <div className="pt-2 flex items-center justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setGoogleModalOpen(false)}
-                  className="sn-btn sn-btn-outline sn-btn-sm"
-                >
-                  {ar ? 'إلغاء' : 'Cancel'}
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="sn-btn sn-btn-primary sn-btn-sm"
-                >
-                  {ar ? 'حفظ ودخول للبوابة' : 'Save & Enter'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

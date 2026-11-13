@@ -478,7 +478,12 @@ export const SciNexaAIModal: React.FC<SciNexaAIModalProps> = ({
       lower.includes('admin portal');
 
     if (isAdminCommand) {
-      const isEducator = role === 'teacher' || role === 'admin' || Boolean(educator);
+      const inEducatorPortal =
+        typeof window !== 'undefined' &&
+        (window.location.pathname.startsWith('/portal') ||
+          window.location.pathname.startsWith('/admin') ||
+          window.location.pathname.startsWith('/teacher'));
+      const isEducator = inEducatorPortal && (role === 'teacher' || role === 'admin' || Boolean(educator));
       if (!isEducator) {
         const reprimand = ar
           ? `يا ${studentName}، أنت ممنوع تعمل كدا ومينفعش، والأمر ده مش هنفذه لأنك طالب مش معلم، وإدارة الفصول وصلاحيات المدرسة محصورة بالمعلم والمدير فقط.`

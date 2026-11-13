@@ -50,10 +50,11 @@ ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFA
 
 CREATE UNIQUE INDEX IF NOT EXISTS profiles_email_key ON public.profiles (lower(email));
 
--- فك قيد الارتباط بـ auth.users لتمكين مزامنة حسابات Clerk و Google بسلاسة
+-- فك قيد الارتباط بـ auth.users وتحويل id إلى TEXT لتمكين مزامنة حسابات Clerk و Google بسلاسة
 DO $$
 BEGIN
   ALTER TABLE public.profiles DROP CONSTRAINT IF EXISTS profiles_id_fkey;
+  ALTER TABLE public.profiles ALTER COLUMN id TYPE TEXT USING id::text;
 EXCEPTION WHEN OTHERS THEN
   NULL;
 END $$;

@@ -307,10 +307,10 @@ export const EducatorLayout: React.FC = () => {
             <span>{ar ? 'تسجيل دخول المعلمين والمشرفين' : ja ? '教員ログイン' : 'Educator Login'}</span>
           </Link>
           <Link
-            to="/app"
+            to="/"
             className="mt-3 block text-[11px] text-[#737373] hover:text-[#0a0a0a]"
           >
-            {ar ? '← العودة لمنصة الطلاب العامة' : ja ? '← 生徒向けアプリへ戻る' : '← Back to Student Platform'}
+            {ar ? '← العودة للصفحة الرئيسية' : ja ? '← トップページへ戻る' : '← Back to Home'}
           </Link>
         </div>
       </div>
@@ -600,15 +600,13 @@ export const EducatorLayout: React.FC = () => {
               </span>
             </button>
 
-            {/* Link to public student app */}
+            {/* Link back to landing page (Educator portal stays strictly separated from Student /app) */}
             <Link
-              to="/app"
-              target="_blank"
-              rel="noopener noreferrer"
+              to="/"
               className="sn-btn sn-btn-outline sn-btn-sm !h-8 text-[11px] font-semibold hidden sm:flex items-center gap-1.5 border-[#e5e5e5] bg-white"
-              title={ar ? 'فتح منصة الطلاب في تبويب مستقل' : 'Open Student App in new tab'}
+              title={ar ? 'العودة للصفحة الرئيسية للمنصة' : 'Back to main website'}
             >
-              <span>{ar ? 'منصة الطلاب' : ja ? '生徒用アプリ' : 'Student App'}</span>
+              <span>{ar ? 'الموقع الرئيسي' : ja ? 'ホーム' : 'Main Site'}</span>
               <ExternalLink size={12} />
             </Link>
 

@@ -7,10 +7,11 @@ import React, {
   useState,
 } from 'react';
 import { useAuth as useClerkAuth, useUser } from '@clerk/clerk-react';
+import { useLocation } from 'react-router-dom';
 import { isClerkConfigured } from '../lib/clerkConfig';
 import { dbUpsertProfile, dbFetchProfileByEmail } from '../lib/supabase';
 import { clearActiveSessionKeys, getScopedUserProfile, saveScopedUserProfile } from '../lib/userStorage';
-import { setPersistedItem } from '../lib/cookies';
+import { getPersistedItem, setPersistedItem } from '../lib/cookies';
 
 export type AppRole = 'student' | 'teacher' | 'admin';
 
@@ -78,11 +79,18 @@ export const readEducatorSession = (): EducatorAuth | null => {
 const ClerkSessionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, isLoaded } = useUser();
   const { signOut } = useClerkAuth();
+  const location = useLocation();
   const [educator, setEducator] = useState<EducatorAuth | null>(readEducatorSession);
+
+  // عزل تام: بوابة المعلمين والإدارة (/portal, /admin, /teacher) لا تتصل بجلسة Clerk الخاصة بالطلاب إطلاقاً
+  const isEducatorPortal =
+    location.pathname.startsWith('/portal') ||
+    location.pathname.startsWith('/admin') ||
+    location.pathname.startsWith('/teacher');
 
   // في منصة الطلاب /app: المستخدم دائماً طالب (Student) ولا يملك صلاحية تغيير دوره
   const normalized: SessionUser | null = useMemo(() => {
-    if (!user) return null;
+    if (isEducatorPortal || !user) return null;
     return {
       id: user.id,
       name: user.fullName || user.username || user.primaryEmailAddress?.emailAddress.split('@')[0] || 'Student',
@@ -92,10 +100,10 @@ const ClerkSessionProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       isDemo: false,
       grade: String((user.publicMetadata as Record<string, unknown> | undefined)?.grade ?? '') || undefined,
     };
-  }, [user]);
+  }, [user, isEducatorPortal]);
 
   useEffect(() => {
-    if (!normalized?.email) return;
+    if (isEducatorPortal || !normalized?.email) return;
 
     const email = normalized.email;
     const activeEmail = typeof localStorage !== 'undefined' ? localStorage.getItem('scinexa_active_user_email') : null;
@@ -114,6 +122,11 @@ const ClerkSessionProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const effectivePhone = dbProf?.parent_phone || scoped?.parentPhone || '';
       const effectiveGrade = dbProf?.grade_level || scoped?.gradeLevel || 'sec2';
       const effectiveSchool = dbProf?.school_name || dbProf?.school_code || scoped?.schoolName || '';
+      const effectiveGov = dbProf?.governorate_id || scoped?.governorateId || 'cairo';
+      const effectiveAdmin = dbProf?.administration_id || scoped?.administrationId || undefined;
+      const currentXp = parseInt(getPersistedItem('scinexa_user_xp') || '0', 10) || undefined;
+      const currentStars = parseInt(getPersistedItem('scinexa_user_stars') || '0', 10) || undefined;
+      const currentStreak = parseInt(getPersistedItem('scinexa_real_streak') || '1', 10) || undefined;
 
       if (effectiveQuadName) {
         setPersistedItem('scinexa_user_fullname', effectiveQuadName);
@@ -133,23 +146,35 @@ const ClerkSessionProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         parentPhone: effectivePhone,
         gradeLevel: effectiveGrade,
         schoolName: effectiveSchool,
+        governorateId: effectiveGov,
+        administrationId: effectiveAdmin,
       });
 
-      void dbUpsertProfile({
+      const syncRes = await dbUpsertProfile({
         id: normalized.id,
         email: normalized.email,
         display_name: effectiveQuadName || normalized.name,
         quad_name: effectiveQuadName || undefined,
         parent_phone: effectivePhone || undefined,
+        school_code: effectiveSchool || undefined,
+        school_name: effectiveSchool || undefined,
+        governorate_id: effectiveGov,
+        administration_id: effectiveAdmin,
         grade_level: effectiveGrade,
+        xp: currentXp,
+        stars: currentStars,
+        streak: currentStreak,
         role: 'student',
       });
+      if (!syncRes.ok && syncRes.error) {
+        console.warn('Student profile sync warning:', syncRes.error);
+      }
 
       window.dispatchEvent(new CustomEvent('scinexa_profile_updated', {
         detail: { quadName: effectiveQuadName, email }
       }));
     })();
-  }, [normalized?.id, normalized?.email]);
+  }, [isEducatorPortal, normalized?.id, normalized?.email]);
 
   const loginEducator = useCallback((auth: EducatorAuth) => {
     try {
@@ -180,15 +205,15 @@ const ClerkSessionProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   });
 
-  const effectiveUser = normalized || guestUser;
+  const effectiveUser = isEducatorPortal ? null : (normalized || guestUser);
 
   const value = useMemo<SessionValue>(
     () => ({
       user: effectiveUser,
-      isLoaded,
+      isLoaded: isEducatorPortal ? true : isLoaded,
       isSignedIn: Boolean(effectiveUser),
-      role: 'student', // منصة الطلاب الرئيسية مقصورة على الطالب
-      isDemo: Boolean(guestUser && !normalized),
+      role: isEducatorPortal && educator ? educator.role : 'student', // منصة الطلاب مقصورة على الطالب وبوابة المعلم معزولة
+      isDemo: Boolean(!isEducatorPortal && guestUser && !normalized),
       isRolePreview: false,
       educator,
       loginEducator,
@@ -197,12 +222,10 @@ const ClerkSessionProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         try {
           clearActiveSessionKeys();
           localStorage.removeItem('scinexa_dev_role');
-          localStorage.removeItem(EDUCATOR_AUTH_KEY);
           localStorage.removeItem(DEMO_KEY);
         } catch {
           /* ignore */
         }
-        setEducator(null);
         setGuestUser(null);
         await signOut({ redirectUrl: '/' });
       },
@@ -228,7 +251,7 @@ const ClerkSessionProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         // Disabled
       },
     }),
-    [effectiveUser, normalized, guestUser, isLoaded, educator, loginEducator, logoutEducator, signOut]
+    [effectiveUser, isEducatorPortal, normalized, guestUser, isLoaded, educator, loginEducator, logoutEducator, signOut]
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
@@ -236,6 +259,12 @@ const ClerkSessionProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
 /* ── Local demo session (no Clerk key present) ────────────────────────────── */
 const DemoSessionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const location = useLocation();
+  const isEducatorPortal =
+    location.pathname.startsWith('/portal') ||
+    location.pathname.startsWith('/admin') ||
+    location.pathname.startsWith('/teacher');
+
   const [user, setUser] = useState<SessionUser | null>(() => {
     try {
       const raw = localStorage.getItem(DEMO_KEY);
@@ -286,24 +315,23 @@ const DemoSessionProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const value = useMemo<SessionValue>(
     () => ({
-      user,
+      user: isEducatorPortal ? null : user,
       isLoaded: true,
-      isSignedIn: Boolean(user),
-      role: 'student',
-      isDemo: true,
+      isSignedIn: Boolean(!isEducatorPortal && user),
+      role: isEducatorPortal && educator ? educator.role : 'student',
+      isDemo: !isEducatorPortal,
       isRolePreview: false,
       educator,
       loginEducator,
       logoutEducator,
       signOut: async () => {
         setUser(null);
-        logoutEducator();
       },
       signInDemo,
       switchDemoRole: () => {},
       clearRolePreview: () => {},
     }),
-    [user, educator, loginEducator, logoutEducator, signInDemo]
+    [user, isEducatorPortal, educator, loginEducator, logoutEducator, signInDemo]
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
