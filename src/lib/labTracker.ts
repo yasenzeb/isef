@@ -19,6 +19,26 @@ export interface RealLabStats {
   sessionsCount: number;
 }
 
+const DAILY_SECONDS_KEY = 'scinexa_daily_lab_seconds';
+
+export function getWeeklyLabMinutes(): { isoDate: string; dayIndex: number; minutes: number }[] {
+  const daily = getPersistedJSON<Record<string, number>>(DAILY_SECONDS_KEY, {});
+  const result: { isoDate: string; dayIndex: number; minutes: number }[] = [];
+  const today = new Date();
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const isoDate = d.toISOString().slice(0, 10);
+    const secs = typeof daily[isoDate] === 'number' ? daily[isoDate] : 0;
+    result.push({
+      isoDate,
+      dayIndex: d.getDay(), // 0=Sun..6=Sat
+      minutes: secs > 0 ? Math.max(1, Math.round(secs / 60)) : 0,
+    });
+  }
+  return result;
+}
+
 export function getRealLabStats(emailOrId?: string | null): RealLabStats {
   const email = emailOrId || (typeof localStorage !== 'undefined' ? localStorage.getItem('scinexa_active_user_email') : '') || '';
   const scoped = email ? getScopedUserProfile(email) : null;
@@ -51,6 +71,11 @@ export function addLabTime(emailOrId: string | null | undefined, secondsToAdd: n
 
   setPersistedItem('scinexa_total_lab_seconds', String(nextSeconds));
   setPersistedJSON('scinexa_explored_labs', nextExplored);
+
+  const todayKey = new Date().toISOString().slice(0, 10);
+  const daily = getPersistedJSON<Record<string, number>>(DAILY_SECONDS_KEY, {});
+  const nextDaily = { ...daily, [todayKey]: (typeof daily[todayKey] === 'number' ? daily[todayKey] : 0) + secondsToAdd };
+  setPersistedJSON(DAILY_SECONDS_KEY, nextDaily);
 
   if (email) {
     saveScopedUserProfile(email, {

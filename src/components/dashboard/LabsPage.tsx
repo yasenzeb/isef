@@ -61,7 +61,7 @@ export const LabsPage: React.FC = () => {
     <div>
       <PageHeader
         eyebrow={ar ? 'المعامل' : 'Laboratories'}
-        title={ar ? 'ستّ غرف. سؤال واحد لكل غرفة.' : 'Six rooms. One question each.'}
+        title={ar ? `${LAB_MODULES.length} غرف تفاعلية. سؤال واحد لكل غرفة.` : `${LAB_MODULES.length} interactive rooms. One question each.`}
         subtitle={
           ar
             ? 'كل معمل يحتوي على أدوات قياس حقيقية ونماذج ثلاثية الأبعاد. تقدّمك محفوظ تلقائيًا.'
@@ -71,7 +71,7 @@ export const LabsPage: React.FC = () => {
           <>
             <span className="sn-badge sn-badge-green">
               <span className="h-1.5 w-1.5 rounded-full bg-[#047857]" />
-              {ar ? '٦ معامل متصلة' : '6 labs online'}
+              {ar ? `${LAB_MODULES.length} معامل متصلة` : `${LAB_MODULES.length} labs online`}
             </span>
             <span className="sn-badge sn-badge-outline">WebGL 2</span>
           </>

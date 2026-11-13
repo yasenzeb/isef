@@ -34,7 +34,7 @@ const Atom3DViewer: React.FC<Atom3DViewerProps> = ({ element, language }) => {
     const height = mount.clientHeight || 350;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf5f5f5);
+    scene.background = new THREE.Color(0x0b0f17);
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
     const maxRadius = 1.1 + shells.length * 0.65;
@@ -329,7 +329,7 @@ const PolyatomicGroup3DViewer: React.FC<PolyatomicGroup3DViewerProps> = ({ group
     const height = mount.clientHeight || 500;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf5f5f5);
+    scene.background = new THREE.Color(0x0b0f17);
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
     camera.position.set(0, 0, 4.8);

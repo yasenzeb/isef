@@ -1,14 +1,21 @@
 import { getPersistedItem, getPersistedJSON, setPersistedItem, setPersistedJSON } from '../../lib/cookies';
 import {
-  checkStudentLink,
   calculateStudentLevel,
   getEnrolledStudents,
   getAssignments,
+  getSubmissions,
   fetchAndSyncEnrollment,
   fetchAndSyncAssignments,
+  fetchAndSyncSubmissions,
+  findStudentEnrollmentsFromList,
+  getAssignmentsForStudent,
+  recordSubmission,
+  namesMatch,
   type EnrolledStudent,
   type AssignmentItem,
+  type StudentSubmission,
 } from '../../data/schoolEnrollment';
+import { ALL_CURRICULUM_PATHWAYS } from '../../data/curriculumData';
 import {
   dbFetchClasses,
   dbFetchAllProfiles,
@@ -56,6 +63,7 @@ const ICONS: Record<string, React.ComponentType<{ size?: number; strokeWidth?: n
   biology: Dna,
   geology: Globe2,
   astronomy: Sparkles,
+  math: Compass,
 };
 
 export const DashboardHome: React.FC = () => {
@@ -126,46 +134,86 @@ export const DashboardHome: React.FC = () => {
 
   const isResearcher = savedGrade === 'university' || savedGrade === 'researcher';
 
-  // Real Enrollment & Streak
-  const linkedStudent = useMemo(
-    () => (isResearcher ? null : checkStudentLink(studentQuadName, user?.email)),
-    [studentQuadName, user, isResearcher]
-  );
-
-  const progressPercent = completed.length > 0 ? Math.min(100, Math.round((completed.length / 24) * 100)) : 0;
-  const levelInfo = useMemo(() => calculateStudentLevel(xp), [xp]);
-
   // Real Supabase state
   const [classes, setClasses] = useState<DbClass[]>([]);
   const [enrolledStudents, setEnrolledStudents] = useState<EnrolledStudent[]>(() => getEnrolledStudents());
   const [assignments, setAssignments] = useState<AssignmentItem[]>(() => getAssignments());
+  const [submissions, setSubmissions] = useState<StudentSubmission[]>(() => getSubmissions());
   const [profiles, setProfiles] = useState<DbProfile[]>([]);
   const [institutions, setInstitutions] = useState<DbInstitution[]>([]);
+  const [submittingId, setSubmittingId] = useState<string | null>(null);
 
   useEffect(() => {
     const loadRealData = async () => {
-      const [fetchedClasses, fetchedStudents, fetchedAssignments, fetchedProfiles, fetchedInst] = await Promise.all([
+      const [fetchedClasses, fetchedStudents, fetchedAssignments, fetchedSubmissions, fetchedProfiles, fetchedInst] = await Promise.all([
         dbFetchClasses(),
         fetchAndSyncEnrollment(),
         fetchAndSyncAssignments(),
+        fetchAndSyncSubmissions(),
         dbFetchAllProfiles(),
         dbFetchInstitutions(),
       ]);
       setClasses(fetchedClasses || []);
       if (fetchedStudents) setEnrolledStudents(fetchedStudents);
       if (fetchedAssignments) setAssignments(fetchedAssignments);
+      if (fetchedSubmissions) setSubmissions(fetchedSubmissions);
       setProfiles(fetchedProfiles || []);
       setInstitutions(fetchedInst || []);
     };
     void loadRealData();
   }, []);
 
+  // Real Enrollment, Curriculum Denominator, & Targeted Assignments
+  const studentEnrollments = useMemo(
+    () => (isResearcher ? [] : findStudentEnrollmentsFromList(enrolledStudents, studentQuadName, user?.email)),
+    [enrolledStudents, studentQuadName, user?.email, isResearcher]
+  );
+  const linkedStudent = studentEnrollments[0] || null;
+
+  const visibleAssignments = useMemo(
+    () =>
+      role === 'student'
+        ? getAssignmentsForStudent(assignments, studentEnrollments, studentQuadName, user?.email)
+        : assignments,
+    [role, assignments, studentEnrollments, studentQuadName, user?.email]
+  );
+
+  const totalCurriculumLessons = useMemo(
+    () => Math.max(1, ALL_CURRICULUM_PATHWAYS.reduce((sum, p) => sum + p.lessons.length, 0)),
+    []
+  );
+
+  const progressPercent =
+    completed.length > 0 ? Math.min(100, Math.round((completed.length / totalCurriculumLessons) * 100)) : 0;
+  const levelInfo = useMemo(() => calculateStudentLevel(xp), [xp]);
+
+  const effectiveStudentIdentity = useMemo(
+    () => studentQuadName.trim() || linkedStudent?.quadName || user?.name || user?.email || '',
+    [studentQuadName, linkedStudent, user]
+  );
+
+  const handleCompleteAssignment = async (item: AssignmentItem) => {
+    if (!effectiveStudentIdentity || submittingId) return;
+    setSubmittingId(item.id);
+    const sub: StudentSubmission = {
+      id: `sub-${item.id}-${Date.now()}`,
+      assignmentId: item.id,
+      studentQuadName: effectiveStudentIdentity,
+      submittedAt: new Date().toISOString().split('T')[0],
+      status: 'submitted',
+    };
+    await recordSubmission(sub);
+    setSubmissions(getSubmissions());
+    setSubmittingId(null);
+  };
+
+  const labsCount = LAB_MODULES.length;
   const classesCount = classes.length;
   const studentsCount = enrolledStudents.length;
   const avgMastery = studentsCount > 0
     ? Math.round(enrolledStudents.reduce((acc, s) => acc + (s.mastery || 0), 0) / studentsCount)
     : 0;
-  const openAssignments = assignments.length;
+  const openAssignments = visibleAssignments.length;
   const institutionsCount = institutions.length;
   const profilesCount = profiles.length;
 
@@ -190,13 +238,13 @@ export const DashboardHome: React.FC = () => {
       ? [
           {
             label: tLang(language, { ar: 'المعامل التخصصية', en: 'Specialist Labs', fr: 'Labos spécialisés', de: 'Fachlabore', ja: '専門実験室' }),
-            value: '6',
+            value: String(labsCount),
             hint: tLang(language, { ar: 'معامل 3D متقدمة', en: '3D active labs', fr: 'Labos 3D actifs', de: '3D-Labore aktiv', ja: '3D稼働中' }),
             icon: FlaskConical,
           },
           {
             label: tLang(language, { ar: 'معامل مستكشفة', en: 'Explored Labs', fr: 'Labos explorés', de: 'Erkundete Labore', ja: '体験済み実験室' }),
-            value: `${labStats.exploredCount}/6`,
+            value: `${labStats.exploredCount}/${labsCount}`,
             hint: tLang(language, { ar: 'تجارب فعلية', en: 'active labs', fr: 'labos ouverts', de: 'aktive Labore', ja: '完了実験室' }),
             icon: Sparkles,
           },
@@ -218,14 +266,13 @@ export const DashboardHome: React.FC = () => {
             {
               label: tLang(language, { ar: 'تقدّم المنهج', en: 'Curriculum Progress', fr: 'Progression du cours', de: 'Lehrplanfortschritt', ja: 'カリキュラム進捗' }),
               value: `${progressPercent}%`,
-              trend: '+0%',
               hint: tLang(language, { ar: 'إنجاز فعلي', en: 'real progress', fr: 'réel', de: 'tatsächlich', ja: '実質進捗' }),
               icon: BookOpen,
             },
             {
               label: tLang(language, { ar: 'دروس مكتملة', en: 'Lessons Completed', fr: 'Leçons terminées', de: 'Lektionen fertig', ja: '完了レッスン' }),
               value: String(completed.length),
-              hint: tLang(language, { ar: 'من ٢٤ درسًا', en: 'of 24', fr: 'sur 24', de: 'von 24', ja: '/ 24' }),
+              hint: tLang(language, { ar: `من ${totalCurriculumLessons} درسًا`, en: `of ${totalCurriculumLessons}`, fr: `sur ${totalCurriculumLessons}`, de: `von ${totalCurriculumLessons}`, ja: `/ ${totalCurriculumLessons}` }),
               icon: CheckCircle2,
             },
             {
@@ -258,11 +305,11 @@ export const DashboardHome: React.FC = () => {
   const roleMessage =
     isResearcher
       ? tLang(language, {
-          ar: 'مرحباً بك في المختبر العلمي المتقدم للبحث والمحاكاة. استكشف المعامل التخصصية، مرصد كبلر الفلكي، وأدوات التحليل العلمي.',
-          en: 'Welcome to the Advanced Scientific Simulation Laboratory. Explore 6 specialized 3D labs, Kepler observatory, and research tools.',
-          fr: 'Bienvenue dans le laboratoire de recherche avancée 3D. Explorez les 6 laboratoires spécialisés, l’observatoire Kepler et les outils de simulation.',
-          de: 'Willkommen im fortgeschrittenen 3D-Forschungslabor. Erkunden Sie 6 Fachlabore, das Kepler-Observatorium und Analysewerkzeuge.',
-          ja: '高度3D科学シミュレーション研究所へようこそ。6つの専門実験室、ケプラー天文台、精密分析ツールを自在に活用できます。',
+          ar: `مرحباً بك في المختبر العلمي المتقدم للبحث والمحاكاة. استكشف ${labsCount} معامل تخصصية، مرصد كبلر الفلكي، وأدوات التحليل العلمي.`,
+          en: `Welcome to the Advanced Scientific Simulation Laboratory. Explore ${labsCount} specialized 3D labs, Kepler observatory, and research tools.`,
+          fr: `Bienvenue dans le laboratoire de recherche avancée 3D. Explorez les ${labsCount} laboratoires spécialisés, l’observatoire Kepler et les outils de simulation.`,
+          de: `Willkommen im fortgeschrittenen 3D-Forschungslabor. Erkunden Sie ${labsCount} Fachlabore, das Kepler-Observatorium und Analysewerkzeuge.`,
+          ja: `高度3D科学シミュレーション研究所へようこそ。${labsCount}つの専門実験室、ケプラー天文台、精密分析ツールを自在に活用できます。`,
         })
       : role === 'teacher'
         ? tLang(language, {
@@ -444,11 +491,11 @@ export const DashboardHome: React.FC = () => {
             <p className="mt-2 max-w-[52ch] text-[12px] leading-relaxed text-white/50">
               {isResearcher
                 ? tLang(language, {
-                    ar: 'استكشف المعامل التخصصية الستة: التشريح، الكيمياء، الفيزياء، الأحياء، الزلازل وعلوم الأرض، ومرصد كبلر الفلكي بحرية تامة دون قيود المناهج.',
-                    en: 'Explore 6 specialist laboratories: Anatomy, Chemistry, Physics, Biology, Earth & Kepler Orbits without curriculum restrictions.',
-                    fr: 'Explorez 6 laboratoires spécialisés: Anatomie, Chimie, Physique, Biologie, Géologie et Kepler sans restriction.',
-                    de: 'Erkunden Sie 6 Fachlabore: Anatomie, Chemie, Physik, Biologie, Geologie und Kepler völlig frei.',
-                    ja: '解剖学、化学、物理学、生物学、地球科学、ケプラー軌道天文台の6つの専門実験室をシラバスの制限なく自由に研究できます。',
+                    ar: `استكشف ${labsCount} معامل تخصصية: التشريح، الكيمياء، الفيزياء، الأحياء، الزلازل وعلوم الأرض، مرصد كبلر الفلكي، ومختبر الرياضيات بحرية تامة دون قيود المناهج.`,
+                    en: `Explore ${labsCount} specialist laboratories: Anatomy, Chemistry, Physics, Biology, Earth & Kepler Orbits, and Mathematics without curriculum restrictions.`,
+                    fr: `Explorez ${labsCount} laboratoires spécialisés: Anatomie, Chimie, Physique, Biologie, Géologie, Kepler et Mathématiques sans restriction.`,
+                    de: `Erkunden Sie ${labsCount} Fachlabore: Anatomie, Chemie, Physik, Biologie, Geologie, Kepler und Mathematik völlig frei.`,
+                    ja: `解剖学、化学、物理学、生物学、地球科学、ケプラー軌道天文台、数学の${labsCount}つの専門実験室をシラバスの制限なく自由に研究できます。`,
                   })
                 : role === 'student'
                   ? completed.length > 0
@@ -460,7 +507,7 @@ export const DashboardHome: React.FC = () => {
                         ja: `現在までに ${completed.length} レッスンを完了しました。クリックして続けましょう。`,
                       })
                     : tLang(language, {
-                        ar: 'لم تبدأ أي دروس بعد. توجه للمنهج الدراسي أو افتح أحد المعامل الستة للبدء.',
+                        ar: `لم تبدأ أي دروس بعد. توجه للمنهج الدراسي أو افتح أحد المعامل الـ ${labsCount} للبدء.`,
                         en: 'No lessons completed yet. Head to the curriculum or open any 3D lab.',
                         fr: 'Aucune leçon terminée. Accédez au programme ou ouvrez un laboratoire 3D.',
                         de: 'Noch keine Lektionen abgeschlossen. Starten Sie im Lehrplan oder einem 3D-Labor.',
@@ -564,7 +611,7 @@ export const DashboardHome: React.FC = () => {
                     : tLang(language, { ar: 'دروس', en: 'lessons', fr: 'leçons', de: 'Lektionen', ja: 'レッスン' }),
                 },
                 {
-                  v: `${labStats.exploredCount}/6`,
+                  v: `${labStats.exploredCount}/${labsCount}`,
                   l: tLang(language, { ar: 'معامل', en: 'labs', fr: 'labos', de: 'Labore', ja: '実験室' }),
                 },
                 {
@@ -588,37 +635,77 @@ export const DashboardHome: React.FC = () => {
               action={<CalendarDays size={14} strokeWidth={1.7} className="text-[#a3a3a3]" />}
               bodyClassName="p-3"
             >
-              {assignments.length > 0 ? (
-                assignments.slice(0, 3).map((item) => (
-                  <Link
-                    key={item.id}
-                    to={'/app/labs/' + (item.linkedLab || 'chemistry')}
-                    className="flex items-center gap-3 rounded-[10px] px-2 py-2 hover:bg-[#fafafa] transition-colors"
-                  >
-                    <span className={'sn-' + (item.linkedLab || 'chemistry') + ' sn-icon-tile !h-8 !w-8 !rounded-[8px]'}>
-                      <FileCheck2 size={14} strokeWidth={1.7} />
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate text-[12px] font-medium text-[#0a0a0a]">
-                        {ar ? item.titleAr : item.titleEn}
-                      </div>
-                      <div className="flex items-center gap-1.5 text-[10px] text-[#737373]">
-                        <span>{ar ? item.dueDateAr : item.dueDateEn}</span>
-                        {item.targetStudentQuadName && (
-                          <>
-                            <span>·</span>
-                            <span className="text-blue-600 font-semibold">{tLang(language, { ar: 'تكليف خاص', en: 'Assigned to you', fr: 'Assigné', de: 'Zugewiesen', ja: '個別指定課題' })}</span>
-                          </>
-                        )}
-                      </div>
+              {visibleAssignments.length > 0 ? (
+                visibleAssignments.slice(0, 5).map((item) => {
+                  const mySub = role === 'student'
+                    ? submissions.find(
+                        (s) =>
+                          s.assignmentId === item.id &&
+                          (namesMatch(s.studentQuadName, effectiveStudentIdentity) ||
+                            namesMatch(s.studentQuadName, studentQuadName) ||
+                            namesMatch(s.studentQuadName, user?.email))
+                      )
+                    : undefined;
+                  return (
+                    <div
+                      key={item.id}
+                      className="flex items-center gap-3 rounded-[10px] px-2 py-2 hover:bg-[#fafafa] transition-colors"
+                    >
+                      <Link
+                        to={'/app/labs/' + (item.linkedLab || 'chemistry')}
+                        className="flex min-w-0 flex-1 items-center gap-3"
+                      >
+                        <span className={'sn-' + (item.linkedLab || 'chemistry') + ' sn-icon-tile !h-8 !w-8 !rounded-[8px]'}>
+                          <FileCheck2 size={14} strokeWidth={1.7} />
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-[12px] font-medium text-[#0a0a0a]">
+                            {ar ? item.titleAr : item.titleEn}
+                          </div>
+                          <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-[#737373]">
+                            <span>{ar ? item.dueDateAr : item.dueDateEn}</span>
+                            {item.targetStudentQuadName && (
+                              <>
+                                <span>·</span>
+                                <span className="text-blue-600 font-semibold">{tLang(language, { ar: 'تكليف خاص', en: 'Assigned to you', fr: 'Assigné', de: 'Zugewiesen', ja: '個別指定課題' })}</span>
+                              </>
+                            )}
+                            {mySub && (
+                              <>
+                                <span>·</span>
+                                <span className={mySub.status === 'graded' ? 'text-emerald-700 font-semibold' : 'text-amber-700 font-semibold'}>
+                                  {mySub.status === 'graded'
+                                    ? `${ar ? 'الدرجة:' : 'Score:'} ${mySub.score ?? 0}%`
+                                    : (ar ? 'تم التسليم' : 'Submitted')}
+                                </span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </Link>
+                      {role === 'student' && !mySub ? (
+                        <button
+                          type="button"
+                          disabled={submittingId === item.id}
+                          onClick={() => handleCompleteAssignment(item)}
+                          className="shrink-0 rounded-lg border border-black/10 bg-white px-2.5 py-1 text-[10px] font-semibold text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-white transition-colors disabled:opacity-50"
+                        >
+                          {submittingId === item.id ? '...' : (ar ? 'تسليم' : 'Submit')}
+                        </button>
+                      ) : (
+                        <Link to={'/app/labs/' + (item.linkedLab || 'chemistry')} className="shrink-0 p-1">
+                          <ArrowRight size={13} className={'text-[#a3a3a3] ' + (ar ? 'rotate-180' : '')} />
+                        </Link>
+                      )}
                     </div>
-                    <ArrowRight size={13} className={'text-[#a3a3a3] ' + (ar ? 'rotate-180' : '')} />
-                  </Link>
-                ))
+                  );
+                })
               ) : (
                 <div className="p-4 text-center text-[11px] text-[#a3a3a3]">
                   {tLang(language, {
-                    ar: 'لا توجد تكليفات معلقة حالياً. استكشف المعامل بحرية!',
+                    ar: role === 'student' && !linkedStudent
+                      ? 'لا توجد تكليفات موجهة لك بعد. أضف بياناتك أو اطلب من معلمك ربطك بفصلك.'
+                      : 'لا توجد تكليفات معلقة حالياً. استكشف المعامل بحرية!',
                     en: 'No pending assignments. Feel free to explore the labs!',
                     fr: 'Aucun devoir en attente. Explorez librement les laboratoires!',
                     de: 'Keine anstehenden Aufgaben. Erkunden Sie die Labore nach Belieben!',
@@ -670,7 +757,7 @@ export const DashboardHome: React.FC = () => {
           <div>
             <h3 className="text-[14px] font-semibold text-[#0a0a0a]">
               {isResearcher
-                ? tLang(language, { ar: 'المعامل التخصصية الستة للاستكشاف والبحث', en: 'Specialist Laboratories for Research', fr: 'Six laboratoires de recherche spécialisés', de: 'Sechs Fachlabore für Forschung', ja: '研究・探究のための6つの専門実験室' })
+                ? tLang(language, { ar: `المعامل التخصصية الـ ${labsCount} للاستكشاف والبحث`, en: 'Specialist Laboratories for Research', fr: `${labsCount} laboratoires de recherche spécialisés`, de: `${labsCount} Fachlabore für Forschung`, ja: `研究・探究のための${labsCount}つの専門実験室` })
                 : tLang(language, { ar: 'اختر مساحة للاكتشاف', en: 'Choose a lab room', fr: 'Choisir un laboratoire', de: 'Laborraum wählen', ja: '体験する実験室を選択' })}
             </h3>
             <p className="text-[11px] text-[#737373]">
@@ -689,7 +776,7 @@ export const DashboardHome: React.FC = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
           {LAB_MODULES.map((lab) => {
             const Icon = ICONS[lab.id] ?? FlaskConical;
             return (

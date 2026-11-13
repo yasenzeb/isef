@@ -93,6 +93,7 @@ CREATE TABLE IF NOT EXISTS public.students_enrollment (
   quad_name TEXT NOT NULL,
   national_id VARCHAR(14),
   email TEXT,
+  parent_phone TEXT,
   school_name TEXT NOT NULL DEFAULT 'المدرسة المسجلة',
   governorate_id TEXT NOT NULL DEFAULT 'cairo',
   administration_id TEXT NOT NULL DEFAULT 'default',
@@ -106,6 +107,18 @@ CREATE TABLE IF NOT EXISTS public.students_enrollment (
   last_active_date DATE DEFAULT CURRENT_DATE,
   enrolled_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- ترقية آمنة للجداول الحالية إن كانت منشأة مسبقاً بدون الأعمدة المضافة
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS parent_phone TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS governorate_id TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS administration_id TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS grade_level TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS national_id VARCHAR(14);
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS student_code TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS teacher_code TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS school_name TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS school_code TEXT;
+ALTER TABLE public.students_enrollment ADD COLUMN IF NOT EXISTS parent_phone TEXT;
 
 -- 5. جدول الواجبات والتكليفات المعملية (Assignments)
 CREATE TABLE IF NOT EXISTS public.assignments (

@@ -154,7 +154,7 @@ const ClerkWithRouter: React.FC<{ children: React.ReactNode }> = ({ children }) 
       cleanup();
       window.removeEventListener('scinexa_profile_updated', syncDarwinGreeting);
     };
-  }, [navigate]);
+  }, []);
 
   if (!isClerkConfigured) return <>{children}</>;
 

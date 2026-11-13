@@ -12,9 +12,11 @@ import {
   dbFetchEnrolledStudents,
   dbEnrollStudent,
   dbDeleteEnrolledStudent,
+  dbUpdateStudentMastery,
   dbFetchAssignments,
   dbCreateAssignment,
   dbDeleteAssignment,
+  dbFetchSubmissions,
   dbSubmitAssignment,
   type DbClass
 } from '../lib/supabase';
@@ -108,6 +110,7 @@ export const getEnrolledStudents = (): EnrolledStudent[] => {
     quadName: String(r.quadName || r.quad_name || r.name || 'طالب مسجل'),
     nationalId: r.nationalId || r.national_id || undefined,
     email: r.email ? String(r.email) : undefined,
+    parentPhone: r.parentPhone || r.parent_phone || undefined,
     schoolName: String(r.schoolName || r.school_name || 'المدرسة المسجلة'),
     governorateId: String(r.governorateId || r.governorate_id || 'cairo'),
     administrationId: String(r.administrationId || r.administration_id || ''),
@@ -134,47 +137,178 @@ export const deleteStudentEnrollment = (id: string): void => {
   void dbDeleteEnrolledStudent(id);
 };
 
+export const normalizeArabicName = (s?: string | null): string =>
+  (s || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[أإآ]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ى/g, 'ي')
+    .replace(/[\u064B-\u065F]/g, '')
+    .replace(/\s+/g, ' ');
+
 /**
- * فحص هل الطالب مربوط بأي معلم حالياً من خلال اسمه الرباعي أو بريده الإلكتروني
+ * مقارنة اسمين بدقة: تطابق تام، أو تطابق مقطعَيْن متتابعين على الأقل لمنع تداخل الأسماء المتشابهة في الاسم الأول فقط
+ */
+export const namesMatch = (a?: string | null, b?: string | null): boolean => {
+  const na = normalizeArabicName(a);
+  const nb = normalizeArabicName(b);
+  if (!na || !nb) return false;
+  if (na === nb) return true;
+  const wordsA = na.split(' ').filter(Boolean);
+  const wordsB = nb.split(' ').filter(Boolean);
+  if (wordsA.length >= 2 && wordsB.length >= 2) {
+    return na.includes(nb) || nb.includes(na);
+  }
+  return false;
+};
+
+/**
+ * إرجاع كل قيود التحاق الطالب في الفصول (قد يكون الطالب مسجلاً في أكثر من مادة/فصل)
+ */
+export const findStudentEnrollmentsFromList = (
+  list: EnrolledStudent[],
+  userQuadName?: string | null,
+  userEmail?: string | null
+): EnrolledStudent[] => {
+  if ((!userQuadName && !userEmail) || !Array.isArray(list)) return [];
+  const targetEmail = userEmail ? userEmail.trim().toLowerCase() : '';
+  const hasRealEmail = targetEmail && !targetEmail.endsWith('@scinexa.school');
+
+  return list.filter((s) => {
+    if (userQuadName && namesMatch(s.quadName, userQuadName)) return true;
+    if (hasRealEmail && s.email && s.email.trim().toLowerCase() === targetEmail) return true;
+    return false;
+  });
+};
+
+/**
+ * فحص هل الطالب مربوط بأي معلم حالياً من خلال اسمه أو بريده الإلكتروني الحقيقي
  */
 export const checkStudentLink = (
   userQuadName?: string | null,
-  userEmail?: string | null
+  userEmail?: string | null,
+  sourceList?: EnrolledStudent[]
 ): EnrolledStudent | null => {
-  if (!userQuadName && !userEmail) return null;
-  const list = getEnrolledStudents();
+  const list = sourceList || getEnrolledStudents();
+  const matches = findStudentEnrollmentsFromList(list, userQuadName, userEmail);
+  return matches[0] || null;
+};
 
-  const normalize = (s?: string | null) =>
-    (s || '')
-      .trim()
-      .toLowerCase()
-      .replace(/[أإآ]/g, 'ا')
-      .replace(/ة/g, 'ه')
-      .replace(/ى/g, 'ي')
-      .replace(/\s+/g, ' ');
+/**
+ * فلترة الواجبات والتكليفات بحيث تصل للطالب الصحيح وفصله الدراسي فقط (Zero Cross-Student Leakage)
+ */
+export const getAssignmentsForStudent = (
+  assignments: AssignmentItem[],
+  studentEnrollments: EnrolledStudent[],
+  userQuadName?: string | null,
+  userEmail?: string | null
+): AssignmentItem[] => {
+  if (!Array.isArray(assignments)) return [];
+  const enrolledClassIds = new Set(studentEnrollments.map((s) => s.classId).filter(Boolean));
+  const candidateNames = [
+    userQuadName,
+    ...studentEnrollments.map((s) => s.quadName),
+  ].filter(Boolean) as string[];
 
-  const targetQuad = userQuadName ? normalize(userQuadName) : '';
-  const targetEmail = userEmail ? (userEmail || '').trim().toLowerCase() : '';
+  return assignments.filter((asg) => {
+    // 1. تكليف موجه لطالب معين بالاسم: لا يظهر إلا لهذا الطالب تحديداً
+    if (asg.targetStudentQuadName && asg.targetStudentQuadName.trim()) {
+      const targetedToName = candidateNames.some((n) => namesMatch(asg.targetStudentQuadName, n));
+      if (targetedToName) return true;
+      // Check email match against any enrollment record matching assignment target name
+      if (userEmail && studentEnrollments.some((s) => namesMatch(s.quadName, asg.targetStudentQuadName))) {
+        return true;
+      }
+      return false;
+    }
 
-  if (targetQuad) {
-    const found = list.find((s) => {
-      const sQuad = normalize(s.quadName);
-      return sQuad === targetQuad || targetQuad.includes(sQuad) || sQuad.includes(targetQuad);
-    });
-    if (found) return found;
-  }
-
-  if (targetEmail) {
-    const foundByEmail = list.find((s) => s.email && s.email.toLowerCase() === targetEmail);
-    if (foundByEmail) return foundByEmail;
-  }
-
-  return null;
+    // 2. تكليف عام للفصل: يظهر فقط للطلاب المسجلين داخل نفس الفصل
+    return Boolean(asg.classId && enrolledClassIds.has(asg.classId));
+  });
 };
 
 /**
  * قيام المعلم بإضافة طالب جديد إلى فصله بالاسم الرباعي
  */
+export const buildStudentRecord = (params: {
+  quadName: string;
+  classId: string;
+  schoolName: string;
+  governorateId: string;
+  administrationId: string;
+  gradeLevel: string;
+  email?: string;
+  nationalId?: string;
+  parentPhone?: string;
+  classNameAr?: string;
+  teacherId?: string;
+  teacherNameAr?: string;
+}): EnrolledStudent => {
+  const cachedClasses = getPersistedJSON<any[]>('scinexa_supabase_classes_cache', []);
+  const cls = cachedClasses.find((c) => c.id === params.classId);
+
+  return {
+    id: `std-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    quadName: params.quadName.trim(),
+    nationalId: params.nationalId?.trim() || undefined,
+    parentPhone: params.parentPhone?.trim() || undefined,
+    email: params.email?.trim() ? params.email.trim().toLowerCase() : undefined,
+    schoolName: params.schoolName.trim() || 'المدرسة المسجلة',
+    governorateId: params.governorateId || 'cairo',
+    administrationId: params.administrationId || 'default',
+    gradeLevel: params.gradeLevel || cls?.grade || 'sec1',
+    classId: params.classId,
+    classNameAr: params.classNameAr || cls?.name_ar || cls?.nameAr || 'فصل دراسي',
+    teacherId: params.teacherId || cls?.teacher_id || cls?.teacherId || 't-admin',
+    teacherNameAr: params.teacherNameAr || cls?.teacher_name_ar || cls?.teacherNameAr || 'المعلم المشرف',
+    enrolledAt: new Date().toISOString().slice(0, 10),
+    mastery: 0,
+    streak: 0,
+    lastActiveDate: new Date().toISOString().slice(0, 10),
+  };
+};
+
+export const addStudentToClassByTeacherAsync = async (params: {
+  quadName: string;
+  classId: string;
+  schoolName: string;
+  governorateId: string;
+  administrationId: string;
+  gradeLevel: string;
+  email?: string;
+  nationalId?: string;
+  parentPhone?: string;
+  classNameAr?: string;
+  teacherId?: string;
+  teacherNameAr?: string;
+}): Promise<{ ok: boolean; student: EnrolledStudent; error?: string }> => {
+  const list = getEnrolledStudents();
+  const newStudent = buildStudentRecord(params);
+  saveEnrolledStudents([newStudent, ...list]);
+
+  const res = await dbEnrollStudent({
+    id: newStudent.id,
+    quad_name: newStudent.quadName,
+    national_id: newStudent.nationalId,
+    parent_phone: newStudent.parentPhone,
+    email: newStudent.email,
+    school_name: newStudent.schoolName,
+    governorate_id: newStudent.governorateId,
+    administration_id: newStudent.administrationId,
+    grade_level: newStudent.gradeLevel,
+    class_id: newStudent.classId,
+    class_name_ar: newStudent.classNameAr,
+    teacher_id: newStudent.teacherId,
+    teacher_name_ar: newStudent.teacherNameAr,
+    enrolled_at: newStudent.enrolledAt,
+    mastery: newStudent.mastery,
+    streak: newStudent.streak,
+    last_active_date: newStudent.lastActiveDate,
+  });
+  return { ok: res.ok, student: newStudent, error: res.error };
+};
+
 export const addStudentToClassByTeacher = (params: {
   quadName: string;
   classId: string;
@@ -190,36 +324,8 @@ export const addStudentToClassByTeacher = (params: {
   teacherNameAr?: string;
 }): EnrolledStudent => {
   const list = getEnrolledStudents();
-  const cachedClasses = getPersistedJSON<any[]>('scinexa_supabase_classes_cache', []);
-  const cls = cachedClasses.find((c) => c.id === params.classId);
-
-  const finalClassId = params.classId;
-  const finalClassNameAr = params.classNameAr || cls?.name_ar || cls?.nameAr || 'فصل دراسي';
-  const finalTeacherId = params.teacherId || cls?.teacher_id || cls?.teacherId || 't-admin';
-  const finalTeacherNameAr = params.teacherNameAr || cls?.teacher_name_ar || cls?.teacherNameAr || 'المعلم المشرف';
-
-  const newStudent: EnrolledStudent = {
-    id: `std-${Date.now()}`,
-    quadName: params.quadName.trim(),
-    nationalId: params.nationalId?.trim() || undefined,
-    parentPhone: params.parentPhone?.trim() || undefined,
-    email: params.email?.trim() || `${params.quadName.trim().split(/\s+/)[0].toLowerCase()}@scinexa.school`,
-    schoolName: params.schoolName.trim() || 'المدرسة المسجلة',
-    governorateId: params.governorateId || 'cairo',
-    administrationId: params.administrationId || 'default',
-    gradeLevel: params.gradeLevel || cls?.grade || 'sec1',
-    classId: finalClassId,
-    classNameAr: finalClassNameAr,
-    teacherId: finalTeacherId,
-    teacherNameAr: finalTeacherNameAr,
-    enrolledAt: new Date().toISOString().slice(0, 10),
-    mastery: 0,
-    streak: 0,
-    lastActiveDate: new Date().toISOString().slice(0, 10),
-  };
-
-  const updated = [newStudent, ...list];
-  saveEnrolledStudents(updated);
+  const newStudent = buildStudentRecord(params);
+  saveEnrolledStudents([newStudent, ...list]);
   void dbEnrollStudent({
     id: newStudent.id,
     quad_name: newStudent.quadName,
@@ -307,11 +413,11 @@ export const getAssignments = (): AssignmentItem[] => {
   }));
 };
 
-export const addAssignment = (item: AssignmentItem): void => {
+export const addAssignment = async (item: AssignmentItem): Promise<{ ok: boolean; error?: string }> => {
   const list = getAssignments();
   const updated = [item, ...list];
   setPersistedJSON(STORAGE_ASSIGNMENTS, updated);
-  void dbCreateAssignment({
+  return dbCreateAssignment({
     id: item.id,
     title_ar: item.titleAr,
     title_en: item.titleEn,
@@ -338,13 +444,23 @@ export const deleteAssignmentById = (id: string): void => {
 };
 
 export const getSubmissions = (): StudentSubmission[] => {
-  return getPersistedJSON<StudentSubmission[]>(STORAGE_SUBMISSIONS, []);
+  const raw = getPersistedJSON<any[]>(STORAGE_SUBMISSIONS, []);
+  if (!Array.isArray(raw)) return [];
+  return raw.map((s: any) => ({
+    id: String(s.id || `sub_${Math.random().toString(36).slice(2, 9)}`),
+    assignmentId: String(s.assignmentId || s.assignment_id || ''),
+    studentQuadName: String(s.studentQuadName || s.student_quad_name || ''),
+    submittedAt: String(s.submittedAt || s.submitted_at || '').slice(0, 10),
+    status: s.status === 'graded' ? 'graded' : 'submitted',
+    score: typeof s.score === 'number' ? s.score : undefined,
+    teacherFeedback: s.teacherFeedback || s.teacher_feedback || undefined,
+  }));
 };
 
-export const recordSubmission = (submission: StudentSubmission): void => {
+export const recordSubmission = async (submission: StudentSubmission): Promise<{ ok: boolean; error?: string }> => {
   const current = getSubmissions();
   const existingIdx = current.findIndex(
-    (s) => s.assignmentId === submission.assignmentId && s.studentQuadName === submission.studentQuadName
+    (s) => s.assignmentId === submission.assignmentId && namesMatch(s.studentQuadName, submission.studentQuadName)
   );
   let updated: StudentSubmission[];
   if (existingIdx >= 0) {
@@ -354,7 +470,7 @@ export const recordSubmission = (submission: StudentSubmission): void => {
     updated = [submission, ...current];
   }
   setPersistedJSON(STORAGE_SUBMISSIONS, updated);
-  void dbSubmitAssignment({
+  return dbSubmitAssignment({
     id: submission.id,
     assignment_id: submission.assignmentId,
     student_quad_name: submission.studentQuadName,
@@ -363,6 +479,38 @@ export const recordSubmission = (submission: StudentSubmission): void => {
     teacher_feedback: submission.teacherFeedback,
     submitted_at: submission.submittedAt,
   });
+};
+
+/**
+ * تقييم المعلم لتسليم الطالب ومزامنة درجة الإتقان في Supabase
+ */
+export const gradeSubmissionAndSync = async (
+  submission: StudentSubmission,
+  score: number,
+  feedback: string
+): Promise<{ ok: boolean; updated: StudentSubmission; error?: string }> => {
+  const graded: StudentSubmission = {
+    ...submission,
+    status: 'graded',
+    score: Math.max(0, Math.min(100, Math.round(score))),
+    teacherFeedback: feedback.trim() || undefined,
+  };
+  const res = await recordSubmission(graded);
+
+  // Sync student mastery in students_enrollment based on their graded submissions
+  const enrolled = getEnrolledStudents();
+  const allSubs = getSubmissions();
+  const matchingStudents = enrolled.filter((st) => namesMatch(st.quadName, submission.studentQuadName));
+  for (const st of matchingStudents) {
+    const studentGraded = allSubs.filter(
+      (s) => namesMatch(s.studentQuadName, st.quadName) && s.status === 'graded' && typeof s.score === 'number'
+    );
+    if (studentGraded.length > 0) {
+      const avg = Math.round(studentGraded.reduce((sum, s) => sum + (s.score || 0), 0) / studentGraded.length);
+      await dbUpdateStudentMastery(st.id, avg);
+    }
+  }
+  return { ok: res.ok, updated: graded, error: res.error };
 };
 
 /**
@@ -387,16 +535,16 @@ export const fetchAndSyncClasses = async (): Promise<ClassInfo[]> => {
 };
 
 /**
- * مزامنة الطلاب المسجلين مع سوبابيز
+ * مزامنة الطلاب المسجلين مع سوبابيز (تقبل القائمة الفارغة عند الحذف)
  */
 export const fetchAndSyncEnrollment = async (): Promise<EnrolledStudent[]> => {
-  const remote = await dbFetchEnrolledStudents();
-  if (remote && remote.length > 0) {
-    const mapped: EnrolledStudent[] = remote.map((r: any) => ({
+  const { rows, fromRemote } = await dbFetchEnrolledStudents();
+  if (fromRemote) {
+    const mapped: EnrolledStudent[] = rows.map((r: any) => ({
       id: r.id,
       quadName: r.quad_name,
-      nationalId: r.national_id,
-      email: r.email,
+      nationalId: r.national_id || undefined,
+      email: r.email || undefined,
       parentPhone: r.parent_phone || r.parentPhone || undefined,
       schoolName: r.school_name,
       governorateId: r.governorate_id,
@@ -421,9 +569,9 @@ export const fetchAndSyncEnrollment = async (): Promise<EnrolledStudent[]> => {
  * مزامنة التكليفات والواجبات المدرسية مع سوبابيز
  */
 export const fetchAndSyncAssignments = async (): Promise<AssignmentItem[]> => {
-  const remote = await dbFetchAssignments();
-  if (remote && remote.length > 0) {
-    const mapped: AssignmentItem[] = remote.map((a: any) => ({
+  const { rows, fromRemote } = await dbFetchAssignments();
+  if (fromRemote) {
+    const mapped: AssignmentItem[] = rows.map((a: any) => ({
       id: a.id,
       titleAr: a.title_ar,
       titleEn: a.title_en,
@@ -444,4 +592,25 @@ export const fetchAndSyncAssignments = async (): Promise<AssignmentItem[]> => {
     return mapped;
   }
   return getAssignments();
+};
+
+/**
+ * مزامنة تسليمات الطلاب مع سوبابيز
+ */
+export const fetchAndSyncSubmissions = async (): Promise<StudentSubmission[]> => {
+  const { rows, fromRemote } = await dbFetchSubmissions();
+  if (fromRemote) {
+    const mapped: StudentSubmission[] = rows.map((s: any) => ({
+      id: s.id,
+      assignmentId: s.assignment_id,
+      studentQuadName: s.student_quad_name,
+      submittedAt: (s.submitted_at || new Date().toISOString()).slice(0, 10),
+      status: s.status === 'graded' ? 'graded' : 'submitted',
+      score: typeof s.score === 'number' ? s.score : undefined,
+      teacherFeedback: s.teacher_feedback || undefined,
+    }));
+    setPersistedJSON(STORAGE_SUBMISSIONS, mapped);
+    return mapped;
+  }
+  return getSubmissions();
 };

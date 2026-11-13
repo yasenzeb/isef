@@ -1,23 +1,36 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
+import { useSession } from '../../context/SessionContext';
 import { PageHeader, StatCard, SectionCard } from './ui';
 import { getPersistedItem, getPersistedJSON } from '../../lib/cookies';
-import { updateAndGetRealStreak, getSubmissions, type StudentSubmission } from '../../data/schoolEnrollment';
+import { getWeeklyLabMinutes } from '../../lib/labTracker';
+import { ALL_CURRICULUM_PATHWAYS } from '../../data/curriculumData';
+import {
+  getSubmissions,
+  getAssignments,
+  fetchAndSyncSubmissions,
+  fetchAndSyncAssignments,
+  namesMatch,
+  type StudentSubmission,
+  type AssignmentItem,
+} from '../../data/schoolEnrollment';
 import {
   Trophy,
   Star,
   Flame,
-  BookOpen,
   TrendingUp,
-  Activity,
   Award,
   Target,
   CheckCircle2,
   FileCheck2,
 } from 'lucide-react';
 
+const AR_WEEKDAYS = ['أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'];
+const EN_WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
 export const ProgressPage: React.FC = () => {
   const { language } = useLanguage();
+  const { user } = useSession();
   const ar = language === 'ar';
 
   const completed = useMemo(() => {
@@ -27,28 +40,106 @@ export const ProgressPage: React.FC = () => {
   const xp = parseInt(getPersistedItem('scinexa_user_xp', '0'), 10);
   const stars = parseInt(getPersistedItem('scinexa_user_stars', '0'), 10);
   const realStreak = parseInt(getPersistedItem('scinexa_user_streak', '0'), 10);
-  const submissions = useMemo(() => getSubmissions(), []);
+  const studentQuadName = getPersistedItem('scinexa_user_fullname', '').trim();
 
-  // Compute real subject mastery based on completed lessons
+  const [submissions, setSubmissions] = useState<StudentSubmission[]>(() => getSubmissions());
+  const [assignments, setAssignments] = useState<AssignmentItem[]>(() => getAssignments());
+
+  useEffect(() => {
+    const syncAll = async () => {
+      const [remoteSubs, remoteAssigns] = await Promise.all([
+        fetchAndSyncSubmissions(),
+        fetchAndSyncAssignments(),
+      ]);
+      if (remoteSubs) setSubmissions(remoteSubs);
+      if (remoteAssigns) setAssignments(remoteAssigns);
+    };
+    void syncAll();
+  }, []);
+
+  const mySubmissions = useMemo(() => {
+    const identity = studentQuadName || user?.name || user?.email || '';
+    if (!identity) return submissions;
+    const mine = submissions.filter(
+      (s) =>
+        namesMatch(s.studentQuadName, studentQuadName) ||
+        namesMatch(s.studentQuadName, user?.name) ||
+        namesMatch(s.studentQuadName, user?.email)
+    );
+    return mine.length > 0 ? mine : [];
+  }, [submissions, studentQuadName, user?.name, user?.email]);
+
+  const allLessons = useMemo(() => ALL_CURRICULUM_PATHWAYS.flatMap((p) => p.lessons), []);
+
+  const lessonById = useMemo(() => {
+    const map = new Map<string, (typeof allLessons)[number]>();
+    allLessons.forEach((l) => map.set(l.id, l));
+    return map;
+  }, [allLessons]);
+
+  const assignmentById = useMemo(() => {
+    const map = new Map<string, AssignmentItem>();
+    assignments.forEach((a) => map.set(a.id, a));
+    return map;
+  }, [assignments]);
+
+  const weeklyMinutes = useMemo(() => {
+    const rows = getWeeklyLabMinutes();
+    const maxMin = Math.max(1, ...rows.map((r) => r.minutes));
+    return rows.map((r) => ({
+      ...r,
+      label: ar ? AR_WEEKDAYS[r.dayIndex] : EN_WEEKDAYS[r.dayIndex],
+      heightPct: r.minutes > 0 ? Math.max(8, Math.round((r.minutes / maxMin) * 100)) : 0,
+    }));
+  }, [ar]);
+
+  // Compute real subject mastery strictly from curriculum lessons + completed lessons + graded submissions
   const subjects = useMemo(() => {
-    const chemCount = completed.filter((id) => id.includes('chem') || id.includes('inorganic')).length;
-    const physCount = completed.filter((id) => id.includes('phys') || id.includes('wave')).length;
-    const bioCount = completed.filter((id) => id.includes('bio') || id.includes('cell')).length;
-    const anatCount = completed.filter((id) => id.includes('anat') || id.includes('skeleton')).length;
-    const geoCount = completed.filter((id) => id.includes('geo') || id.includes('stem')).length;
-    const astroCount = completed.filter((id) => id.includes('prep') || id.includes('astro')).length;
+    const defs = [
+      { key: 'chemistry', en: 'Chemistry', ar: 'الكيمياء', accent: 'chemistry' },
+      { key: 'physics', en: 'Physics', ar: 'الفيزياء', accent: 'physics' },
+      { key: 'biology', en: 'Biology', ar: 'الأحياء', accent: 'biology' },
+      { key: 'anatomy', en: 'Anatomy', ar: 'التشريح', accent: 'anatomy' },
+      { key: 'geology', en: 'Geology', ar: 'الجيولوجيا', accent: 'geology' },
+      { key: 'astronomy', en: 'Astronomy', ar: 'الفلك', accent: 'astronomy' },
+    ] as const;
 
-    return [
-      { en: 'Chemistry', ar: 'الكيمياء', accent: 'chemistry', mastery: chemCount > 0 ? Math.min(100, chemCount * 25) : 0, lessons: chemCount, assessments: 2 },
-      { en: 'Physics', ar: 'الفيزياء', accent: 'physics', mastery: physCount > 0 ? Math.min(100, physCount * 25) : 0, lessons: physCount, assessments: 1 },
-      { en: 'Biology', ar: 'الأحياء', accent: 'biology', mastery: bioCount > 0 ? Math.min(100, bioCount * 25) : 0, lessons: bioCount, assessments: 1 },
-      { en: 'Anatomy', ar: 'التشريح', accent: 'anatomy', mastery: anatCount > 0 ? Math.min(100, anatCount * 25) : 0, lessons: anatCount, assessments: 1 },
-      { en: 'Geology', ar: 'الجيولوجيا', accent: 'geology', mastery: geoCount > 0 ? Math.min(100, geoCount * 25) : 0, lessons: geoCount, assessments: 1 },
-      { en: 'Astronomy', ar: 'الفلك', accent: 'astronomy', mastery: astroCount > 0 ? Math.min(100, astroCount * 25) : 0, lessons: astroCount, assessments: 1 },
-    ];
-  }, [completed]);
+    return defs.map((def) => {
+      const subjectLessons = allLessons.filter((l) => l.linkedLabTab === def.key);
+      const doneCount = subjectLessons.filter((l) => completed.includes(l.id)).length;
+      const subjectSubs = mySubmissions.filter((s) => {
+        const lesson = lessonById.get(s.assignmentId);
+        if (lesson) return lesson.linkedLabTab === def.key;
+        const assign = assignmentById.get(s.assignmentId);
+        if (assign) return assign.linkedLab === def.key;
+        return false;
+      });
+      const lessonPct =
+        subjectLessons.length > 0 ? Math.round((doneCount / subjectLessons.length) * 100) : 0;
+      const gradedSubs = subjectSubs.filter((s) => typeof s.score === 'number');
+      const avgSubScore =
+        gradedSubs.length > 0
+          ? Math.round(gradedSubs.reduce((sum, s) => sum + (s.score || 0), 0) / gradedSubs.length)
+          : 0;
+      const mastery = doneCount > 0 || gradedSubs.length > 0
+        ? Math.min(100, Math.round((lessonPct + (gradedSubs.length > 0 ? avgSubScore : lessonPct)) / 2))
+        : 0;
 
-  const average = Math.round(subjects.reduce((sum, s) => sum + s.mastery, 0) / subjects.length);
+      return {
+        en: def.en,
+        ar: def.ar,
+        accent: def.accent,
+        mastery,
+        lessons: doneCount,
+        assessments: subjectSubs.length,
+      };
+    });
+  }, [allLessons, completed, mySubmissions, lessonById, assignmentById]);
+
+  const activeSubjects = subjects.filter((s) => s.lessons > 0 || s.assessments > 0);
+  const average = activeSubjects.length > 0
+    ? Math.round(activeSubjects.reduce((sum, s) => sum + s.mastery, 0) / activeSubjects.length)
+    : 0;
 
   return (
     <div dir={ar ? 'rtl' : 'ltr'}>
@@ -57,16 +148,16 @@ export const ProgressPage: React.FC = () => {
         title={ar ? 'ما قِسته، لا ما تتذكّره.' : 'What you measured, not what you remember.'}
         subtitle={
           ar
-            ? 'كل تجربة وتقييم يضيفان إلى سجلّك الأكاديمي الحقيقي المتزامن في ملفات تعريف الارتباط.'
-            : 'Every real experiment and assessment adds to your persistent cookie & database record.'
+            ? 'كل تجربة وتقييم يضيفان إلى سجلّك الأكاديمي الحقيقي المتزامن مع قاعدة البيانات.'
+            : 'Every real experiment and assessment adds to your persistent database & session record.'
         }
-        actions={<span className="sn-badge sn-badge-soft">{ar ? 'الفصل الدراسي الأول' : 'Term 1'}</span>}
+        actions={<span className="sn-badge sn-badge-soft">{ar ? 'الفصل الدراسي الفعلي' : 'Live Term'}</span>}
       />
 
       <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard label={ar ? 'متوسط الإتقان' : 'Average mastery'} value={`${average}%`} trend="+8%" hint={ar ? 'داتا حقيقية' : 'live data'} icon={Target} />
-        <StatCard label={ar ? 'دروس مكتملة' : 'Lessons complete'} value={String(completed.length)} hint={ar ? 'من ٢٤ درسًا' : 'of 24'} icon={CheckCircle2} />
-        <StatCard label={ar ? 'نقاط الخبرة' : 'Experience'} value={String(xp)} trend="+50" hint="XP" icon={TrendingUp} />
+        <StatCard label={ar ? 'متوسط الإتقان' : 'Average mastery'} value={`${average}%`} hint={ar ? 'بيانات فعلية' : 'live data'} icon={Target} />
+        <StatCard label={ar ? 'دروس مكتملة' : 'Lessons complete'} value={String(completed.length)} hint={ar ? `من ${allLessons.length} درسًا` : `of ${allLessons.length}`} icon={CheckCircle2} />
+        <StatCard label={ar ? 'نقاط الخبرة' : 'Experience'} value={String(xp)} hint="XP" icon={TrendingUp} />
         <StatCard label={ar ? 'النجوم' : 'Stars'} value={String(stars)} hint={ar ? 'إنجازات' : 'achievements'} icon={Star} />
       </div>
 
@@ -76,24 +167,16 @@ export const ProgressPage: React.FC = () => {
           action={<span className="sn-badge sn-badge-soft">{ar ? 'دقائق' : 'minutes'}</span>}
         >
           <div className="flex h-[190px] items-end gap-3">
-            {[
-              { d: ar ? 'سبت' : 'Sat', v: 42 },
-              { d: ar ? 'أحد' : 'Sun', v: 68 },
-              { d: ar ? 'اثنين' : 'Mon', v: 51 },
-              { d: ar ? 'ثلاثاء' : 'Tue', v: 86 },
-              { d: ar ? 'أربعاء' : 'Wed', v: 64 },
-              { d: ar ? 'خميس' : 'Thu', v: 96 },
-              { d: ar ? 'جمعة' : 'Fri', v: 33 },
-            ].map((day) => (
-              <div key={day.d} className="flex flex-1 flex-col items-center gap-2">
-                <span className="font-mono text-[9px] text-[#a3a3a3]">{day.v}</span>
+            {weeklyMinutes.map((day) => (
+              <div key={day.isoDate} className="flex flex-1 flex-col items-center gap-2">
+                <span className="font-mono text-[9px] text-[#a3a3a3]">{day.minutes}</span>
                 <div className="flex h-full w-full items-end">
                   <div
-                    className={`w-full rounded-t-[4px] ${day.v > 80 ? 'bg-[#0a0a0a]' : 'bg-[#ececec]'}`}
-                    style={{ height: `${day.v}%` }}
+                    className={`w-full rounded-t-[4px] ${day.minutes > 0 ? 'bg-[#0a0a0a]' : 'bg-[#ececec]'}`}
+                    style={{ height: `${Math.max(4, day.heightPct)}%` }}
                   />
                 </div>
-                <span className="text-[10px] text-[#737373]">{day.d}</span>
+                <span className="text-[10px] text-[#737373]">{day.label}</span>
               </div>
             ))}
           </div>
@@ -103,7 +186,7 @@ export const ProgressPage: React.FC = () => {
           <div className="grid grid-cols-2 gap-2">
             {[
               { icon: Flame, t: ar ? `${realStreak} أيام متتالية` : `${realStreak}-day streak`, done: realStreak >= 2 },
-              { icon: Trophy, t: ar ? 'أول تقييم' : 'First assessment', done: submissions.length > 0 },
+              { icon: Trophy, t: ar ? 'أول تقييم' : 'First assessment', done: mySubmissions.length > 0 },
               { icon: Award, t: ar ? 'تجارب المعمل' : 'Lab experiments', done: completed.length >= 1 },
               { icon: Target, t: ar ? 'إتقان ٨٠٪' : '80% mastery', done: average >= 80 },
             ].map((badge) => {
@@ -127,7 +210,7 @@ export const ProgressPage: React.FC = () => {
         </SectionCard>
       </div>
 
-      <SectionCard title={ar ? 'إتقان المواد الفعلي' : 'Subject mastery'} action={<span className="sn-badge sn-badge-outline">{ar ? '٦ مواد' : '6 subjects'}</span>}>
+      <SectionCard title={ar ? 'إتقان المواد الفعلي' : 'Subject mastery'} action={<span className="sn-badge sn-badge-outline">{ar ? `${subjects.length} مواد` : `${subjects.length} subjects`}</span>}>
         <div className="grid gap-x-8 gap-y-5 md:grid-cols-2">
           {subjects.map((subject) => (
             <div key={subject.en} className={`sn-${subject.accent}`}>
@@ -156,41 +239,66 @@ export const ProgressPage: React.FC = () => {
           action={
             <span className="sn-badge sn-badge-soft">
               <FileCheck2 size={11} strokeWidth={1.8} />
-              {submissions.length} {ar ? 'نتائج مسجلة' : 'records'}
+              {mySubmissions.length} {ar ? 'نتائج مسجلة' : 'records'}
             </span>
           }
           bodyClassName="p-0"
         >
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[560px] text-start">
-              <thead>
-                <tr className="border-b border-[#f0f0f0] text-[10px] uppercase tracking-[0.08em] text-[#a3a3a3]">
-                  <th className="px-5 py-2.5 text-start font-medium">{ar ? 'التقييم' : 'Assessment'}</th>
-                  <th className="px-3 py-2.5 text-start font-medium">{ar ? 'الطالب' : 'Student'}</th>
-                  <th className="px-3 py-2.5 text-start font-medium">{ar ? 'الدرجة' : 'Score'}</th>
-                  <th className="px-3 py-2.5 text-start font-medium">{ar ? 'التاريخ' : 'Date'}</th>
-                  <th className="px-5 py-2.5 text-start font-medium">{ar ? 'ملاحظة المعلم' : 'Feedback'}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {submissions.map((row) => (
-                  <tr key={row.id} className="border-b border-[#f7f7f7] text-[12px] last:border-0 hover:bg-[#fafafa]">
-                    <td className="px-5 py-3 font-medium">
-                      {ar ? 'اختبار الكيمياء والفيزياء الأسبوعي' : 'Weekly Science Quiz'}
-                    </td>
-                    <td className="px-3 py-3 text-[#737373]">{row.studentQuadName}</td>
-                    <td className="px-3 py-3 font-mono font-semibold text-[#0a0a0a]">{row.score || 90}%</td>
-                    <td className="px-3 py-3 text-[#737373]">{row.submittedAt}</td>
-                    <td className="px-5 py-3">
-                      <span className="sn-badge sn-badge-green !text-[10px]">
-                        {row.teacherFeedback || (ar ? 'مُتقن ومعتمد' : 'Mastered')}
-                      </span>
-                    </td>
+          {mySubmissions.length === 0 ? (
+            <div className="p-8 text-center text-[12px] text-[#737373]">
+              {ar
+                ? 'لم تقم بتسليم أي تقييمات أو تكليفات بعد. أتمّ أي درس من المنهج أو سلّم واجباً من لوحتك.'
+                : 'No assessment submissions recorded yet. Complete a curriculum quiz or submit a class assignment.'}
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[560px] text-start">
+                <thead>
+                  <tr className="border-b border-[#f0f0f0] text-[10px] uppercase tracking-[0.08em] text-[#a3a3a3]">
+                    <th className="px-5 py-2.5 text-start font-medium">{ar ? 'التقييم' : 'Assessment'}</th>
+                    <th className="px-3 py-2.5 text-start font-medium">{ar ? 'الطالب' : 'Student'}</th>
+                    <th className="px-3 py-2.5 text-start font-medium">{ar ? 'الدرجة' : 'Score'}</th>
+                    <th className="px-3 py-2.5 text-start font-medium">{ar ? 'التاريخ' : 'Date'}</th>
+                    <th className="px-5 py-2.5 text-start font-medium">{ar ? 'الحالة والملاحظة' : 'Status / Feedback'}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {mySubmissions.map((row) => {
+                    const lessonMatch = lessonById.get(row.assignmentId);
+                    const assignMatch = assignmentById.get(row.assignmentId);
+                    const assessmentTitle = lessonMatch
+                      ? ar
+                        ? lessonMatch.weeklyAssessment.titleAr
+                        : lessonMatch.weeklyAssessment.titleEn
+                      : assignMatch
+                        ? ar
+                          ? assignMatch.titleAr
+                          : assignMatch.titleEn
+                        : row.assignmentId;
+                    return (
+                      <tr key={row.id} className="border-b border-[#f7f7f7] text-[12px] last:border-0 hover:bg-[#fafafa]">
+                        <td className="px-5 py-3 font-medium">{assessmentTitle}</td>
+                        <td className="px-3 py-3 text-[#737373]">{row.studentQuadName}</td>
+                        <td className="px-3 py-3 font-mono font-semibold text-[#0a0a0a]">
+                          {typeof row.score === 'number'
+                            ? `${row.score}%`
+                            : ar
+                              ? 'قيد التقييم'
+                              : 'Pending'}
+                        </td>
+                        <td className="px-3 py-3 text-[#737373]">{row.submittedAt}</td>
+                        <td className="px-5 py-3">
+                          <span className={`sn-badge !text-[10px] ${row.status === 'graded' ? 'sn-badge-green' : 'sn-badge-soft'}`}>
+                            {row.teacherFeedback || (row.status === 'graded' ? (ar ? 'تم الرصد' : 'Graded') : (ar ? 'بانتظار المعلم' : 'Awaiting Review'))}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
         </SectionCard>
       </div>
     </div>

@@ -269,7 +269,7 @@ export const BiologyLab: React.FC = () => {
     const height = mount.clientHeight || 520;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf5f5f5);
+    scene.background = new THREE.Color(0x0b0f17);
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
     camera.position.set(0, 2.5, 6.5);
@@ -538,7 +538,7 @@ export const BiologyLab: React.FC = () => {
     const height = mount.clientHeight || 520;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf5f5f5);
+    scene.background = new THREE.Color(0x0b0f17);
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
     camera.position.set(0, 0, 8);

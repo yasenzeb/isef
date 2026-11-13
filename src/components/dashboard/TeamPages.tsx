@@ -8,10 +8,12 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
+import { useSession } from '../../context/SessionContext';
+import { LAB_MODULES } from '../../data/labs';
 import { PageHeader, StatCard, SectionCard } from './ui';
 import {
   getEnrolledStudents,
-  addStudentToClassByTeacher,
+  addStudentToClassByTeacherAsync,
   deleteStudentEnrollment,
   getAssignments,
   addAssignment,
@@ -20,8 +22,11 @@ import {
   fetchAndSyncClasses,
   fetchAndSyncEnrollment,
   fetchAndSyncAssignments,
+  fetchAndSyncSubmissions,
+  gradeSubmissionAndSync,
   type EnrolledStudent,
   type AssignmentItem,
+  type StudentSubmission,
   type ClassInfo,
 } from '../../data/schoolEnrollment';
 import {
@@ -86,6 +91,7 @@ const CreateClassModal: React.FC<{
   onCreated: (cls: DbClass) => void;
   ar: boolean;
 }> = ({ isOpen, onClose, onCreated, ar }) => {
+  const { educator } = useSession();
   const [nameAr, setNameAr] = useState('');
   const [nameEn, setNameEn] = useState('');
   const [grade, setGrade] = useState('sec1');
@@ -95,31 +101,58 @@ const CreateClassModal: React.FC<{
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (isOpen && educator?.name && !teacherNameAr) {
+      setTeacherNameAr(educator.name);
+    }
+  }, [isOpen, educator?.name, teacherNameAr]);
+
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     if (!nameAr.trim()) {
       setError(ar ? 'يرجى إدخال اسم الفصل بالعربية.' : 'Please enter class name in Arabic.');
       return;
     }
     setLoading(true);
+    const subjectEnMap: Record<string, string> = {
+      الكيمياء: 'Chemistry',
+      الفيزياء: 'Physics',
+      الأحياء: 'Biology',
+      التشريح: 'Anatomy',
+      'العلوم العامة': 'General Science',
+    };
+    const teacherId = educator?.nationalId
+      ? `edu_${educator.nationalId.slice(-6)}`
+      : `edu_${Date.now()}`;
     const newClass: DbClass = {
       id: `cls_${Date.now()}`,
       name_ar: nameAr.trim(),
       name_en: nameEn.trim() || nameAr.trim(),
       grade,
-      teacher_id: `t_${Date.now()}`,
-      teacher_name_ar: teacherNameAr.trim() || (ar ? 'المعلم المشرف' : 'Lead Teacher'),
+      teacher_id: teacherId,
+      teacher_name_ar: teacherNameAr.trim() || educator?.name || (ar ? 'المعلم المشرف' : 'Lead Teacher'),
       subject_ar: subjectAr,
-      subject_en: subjectAr === 'الكيمياء' ? 'Chemistry' : subjectAr === 'الفيزياء' ? 'Physics' : subjectAr === 'الأحياء' ? 'Biology' : 'General Science',
+      subject_en: subjectEnMap[subjectAr] || 'General Science',
       accent,
       created_at: new Date().toISOString(),
     };
 
-    await dbCreateClass(newClass);
+    const res = await dbCreateClass(newClass);
     setLoading(false);
-    onCreated(newClass);
+    if (!res.ok) {
+      setError(
+        ar
+          ? `فشل حفظ الفصل في قاعدة البيانات: ${res.error || 'خطأ في الاتصال'}`
+          : `Failed to save class to database: ${res.error || 'Connection error'}`
+      );
+      return;
+    }
+    setNameAr('');
+    setNameEn('');
+    onCreated(res.data);
     onClose();
   };
 
@@ -275,7 +308,7 @@ export const ClassesPage: React.FC = () => {
               <Plus size={15} strokeWidth={2} />
               {ar ? 'إضافة فصل جديد' : 'New Class'}
             </button>
-            <Link to="/app/assignments" className="sn-btn sn-btn-outline">
+            <Link to="/portal/assignments" className="sn-btn sn-btn-outline">
               <ClipboardList size={15} strokeWidth={1.8} />
               {ar ? 'الواجبات' : 'Assignments'}
             </Link>
@@ -294,7 +327,7 @@ export const ClassesPage: React.FC = () => {
         <StatCard label={ar ? 'الفصول المعتمدة' : 'Classes'} value={String(classList.length)} hint={ar ? 'في قاعدة البيانات' : 'in database'} icon={GraduationCap} />
         <StatCard label={ar ? 'الطلاب المسجلون' : 'Students'} value={String(totalStudents)} hint={ar ? 'بيانات حقيقية' : 'live data'} icon={Users} />
         <StatCard label={ar ? 'متوسط الإنجاز' : 'Avg. completion'} value={`${avgMastery}%`} hint={ar ? 'تقييم فعلي' : 'real mastery'} icon={TrendingUp} />
-        <StatCard label={ar ? 'المعامل التفاعلية' : 'Active Labs'} value="6" hint={ar ? 'معامل 3D' : '3D labs'} icon={FlaskConical} />
+        <StatCard label={ar ? 'المعامل التفاعلية' : 'Active Labs'} value={String(LAB_MODULES.length)} hint={ar ? 'معامل متاحة' : 'active labs'} icon={FlaskConical} />
       </div>
 
       {loading ? (
@@ -359,7 +392,7 @@ export const ClassesPage: React.FC = () => {
                     <CalendarDays size={12} strokeWidth={1.8} />
                     <span>{ar ? `المشرف: ${item.teacher_name_ar}` : item.teacher_name_ar}</span>
                   </span>
-                  <Link to="/app/students" className="sn-link !text-[12px]">
+                  <Link to="/portal/students" className="sn-link !text-[12px]">
                     {ar ? 'عرض الطلاب' : 'Students'}
                     <ArrowRight size={13} strokeWidth={1.8} className={ar ? 'rotate-180' : ''} />
                   </Link>
@@ -381,32 +414,46 @@ const AddStudentModal: React.FC<{
   classes: DbClass[];
   ar: boolean;
 }> = ({ isOpen, onClose, onAdded, classes, ar }) => {
+  const { educator } = useSession();
   const [quadName, setQuadName] = useState('');
-  const [nationalId, setNationalId] = useState('');
+  const [email, setEmail] = useState('');
   const [parentPhone, setParentPhone] = useState('');
   const [classId, setClassId] = useState('');
   const [schoolName, setSchoolName] = useState('');
   const [governorateId, setGovernorateId] = useState('cairo');
   const [adminId, setAdminId] = useState('');
   const [gradeLevel, setGradeLevel] = useState('sec1');
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (classes.length > 0 && !classId) {
       setClassId(classes[0].id);
+      setGradeLevel(classes[0].grade || 'sec1');
     }
   }, [classes, classId]);
+
+  useEffect(() => {
+    if (isOpen && educator?.schoolName && !schoolName) {
+      setSchoolName(educator.schoolName);
+    }
+  }, [isOpen, educator?.schoolName, schoolName]);
 
   if (!isOpen) return null;
 
   const selectedGov = EGYPT_GOVERNORATES.find((g) => g.id === governorateId) || EGYPT_GOVERNORATES[0];
   const admins = selectedGov.administrations || [];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     const words = quadName.trim().split(/\s+/).filter(Boolean);
-    if (words.length < 4) {
-      setError(ar ? 'يرجى إدخال الاسم الرباعي كاملاً (٤ مقاطع على الأقل: اسم الطالب، الأب، الجد، اللقب).' : 'Please enter full 4-part name.');
+    if (words.length < 2) {
+      setError(ar ? 'يرجى إدخال اسم الطالب كاملاً (اسمان على الأقل، ويفضل الاسم الرباعي).' : 'Please enter the student full name (at least 2 parts).');
+      return;
+    }
+    if (classes.length === 0 || !classId) {
+      setError(ar ? 'يرجى إنشاء فصل دراسي أولاً من صفحة "فصولي" لإلحاق الطالب به.' : 'Please create a class first before enrolling a student.');
       return;
     }
     if (!schoolName.trim()) {
@@ -420,29 +467,43 @@ const AddStudentModal: React.FC<{
       return;
     }
 
-    const cleanNat = nationalId.trim();
-    if (cleanNat && !/^\d{14}$/.test(cleanNat)) {
-      setError(ar ? 'الرقم القومي يجب أن يتكون من ١٤ رقماً مصرياً صحيحاً.' : 'National ID must be 14 digits.');
+    const cleanEmail = email.trim().toLowerCase();
+    if (cleanEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      setError(ar ? 'صيغة البريد الإلكتروني غير صحيحة.' : 'Please enter a valid email address.');
       return;
     }
 
     const selectedCls = classes.find((c) => c.id === classId);
+    setSaving(true);
 
-    const newStudent = addStudentToClassByTeacher({
+    const res = await addStudentToClassByTeacherAsync({
       quadName: quadName.trim(),
-      nationalId: cleanNat || undefined,
+      email: cleanEmail || undefined,
       parentPhone: cleanPhone || undefined,
-      classId: classId || (classes[0]?.id || 'default'),
+      classId,
       classNameAr: selectedCls?.name_ar,
-      teacherId: selectedCls?.teacher_id,
-      teacherNameAr: selectedCls?.teacher_name_ar,
+      teacherId: selectedCls?.teacher_id || educator?.nationalId,
+      teacherNameAr: selectedCls?.teacher_name_ar || educator?.name,
       schoolName: schoolName.trim(),
       governorateId,
       administrationId: adminId || admins[0]?.id || 'default',
-      gradeLevel,
+      gradeLevel: selectedCls?.grade || gradeLevel,
     });
 
-    onAdded(newStudent);
+    setSaving(false);
+    if (!res.ok) {
+      setError(
+        ar
+          ? `فشل تسجيل الطالب في قاعدة بيانات Supabase: ${res.error || 'خطأ في الاتصال'}`
+          : `Failed to save student in Supabase: ${res.error || 'Connection error'}`
+      );
+      return;
+    }
+
+    setQuadName('');
+    setEmail('');
+    setParentPhone('');
+    onAdded(res.student);
     onClose();
   };
 
@@ -455,8 +516,8 @@ const AddStudentModal: React.FC<{
               <UserCog size={18} />
             </span>
             <div>
-              <h3 className="text-[16px] font-bold text-[#0a0a0a]">{ar ? 'إضافة طالب بالاسم الرباعي' : 'Add Student by Quad Name'}</h3>
-              <p className="text-[11px] text-[#737373]">{ar ? 'سيتم حفظ الطالب في Supabase وربط حسابه تلقائياً' : 'Saved to Supabase students_enrollment'}</p>
+              <h3 className="text-[16px] font-bold text-[#0a0a0a]">{ar ? 'إضافة طالب إلى الفصل' : 'Enroll Student in Class'}</h3>
+              <p className="text-[11px] text-[#737373]">{ar ? 'يُحفظ الطالب مباشرة في قاعدة البيانات دون اشتراط الرقم القومي' : 'Saved directly to Supabase without National ID'}</p>
             </div>
           </div>
           <button type="button" onClick={onClose} className="sn-btn sn-btn-quiet sn-btn-icon">
@@ -473,7 +534,7 @@ const AddStudentModal: React.FC<{
         <form onSubmit={handleSubmit} className="space-y-3.5">
           <div>
             <label className="block text-[12px] font-semibold text-[#171717] mb-1">
-              {ar ? 'الاسم الرباعي للطالب *' : 'Student 4-Part Full Name *'}
+              {ar ? 'اسم الطالب الكامل (يفضل الرباعي) *' : 'Student Full Name *'}
             </label>
             <input
               required
@@ -484,38 +545,48 @@ const AddStudentModal: React.FC<{
             />
           </div>
 
-          <div>
-            <label className="block text-[12px] font-semibold text-[#171717] mb-1">
-              {ar ? 'الرقم القومي للطالب (١٤ رقماً)' : 'National ID (14 digits)'}
-            </label>
-            <input
-              type="text"
-              maxLength={14}
-              value={nationalId}
-              onChange={(e) => setNationalId(e.target.value.replace(/\D/g, ''))}
-              placeholder={ar ? 'مثال: 30801011234567' : '14-digit Egyptian National ID'}
-              className="sn-input !h-10 text-[13px] font-mono"
-            />
-          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-[12px] font-semibold text-[#171717] mb-1">
+                {ar ? 'البريد الإلكتروني للطالب (اختياري)' : 'Student Email (Optional)'}
+              </label>
+              <input
+                type="email"
+                dir="ltr"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="student@school.edu.eg"
+                className="sn-input !h-10 text-[12px] font-mono"
+              />
+            </div>
 
-          <div>
-            <label className="block text-[12px] font-semibold text-[#171717] mb-1">
-              {ar ? 'رقم هاتف ولي الأمر (واتساب للمتابعة)' : 'Parent Mobile Number (WhatsApp)'}
-            </label>
-            <input
-              type="tel"
-              dir="ltr"
-              value={parentPhone}
-              onChange={(e) => setParentPhone(e.target.value)}
-              placeholder="010XXXXXXXX / 011... / 012..."
-              className="sn-input !h-10 text-[13px] font-mono"
-            />
+            <div>
+              <label className="block text-[12px] font-semibold text-[#171717] mb-1">
+                {ar ? 'هاتف ولي الأمر (اختياري - واتساب)' : 'Parent Mobile (Optional)'}
+              </label>
+              <input
+                type="tel"
+                dir="ltr"
+                value={parentPhone}
+                onChange={(e) => setParentPhone(e.target.value)}
+                placeholder="010XXXXXXXX"
+                className="sn-input !h-10 text-[12px] font-mono"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-[12px] font-semibold text-[#171717] mb-1">{ar ? 'الفصل الدراسي *' : 'Class *'}</label>
-              <select value={classId} onChange={(e) => setClassId(e.target.value)} className="sn-input !h-10 text-[12px]">
+              <select
+                value={classId}
+                onChange={(e) => {
+                  setClassId(e.target.value);
+                  const cls = classes.find((c) => c.id === e.target.value);
+                  if (cls?.grade) setGradeLevel(cls.grade);
+                }}
+                className="sn-input !h-10 text-[12px]"
+              >
                 {classes.length === 0 ? (
                   <option value="">{ar ? 'لا توجد فصول (أنشئ فصلاً أولاً)' : 'No classes available'}</option>
                 ) : (
@@ -548,7 +619,9 @@ const AddStudentModal: React.FC<{
 
           <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#f0f0f0]">
             <button type="button" onClick={onClose} className="sn-btn sn-btn-outline sn-btn-sm">{ar ? 'إلغاء' : 'Cancel'}</button>
-            <button type="submit" className="sn-btn sn-btn-primary sn-btn-sm">{ar ? 'تأكيد وإضافة الطالب' : 'Confirm & Add'}</button>
+            <button type="submit" disabled={saving} className="sn-btn sn-btn-primary sn-btn-sm">
+              {saving ? (ar ? 'جارٍ الحفظ في Supabase…' : 'Saving…') : (ar ? 'تأكيد وإضافة الطالب' : 'Confirm & Add')}
+            </button>
           </div>
         </form>
       </div>
@@ -690,7 +763,7 @@ export const StudentsPage: React.FC = () => {
             {ar ? 'لا يوجد طلاب مسجلون حالياً' : 'No students found'}
           </h3>
           <p className="text-[12px] text-[#737373] max-w-[45ch] mx-auto mb-4">
-            {ar ? 'استخدم زر "إضافة طالب جديد" لتسجيل الطلاب بالاسم الرباعي والرقم القومي وإلحاقهم بالفصول.' : 'Click "Add Student" to enroll real students into classes.'}
+            {ar ? 'استخدم زر "إضافة طالب جديد" لتسجيل الطلاب وإلحاقهم بالفصول مباشرة في Supabase.' : 'Click "Add Student" to enroll real students into classes.'}
           </p>
           <button type="button" onClick={() => setIsAddOpen(true)} className="sn-btn sn-btn-primary">
             <Plus size={15} strokeWidth={2} />
@@ -787,8 +860,10 @@ const CreateAssignmentModal: React.FC<{
   onClose: () => void;
   onAdded: (item: AssignmentItem) => void;
   classes: DbClass[];
+  students: EnrolledStudent[];
   ar: boolean;
-}> = ({ isOpen, onClose, onAdded, classes, ar }) => {
+}> = ({ isOpen, onClose, onAdded, classes, students, ar }) => {
+  const { educator } = useSession();
   const [titleAr, setTitleAr] = useState('');
   const [classId, setClassId] = useState('');
   const [targetType, setTargetType] = useState<'class' | 'student'>('class');
@@ -796,6 +871,7 @@ const CreateAssignmentModal: React.FC<{
   const [linkedLab, setLinkedLab] = useState('chemistry');
   const [dueDateAr, setDueDateAr] = useState('الخميس القادم · ١٠:٠٠ م');
   const [descriptionAr, setDescriptionAr] = useState('');
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -804,16 +880,32 @@ const CreateAssignmentModal: React.FC<{
     }
   }, [classes, classId]);
 
+  const classStudents = useMemo(() => {
+    const inClass = students.filter((s) => s.classId === classId);
+    return inClass.length > 0 ? inClass : students;
+  }, [students, classId]);
+
+  useEffect(() => {
+    if (targetType === 'student' && classStudents.length > 0 && !targetStudentQuadName) {
+      setTargetStudentQuadName(classStudents[0].quadName);
+    }
+  }, [targetType, classStudents, targetStudentQuadName]);
+
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     if (!titleAr.trim()) {
       setError(ar ? 'يرجى إدخال عنوان الواجب أو التكليف.' : 'Please enter assignment title.');
       return;
     }
+    if (classes.length === 0 || !classId) {
+      setError(ar ? 'يرجى إنشاء فصل دراسي أولاً لإرسال الواجب إليه.' : 'Please create a class first.');
+      return;
+    }
     if (targetType === 'student' && !targetStudentQuadName.trim()) {
-      setError(ar ? 'يرجى كتابة اسم الطالب المعني.' : 'Please enter student name.');
+      setError(ar ? 'يرجى اختيار الطالب المعني أو كتابة اسمه.' : 'Please select or enter the target student.');
       return;
     }
     const cls = classes.find((c) => c.id === classId);
@@ -821,20 +913,28 @@ const CreateAssignmentModal: React.FC<{
       id: `asg-${Date.now()}`,
       titleAr: titleAr.trim(),
       titleEn: titleAr.trim(),
-      classId: cls?.id || classId || 'default',
+      classId: cls?.id || classId,
       classNameAr: cls?.name_ar || 'فصل معتمد',
       targetStudentQuadName: targetType === 'student' ? targetStudentQuadName.trim() : null,
-      teacherId: cls?.teacher_id || 't-admin',
-      teacherNameAr: cls?.teacher_name_ar || 'المعلم المشرف',
+      teacherId: cls?.teacher_id || (educator?.nationalId ? `edu_${educator.nationalId.slice(-6)}` : 't-admin'),
+      teacherNameAr: cls?.teacher_name_ar || educator?.name || 'المعلم المشرف',
       linkedLab,
-      dueDateAr,
-      dueDateEn: 'Next Thursday · 10:00 PM',
+      dueDateAr: dueDateAr.trim() || 'الخميس القادم',
+      dueDateEn: dueDateAr.trim() || 'Next Thursday',
       descriptionAr: descriptionAr.trim() || 'قم بفتح المعمل 3D وإجراء التجربة المطلوبة وتسجيل النتائج.',
-      descriptionEn: 'Open the 3D lab, conduct the experiment, and report findings.',
+      descriptionEn: descriptionAr.trim() || 'Open the 3D lab, conduct the experiment, and report findings.',
       totalPoints: 100,
       assignedAt: new Date().toISOString().slice(0, 10),
     };
-    addAssignment(newAssignment);
+    setSaving(true);
+    const res = await addAssignment(newAssignment);
+    setSaving(false);
+    if (!res.ok) {
+      setError(ar ? `فشل حفظ الواجب في Supabase: ${res.error || 'خطأ في الاتصال'}` : `Failed to save assignment: ${res.error}`);
+      return;
+    }
+    setTitleAr('');
+    setDescriptionAr('');
     onAdded(newAssignment);
     onClose();
   };
@@ -891,7 +991,7 @@ const CreateAssignmentModal: React.FC<{
                   <option value="">{ar ? 'لا توجد فصول (أنشئ فصلاً أولاً)' : 'No classes available'}</option>
                 ) : (
                   classes.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name_ar}</option>
+                    <option key={c.id} value={c.id}>{ar ? c.name_ar : c.name_en}</option>
                   ))
                 )}
               </select>
@@ -899,19 +999,16 @@ const CreateAssignmentModal: React.FC<{
 
             <div>
               <label className="block text-[11px] font-semibold text-[#171717] mb-1">
-                {ar ? 'المعمل ثلاثي الأبعاد المرتبط *' : 'Linked 3D Lab *'}
+                {ar ? 'المعمل التفاعلي المرتبط *' : 'Linked Lab *'}
               </label>
               <select
                 value={linkedLab}
                 onChange={(e) => setLinkedLab(e.target.value)}
                 className="h-9 w-full rounded-xl border border-[#e5e5e5] px-2 text-[12px] text-[#0a0a0a] outline-none focus:border-[#0a0a0a] bg-white"
               >
-                <option value="chemistry">{ar ? 'معمل الكيمياء' : 'Chemistry Lab'}</option>
-                <option value="physics">{ar ? 'معمل الفيزياء' : 'Physics Lab'}</option>
-                <option value="anatomy">{ar ? 'أطلس التشريح' : 'Anatomy Lab'}</option>
-                <option value="biology">{ar ? 'معمل الأحياء والوراثة' : 'Biology Lab'}</option>
-                <option value="geology">{ar ? 'معمل الجيولوجيا' : 'Geology Lab'}</option>
-                <option value="astronomy">{ar ? 'معمل الفلك' : 'Astronomy Lab'}</option>
+                {LAB_MODULES.map((lab) => (
+                  <option key={lab.id} value={lab.id}>{ar ? lab.nameAr : lab.nameEn}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -931,24 +1028,43 @@ const CreateAssignmentModal: React.FC<{
               </button>
               <button
                 type="button"
-                onClick={() => setTargetType('student')}
+                onClick={() => {
+                  setTargetType('student');
+                  if (classStudents.length > 0 && !targetStudentQuadName) {
+                    setTargetStudentQuadName(classStudents[0].quadName);
+                  }
+                }}
                 className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-xl border text-[11px] font-semibold transition-all ${targetType === 'student' ? 'border-[#0a0a0a] bg-[#0a0a0a] text-white' : 'border-[#e5e5e5] bg-white text-[#737373] hover:border-[#a3a3a3]'}`}
               >
                 <UserCog size={13} />
-                <span>{ar ? 'طالب معين بالاسم' : 'Specific Student'}</span>
+                <span>{ar ? 'طالب معين من المسجلين' : 'Specific Student'}</span>
               </button>
             </div>
 
             {targetType === 'student' && (
-              <div className="pt-1">
-                <input
-                  type="text"
-                  value={targetStudentQuadName}
-                  onChange={(e) => setTargetStudentQuadName(e.target.value)}
-                  placeholder={ar ? 'اكتب الاسم الرباعي للطالب المعني…' : 'Student full 4-part name…'}
-                  className="h-9 w-full rounded-xl border border-[#e5e5e5] px-3 text-[12px] text-[#0a0a0a] outline-none focus:border-[#0a0a0a]"
-                  required
-                />
+              <div className="pt-1 space-y-1.5">
+                {classStudents.length > 0 ? (
+                  <select
+                    value={targetStudentQuadName}
+                    onChange={(e) => setTargetStudentQuadName(e.target.value)}
+                    className="h-9 w-full rounded-xl border border-[#e5e5e5] px-2.5 text-[12px] text-[#0a0a0a] outline-none focus:border-[#0a0a0a] bg-white"
+                  >
+                    {classStudents.map((st) => (
+                      <option key={st.id} value={st.quadName}>
+                        {st.quadName} ({st.classNameAr})
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    value={targetStudentQuadName}
+                    onChange={(e) => setTargetStudentQuadName(e.target.value)}
+                    placeholder={ar ? 'اكتب الاسم الكامل للطالب المعني…' : 'Student full name…'}
+                    className="h-9 w-full rounded-xl border border-[#e5e5e5] px-3 text-[12px] text-[#0a0a0a] outline-none focus:border-[#0a0a0a]"
+                    required
+                  />
+                )}
               </div>
             )}
           </div>
@@ -982,8 +1098,8 @@ const CreateAssignmentModal: React.FC<{
             <button type="button" onClick={onClose} className="sn-btn sn-btn-outline sn-btn-sm">
               {ar ? 'إلغاء' : 'Cancel'}
             </button>
-            <button type="submit" className="sn-btn sn-btn-primary sn-btn-sm">
-              {ar ? 'حفظ وإرسال للطلاب' : 'Save & Assign'}
+            <button type="submit" disabled={saving} className="sn-btn sn-btn-primary sn-btn-sm">
+              {saving ? (ar ? 'جارٍ الحفظ…' : 'Saving…') : (ar ? 'حفظ وإرسال للطلاب' : 'Save & Assign')}
             </button>
           </div>
         </form>
@@ -998,18 +1114,26 @@ export const AssignmentsPage: React.FC = () => {
   const ar = language === 'ar';
   const [assignmentsList, setAssignmentsList] = useState<AssignmentItem[]>([]);
   const [classes, setClasses] = useState<DbClass[]>([]);
+  const [enrolledStudents, setEnrolledStudents] = useState<EnrolledStudent[]>([]);
+  const [submissions, setSubmissions] = useState<StudentSubmission[]>(() => getSubmissions());
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [expandedAsgId, setExpandedAsgId] = useState<string | null>(null);
+  const [gradingInputs, setGradingInputs] = useState<Record<string, { score: string; feedback: string }>>({});
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const loadData = async () => {
     setLoading(true);
-    const [fetchedAsg, fetchedClasses] = await Promise.all([
+    const [fetchedAsg, fetchedClasses, fetchedStudents, fetchedSubs] = await Promise.all([
       fetchAndSyncAssignments(),
       dbFetchClasses(),
+      fetchAndSyncEnrollment(),
+      fetchAndSyncSubmissions(),
     ]);
     setAssignmentsList(fetchedAsg || []);
     setClasses(fetchedClasses || []);
+    setEnrolledStudents(fetchedStudents || []);
+    setSubmissions(fetchedSubs || []);
     setLoading(false);
   };
 
@@ -1027,11 +1151,28 @@ export const AssignmentsPage: React.FC = () => {
 
   const handleAdded = (newAsg: AssignmentItem) => {
     setAssignmentsList((prev) => [newAsg, ...prev]);
-    setSuccessMsg(ar ? `تم إنشاء الواجب "${newAsg.titleAr}" بنجاح!` : 'Assignment created successfully!');
+    setSuccessMsg(ar ? `تم إنشاء الواجب "${newAsg.titleAr}" وحفظه في Supabase بنجاح!` : 'Assignment created successfully!');
     setTimeout(() => setSuccessMsg(null), 5000);
   };
 
-  const submissions = getSubmissions();
+  const handleGradeSubmission = async (sub: StudentSubmission) => {
+    const input = gradingInputs[sub.id];
+    const scoreVal = Number(input?.score ?? sub.score ?? 100);
+    const feedbackVal = input?.feedback ?? sub.teacherFeedback ?? (ar ? 'مكتمل ومعتمد' : 'Verified');
+    const res = await gradeSubmissionAndSync(sub, scoreVal, feedbackVal);
+    setSubmissions((prev) => prev.map((s) => (s.id === sub.id ? res.updated : s)));
+    setSuccessMsg(
+      ar
+        ? `تم رصد درجة ${res.updated.score}% للطالب ${sub.studentQuadName} وتحديث إتقانه!`
+        : `Recorded ${res.updated.score}% for ${sub.studentQuadName}!`
+    );
+    setTimeout(() => setSuccessMsg(null), 4000);
+  };
+
+  const gradedSubs = submissions.filter((s) => typeof s.score === 'number');
+  const avgScore = gradedSubs.length > 0
+    ? Math.round(gradedSubs.reduce((a, b) => a + (b.score || 0), 0) / gradedSubs.length)
+    : null;
 
   return (
     <div>
@@ -1052,6 +1193,7 @@ export const AssignmentsPage: React.FC = () => {
         onClose={() => setIsCreateOpen(false)}
         onAdded={handleAdded}
         classes={classes}
+        students={enrolledStudents}
         ar={ar}
       />
 
@@ -1066,7 +1208,7 @@ export const AssignmentsPage: React.FC = () => {
         <StatCard label={ar ? 'واجبات نشطة' : 'Open'} value={String(assignmentsList.length)} hint={ar ? 'في قاعدة البيانات' : 'in database'} icon={ClipboardList} />
         <StatCard label={ar ? 'تسليمات مسجلة' : 'Submissions'} value={String(submissions.length)} hint={ar ? 'تسليمات حقيقية' : 'real submissions'} icon={FileCheck2} />
         <StatCard label={ar ? 'بانتظار المراجعة' : 'To review'} value={String(submissions.filter((s) => s.status === 'submitted').length)} hint={ar ? 'تسليم' : 'items'} icon={Clock} />
-        <StatCard label={ar ? 'متوسط الدرجة' : 'Avg. score'} value={submissions.length > 0 ? `${Math.round(submissions.reduce((a, b) => a + (b.score || 0), 0) / submissions.length)}%` : '—'} hint={ar ? 'تقييم فعلي' : 'real average'} icon={TrendingUp} />
+        <StatCard label={ar ? 'متوسط الدرجة' : 'Avg. score'} value={avgScore !== null ? `${avgScore}%` : '—'} hint={ar ? 'تقييم فعلي' : 'real average'} icon={TrendingUp} />
       </div>
 
       {loading ? (
@@ -1081,7 +1223,7 @@ export const AssignmentsPage: React.FC = () => {
             {ar ? 'لا توجد واجبات منشورة حتى الآن' : 'No assignments found'}
           </h3>
           <p className="text-[12px] text-[#737373] max-w-[45ch] mx-auto mb-4">
-            {ar ? 'اضغط على "إنشاء واجب جديد" لتعيين تجربة معملية لفصل كامل أو لطالب معين بالاسم.' : 'Click "Create assignment" to link a 3D lab task to your students.'}
+            {ar ? 'اضغط على "إنشاء واجب جديد" لتعيين تجربة معملية لفصل كامل أو لطالب معين.' : 'Click "Create assignment" to link a 3D lab task to your students.'}
           </p>
           <button type="button" onClick={() => setIsCreateOpen(true)} className="sn-btn sn-btn-primary">
             <Plus size={15} strokeWidth={2} />
@@ -1092,6 +1234,8 @@ export const AssignmentsPage: React.FC = () => {
         <div className="space-y-2.5">
           {assignmentsList.map((item) => {
             const accent = item.linkedLab || 'chemistry';
+            const asgSubs = submissions.filter((s) => s.assignmentId === item.id);
+            const isExpanded = expandedAsgId === item.id;
             return (
               <div key={item.id} className={`sn-${accent} sn-card p-4`}>
                 <div className="flex flex-col gap-4 md:flex-row md:items-center">
@@ -1111,13 +1255,23 @@ export const AssignmentsPage: React.FC = () => {
                       <span>{ar ? `المشرف: ${item.teacherNameAr}` : item.teacherNameAr}</span>
                       {item.targetStudentQuadName && (
                         <span className="sn-badge sn-badge-blue !text-[10px]">
-                          {ar ? `طالب خاص: ${item.targetStudentQuadName}` : `Special: ${item.targetStudentQuadName}`}
+                          {ar ? `طالب خاص: ${item.targetStudentQuadName}` : `Target: ${item.targetStudentQuadName}`}
                         </span>
                       )}
                     </div>
                     <p className="mt-1 text-[11px] text-[#737373] line-clamp-1">{item.descriptionAr}</p>
                   </div>
                   <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setExpandedAsgId(isExpanded ? null : item.id)}
+                      className="sn-btn sn-btn-outline sn-btn-sm !text-[11px]"
+                    >
+                      <FileCheck2 size={13} />
+                      <span>
+                        {ar ? `التسليمات (${asgSubs.length})` : `Submissions (${asgSubs.length})`}
+                      </span>
+                    </button>
                     <button
                       type="button"
                       onClick={() => handleDeleteAssignment(item.id, item.titleAr)}
@@ -1128,6 +1282,75 @@ export const AssignmentsPage: React.FC = () => {
                     </button>
                   </div>
                 </div>
+
+                {isExpanded && (
+                  <div className="mt-3.5 border-t border-[#f0f0f0] pt-3 space-y-2">
+                    {asgSubs.length === 0 ? (
+                      <div className="rounded-xl bg-[#fafafa] px-3 py-2.5 text-[11px] text-[#737373]">
+                        {ar ? 'لا توجد تسليمات من الطلاب لهذا الواجب حتى الآن.' : 'No student submissions yet.'}
+                      </div>
+                    ) : (
+                      asgSubs.map((sub) => {
+                        const input = gradingInputs[sub.id] || {
+                          score: typeof sub.score === 'number' ? String(sub.score) : '100',
+                          feedback: sub.teacherFeedback || '',
+                        };
+                        return (
+                          <div key={sub.id} className="flex flex-col gap-2 rounded-xl border border-[#e5e5e5] bg-[#fafafa] p-3 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span className="text-[12px] font-bold text-[#0a0a0a]">{sub.studentQuadName}</span>
+                                <span className={`sn-badge !text-[10px] ${sub.status === 'graded' ? 'sn-badge-green' : 'sn-badge-amber'}`}>
+                                  {sub.status === 'graded'
+                                    ? `${ar ? 'مُقيّم' : 'Graded'} · ${sub.score ?? 0}%`
+                                    : (ar ? 'بانتظار التقييم' : 'Pending Review')}
+                                </span>
+                              </div>
+                              <div className="text-[10px] text-[#737373] mt-0.5">
+                                {ar ? 'تاريخ التسليم:' : 'Submitted:'} {sub.submittedAt}
+                              </div>
+                            </div>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <input
+                                type="number"
+                                min={0}
+                                max={100}
+                                value={input.score}
+                                onChange={(e) =>
+                                  setGradingInputs((prev) => ({
+                                    ...prev,
+                                    [sub.id]: { ...input, score: e.target.value },
+                                  }))
+                                }
+                                className="h-8 w-16 rounded-lg border border-[#e5e5e5] bg-white px-2 text-center font-mono text-[11px] outline-none"
+                                aria-label="Score"
+                              />
+                              <input
+                                type="text"
+                                value={input.feedback}
+                                onChange={(e) =>
+                                  setGradingInputs((prev) => ({
+                                    ...prev,
+                                    [sub.id]: { ...input, feedback: e.target.value },
+                                  }))
+                                }
+                                placeholder={ar ? 'ملاحظة للطالب…' : 'Feedback…'}
+                                className="h-8 w-40 rounded-lg border border-[#e5e5e5] bg-white px-2 text-[11px] outline-none"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => void handleGradeSubmission(sub)}
+                                className="sn-btn sn-btn-primary sn-btn-sm !h-8 !text-[11px]"
+                              >
+                                {ar ? 'حفظ الدرجة' : 'Save Grade'}
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                )}
               </div>
             );
           })}
@@ -1403,7 +1626,7 @@ export const InstitutionsPage: React.FC = () => {
         <StatCard label={ar ? 'المؤسسات' : 'Institutions'} value={String(institutions.length)} hint={ar ? 'في قاعدة البيانات' : 'in database'} icon={Building2} />
         <StatCard label={ar ? 'المؤسسات النشطة' : 'Active'} value={String(activeCount)} hint={ar ? 'اشتراك نشط' : 'active status'} icon={CheckCircle2} />
         <StatCard label={ar ? 'فترة تجريبية' : 'Trials'} value={String(trialCount)} hint={ar ? 'تحت الاختبار' : 'in trial'} icon={Clock} />
-        <StatCard label={ar ? 'المعامل المتصلة' : 'Connected Labs'} value="6" hint={ar ? 'معامل 3D' : '3D labs'} icon={FlaskConical} />
+        <StatCard label={ar ? 'المعامل المتصلة' : 'Connected Labs'} value={String(LAB_MODULES.length)} hint={ar ? 'معامل متاحة' : 'active labs'} icon={FlaskConical} />
       </div>
 
       {loading ? (

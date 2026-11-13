@@ -138,7 +138,7 @@ const VideoModal: React.FC<{
 const QuizModal: React.FC<{
   lesson: CurriculumLesson | null;
   onClose: () => void;
-  onSubmit: (lessonId: string, answers: Record<string, number>) => void;
+  onSubmit: (lessonId: string, answers: Record<string, number>, scorePercent: number) => void;
   ar: boolean;
   language: string;
   isReadOnly?: boolean;
@@ -171,8 +171,13 @@ const QuizModal: React.FC<{
   const questions = shuffledQuestions;
 
   const handleSubmit = () => {
+    const correctCount = questions.reduce(
+      (acc, q) => acc + (answers[q.id] === q.correctAnswerIndex ? 1 : 0),
+      0
+    );
+    const scorePercent = questions.length > 0 ? Math.round((correctCount / questions.length) * 100) : 0;
     setSubmitted(true);
-    onSubmit(lesson.id, answers);
+    onSubmit(lesson.id, answers, scorePercent);
   };
 
   const getQuestionText = (q: typeof questions[0]) => {
@@ -256,14 +261,22 @@ const QuizModal: React.FC<{
             <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex items-center justify-between">
               <div>
                 <div className="text-[14px] font-bold">
-                  {ar ? '🎉 أحسنت! تم إتمام التقييم واحتساب درجات الإتقان' : '🎉 Assessment Completed!'}
+                  {scoreCount / Math.max(1, questions.length) >= 0.5
+                    ? (ar ? '🎉 أحسنت! تم إتمام التقييم واحتساب درجات الإتقان' : '🎉 Assessment Completed!')
+                    : (ar ? 'تم تسجيل محاولتك وحفظ الدرجة الفعلية' : 'Assessment Recorded')}
                 </div>
                 <div className="text-[12px] text-emerald-700 mt-0.5">
-                  {ar ? `درجتك: ${scoreCount} من ${questions.length} أسئلة صحيحة (+60 XP) — تم قفل التقييم` : `Score: ${scoreCount}/${questions.length} (+60 XP) — Assessment Locked`}
+                  {(() => {
+                    const pct = questions.length > 0 ? Math.round((scoreCount / questions.length) * 100) : 0;
+                    const earnedXp = pct >= 50 ? Math.max(20, Math.round(pct * 0.6)) : 10;
+                    return ar
+                      ? `درجتك: ${scoreCount} من ${questions.length} أسئلة صحيحة (+${earnedXp} XP) — تم قفل التقييم`
+                      : `Score: ${scoreCount}/${questions.length} (+${earnedXp} XP) — Assessment Locked`;
+                  })()}
                 </div>
               </div>
               <span className="sn-badge sn-badge-green !text-[12px] font-bold">
-                {Math.round((scoreCount / questions.length) * 100)}%
+                {questions.length > 0 ? Math.round((scoreCount / questions.length) * 100) : 0}%
               </span>
             </div>
           )}
@@ -486,21 +499,42 @@ export const CurriculumPage: React.FC = () => {
     navigate(`/app/labs/${lesson.linkedLabTab}`);
   };
 
-  const handleQuizSubmit = (lessonId: string) => {
-    recordSubmission({
+  const handleQuizSubmit = (lessonId: string, _answers: Record<string, number>, scorePercent: number) => {
+    const studentIdentity =
+      getPersistedItem('scinexa_user_fullname', '').trim() ||
+      user?.name ||
+      user?.email ||
+      (ar ? 'طالب مسجل' : 'Registered Student');
+
+    const feedback =
+      scorePercent >= 80
+        ? ar
+          ? `أداء متميز (${scorePercent}%) — تم الرصد`
+          : `Excellent score (${scorePercent}%), recorded`
+        : scorePercent >= 50
+          ? ar
+            ? `أداء جيد (${scorePercent}%) — تم الاعتماد`
+            : `Passed (${scorePercent}%), recorded`
+          : ar
+            ? `يحتاج مراجعة (${scorePercent}%) — تم تسجيل النتيجة`
+            : `Needs review (${scorePercent}%), recorded`;
+
+    void recordSubmission({
       id: `sub-${Date.now()}`,
       assignmentId: lessonId,
-      studentQuadName: user?.name || 'طالب متميز',
+      studentQuadName: studentIdentity,
       submittedAt: new Date().toISOString().slice(0, 10),
       status: 'graded',
-      score: 100,
-      teacherFeedback: ar ? 'إجابات ممتازة وتقييم وزاري معتمد.' : 'Excellent score, Ministry assessment recorded.',
+      score: scorePercent,
+      teacherFeedback: feedback,
     });
 
     if (!completed.includes(lessonId)) {
+      const earnedXp = scorePercent >= 50 ? Math.max(20, Math.round(scorePercent * 0.6)) : 10;
+      const earnedStars = scorePercent >= 80 ? 1 : 0;
       const next = [...completed, lessonId];
-      const nextXp = xp + 60;
-      const nextStars = stars + 1;
+      const nextXp = xp + earnedXp;
+      const nextStars = stars + earnedStars;
       setCompleted(next);
       setXp(nextXp);
       setStars(nextStars);

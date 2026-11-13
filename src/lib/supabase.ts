@@ -234,22 +234,29 @@ export async function dbVerifyEducator(
   const cleanName = quadName.trim();
   const cleanId = nationalId.trim();
 
-  // 1. فحص قاعدة البيانات السحابية Supabase بدقة
+  // 1. فحص قاعدة البيانات السحابية Supabase بأمان (بدون حقن فلاتر)
   if (isSupabaseConfigured && supabase) {
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .or(`national_id.eq.${cleanId},teacher_code.eq.${cleanId},email.eq.${cleanId}`)
-        .in('role', ['teacher', 'admin'])
-        .maybeSingle();
+      const cols: ('national_id' | 'teacher_code' | 'email')[] = cleanId.includes('@')
+        ? ['email']
+        : ['national_id', 'teacher_code'];
 
-      if (!error && data) {
-        return {
-          success: true,
-          role: data.role as 'teacher' | 'admin',
-          profile: data as DbProfile,
-        };
+      for (const col of cols) {
+        const val = col === 'email' ? cleanId.toLowerCase() : cleanId;
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq(col, val)
+          .in('role', ['teacher', 'admin'])
+          .maybeSingle();
+
+        if (!error && data) {
+          return {
+            success: true,
+            role: data.role as 'teacher' | 'admin',
+            profile: data as DbProfile,
+          };
+        }
       }
     } catch (e) {
       console.warn('Supabase verify educator error', e);
@@ -269,13 +276,12 @@ export async function dbVerifyEducator(
     };
   }
 
-  // 3. المشرفان الرئيسيان للمشروع (إسلام & ياسين) كحسابات طوارئ معتمدة فقط عند مطابقة الاسم الدقيق والرقم القومي
+  // 3. المشرفان الرئيسيان للمشروع (إسلام & ياسين) فقط برقم قومي رقمي صحيح من 14 رقماً
+  const is14Digits = /^\d{14}$/.test(cleanId);
   const isMasterIslam =
-    (cleanName.includes('إسلام') || cleanName.includes('Islam')) &&
-    cleanId.length === 14;
+    (cleanName.includes('إسلام') || cleanName.includes('Islam')) && is14Digits;
   const isMasterYaseen =
-    (cleanName.includes('ياسين') || cleanName.includes('Yaseen')) &&
-    cleanId.length === 14;
+    (cleanName.includes('ياسين') || cleanName.includes('Yaseen')) && is14Digits;
 
   if (isMasterIslam) {
     const adminProf: DbProfile = {
@@ -487,20 +493,26 @@ export async function dbFetchClasses(): Promise<DbClass[]> {
 }
 
 /**
- * إنشاء فصل جديد في Supabase
+ * إنشاء فصل جديد في Supabase مع التحقق من أخطاء الحفظ
  */
-export async function dbCreateClass(newClass: DbClass): Promise<DbClass> {
+export async function dbCreateClass(newClass: DbClass): Promise<{ ok: boolean; data: DbClass; error?: string }> {
+  let dbError: string | undefined;
   if (isSupabaseConfigured && supabase) {
     try {
-      await supabase.from('classes').upsert([newClass]);
-    } catch (e) {
+      const { error } = await supabase.from('classes').upsert([newClass]);
+      if (error) {
+        dbError = error.message;
+        console.warn('Supabase insert class error', error);
+      }
+    } catch (e: any) {
+      dbError = e?.message || 'Network error';
       console.warn('Supabase insert class error', e);
     }
   }
   const current = getPersistedJSON<DbClass[]>('scinexa_supabase_classes_cache', []);
   const updated = [newClass, ...current.filter((c) => c.id !== newClass.id)];
   setPersistedJSON('scinexa_supabase_classes_cache', updated);
-  return newClass;
+  return { ok: !dbError, data: newClass, error: dbError };
 }
 
 /**
@@ -521,35 +533,92 @@ export async function dbDeleteClass(id: string): Promise<void> {
 /**
  * جلب الطلاب المسجلين التابعين لفصل أو مدرسة
  */
-export async function dbFetchEnrolledStudents(): Promise<any[]> {
+export async function dbFetchEnrolledStudents(): Promise<{ rows: any[]; fromRemote: boolean }> {
   if (isSupabaseConfigured && supabase) {
     try {
       const { data, error } = await supabase.from('students_enrollment').select('*').order('enrolled_at', { ascending: false });
-      if (!error && data) {
+      if (!error && Array.isArray(data)) {
         setPersistedJSON('scinexa_enrolled_students', data);
-        return data;
+        return { rows: data, fromRemote: true };
       }
     } catch (e) {
       console.warn('Supabase fetch students error', e);
     }
   }
-  return getPersistedJSON<any[]>('scinexa_enrolled_students', []);
+  return { rows: getPersistedJSON<any[]>('scinexa_enrolled_students', []), fromRemote: false };
 }
 
 /**
- * قيام المعلم بإضافة طالب جديد برقم قومي أو اسم رباعي
+ * قيام المعلم بإضافة طالب جديد (بالاسم الرباعي وبدون اشتراط الرقم القومي) وحفظه في Supabase
  */
-export async function dbEnrollStudent(student: any): Promise<void> {
+export async function dbEnrollStudent(student: any): Promise<{ ok: boolean; error?: string }> {
+  let dbError: string | undefined;
+  const cleanPayload: Record<string, any> = {};
+  Object.entries(student).forEach(([k, v]) => {
+    if (v !== undefined && v !== '') cleanPayload[k] = v;
+  });
+
   if (isSupabaseConfigured && supabase) {
     try {
-      await supabase.from('students_enrollment').upsert([student]);
-    } catch (e) {
+      let { error } = await supabase.from('students_enrollment').upsert([cleanPayload]);
+      // Fallback safely if live DB table has not run ALTER TABLE for parent_phone yet
+      if (error && error.message?.includes('parent_phone')) {
+        const { parent_phone: _omit, ...withoutPhone } = cleanPayload;
+        const retry = await supabase.from('students_enrollment').upsert([withoutPhone]);
+        error = retry.error;
+      }
+      if (error) {
+        dbError = error.message;
+        console.warn('Supabase insert student error', error);
+      } else {
+        // Also ensure student exists in public.profiles for full DB visibility
+        const profileRow: Record<string, any> = {
+          id: cleanPayload.id,
+          role: 'student',
+          display_name: cleanPayload.quad_name,
+          quad_name: cleanPayload.quad_name,
+          school_name: cleanPayload.school_name,
+          grade_level: cleanPayload.grade_level,
+          governorate_id: cleanPayload.governorate_id,
+          administration_id: cleanPayload.administration_id,
+        };
+        if (cleanPayload.email) profileRow.email = String(cleanPayload.email).toLowerCase();
+        if (cleanPayload.parent_phone) profileRow.parent_phone = cleanPayload.parent_phone;
+        if (cleanPayload.national_id) profileRow.national_id = cleanPayload.national_id;
+        try {
+          await supabase.from('profiles').upsert([profileRow]);
+        } catch {
+          /* secondary profiles mirror is best-effort */
+        }
+      }
+    } catch (e: any) {
+      dbError = e?.message || 'Network error';
       console.warn('Supabase insert student error', e);
     }
   }
   const current = getPersistedJSON<any[]>('scinexa_enrolled_students', []);
   const updated = [student, ...current.filter((s) => s.id !== student.id)];
   setPersistedJSON('scinexa_enrolled_students', updated);
+  return { ok: !dbError, error: dbError };
+}
+
+/**
+ * تحديث نسبة إتقان الطالب في Supabase
+ */
+export async function dbUpdateStudentMastery(id: string, mastery: number): Promise<void> {
+  const clamped = Math.max(0, Math.min(100, Math.round(mastery)));
+  if (isSupabaseConfigured && supabase) {
+    try {
+      await supabase.from('students_enrollment').update({ mastery: clamped }).eq('id', id);
+    } catch (e) {
+      console.warn('Supabase update student mastery error', e);
+    }
+  }
+  const current = getPersistedJSON<any[]>('scinexa_enrolled_students', []);
+  setPersistedJSON(
+    'scinexa_enrolled_students',
+    current.map((s) => (s.id === id ? { ...s, mastery: clamped } : s))
+  );
 }
 
 /**
@@ -570,35 +639,42 @@ export async function dbDeleteEnrolledStudent(id: string): Promise<void> {
 /**
  * جلب الواجبات الحقيقية
  */
-export async function dbFetchAssignments(): Promise<DbAssignment[]> {
+export async function dbFetchAssignments(): Promise<{ rows: DbAssignment[]; fromRemote: boolean }> {
   if (isSupabaseConfigured && supabase) {
     try {
       const { data, error } = await supabase.from('assignments').select('*').order('assigned_at', { ascending: false });
-      if (!error && data) {
+      if (!error && Array.isArray(data)) {
         setPersistedJSON('scinexa_assignments_list', data);
-        return data as DbAssignment[];
+        return { rows: data as DbAssignment[], fromRemote: true };
       }
     } catch (e) {
       console.warn('Supabase fetch assignments error', e);
     }
   }
-  return getPersistedJSON<DbAssignment[]>('scinexa_assignments_list', []);
+  return { rows: getPersistedJSON<DbAssignment[]>('scinexa_assignments_list', []), fromRemote: false };
 }
 
 /**
  * حفظ واجب جديد في Supabase
  */
-export async function dbCreateAssignment(item: DbAssignment): Promise<void> {
+export async function dbCreateAssignment(item: DbAssignment): Promise<{ ok: boolean; error?: string }> {
+  let dbError: string | undefined;
   if (isSupabaseConfigured && supabase) {
     try {
-      await supabase.from('assignments').upsert([item]);
-    } catch (e) {
+      const { error } = await supabase.from('assignments').upsert([item]);
+      if (error) {
+        dbError = error.message;
+        console.warn('Supabase insert assignment error', error);
+      }
+    } catch (e: any) {
+      dbError = e?.message || 'Network error';
       console.warn('Supabase insert assignment error', e);
     }
   }
   const current = getPersistedJSON<DbAssignment[]>('scinexa_assignments_list', []);
   const updated = [item, ...current.filter((a) => a.id !== item.id)];
   setPersistedJSON('scinexa_assignments_list', updated);
+  return { ok: !dbError, error: dbError };
 }
 
 /**
@@ -619,35 +695,42 @@ export async function dbDeleteAssignment(id: string): Promise<void> {
 /**
  * جلب التسليمات الحقيقية
  */
-export async function dbFetchSubmissions(): Promise<DbSubmission[]> {
+export async function dbFetchSubmissions(): Promise<{ rows: DbSubmission[]; fromRemote: boolean }> {
   if (isSupabaseConfigured && supabase) {
     try {
       const { data, error } = await supabase.from('submissions').select('*').order('submitted_at', { ascending: false });
-      if (!error && data) {
+      if (!error && Array.isArray(data)) {
         setPersistedJSON('scinexa_student_submissions', data);
-        return data as DbSubmission[];
+        return { rows: data as DbSubmission[], fromRemote: true };
       }
     } catch (e) {
       console.warn('Supabase fetch submissions error', e);
     }
   }
-  return getPersistedJSON<DbSubmission[]>('scinexa_student_submissions', []);
+  return { rows: getPersistedJSON<DbSubmission[]>('scinexa_student_submissions', []), fromRemote: false };
 }
 
 /**
  * حفظ تسليم واجب أو تقييم في Supabase
  */
-export async function dbSubmitAssignment(submission: DbSubmission): Promise<void> {
+export async function dbSubmitAssignment(submission: DbSubmission): Promise<{ ok: boolean; error?: string }> {
+  let dbError: string | undefined;
   if (isSupabaseConfigured && supabase) {
     try {
-      await supabase.from('submissions').upsert([submission]);
-    } catch (e) {
+      const { error } = await supabase.from('submissions').upsert([submission]);
+      if (error) {
+        dbError = error.message;
+        console.warn('Supabase insert submission error', error);
+      }
+    } catch (e: any) {
+      dbError = e?.message || 'Network error';
       console.warn('Supabase insert submission error', e);
     }
   }
   const current = getPersistedJSON<DbSubmission[]>('scinexa_student_submissions', []);
   const updated = [submission, ...current.filter((s) => s.id !== submission.id)];
   setPersistedJSON('scinexa_student_submissions', updated);
+  return { ok: !dbError, error: dbError };
 }
 
 /**
