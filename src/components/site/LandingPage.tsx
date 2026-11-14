@@ -317,7 +317,14 @@ export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
   const ar = language === 'ar';
 
-  const openLab = (id: string) => navigate(isSignedIn ? `/app/labs/${id}` : '/sign-in');
+  const openLab = (id: string) => {
+    if (isSignedIn) {
+      navigate(`/app/labs/${id}`);
+    } else {
+      signInDemo({ name: ar ? 'زائر المعمل' : 'Lab Guest', email: 'guest@scinexa.school', role: 'student' });
+      navigate(`/app/labs/${id}`);
+    }
+  };
 
   // Full 5-language dictionary
   const getCopy = () => {

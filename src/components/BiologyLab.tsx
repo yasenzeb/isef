@@ -227,6 +227,8 @@ export const BiologyLab: React.FC = () => {
   const [selectedOrganelle, setSelectedOrganelle] = useState<OrganelleData>(ORGANELLES_3D[0]);
   const [isCrossSection, setIsCrossSection] = useState(true);
   const [selectedSketchfabModel, setSelectedSketchfabModel] = useState<AnatomyAtlasModel | null>(null);
+  const [cellViewerMode, setCellViewerMode] = useState<'threejs_offline' | 'sketchfab_online'>('threejs_offline');
+  const [dnaViewerMode, setDnaViewerMode] = useState<'threejs_offline' | 'sketchfab_online'>('threejs_offline');
 
   // DNA Interactive Base-Pairing State
   const [selectedBase, setSelectedBase] = useState<'A' | 'T' | 'C' | 'G'>('A');
@@ -526,11 +528,11 @@ export const BiologyLab: React.FC = () => {
         mount.removeChild(renderer.domElement);
       }
     };
-  }, [activeTab, cellType, isCrossSection]);
+  }, [activeTab, cellType, isCrossSection, cellViewerMode]);
 
   // 3D DNA Helix Render
   useEffect(() => {
-    if (activeTab !== 'dna') return;
+    if (activeTab !== 'dna' || dnaViewerMode !== 'threejs_offline') return;
     const mount = dnaMountRef.current;
     if (!mount) return;
 
@@ -636,7 +638,7 @@ export const BiologyLab: React.FC = () => {
         mount.removeChild(renderer.domElement);
       }
     };
-  }, [activeTab]);
+  }, [activeTab, dnaViewerMode]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 sm:pb-16 space-y-6">
@@ -690,21 +692,46 @@ export const BiologyLab: React.FC = () => {
       {activeTab === 'dna' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 sci-card overflow-hidden relative flex flex-col h-[560px] border border-white/10">
-            <div className="bg-[#08090c] px-4 py-3 border-b border-white/10 flex items-center justify-between z-10">
+            <div className="bg-[#08090c] px-4 py-3 border-b border-white/10 flex flex-wrap items-center justify-between gap-2 z-10">
               <span className="text-xs font-mono font-bold text-white flex items-center gap-2">
                 <Dna className="w-4 h-4 text-emerald-400" />
-                <span>{language === 'ar' ? 'المجسم الحقيقي المتحرك للحمض النووي (DNA Double Helix)' : 'Realistic Animated DNA Molecular Helix'}</span>
+                <span>{language === 'ar' ? 'المجسم الحقيقي للحمض النووي (DNA Double Helix)' : 'Realistic Animated DNA Molecular Helix'}</span>
               </span>
-              <span className="text-[11px] font-mono text-emerald-400">PDB Certified Structure • Double Stranded</span>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 p-0.5 rounded-lg bg-white/5 border border-white/10 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => setDnaViewerMode('threejs_offline')}
+                    className={`px-2.5 py-0.5 rounded transition-all ${
+                      dnaViewerMode === 'threejs_offline' ? 'bg-emerald-600 text-white font-bold' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {language === 'ar' ? 'محاكي 3D (أوفلاين)' : '3D Offline'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDnaViewerMode('sketchfab_online')}
+                    className={`px-2.5 py-0.5 rounded transition-all ${
+                      dnaViewerMode === 'sketchfab_online' ? 'bg-indigo-600 text-white font-bold' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {language === 'ar' ? 'Sketchfab (أونلاين)' : 'Sketchfab'}
+                  </button>
+                </div>
+              </div>
             </div>
             <div className="w-full flex-1 bg-black relative">
-              <iframe
-                title="DNA Molecular Double Helix"
-                className="w-full h-full border-0"
-                src="https://sketchfab.com/models/3aafb51201ab414b86d231a1ee4c32a8/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0&ui_help=0&ui_settings=0&ui_inspector=1&ui_stop=0"
-                allow="autoplay; fullscreen; xr-spatial-tracking"
-                allowFullScreen
-              />
+              {dnaViewerMode === 'threejs_offline' ? (
+                <div ref={dnaMountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+              ) : (
+                <iframe
+                  title="DNA Molecular Double Helix"
+                  className="w-full h-full border-0"
+                  src="https://sketchfab.com/models/3aafb51201ab414b86d231a1ee4c32a8/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0&ui_help=0&ui_settings=0&ui_inspector=1&ui_stop=0"
+                  allow="autoplay; fullscreen; xr-spatial-tracking"
+                  allowFullScreen
+                />
+              )}
             </div>
           </div>
 
@@ -936,38 +963,78 @@ export const BiologyLab: React.FC = () => {
                 </span>
               </div>
 
-              {/* Plant vs Animal Toggle */}
-              <div className="flex items-center space-x-2 sci-surface p-1">
-                <button
-                  onClick={() => setCellType('plant')}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                    cellType === 'plant' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  {language === 'ar' ? 'الخلية النباتية' : 'Plant Cell'}
-                </button>
-                <button
-                  onClick={() => setCellType('animal')}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                    cellType === 'animal' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  {language === 'ar' ? 'الخلية الحيوانية' : 'Animal Cell'}
-                </button>
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* Offline Three.js vs Sketchfab Mode Switcher */}
+                <div className="flex items-center gap-1 p-0.5 rounded-lg bg-white/5 border border-white/10 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => setCellViewerMode('threejs_offline')}
+                    className={`px-2.5 py-0.5 rounded transition-all ${
+                      cellViewerMode === 'threejs_offline' ? 'bg-sky-600 text-white font-bold' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {language === 'ar' ? 'محاكي 3D (أوفلاين)' : '3D Offline'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCellViewerMode('sketchfab_online')}
+                    className={`px-2.5 py-0.5 rounded transition-all ${
+                      cellViewerMode === 'sketchfab_online' ? 'bg-indigo-600 text-white font-bold' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {language === 'ar' ? 'Sketchfab (أونلاين)' : 'Sketchfab'}
+                  </button>
+                </div>
+
+                {cellViewerMode === 'threejs_offline' && (
+                  <button
+                    type="button"
+                    onClick={() => setIsCrossSection((c) => !c)}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all ${
+                      isCrossSection ? 'bg-purple-600/30 border-purple-400 text-purple-200' : 'bg-white/5 border-white/10 text-slate-400'
+                    }`}
+                  >
+                    {language === 'ar' ? (isCrossSection ? 'المقطع العرضي: مفعل' : 'عرض الخلية كاملة') : (isCrossSection ? 'Cross Section' : 'Full Cell')}
+                  </button>
+                )}
+
+                {/* Plant vs Animal Toggle */}
+                <div className="flex items-center space-x-2 sci-surface p-1">
+                  <button
+                    onClick={() => setCellType('plant')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                      cellType === 'plant' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {language === 'ar' ? 'الخلية النباتية' : 'Plant Cell'}
+                  </button>
+                  <button
+                    onClick={() => setCellType('animal')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                      cellType === 'animal' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {language === 'ar' ? 'الخلية الحيوانية' : 'Animal Cell'}
+                  </button>
+                </div>
               </div>
             </div>
 
             <div className="flex-1 bg-black relative">
-              <iframe
-                key={cellType}
-                title={cellType === 'plant' ? "Plant Cell 3D" : "Animal Cell 3D"}
-                className="w-full h-full border-0"
-                src={cellType === 'plant' 
-                  ? "https://sketchfab.com/models/1c5ce80d03d149208d30cc5aeb6e42fb/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0&ui_help=0&ui_settings=0&ui_inspector=1&ui_stop=0"
-                  : "https://sketchfab.com/models/3a90e22871004d92a020c54e8964938c/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0&ui_help=0&ui_settings=0&ui_inspector=1&ui_stop=0"}
-                allow="autoplay; fullscreen; xr-spatial-tracking"
-                allowFullScreen
-              />
+              {cellViewerMode === 'threejs_offline' ? (
+                <div ref={cellMountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+              ) : (
+                <iframe
+                  key={cellType}
+                  title={cellType === 'plant' ? "Plant Cell 3D" : "Animal Cell 3D"}
+                  className="w-full h-full border-0"
+                  src={cellType === 'plant' 
+                    ? "https://sketchfab.com/models/1c5ce80d03d149208d30cc5aeb6e42fb/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0&ui_help=0&ui_settings=0&ui_inspector=1&ui_stop=0"
+                    : "https://sketchfab.com/models/3a90e22871004d92a020c54e8964938c/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0&ui_help=0&ui_settings=0&ui_inspector=1&ui_stop=0"}
+                  allow="autoplay; fullscreen; xr-spatial-tracking"
+                  allowFullScreen
+                />
+              )}
             </div>
           </div>
 

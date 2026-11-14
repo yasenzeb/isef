@@ -273,10 +273,11 @@ export const GeologyModelViewer: React.FC<GeologyModelViewerProps> = ({
     modelGroupRef.current = modelGroup;
     initialMeshTransforms.current.clear();
 
-    // 10. Load GLB Model with DRACO
+    // 10. Load GLB Model with DRACO (Local Offline Decoder)
     const loader = new GLTFLoader();
     const dracoLoader = new DRACOLoader();
-    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
+    dracoLoader.setDecoderPath('/draco/');
+    dracoLoader.preload();
     loader.setDRACOLoader(dracoLoader);
 
     let isDisposed = false;
